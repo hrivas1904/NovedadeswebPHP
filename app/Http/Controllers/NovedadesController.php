@@ -7,5 +7,18 @@ use Illuminate\Http\Request;
 
 class NovedadesController extends Controller
 {
-    //
+    public function registroNovedades()
+    {
+        return view('novedades.registroNovedades');
+    }
+
+    public function controlNovedades()
+    {
+        return view('novedades.controlNovedades');
+    }
+
+    public function configNovedades()
+    {
+        return view('novedades.configNovedades');
+    }
 }

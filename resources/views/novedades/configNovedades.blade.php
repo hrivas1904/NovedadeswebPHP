@@ -1,0 +1,114 @@
+@extends('layouts.app')
+
+@section('title', 'Configuración de Novedades')
+
+@section('content')
+    <div class="container-fluid">
+        <div class="container-fluid text-start">
+            <h2 class="text-center pill-heading">Configurar novedades de sueldos</h2>
+        </div>
+        <div class="container-fluid pt-3">
+            <div class="row d-flex">
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <div class="card" style="border-radius:15px;">
+                        <div class="card-body">
+                            <table id="tb_novedades" class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Código Finnegan</th>
+                                        <th>Novedad</th>
+                                        <th>Categoría</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>FINN_123_LM</td>
+                                        <td>Licencia por maternidad</td>
+                                        <td>Licencias</td>
+                                        <td>
+                                            <button type="button" class="btn btn-outline-primary btn-sm">
+                                                <i class="fa-solid fa-gear"></i> Ajustes
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa-solid fa-trash"></i> Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>FINN_243_LM</td>
+                                        <td>Licencia por matrimonio</td>
+                                        <td>Licencias</td>
+                                        <td>
+                                            <button type="button" class="btn btn-outline-primary btn-sm">
+                                                <i class="fa-solid fa-gear"></i> Ajustes
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa-solid fa-trash"></i> Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-sm-12">
+                    <div class="card" style="border-radius:15px;">
+                        <div class="card-body">
+
+                            <div class="col-12 mb-4">
+                                <div class="section-divider">
+                                    <span>Configurar nueva novedad</span>
+                                </div>
+                            </div>
+
+                            <form id="formNuevaNovedad">
+                                <div class="row g-3 mb-3">
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="form-label">Código Finnegan</label>
+                                        <input type="text" class="form-control" name="CodigoFinnegan" required />
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-3">
+                                        <label class="form-label">Categoría</label>
+                                        <select class="form-select" required>
+                                            <option selected>Seleccionar novedad</option>
+                                            <option value="1">Licencia maternidad</option>
+                                            <option value="2">Licencia paternidad</option>
+                                            <option value="3">Licencia matrimonio</option>
+                                            <option value="4">Licencia mudanza</option>
+                                            <option value="5">Licencia estudio</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-5 col-md-3">
+                                        <label class="form-label">Tipo de novedad</label>
+                                        <select class="form-select" required>
+                                            <option selected>Seleccionar tipo de novedad</option>
+                                            <option value="1">Horas extras</option>
+                                            <option value="2">Licencia</option>
+                                            <option value="3">Falta injustificada</option>
+                                            <option value="4">Noche</option>
+                                            <option value="5">UTI</option>
+                                            <option value="6">Accidente-ART</option>
+                                            <option value="7">Adic. Admin.</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-lg-12 col-md-3 text-end">
+                                        <button type="submit" class="btn btn-primary">Crear nueva novedad</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

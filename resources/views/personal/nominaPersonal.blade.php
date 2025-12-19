@@ -10,32 +10,38 @@
 
         <div class="card" style="border-radius:15px;">
             <div class="card-body">
-                <table id="tb_personal" class="table table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Legajo N°</th>
-                            <th>Empleado</th>
-                            <th>DNI</th>
-                            <th>CUIL</th>
-                            <th>Fecha ingreso</th>
-                            <th>Antiguüedad</th>
-                            <th>Área</th>
-                            <th>Categoría</th>
-                            <th>Área</th>
-                            <th>Servicio</th>
-                            <th>Régimen</th>
-                            <th>Horas diarias</th>
-                            <th>Convenio</th>
-                            <th>Teléfono</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="table-responsive">
+                    <table id="tb_personal" class="table">
+                        <thead>
+                            <tr>
+                                <th>Legajo N°</th>
+                                <th>Empleado</th>
+                                <th>DNI</th>
+                                <th>CUIL</th>
+                                <th>Fecha ingreso</th>
+                                <th>Antiguüedad</th>
+                                <th>Área</th>
+                                <th>Categoría</th>
+                                <th>Área</th>
+                                <th>Servicio</th>
+                                <th>Régimen</th>
+                                <th>Horas diarias</th>
+                                <th>Convenio</th>
+                                <th>Teléfono</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
+@endpush
