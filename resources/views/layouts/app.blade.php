@@ -17,7 +17,7 @@
 <body>
     <div class="sidebar">
         <div class="logo_details">
-            <a href="{#" class="logo-link">
+            <a href="#" class="logo-link">
                 <img src="{{ asset('img/logo_2.png') }}" alt="Logo" class="logo-img">
             </a>
             <i class="bx bx-menu" id="btn"></i>
@@ -40,10 +40,10 @@
                     <i class="bx bx-chevron-down arrow"></i> 
                 </label>
                 <ul class="sub-menu">
-                    <li><a href="#">Nómina de Personal</a></li>
-                    <li><a href="#">Registro de Asistencia</a></li>
-                    <li><a href="#">Control de Personal</a></li>
-                    <li><a href="#">Cronograma</a></li>
+                    <li><a href="{{ route('nominaPersonal') }}">Nómina de Personal</a></li>
+                    <li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>
+                    <li><a href="{{ route('controlAsistencia') }}">Control de Personal</a></li>
+                    <li><a href="{{ route('cronogramaPersonal') }}">Cronograma</a></li>
                 </ul>
                 <span class="tooltip">Personal</span>
             </li>
