@@ -21,3 +21,22 @@ window.onload = function(){
         }
     }
 }
+
+document.querySelectorAll('.submenu input').forEach(input => {
+    input.addEventListener('change', () => {
+        if (input.checked) {
+            document.querySelectorAll('.submenu input').forEach(other => {
+                if (other !== input) other.checked = false;
+            });
+        }
+    });
+});
+
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+
+    if (!sidebar.classList.contains('open')) {
+        document.querySelectorAll('.submenu input').forEach(i => i.checked = false);
+    }
+});

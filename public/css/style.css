@@ -300,3 +300,351 @@ body{
   left:250px;
   width: calc(100% - 250px);
 }
+
+/* ====== BOOTSTRAP RESET PARA SIDEBAR ====== */
+
+.sidebar,
+.sidebar * {
+    box-sizing: border-box;
+}
+
+.sidebar ul {
+    padding-left: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    list-style: none;
+}
+
+.sidebar input {
+    all: unset;
+    box-sizing: border-box;
+}
+
+.sidebar input::placeholder {
+    color: #ccc;
+}
+
+/* Normaliza altura y centrado */
+.sidebar li a,
+.sidebar li {
+    line-height: normal;
+}
+
+/* Evita que Bootstrap meta márgenes */
+.sidebar i,
+.sidebar span {
+    margin: 0;
+    padding: 0;
+}
+
+.logo_details {
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding-bottom: 20px;
+    position: relative;
+    padding-top: 30px;
+    margin-bottom: 60px;
+}
+
+.logo-img {
+    width: 135px;
+    max-width: 100%;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    filter: drop-shadow(1px 0 0 white)
+            drop-shadow(-1px 0 0 white)
+            drop-shadow(0 1px 0 white)
+            drop-shadow(0 -1px 0 white);
+}
+
+.sidebar:not(.open) .logo-img {
+    opacity: 0;
+    transform: scale(0.85);
+    pointer-events: none;
+}
+
+.sidebar:not(.open) .logo_details {
+    justify-content: flex-start;
+}
+
+.submenu input {
+    display: none;
+}
+
+.submenu label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: var(--color-default);
+    position: relative;
+    transition: all .5s ease;
+    z-index: 12;
+    border-radius: 5px;
+}
+
+.submenu label::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(0);
+    background-color: var(--color-white);
+    border-radius: 5px;
+    transition: transform 0.3s ease-in-out;
+    transform-origin: left;
+    z-index: -2;
+}
+
+.submenu label:hover::after {
+    transform: scaleX(1);
+}
+
+.submenu label:hover,
+.submenu label:hover i,
+.submenu label:hover .link_name,
+.submenu label:hover .arrow {
+    color: var(--color-default);
+}
+
+.submenu label .link_name {
+    color: var(--color-white);
+    font-size: 15px;
+    font-weight: 400;
+    white-space: nowrap;
+    transition: all 0.4s ease;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.sidebar.open .submenu label .link_name {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.submenu label i {
+    height: 35px;
+    line-height: 35px;
+    min-width: 50px;
+    font-size: 18px;
+    border-radius: 5px;
+    text-align: center;
+    color: var(--color-white);
+}
+
+.submenu label .arrow {
+    margin-left: auto;
+    margin-right: 6px;
+    transition: transform 0.4s ease;
+    font-size: 18px;
+    min-width: auto;
+    height: auto;
+    line-height: normal;
+    color: var(--color-white);
+}
+
+.submenu input:checked + label .arrow {
+    transform: rotate(180deg);
+}
+
+.sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    padding-left: 50px;
+    margin-top: 4px;
+    transition: max-height 0.4s ease;
+}
+
+.submenu input:checked ~ .sub-menu {
+    max-height: 400px;
+}
+
+.sub-menu li {
+    margin: 4px 0;
+}
+
+.sub-menu li a {
+    display: block;
+    width: 100%;
+    background: transparent;
+    color: var(--color-light);
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.sub-menu li a:hover {
+    background: rgba(255,255,255,0.12);
+    color: var(--color-white);
+}
+
+.sidebar:not(.open) .submenu label .arrow,
+.sidebar:not(.open) .submenu .sub-menu {
+    display: none;
+}
+
+.sidebar li a .link_name,
+.submenu label .link_name {
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.open li a .link_name,
+.sidebar.open .submenu label .link_name {
+    transition-delay: 0.25s;
+}
+
+.sub-menu {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    overflow: hidden;
+    transition:
+        max-height 0.4s ease,
+        opacity 0.3s ease,
+        transform 0.3s ease;
+}
+
+.submenu input:checked ~ .sub-menu {
+    max-height: 400px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sub-menu li a {
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.submenu input {
+    display: none;
+}
+
+.submenu label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: var(--color-default);
+    position: relative;
+    transition: all .5s ease;
+    z-index: 12;
+    border-radius: 5px;
+}
+
+.submenu label::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(0);
+    background-color: var(--color-white);
+    border-radius: 5px;
+    transition: transform 0.3s ease-in-out;
+    transform-origin: left;
+    z-index: -2;
+}
+
+.submenu label:hover::after {
+    transform: scaleX(1);
+}
+
+.submenu label:hover,
+.submenu label:hover i,
+.submenu label:hover .link_name,
+.submenu label:hover .arrow {
+    color: var(--color-default);
+}
+
+.submenu label .link_name {
+    color: var(--color-white);
+    font-size: 15px;
+    font-weight: 400;
+    white-space: nowrap;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.sidebar.open .submenu label .link_name {
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 0.25s;
+}
+
+.submenu label i {
+    height: 35px;
+    line-height: 35px;
+    min-width: 50px;
+    font-size: 18px;
+    border-radius: 5px;
+    text-align: center;
+    color: var(--color-white);
+}
+
+.submenu label .arrow {
+    margin-left: auto;
+    margin-right: 6px;
+    transition: transform 0.35s ease;
+    font-size: 18px;
+    color: var(--color-white);
+}
+
+.submenu input:checked + label .arrow {
+    transform: rotate(180deg);
+}
+
+.sub-menu {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: grid-template-rows 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
+    padding-left: 50px;
+    margin-top: 6px;
+}
+
+.sub-menu > li {
+    overflow: hidden;
+}
+
+.submenu input:checked ~ .sub-menu {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sub-menu li {
+    margin: 4px 0;
+}
+
+.sub-menu li a {
+    display: block;
+    width: 100%;
+    background: transparent;
+    color: var(--color-light);
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    position: relative;
+}
+
+.sub-menu li a::after {
+    content: none;
+}
+
+.sub-menu li a:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--color-white);
+}
+
+.sidebar:not(.open) .submenu label .arrow,
+.sidebar:not(.open) .submenu .sub-menu {
+    display: none;
+}

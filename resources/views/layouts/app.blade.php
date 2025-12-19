@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
@@ -14,62 +17,56 @@
 <body>
     <div class="sidebar">
         <div class="logo_details">
-            <i class="bx bxl-audible icon"></i>
-            <div class="logo_name">Code Effect</div>
+            <a href="{#" class="logo-link">
+                <img src="{{ asset('img/logo_2.png') }}" alt="Logo" class="logo-img">
+            </a>
             <i class="bx bx-menu" id="btn"></i>
         </div>
+
         <ul class="nav-list">
             <li>
-                <i class="bx bx-search"></i>
-                <input type="text" placeholder="Search...">
-                <span class="tooltip">Search</span>
-            </li>
-            <li>
-                <a href="#">
+                <a href="{{ route('index') }}">
                     <i class="bx bx-grid-alt"></i>
                     <span class="link_name">Dashboard</span>
                 </a>
                 <span class="tooltip">Dashboard</span>
             </li>
-            <li>
-                <a href="#">
+            
+            <li class="submenu">
+                <input type="checkbox" id="menu-personal">
+                <label for="menu-personal">
                     <i class="bx bx-user"></i>
-                    <span class="link_name">User</span>
-                </a>
-                <span class="tooltip">User</span>
+                    <span class="link_name">Gestión del personal</span>
+                    <i class="bx bx-chevron-down arrow"></i> 
+                </label>
+                <ul class="sub-menu">
+                    <li><a href="#">Nómina de Personal</a></li>
+                    <li><a href="#">Registro de Asistencia</a></li>
+                    <li><a href="#">Control de Personal</a></li>
+                    <li><a href="#">Cronograma</a></li>
+                </ul>
+                <span class="tooltip">Personal</span>
             </li>
-            <li>
-                <a href="#">
-                    <i class="bx bx-chat"></i>
-                    <span class="link_name">Message</span>
-                </a>
-                <span class="tooltip">Message</span>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bx bx-pie-chart-alt-2"></i>
-                    <span class="link_name">Analytics</span>
-                </a>
-                <span class="tooltip">Analytics</span>
-            </li>
-            <li>
-                <a href="#">
+
+            <li class="submenu">
+                <input type="checkbox" id="menu-novedades">
+                <label for="menu-novedades">
                     <i class="bx bx-folder"></i>
-                    <span class="link_name">File Manger</span>
-                </a>
-                <span class="tooltip">File Manger</span>
+                    <span class="link_name">Novedades</span>
+                    <i class="bx bx-chevron-down arrow"></i>
+                </label>
+                <ul class="sub-menu">
+                    <li><a href="#">Carga de Novedades</a></li>
+                    <li><a href="#">Configuración de Novedades</a></li>
+                    <li><a href="#">Control de Novedades</a></li>
+                </ul>
+                <span class="tooltip">Novedades</span>
             </li>
-            <li>
-                <a href="#">
-                    <i class="bx bx-cart-alt"></i>
-                    <span class="link_name">Order</span>
-                </a>
-                <span class="tooltip">Order</span>
-            </li>
+
             <li>
                 <a href="#">
                     <i class="bx bx-cog"></i>
-                    <span class="link_name">Settings</span>
+                    <span class="link_name">Configuraciones</span>
                 </a>
                 <span class="tooltip">Settings</span>
             </li>
@@ -89,7 +86,12 @@
         @yield('content')
     </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
     <script src="{{ asset('js/script.js') }}"></script>
+
 </body>
 
 </html>
