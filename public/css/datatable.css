@@ -2,16 +2,40 @@
     --tabla-altura: 50vh;
 }
 
-/* === ÍCONOS DE ORDENAMIENTO DE COLUMNAS === */
-table.dataTable thead .sorting:before,
-table.dataTable thead .sorting_asc:before,
-table.dataTable thead .sorting_desc:before {
-    color: #9aa0ac !important;
-    font-size: 0.9em;
-    opacity: 0.8;
+/* ===================================================== */
+/* CARD CONTENEDORA */
+/* ===================================================== */
+.card {
+    background: #ffffff;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
 }
 
-/* === BOTONES DE EXPORTACIÓN === */
+.card-body {
+    padding: 1rem 1.25rem;
+}
+
+/* ===================================================== */
+/* CONTENEDOR SUPERIOR (BOTONES + SEARCH) */
+/* ===================================================== */
+.dt-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ===================================================== */
+/* BOTONES DE EXPORTACIÓN */
+/* ===================================================== */
+.dt-top .dt-buttons {
+    display: flex;
+    gap: 8px;
+}
+
 .dt-button, .btn-export-excel, .btn-export-pdf, .btn-printer {
     border: none !important;
     border-radius: 8px !important;
@@ -63,3 +87,155 @@ table.dataTable thead .sorting_desc:before {
         margin-right: 6px;
         font-size: 0.95em;
     }
+
+/* ===================================================== */
+/* SEARCH */
+/* ===================================================== */
+.dt-top .dataTables_filter {
+    margin: 0;
+}
+
+.dt-top .dataTables_filter label {
+    margin: 0;
+}
+
+.dt-top .dataTables_filter input {
+    min-width: 240px;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    padding: 7px 12px;
+    font-size: 0.85rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.dt-top .dataTables_filter input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+/* ===================================================== */
+/* TABLA BASE */
+/* ===================================================== */
+#tb_personal {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    color: #212529;
+}
+
+#tb_personal th,
+#tb_personal td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* ===================================================== */
+/* HEADER */
+/* ===================================================== */
+#tb_personal thead th {
+    background: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* ===================================================== */
+/* FILAS */
+/* ===================================================== */
+#tb_personal tbody tr {
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.15s ease-in-out;
+}
+
+#tb_personal tbody tr:hover {
+    background-color: #f8fbff;
+}
+
+/* Zebra muy sutil */
+#tb_personal tbody tr:nth-child(even) {
+    background-color: #fcfcfd;
+}
+
+/* ===================================================== */
+/* COLUMNA ACCIONES */
+/* ===================================================== */
+#tb_personal td:last-child {
+    text-align: center;
+    min-width: 120px;
+}
+
+/* ===================================================== */
+/* BOTONES DE ACCIÓN */
+/* ===================================================== */
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: #6c757d;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-icon:hover {
+    background: #e9f2ff;
+    color: #0d6efd;
+}
+
+/* ===================================================== */
+/* ICONOS DE ORDENAMIENTO */
+/* ===================================================== */
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_desc:before {
+    color: #adb5bd;
+    font-size: 0.75rem;
+}
+
+/* ===================================================== */
+/* PAGINADOR */
+/* ===================================================== */
+.dataTables_paginate {
+    margin-top: 12px;
+}
+
+.dataTables_paginate .paginate_button {
+    border-radius: 6px !important;
+    border: none !important;
+    padding: 4px 10px;
+    margin: 0 2px;
+    font-size: 0.8rem;
+    background: #f1f3f5 !important;
+    color: #495057 !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background: #0d6efd !important;
+    color: #fff !important;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background: #0d6efd !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+
+/* ===================================================== */
+/* SCROLL HORIZONTAL */
+/* ===================================================== */
+.dataTables_scrollBody::-webkit-scrollbar {
+    height: 8px;
+}
+
+.dataTables_scrollBody::-webkit-scrollbar-thumb {
+    background-color: #ced4da;
+    border-radius: 10px;
+}
+
+.dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+    background-color: #adb5bd;
+}

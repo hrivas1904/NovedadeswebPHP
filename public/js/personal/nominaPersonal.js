@@ -5,25 +5,39 @@ $(document).ready(function () {
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
             },
-            lengthMenu: [5, 10, 25, 50],
-            dom: "Blfrtip", // Agregada la 'l' para que funcione tu lengthMenu
+            paging: false,
+            scrollX: true,
+            autoWidth: true,
+            fixedColumns: true,
+            paging: false,
+            /*scrollY: 'var(--tabla-altura)',*/
+            dom: "<'dt-top d-flex align-items-center justify-content-between'Bf>rt<'dt-bottom'p>",
             buttons: [
                 {
                     extend: "excelHtml5",
-                    text: '<i class="fas fa-file-excel"></i> Excel', // Requiere FontAwesome
+                    text: "Exportar Excel",
+                    filename: "Productos en sucursal",
+                    title: "",
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-export-excel",
                 },
                 {
                     extend: "pdfHtml5",
-                    text: '<i class="fas fa-file-pdf"></i> PDF',
+                    text: "Exportar PDF",
+                    filename: "Productos en sucursal",
+                    title: "Productos en sucursal",
+                    pageSize: "A4",
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-export-pdf",
                 },
                 {
                     extend: "print",
-                    text: '<i class="fas fa-print"></i> Imprimir',
+                    text: "Imprimir",
+                    title: "Productos en sucursal",
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-printer",
                 },
-            ],
+            ]
         });
     }
 });
