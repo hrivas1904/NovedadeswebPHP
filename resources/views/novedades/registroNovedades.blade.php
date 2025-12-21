@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="container-fluid text-start">
-            <h2 class="text-center pill-heading">Registro de Novedades de Sueldos</h2>
+            <h3 class="pill-heading">REGISTRO DE NOVEDADES DE SUELDO</h3>
         </div>
         <div class="container-fluid py-2">
             <div class="card p-1" style="border-radius: 20px;">
@@ -21,7 +21,7 @@
                             <div class="col-lg-2 col-md-3">
                                 <label class="form-label">Fecha de carga</label>
                                 <input type="text" class="form-control" name="Legajo"
-                                    value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+                                    value="{{ now()->format('Y-m-d') }}" readonly />
                             </div>
                             <div class="col-lg-3 col-md-3">
                                 <label class="form-label">Registrante</label>
@@ -105,7 +105,7 @@
                                                 <option value="3">Adic. Admin.</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-4 col-md-3">
+                                        <div class="col-lg-5 col-md-4">
                                             <label class="form-label">Novedad</label>
                                             <select class="form-select" aria-label="Default select example">
                                                 <option selected>Seleccionar novedad</option>
@@ -116,21 +116,21 @@
                                                 <option value="3">Licencia estudio</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-4 col-md-3">
+                                        <div class="col-lg-3 col-md-2">
                                             <label class="form-label">Código Finnegans</label>
                                             <input type="text" class="form-control" name="Convenio" readonly />
                                         </div>
                                     </div>
                                     <div class="row g-3 mb-3">
-                                        <div class="col-lg-3 col-md-3">
+                                        <div class="col-lg-4 col-md-4">
                                             <label class="form-label">Fecha desde</label>
                                             <input type="date" class="form-control" name="Empleado" />
                                         </div>
-                                        <div class="col-lg-3 col-md-4">
+                                        <div class="col-lg-4 col-md-4">
                                             <label class="form-label">Fecha hasta</label>
                                             <input type="date" class="form-control" name="Cuil" />
                                         </div>
-                                        <div class="col-lg-3 col-md-4">
+                                        <div class="col-lg-3 col-md-3">
                                             <label class="form-label">Periodo (días)</label>
                                             <input type="text" class="form-control" name="Cuil" readonly />
                                         </div>

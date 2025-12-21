@@ -3,6 +3,5 @@
 @section('title', 'Inicio')
 
 @section('content')
-    <h1>Dashboard</h1>
-    <p>Layout con sidebar CSS-only funcionando.</p>
+    <h3 class="text-start">TABLERO DE CONTROL GERENCIAL</h3>
 @endsection

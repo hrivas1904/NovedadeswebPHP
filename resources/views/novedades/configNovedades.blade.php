@@ -5,17 +5,17 @@
 @section('content')
     <div class="container-fluid">
         <div class="container-fluid text-start">
-            <h2 class="text-center pill-heading">Configurar novedades de sueldos</h2>
+            <h3 class="pill-heading">CONFIGURAR NOVEDADES DE SUELDO</h3>
         </div>
         <div class="container-fluid pt-3">
             <div class="row d-flex">
                 <div class="col-lg-6 col-sm-12 mb-3">
                     <div class="card" style="border-radius:15px;">
                         <div class="card-body">
-                            <table id="tb_novedades" class="table table-responsive">
+                            <table id="tb_configuracion" class="table table-responsive">
                                 <thead>
                                     <tr>
-                                        <th>Código Finnegan</th>
+                                        <th>Cód Finnegan</th>
                                         <th>Novedad</th>
                                         <th>Categoría</th>
                                         <th>Acciones</th>
@@ -25,26 +25,13 @@
                                     <tr>
                                         <td>FINN_123_LM</td>
                                         <td>Licencia por maternidad</td>
-                                        <td>Licencias</td>
+                                        <td>Licencia</td>
                                         <td>
                                             <button type="button" class="btn btn-outline-primary btn-sm">
-                                                <i class="fa-solid fa-gear"></i> Ajustes
+                                                <i class="fa-solid fa-gear"></i>
                                             </button>
                                             <button type="button" class="btn btn-outline-danger btn-sm">
-                                                <i class="fa-solid fa-trash"></i> Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>FINN_243_LM</td>
-                                        <td>Licencia por matrimonio</td>
-                                        <td>Licencias</td>
-                                        <td>
-                                            <button type="button" class="btn btn-outline-primary btn-sm">
-                                                <i class="fa-solid fa-gear"></i> Ajustes
-                                            </button>
-                                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                                <i class="fa-solid fa-trash"></i> Eliminar
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -67,7 +54,7 @@
                             <form id="formNuevaNovedad">
                                 <div class="row g-3 mb-3">
                                     <div class="col-lg-3 col-md-3">
-                                        <label class="form-label">Código Finnegan</label>
+                                        <label class="form-label">Cód Finnegan</label>
                                         <input type="text" class="form-control" name="CodigoFinnegan" required />
                                     </div>
 
@@ -112,3 +99,7 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('js/novedades/configNovedades.js') }}"></script>
+@endpush

@@ -4,19 +4,25 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="text-start mb-3">
-        <h2 class="text-center pill-heading">Gestión del Personal</h2>
+    <div class="text-start mb-4">
+        <h3 class="pill-heading">GESTIÓN DE PERSONAL</h3>
     </div>
 
     <div class="card" style="border-radius:15px;">
         <div class="card-header">
             <div class="row d-flex">
-                <div class="col-6 d-flex justify-content-start align-items-center">
-                    <h5>Nómina del Personal:
-                        <span class="fw-semibold">ÁREA</span>
-                    </h5>
+                <div class="col-9 d-flex justify-content-start align-items-center">
+                    <h6>Nómina del Personal</h6>
+                    <select class="form-select mx-2" style="width: auto;">
+                        <option value="1">Enfermería</option>
+                        <option value="2">Limpieza</option>
+                        <option value="3">RRHH</option>
+                        <option value="3">Mantenimiento</option>
+                        <option value="3">Sistemas</option>
+                        <option value="3">Administración</option>
+                    </select>
                 </div>
-                <div class="col-6 text-end">
+                <div class="col-3 text-end">
                     <button type="button" class="btn btn-outline-primary">Alta de Colaborador</button>
                 </div>
             </div>
@@ -29,17 +35,13 @@
                             <th>Legajo N°</th>
                             <th>Empleado</th>
                             <th>DNI</th>
-                            <th>CUIL</th>
-                            <th>Fecha ingreso</th>
-                            <th>Antiguüedad</th>
+                            <th>Antigüedad</th>
                             <th>Área</th>
                             <th>Categoría</th>
-                            <th>Área</th>
                             <th>Servicio</th>
                             <th>Régimen</th>
                             <th>Horas diarias</th>
                             <th>Convenio</th>
-                            <th>Teléfono</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>

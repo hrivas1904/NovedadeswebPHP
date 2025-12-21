@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/datatable.css') }}"
-
+    <link rel="stylesheet" href="{{ asset('css/datatable.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/formularios.css') }}">
 </head>
 
 <body>
@@ -45,7 +45,7 @@
                 <ul class="sub-menu">
                     <li><a href="{{ route('nominaPersonal') }}">Nómina de Personal</a></li>
                     <li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>
-                    <li><a href="{{ route('controlAsistencia') }}">Control de Personal</a></li>
+                    <li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>
                     <li><a href="{{ route('cronogramaPersonal') }}">Cronograma</a></li>
                 </ul>
                 <span class="tooltip">Personal</span>

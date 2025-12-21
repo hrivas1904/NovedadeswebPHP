@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="text-start">
-                        <h2 class="text-center pill-heading">Ajustes generales</h2>
+                        <h3 class="pill-heading">AJUSTES GENERALES</h3>
                     </div>
                 </div>
             </div>

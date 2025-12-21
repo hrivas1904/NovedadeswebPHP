@@ -5,11 +5,11 @@
 @section('content')
 
     <div class="container-fluid">
-        <div class="text-start mb-3">
-            <h2 class="text-center pill-heading">Registro de Asistencia</h2>
+        <div class="text-start mb-4">
+            <h3 class="pill-heading">REGISTRO DE ASISTENCIA</h3>
         </div>
 
-        <div class="row container-sm">
+        <div class="row">
             <div class="card" style="border-radius:15px;">
                 <div class="card-body">
                     <form id="formNuevaNovedad">
@@ -17,7 +17,7 @@
                             <div class="col-lg-2 col-md-3">
                                 <label class="form-label">Fecha</label>
                                 <input type="text" class="form-control" name="Legajo"
-                                    value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+                                    value="{{ now()->format('Y-m-d') }}" readonly />
                             </div>
 
                             <div class="col-12 mt-4 mb-3">
@@ -65,7 +65,7 @@
                                         <div class="row g-3 mb-3">
                                             <div class="col-lg-5 col-md-3">
                                                 <label class="form-label">Acción</label>
-                                                <select class="form-select" required>
+                                                <select class="form-select" style="width: auto;" required>
                                                     <option selected>Seleccionar acción</option>
                                                     <option value="Ingreso">Ingreso</option>
                                                     <option value="Egreso">Egreso</option>
@@ -75,13 +75,13 @@
                                             <div class="col-lg-3 col-md-3">
                                                 <label class="form-label">Horario</label>
                                                 <input type="text" class="form-control"
-                                                    value="@DateTime.Now.ToString("HH:mm")" />
+                                                    value="{{ now()->format('H:i') }}" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-2">
-                                    <div class="col-lg-12 col-md-3 text-end" style="margin-top:132px;">
+                                    <div class="col-lg-12 col-md-3 text-end" style="margin-top:124px;">
                                         <button type="submit" class="btn btn-primary">Marcar asistencia</button>
                                     </div>
                                 </div>
