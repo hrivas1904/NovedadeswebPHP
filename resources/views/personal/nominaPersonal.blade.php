@@ -13,7 +13,7 @@
                 <div class="row d-flex">
                     <div class="col-9 d-flex justify-content-start align-items-center">
                         <h6>Nómina del Personal</h6>
-                        <select id="area" name="area" class="form-select mx-2" style="width: auto;">
+                        <select id="area" name="area" class="form-select mx-2 js-select-area" style="width: auto;">
                             <option value=""></option>
                         </select>
                     </div>
@@ -185,7 +185,7 @@
 
                         <div class="col-lg-auto">
                             <label class="form-label">Área</label>
-                            <select id="area" name="area" class="form-select" style="width: auto;">
+                            <select name="area" class="form-select js-select-area" style="width: auto;">
                                 <option value=""></option>
                             </select>
                         </div>

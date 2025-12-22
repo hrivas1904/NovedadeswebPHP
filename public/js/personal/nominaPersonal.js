@@ -1,3 +1,6 @@
+console.log('nominaPersonal.js cargado');
+
+
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
         new DataTable("#tb_personal", {
@@ -37,7 +40,7 @@ $(document).ready(function () {
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-printer",
                 },
-            ]
+            ],
         });
     }
 });
@@ -45,8 +48,8 @@ $(document).ready(function () {
 function previewImagen(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById('previewFoto').src = e.target.result;
+        reader.onload = (e) => {
+            document.getElementById("previewFoto").src = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
     }
@@ -59,25 +62,28 @@ $(document).ready(function () {
 
 function cargarAreas() {
     $.ajax({
-        url: '/areas/lista',
-        type: 'GET',
+        url: "/areas/lista",
+        method: "GET",
         success: function (data) {
+            $(".js-select-area").each(function () {
+                const select = $(this);
+                const valorActual = select.val();
 
-            let select = $('#area');
-            select.empty();
-            select.append('<option value="">Seleccione área</option>');
+                select.empty();
+                select.append('<option value="">Seleccione área</option>');
 
-            data.forEach(area => {
-                select.append(
-                    `<option value="${area.id_area}">
-                        ${area.nombre}
-                    </option>`
-                );
+                data.forEach((area) => {
+                    select.append(
+                        `<option value="${area.id_area}">
+                            ${area.nombre}
+                        </option>`
+                    );
+                });
+
+                if (valorActual) {
+                    select.val(valorActual);
+                }
             });
         },
-        error: function (err) {
-            console.error('Error cargando áreas', err);
-        }
     });
 }
-
