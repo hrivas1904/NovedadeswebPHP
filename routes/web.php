@@ -44,5 +44,10 @@ Route::get('/configPerfil', [AjustesController::class, 'configPerfil'])
 
 
 
-    Route::get('/login', [LoginController::class, 'login'])
+Route::get('/login', [LoginController::class, 'login'])
     ->name('login');
+
+
+//RUTAS DE SP
+Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
+    ->name('areas.lista');
