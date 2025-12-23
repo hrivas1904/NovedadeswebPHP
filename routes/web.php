@@ -48,6 +48,15 @@ Route::get('/login', [LoginController::class, 'login'])
     ->name('login');
 
 
-//RUTAS DE SP
+//RUTAS DE SP PERSONAL
 Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
     ->name('areas.lista');
+
+Route::get('/categorias-empleados/lista', [PersonalController::class, 'listarCategorias'])
+    ->name('categorias.lista');
+
+Route::get('/roles-empleados/por-categoria/{id}', [PersonalController::class, 'listarRolesXCategoria'])
+    ->name('roles.lista');
+
+Route::get('/obra-social/lista', [PersonalController::class, 'listarObraSocial'])
+    ->name('obraSocial.lista');

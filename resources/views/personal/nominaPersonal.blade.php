@@ -136,13 +136,16 @@
                         </div>
                         <div class="col-lg-4">
                             <label class="form-label">Obra social</label>
-                            <input type="text" class="form-control">
+                            <select name="obra_social_id" class="form-control js-select-obra-social">
+                                <option value="">Seleccione obra social</option>
+                            </select>
                         </div>
 
                         <div class="col-lg-2">
                             <label class="form-label">Cód. OS</label>
-                            <input type="text" class="form-control">
+                            <input type="text" name="codigo_os" class="form-control js-input-codigo-os" readonly>
                         </div>
+
                     </div>
 
                     <!-- ===================== -->
@@ -169,10 +172,17 @@
                         </div>
                     </div>
 
-                    <!-- ===================== -->
-                    <!-- DATOS LABORALES -->
-                    <!-- ===================== -->
                     <div class="row g-3 mb-4">
+                        <div class="col-lg-auto">
+                            <label class="form-label">Tipo de contrato</label>
+                            <select class="form-select" required>
+                                <option selected disabled value="">Seleccione género</option>
+                                <option value="M">Tiempo indeterminado</option>
+                                <option value="F">Plazo fijo</option>
+                                <option value="F">Pasantía</option>
+                                <option value="F">Práctica profesional</option>
+                            </select>
+                        </div>
                         <div class="col-lg-3">
                             <label class="form-label">Fecha inicio prueba</label>
                             <input type="date" class="form-control">
@@ -182,6 +192,10 @@
                             <label class="form-label">Fecha fin prueba</label>
                             <input type="date" class="form-control">
                         </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+
 
                         <div class="col-lg-auto">
                             <label class="form-label">Área</label>
@@ -208,14 +222,14 @@
 
                         <div class="col-lg-3">
                             <label class="form-label">Categoría</label>
-                            <select class="form-select">
+                            <select name="categoria_id" class="form-select js-select-categoria">
                                 <option selected disabled value="">Seleccione categoría</option>
                             </select>
                         </div>
 
                         <div class="col-lg-3">
-                            <label class="form-label">Rol</label>
-                            <select class="form-select">
+                            <label name="rol_id" class="form-label">Rol</label>
+                            <select class="form-select js-select-rol">
                                 <option selected disabled value="">Seleccione rol</option>
                             </select>
                         </div>

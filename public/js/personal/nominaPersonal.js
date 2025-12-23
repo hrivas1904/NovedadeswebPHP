@@ -55,7 +55,7 @@ function previewImagen(input) {
     }
 }
 
-//sp para cargar selectores
+//sp para cargar selector areas
 $(document).ready(function () {
     cargarAreas();
 });
@@ -87,3 +87,120 @@ function cargarAreas() {
         },
     });
 }
+
+//sp para cargar selector categorias
+$(document).ready(function () {
+    cargarCategorias();
+});
+
+function cargarCategorias() {
+    $.ajax({
+        url: '/categorias-empleados/lista',
+        type: 'GET',
+        success: function (data) {
+
+            $('.js-select-categoria').each(function () {
+                const select = $(this);
+                const valorActual = select.val();
+
+                select.empty();
+                select.append('<option value="">Seleccione categoría</option>');
+
+                data.forEach(cat => {
+                    select.append(
+                        `<option value="${cat.id_categ}">
+                            ${cat.nombre}
+                        </option>`
+                    );
+                });
+
+                // mantiene selección si existía (edición)
+                if (valorActual) {
+                    select.val(valorActual);
+                }
+            });
+        },
+        error: function (err) {
+            console.error('Error cargando categorías', err);
+        }
+    });
+}
+
+//sp para cargar selector de roles
+$(document).on('change', '.js-select-categoria', function () {
+
+    const idCategoria = $(this).val();
+    const selectRol = $('.js-select-rol');
+
+    // reset del rol
+    selectRol.empty()
+             .append('<option value="">Seleccione rol</option>')
+             .prop('disabled', true);
+
+    if (!idCategoria) return;
+
+    $.ajax({
+        url: `/roles-empleados/por-categoria/${idCategoria}`,
+        method: 'GET',
+        success: function (data) {
+
+            data.forEach(rol => {
+                selectRol.append(
+                    `<option value="${rol.id_rol}">
+                        ${rol.nombre}
+                    </option>`
+                );
+            });
+
+            selectRol.prop('disabled', false);
+        },
+        error: function (err) {
+            console.error('Error cargando roles', err);
+        }
+    });
+});
+
+//selectores de os y codigo
+$(document).ready(function () {
+
+    inicializarSelectObraSocial();
+
+    // cuando se selecciona una obra social
+    $(document).on('select2:select', '.js-select-obra-social', function (e) {
+        const data = e.params.data;
+        $('.js-input-codigo-os').val(data.codigo);
+    });
+
+    // si se limpia la selección
+    $(document).on('select2:clear', '.js-select-obra-social', function () {
+        $('.js-input-codigo-os').val('');
+    });
+});
+
+function inicializarSelectObraSocial() {
+
+    $('.js-select-obra-social').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Buscar obra social...',
+        allowClear: true,
+        width: '100%',
+
+        ajax: {
+            url: '/obra-social/lista',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: data.map(item => ({
+                        id: item.id,
+                        text: item.nombre,
+                        codigo: item.codigo // 👈 lo pasamos como extra
+                    }))
+                };
+            }
+        }
+    });
+}
+
+
+
