@@ -1,5 +1,78 @@
 console.log('nominaPersonal.js cargado');
 
+document.addEventListener('DOMContentLoaded', () => {
+    const inputFecha = document.getElementById('fechaNacimiento');
+    const inputEdad = document.getElementById('edad');
+
+    if (!inputFecha || !inputEdad) return;
+
+    inputFecha.addEventListener('change', () => {
+        const fechaNac = new Date(inputFecha.value);
+        if (isNaN(fechaNac)) {
+            inputEdad.value = '';
+            return;
+        }
+
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+
+        const mes = hoy.getMonth() - fechaNac.getMonth();
+        const dia = hoy.getDate() - fechaNac.getDate();
+
+        if (mes < 0 || (mes === 0 && dia < 0)) {
+            edad--;
+        }
+
+        inputEdad.value = edad >= 0 ? edad : '';
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const tipoContrato = document.getElementById('tipoContrato');
+    const fechaInicio = document.getElementById('fechaInicio');
+    const fechaFin = document.getElementById('fechaFin');
+
+    if (!tipoContrato || !fechaInicio || !fechaFin) return;
+
+    function calcularFechaFin() {
+        const tipo = tipoContrato.value;
+        const inicio = fechaInicio.value;
+
+        if (!inicio) {
+            fechaFin.value = '';
+            return;
+        }
+
+        const fecha = new Date(inicio);
+
+        if (tipo === 'Plazo fijo') {
+            fecha.setMonth(fecha.getMonth() + 6);
+            fechaFin.value = fecha.toISOString().split('T')[0];
+        } 
+        else if (tipo === 'Pasantía' || tipo === 'Práctica profesional') {
+            fecha.setMonth(fecha.getMonth() + 3);
+            fechaFin.value = fecha.toISOString().split('T')[0];
+        } 
+        else {
+            fechaFin.value = '';
+        }
+    }
+
+    tipoContrato.addEventListener('change', calcularFechaFin);
+    fechaInicio.addEventListener('change', calcularFechaFin);
+
+    fechaFin.addEventListener('change', () => {
+        if (!fechaInicio.value || !fechaFin.value) return;
+
+        const inicio = new Date(fechaInicio.value);
+        const fin = new Date(fechaFin.value);
+
+        if (fin < inicio) {
+            alert('La fecha de fin no puede ser anterior a la fecha de inicio.');
+            fechaFin.value = '';
+        }
+    });
+});
 
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
