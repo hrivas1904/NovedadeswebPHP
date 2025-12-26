@@ -7,6 +7,12 @@ body{
   z-index: 1055;
 }
 
+.tituloVista {
+  font-family: 'Franklin Gothic Book', sans-serif;
+  font-weight: bold;
+  color: #004f83;
+}
+
 .btn {
   font-size: 1rem;
 }

@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="text-start mb-4">
-            <h3 class="pill-heading">GESTIÓN DE PERSONAL</h3>
+            <h3 class="pill-heading tituloVista">GESTIÓN DEL PERSONAL</h3>
         </div>
 
         <div class="card" style="border-radius:15px;">
@@ -65,7 +65,7 @@
                     <h5 class="modal-title" id="staticBackdropLabel">
                         Dar de alta nuevo colaborador
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" onclick="cerrarModal()"></button>
                 </div>
 
                 <div class="modal-body">
@@ -206,10 +206,10 @@
                                         <label class="form-label">Tipo de contrato</label>
                                         <select class="form-select" id="tipoContrato" required>
                                             <option selected value="">Seleccione tipo de contrato</option>
-                                            <option value="M">Tiempo indeterminado</option>
-                                            <option value="F">Plazo fijo</option>
-                                            <option value="F">Pasantía</option>
-                                            <option value="F">Práctica profesional</option>
+                                            <option value="Tiempo indeterminado">Tiempo indeterminado</option>
+                                            <option value="Plazo fijo">Plazo fijo</option>
+                                            <option value="Pasantía">Pasantía</option>
+                                            <option value="Práctica profesional">Práctica profesional</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
