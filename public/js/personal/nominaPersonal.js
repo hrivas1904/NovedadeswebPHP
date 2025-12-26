@@ -1,78 +1,4 @@
-console.log('nominaPersonal.js cargado');
-
-document.addEventListener('DOMContentLoaded', () => {
-    const inputFecha = document.getElementById('fechaNacimiento');
-    const inputEdad = document.getElementById('edad');
-
-    if (!inputFecha || !inputEdad) return;
-
-    inputFecha.addEventListener('change', () => {
-        const fechaNac = new Date(inputFecha.value);
-        if (isNaN(fechaNac)) {
-            inputEdad.value = '';
-            return;
-        }
-
-        const hoy = new Date();
-        let edad = hoy.getFullYear() - fechaNac.getFullYear();
-
-        const mes = hoy.getMonth() - fechaNac.getMonth();
-        const dia = hoy.getDate() - fechaNac.getDate();
-
-        if (mes < 0 || (mes === 0 && dia < 0)) {
-            edad--;
-        }
-
-        inputEdad.value = edad >= 0 ? edad : '';
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const tipoContrato = document.getElementById('tipoContrato');
-    const fechaInicio = document.getElementById('fechaInicio');
-    const fechaFin = document.getElementById('fechaFin');
-
-    if (!tipoContrato || !fechaInicio || !fechaFin) return;
-
-    function calcularFechaFin() {
-        const tipo = tipoContrato.value;
-        const inicio = fechaInicio.value;
-
-        if (!inicio) {
-            fechaFin.value = '';
-            return;
-        }
-
-        const fecha = new Date(inicio);
-
-        if (tipo === 'Plazo fijo') {
-            fecha.setMonth(fecha.getMonth() + 6);
-            fechaFin.value = fecha.toISOString().split('T')[0];
-        } 
-        else if (tipo === 'Pasantía' || tipo === 'Práctica profesional') {
-            fecha.setMonth(fecha.getMonth() + 3);
-            fechaFin.value = fecha.toISOString().split('T')[0];
-        } 
-        else {
-            fechaFin.value = '';
-        }
-    }
-
-    tipoContrato.addEventListener('change', calcularFechaFin);
-    fechaInicio.addEventListener('change', calcularFechaFin);
-
-    fechaFin.addEventListener('change', () => {
-        if (!fechaInicio.value || !fechaFin.value) return;
-
-        const inicio = new Date(fechaInicio.value);
-        const fin = new Date(fechaFin.value);
-
-        if (fin < inicio) {
-            alert('La fecha de fin no puede ser anterior a la fecha de inicio.');
-            fechaFin.value = '';
-        }
-    });
-});
+console.log("nominaPersonal.js cargado");
 
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
@@ -168,18 +94,17 @@ $(document).ready(function () {
 
 function cargarCategorias() {
     $.ajax({
-        url: '/categorias-empleados/lista',
-        type: 'GET',
+        url: "/categorias-empleados/lista",
+        type: "GET",
         success: function (data) {
-
-            $('.js-select-categoria').each(function () {
+            $(".js-select-categoria").each(function () {
                 const select = $(this);
                 const valorActual = select.val();
 
                 select.empty();
                 select.append('<option value="">Seleccione categoría</option>');
 
-                data.forEach(cat => {
+                data.forEach((cat) => {
                     select.append(
                         `<option value="${cat.id_categ}">
                             ${cat.nombre}
@@ -194,30 +119,29 @@ function cargarCategorias() {
             });
         },
         error: function (err) {
-            console.error('Error cargando categorías', err);
-        }
+            console.error("Error cargando categorías", err);
+        },
     });
 }
 
 //sp para cargar selector de roles
-$(document).on('change', '.js-select-categoria', function () {
-
+$(document).on("change", ".js-select-categoria", function () {
     const idCategoria = $(this).val();
-    const selectRol = $('.js-select-rol');
+    const selectRol = $(".js-select-rol");
 
     // reset del rol
-    selectRol.empty()
-             .append('<option value="">Seleccione rol</option>')
-             .prop('disabled', true);
+    selectRol
+        .empty()
+        .append('<option value="">Seleccione rol</option>')
+        .prop("disabled", true);
 
     if (!idCategoria) return;
 
     $.ajax({
         url: `/roles-empleados/por-categoria/${idCategoria}`,
-        method: 'GET',
+        method: "GET",
         success: function (data) {
-
-            data.forEach(rol => {
+            data.forEach((rol) => {
                 selectRol.append(
                     `<option value="${rol.id_rol}">
                         ${rol.nombre}
@@ -225,11 +149,11 @@ $(document).on('change', '.js-select-categoria', function () {
                 );
             });
 
-            selectRol.prop('disabled', false);
+            selectRol.prop("disabled", false);
         },
         error: function (err) {
-            console.error('Error cargando roles', err);
-        }
+            console.error("Error cargando roles", err);
+        },
     });
 });
 
