@@ -3,61 +3,60 @@
 @section('title', 'Nómina de personal')
 
 @section('content')
-<div class="container-fluid">
-    <div class="text-start mb-4">
-        <h3 class="pill-heading">GESTIÓN DE PERSONAL</h3>
-    </div>
+    <div class="container-fluid">
+        <div class="text-start mb-4">
+            <h3 class="pill-heading">GESTIÓN DE PERSONAL</h3>
+        </div>
 
-    <div class="card" style="border-radius:15px;">
-        <div class="card-header">
-            <div class="row d-flex">
-                <div class="col-9 d-flex justify-content-start align-items-center">
-                    <h6>Nómina del Personal</h6>
-                    <select id="area" name="area" class="form-select mx-2 js-select-area" style="width: auto;">
-                        <option value=""></option>
-                    </select>
+        <div class="card" style="border-radius:15px;">
+            <div class="card-header">
+                <div class="row d-flex">
+                    <div class="col-9 d-flex justify-content-start align-items-center">
+                        <h6>Nómina del Personal</h6>
+                        <select id="area" name="area" class="form-select mx-2 js-select-area" style="width: auto;">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="col-3 text-end">
+                        <button type="button" class="btn btn-outline-primary" onclick="abrirModal()">
+                            Nuevo Colaborador
+                        </button>
+                    </div>
                 </div>
-                <div class="col-3 text-end">
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        Nuevo Colaborador
-                    </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="tb_personal" class="table">
+                        <thead>
+                            <tr>
+                                <th>Legajo N°</th>
+                                <th>Empleado</th>
+                                <th>DNI</th>
+                                <th>Antigüedad</th>
+                                <th>Área</th>
+                                <th>Categoría</th>
+                                <th>Servicio</th>
+                                <th>Régimen</th>
+                                <th>Horas diarias</th>
+                                <th>Convenio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="tb_personal" class="table">
-                    <thead>
-                        <tr>
-                            <th>Legajo N°</th>
-                            <th>Empleado</th>
-                            <th>DNI</th>
-                            <th>Antigüedad</th>
-                            <th>Área</th>
-                            <th>Categoría</th>
-                            <th>Servicio</th>
-                            <th>Régimen</th>
-                            <th>Horas diarias</th>
-                            <th>Convenio</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
 
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
-
-</div>
 @endsection
 
 @push('modals')
-    <div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
-        data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 
         <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">
@@ -259,9 +258,9 @@
                                     <div class="col-lg-auto">
                                         <label class="form-label">Régimen</label>
                                         <select name="regimen" id="selectRegimen" class="form-select">
-                                            <option selected value="">Seleccione régimen</option>                                            
+                                            <option selected value="">Seleccione régimen</option>
                                             <option value="44">44</option>
-                                            <option value="40">40</option>                                            
+                                            <option value="40">40</option>
                                             <option value="35">35</option>
                                             <option value="32">32</option>
                                             <option value="30">30</option>
@@ -294,5 +293,5 @@
 @endpush
 
 @push('scripts')
-<script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
+    <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
 @endpush
