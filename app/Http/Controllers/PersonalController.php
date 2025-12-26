@@ -64,7 +64,6 @@ class PersonalController extends Controller
             );
 
             return response()->json($roles);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Error al obtener roles',
@@ -74,17 +73,17 @@ class PersonalController extends Controller
     }
 
     public function listarObraSocial()
-{
-    try {
-        $obras = DB::select('CALL SP_LISTA_OBRA_SOCIAL()');
+    {
+        try {
+            $obras = DB::select('CALL SP_LISTA_OBRA_SOCIAL()');
 
-        return response()->json($obras);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => 'Error al obtener obras sociales',
-            'detalle' => $e->getMessage()
-        ], 500);
+            return response()->json($obras);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error al obtener obras sociales',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
     }
-}
 }
