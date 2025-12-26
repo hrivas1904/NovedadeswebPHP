@@ -111,11 +111,11 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha nacimiento</label>
-                                            <input type="date" class="form-control" required>
+                                            <input type="date" id="fechaNacimiento" class="form-control" required>
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Edad</label>
-                                            <input type="text" class="form-control" readonly>
+                                            <input type="text" id="edad" class="form-control" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -204,7 +204,7 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-lg-2">
                                         <label class="form-label">Tipo de contrato</label>
-                                        <select class="form-select" required>
+                                        <select class="form-select" id="tipoContrato" required>
                                             <option selected value="">Seleccione tipo de contrato</option>
                                             <option value="M">Tiempo indeterminado</option>
                                             <option value="F">Plazo fijo</option>
@@ -214,11 +214,11 @@
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Fecha inicio prueba</label>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" id="fechaInicio">
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Fecha fin prueba</label>
-                                        <input type="date" class="form-control">
+                                        <input type="date" class="form-control" id="fechaFin">
                                     </div>
                                     <div class="col-lg-auto">
                                         <label class="form-label">Área</label>

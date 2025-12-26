@@ -234,46 +234,68 @@ $(document).on('change', '.js-select-categoria', function () {
 });
 
 //selectores de os y codigo
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", () => {
+    cargarObrasSociales();
 
-    inicializarSelectObraSocial();
+    const select = document.getElementById("obraSocial");
+    const inputCodigo = document.getElementById("codigoOS");
 
-    // cuando se selecciona una obra social
-    $(document).on('select2:select', '.js-select-obra-social', function (e) {
-        const data = e.params.data;
-        $('.js-input-codigo-os').val(data.codigo);
-    });
+    select.addEventListener("change", function () {
+        const selected = this.options[this.selectedIndex];
+        const codigo = selected.getAttribute("data-codigo");
 
-    // si se limpia la selección
-    $(document).on('select2:clear', '.js-select-obra-social', function () {
-        $('.js-input-codigo-os').val('');
+        inputCodigo.value = codigo ? codigo : "";
     });
 });
 
-function inicializarSelectObraSocial() {
+function cargarObrasSociales() {
+    fetch("/obra-social/lista")
+        .then((response) => response.json())
+        .then((data) => {
+            const select = document.getElementById("obraSocial");
 
-    $('.js-select-obra-social').select2({
-        theme: 'bootstrap-5',
-        placeholder: 'Buscar obra social...',
-        allowClear: true,
-        width: '100%',
+            data.forEach((item) => {
+                const option = document.createElement("option");
+                option.value = item.id;
+                option.textContent = item.nombre;
+                option.setAttribute("data-codigo", item.codigo);
 
-        ajax: {
-            url: '/obra-social/lista',
-            dataType: 'json',
-            delay: 250,
-            processResults: function (data) {
-                return {
-                    results: data.map(item => ({
-                        id: item.id,
-                        text: item.nombre,
-                        codigo: item.codigo // 👈 lo pasamos como extra
-                    }))
-                };
-            }
+                select.appendChild(option);
+            });
+        })
+        .catch((error) => {
+            console.error("Error cargando obras sociales:", error);
+        });
+}
+
+//mapa de valores para regimen y hs diarias
+document.addEventListener('DOMContentLoaded', () => {
+
+    const selectRegimen = document.getElementById('selectRegimen');
+    const inputHoras = document.getElementById('horasDiarias');
+
+    const equivalencias = {
+        44: 8,
+        40: 7.28,
+        32: 6.24,
+        24: 4.8,
+        35: 7,
+        30: 6,
+        22: 4.4,
+        20: 4
+    };
+
+    selectRegimen.addEventListener('change', function () {
+        const valor = this.value;
+
+        if (equivalencias[valor]) {
+            inputHoras.value = equivalencias[valor];
+        } else {
+            inputHoras.value = '';
         }
     });
-}
+
+});
 
 function abrirModal(){
     $('#modalAltaColaborador').modal('show');
