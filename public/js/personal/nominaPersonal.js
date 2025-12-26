@@ -221,3 +221,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+function abrirModal(){
+    $('#modalAltaColaborador').modal('show');
+}
+
+function cerrarModal(){
+    $('#formAltaColaborador')[0].reset();
+    $('#modalAltaColaborador').modal('hide');
+}

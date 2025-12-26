@@ -18,8 +18,7 @@
                         </select>
                     </div>
                     <div class="col-3 text-end">
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop">
+                        <button type="button" class="btn btn-outline-primary" onclick="abrirModal()">
                             Nuevo Colaborador
                         </button>
                     </div>
@@ -56,7 +55,7 @@
 @endsection
 
 @push('modals')
-    <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
+    <div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
         data-bs-backdrop="static" data-bs-keyboard="false">
 
         <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
@@ -196,7 +195,7 @@
                         </div>
 
                         <div class="row g-3 mb-4">
-                            <div class="col-12 mb-4">
+                            <div class="col-12 mb-3">
                                 <div class="section-divider">
                                     <span>Datos Laborales</span>
                                 </div>
@@ -281,7 +280,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-danger" data-bs-dismiss="modal">
+                    <button class="btn btn-danger" onclick="cerrarModal()">
                         Cancelar
                     </button>
                     <button class="btn btn-primary">
