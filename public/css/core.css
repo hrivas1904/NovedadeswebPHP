@@ -1,0 +1,99 @@
+/* --- Paleta de Variables Modernas --- */
+:root {
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --primary: #3b82f6;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --radius: 12px;
+}
+
+
+/* --- Títulos Modernos --- */
+.view-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+}
+
+/* --- La Card Pro (Reemplaza la card de Bootstrap) --- */
+.glass-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    transition: transform 0.2s ease;
+}
+
+/* --- Inputs y Selects Estilo "Flat-Deep" --- */
+.modern-input {
+    background: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 1rem !important;
+    font-size: 0.9rem !important;
+    color: var(--text-main) !important;
+    transition: all 0.2s ease !important;
+}
+
+.modern-input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+    outline: none !important;
+}
+
+/* --- Etiquetas (Labels) --- */
+.modern-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* --- Divisores de Sección con Texto --- */
+.section-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 2rem 0;
+}
+
+.section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-divider:not(:empty)::before { margin-right: 1rem; }
+.section-divider:not(:empty)::after { margin-left: 1rem; }
+
+/* --- Botón Principal --- */
+.btn-modern {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4);
+    transition: all 0.2s;
+}
+
+.btn-modern:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+    filter: brightness(1.1);
+}

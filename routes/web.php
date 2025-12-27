@@ -9,6 +9,8 @@ use App\Http\Controllers\LoginController;
 Route::get('/', [HomeController::class, 'index'])
     ->name('index');
 
+Route::get('/dashboard', [HomeController::class, 'dashboard'])
+    ->name('dashboard');
 
 
 Route::get('/nomina', [PersonalController::class, 'nominaPersonal'])
@@ -60,3 +62,18 @@ Route::get('/roles-empleados/por-categoria/{id}', [PersonalController::class, 'l
 
 Route::get('/obra-social/lista', [PersonalController::class, 'listarObraSocial'])
     ->name('obraSocial.lista');
+
+
+//RUTAS DE SP NOVEDADES
+Route::get(
+    '/categorias-novedad/lista',
+    [NovedadesController::class, 'listarCategorias']
+)->name('categorias.novedad');
+
+Route::get(
+    '/novedades/lista/{id}',
+    [NovedadesController::class, 'listarNovedadesPorCategoria']
+)->name('novedades.porCategoria');
+
+Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
+    ->name('novedades.data');

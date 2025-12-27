@@ -4,12 +4,13 @@
 
 @section('content')
 
-    <div class="container-fluid">
-        <div class="text-start mb-4">
-            <h3 class="pill-heading">REGISTRO DE ASISTENCIA</h3>
-        </div>
+<div class="container-fluid">
+    <div class="text-start mb-4">
+        <h3 class="pill-heading tituloVista">REGISTRO DE ASISTENCIA</h3>
+    </div>
 
-        <div class="row">
+    <div class="row">
+        <div class="col-lg-9 col-md-6">
             <div class="card" style="border-radius:15px;">
                 <div class="card-body">
                     <form id="formNuevaNovedad">
@@ -92,6 +93,9 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-auto col-md-auto"></div>
     </div>
+
+</div>
 
 @endsection
