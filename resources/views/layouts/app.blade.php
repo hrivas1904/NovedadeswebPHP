@@ -28,7 +28,7 @@
 
         <ul class="nav-list">
             <li>
-                <a href="{{ route('index') }}">
+                <a href="{{ route('dashboard') }}">
                     <i class="bx bx-grid-alt"></i>
                     <span class="link_name">Dashboard</span>
                 </a>
@@ -66,23 +66,49 @@
                 <span class="tooltip">Novedades</span>
             </li>
 
-            <li>
-                <a href="{{ route('ajustes') }}">
+            <li class="submenu">
+                <input type="checkbox" id="menu-config">
+                <label for="menu-config">
                     <i class="bx bx-cog"></i>
                     <span class="link_name">Configuraciones</span>
-                </a>
-                <span class="tooltip">Settings</span>
+                    <i class="bx bx-chevron-down arrow"></i>
+                </label>
+                <ul class="sub-menu">
+                    <li><a href="{{ route('ajustes') }}">Configuraciones</a></li>
+                    <li><a href="#">Usuarios y Permisos</a></li>
+                    <li><a href="#">Cambiar Rol</a></li>
+                </ul>
+                <span class="tooltip">Configuraciones</span>
             </li>
-            <li class="profile">
-                <div class="profile_details">
-                    <img src="{{ asset('img/logo_2.png') }}" alt="profile image">
-                    <div class="profile_content">
-                        <div class="name">Anna Jhon</div>
-                        <div class="designation">Admin</div>
+
+            <div class="branding-footer">
+                <div class="branding-profile-box">
+                    <div class="branding-user-details">
+                        <span class="branding-user-name">{{ Auth::user()->name }}</span>
+
+                        <span class="branding-user-role">
+                            {{ Auth::user()->rol }}
+                        </span>
+
+                        <span class="branding-user-role">
+                            @if(Auth::user()->area)
+                            {{ Auth::user()->area->NOMBRE }}
+                            @else
+
+                            @endif
+                        </span>
                     </div>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+
+                    <button type="button" class="branding-logout-trigger"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class='bx bx-log-out'></i>
+                    </button>
                 </div>
-                <i class="bx bx-log-out" id="log_out"></i>
-            </li>
+            </div>
         </ul>
     </div>
     <section class="home-section p-4">

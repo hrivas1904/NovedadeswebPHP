@@ -57,11 +57,11 @@
                             </div>
                             <div class="row g-3">
                                 <div class="col-lg-12 col-md-3 text-end">
+                                    <button type="button" class="btn btn-secondary mx-2">Crear categoría</button>
                                     <button type="submit" class="btn btn-primary">Crear nueva novedad</button>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>

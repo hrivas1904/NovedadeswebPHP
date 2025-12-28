@@ -6,7 +6,7 @@ use App\Http\Controllers\NovedadesController;
 use App\Http\Controllers\AjustesController;
 use App\Http\Controllers\LoginController;
 
-Route::get('/', [HomeController::class, 'index'])
+Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
 
 Route::get('/dashboard', [HomeController::class, 'dashboard'])
@@ -46,8 +46,9 @@ Route::get('/configPerfil', [AjustesController::class, 'configPerfil'])
 
 
 
-Route::get('/login', [LoginController::class, 'login'])
-    ->name('login');
+Route::get('/', [LoginController::class, 'showLogin'])->name('login');
+Route::post('/ingresar', [LoginController::class, 'login'])->name('login.post');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 //RUTAS DE SP PERSONAL

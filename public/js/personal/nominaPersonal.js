@@ -138,26 +138,31 @@ function cargarAreas() {
         url: "/areas/lista",
         method: "GET",
         success: function (data) {
-            $(".js-select-area").each(function () {
-                const select = $(this);
-                const valorActual = select.val();
+            const select = $(".js-select-area");
+            const areaFija = $("#areaFija").val(); // puede ser undefined
 
-                select.empty();
-                select.append('<option value="">Seleccione área</option>');
+            select.empty();
+            select.append('<option value="">Todas</option>');
 
-                data.forEach((area) => {
-                    select.append(
-                        `<option value="${area.id_area}">
-                            ${area.nombre}
-                        </option>`
-                    );
-                });
-
-                if (valorActual) {
-                    select.val(valorActual);
-                }
+            data.forEach(area => {
+                select.append(`
+                    <option value="${area.id_area}">
+                        ${area.nombre}
+                    </option>
+                `);
             });
+
+            // 👉 LÓGICA CORRECTA
+            if (areaFija) {
+                select.val(areaFija);
+                select.prop("disabled", true);
+            } else {
+                select.prop("disabled", false);
+            }
         },
+        error: function () {
+            console.error("Error cargando áreas");
+        }
     });
 }
 

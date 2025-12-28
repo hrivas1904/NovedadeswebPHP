@@ -6,10 +6,32 @@ body {
     z-index: 1055;
 }
 
-.tituloVista {
+/*.tituloVista {
     font-family: "Franklin Gothic Book", sans-serif;
     font-weight: bold;
     color: #004f83;
+}*/
+
+.tituloVista {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #0b3c6d;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+    position: relative;
+    padding-left: 14px;
+}
+
+/* línea decorativa */
+.tituloVista::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 5px;
+    height: 70%;
+    width: 4px;
+    background: linear-gradient(180deg, #0d6efd, #4dabf7);
+    border-radius: 4px;
 }
 
 .btn {
@@ -316,6 +338,15 @@ html {
     font-size: 25px;
     font-weight: 500;
     margin: 18px;
+}
+
+.page-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 25px 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    min-height: calc(100vh - 60px);
+    transition: all 0.3s ease;
 }
 
 .sidebar.open ~ .home-section {
@@ -673,4 +704,89 @@ html {
 
 .modal-backdrop {
     z-index: 1990 !important;
+}
+
+/******************************************/
+/* Contenedor base del footer */
+.branding-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-default); /* El azul marino de tu logo */
+    padding: 12px 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.branding-profile-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    height: 50px;
+    position: relative;
+}
+
+/* Manejo de textos (Nombre y Rol) */
+.branding-user-details {
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+    opacity: 1;
+}
+
+.branding-user-name {
+    color: var(--color-white);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.branding-user-role {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+}
+
+/* El botón de logout */
+.branding-logout-trigger {
+    background: var(--color-second); /* Azul brillante del logo */
+    color: var(--color-white);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.branding-logout-trigger i {
+    font-size: 1.3rem;
+}
+
+.branding-logout-trigger:hover {
+    background-color: var(--color-accent-green) !important; /* Verde al pasar el mouse */
+    transform: scale(1.05);
+}
+
+/* --- LÓGICA DE COLAPSO --- */
+
+/* Cuando el sidebar NO tiene la clase .open (está cerrado) */
+.sidebar:not(.open) .branding-user-details {
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+}
+
+/* Centrar el botón cuando esté cerrado */
+.sidebar:not(.open) .branding-profile-box {
+    justify-content: center;
+}
+
+.sidebar:not(.open) .branding-logout-trigger {
+    width: 45px;
+    height: 45px;
 }
