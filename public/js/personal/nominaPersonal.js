@@ -3,61 +3,66 @@ console.log("nominaPersonal.js cargado");
 let tablaPersonal;
 
 //calculo edad
-document.addEventListener("DOMContentLoaded", () => {
-    const inputFecha = document.getElementById("inputFechaNacimiento");
-    const inputEdad = document.getElementById("inputEdad");
+function calcularEdad(fecha) {
+    if (!fecha) return '';
 
-    if (!inputFecha || !inputEdad) return;
+    const nacimiento = new Date(fecha);
+    const hoy = new Date();
 
-    inputFecha.addEventListener("change", () => {
-        const fechaNac = new Date(inputFecha.value);
-        if (isNaN(fechaNac)) {
-            inputEdad.value = "";
-            return;
-        }
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const m = hoy.getMonth() - nacimiento.getMonth();
 
-        const hoy = new Date();
-        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+    }
 
-        const mes = hoy.getMonth() - fechaNac.getMonth();
-        const dia = hoy.getDate() - fechaNac.getDate();
-
-        if (mes < 0 || (mes === 0 && dia < 0)) {
-            edad--;
-        }
-
-        inputEdad.value = edad >= 0 ? edad : "";
-    });
-});
+    return edad;
+}
 
 //calculo antiguedad
-document.addEventListener("DOMContentLoaded", () => {
-    const inputFecha = document.getElementById("inputFechaIngreso");
-    const inputAntiguedad = document.getElementById("inputAntiguedad");
+function calcularAntiguedad(fecha) {
+    if (!fecha) return '';
 
-    if (!inputFecha || !inputAntiguedad) return;
+    const ingreso = new Date(fecha);
+    const hoy = new Date();
 
-    inputFecha.addEventListener("change", () => {
-        const fechaIngreso = new Date(inputFecha.value);
+    let años = hoy.getFullYear() - ingreso.getFullYear();
+    let meses = hoy.getMonth() - ingreso.getMonth();
 
-        if (isNaN(fechaIngreso)) {
-            inputAntiguedad.value = "";
-            return;
-        }
+    // Ajuste si todavía no cumplió el mes
+    if (hoy.getDate() < ingreso.getDate()) {
+        meses--;
+    }
 
-        const hoy = new Date();
-        let antiguedad = hoy.getFullYear() - fechaIngreso.getFullYear();
+    // Ajuste si los meses quedan negativos
+    if (meses < 0) {
+        años--;
+        meses += 12;
+    }
 
-        const mes = hoy.getMonth() - fechaIngreso.getMonth();
-        const dia = hoy.getDate() - fechaIngreso.getDate();
+    let texto = '';
 
-        if (mes < 0 || (mes === 0 && dia < 0)) {
-            antiguedad--;
-        }
+    if (años > 0) {
+        texto += `${años} año${años > 1 ? 's' : ''}`;
+    }
 
-        inputAntiguedad.value = antiguedad >= 0 ? antiguedad : "";
-    });
-});
+    if (meses > 0) {
+        texto += (texto ? ' ' : '') + `${meses} mes${meses > 1 ? 'es' : ''}`;
+    }
+
+    return texto || '0 meses';
+}
+
+//formato fecha arg
+function formatearFechaArgentina(fecha) {
+    if (!fecha) return '';
+
+    const partes = fecha.split('-'); // yyyy-mm-dd
+    if (partes.length !== 3) return fecha;
+
+    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const tipoContrato = document.getElementById("tipoContrato");
@@ -122,11 +127,98 @@ $(document).ready(function () {
     });
 });
 
-function verLegajo(idColaborador) {
-    console.log("Mostrando legajo:", idColaborador);
-    $("#modalLegajoColaborador").modal("show");
+//ver legajo
+function verLegajo(legajoColaborador) {
+    console.log("Mostrando legajo:", legajoColaborador);
+
+    $.ajax({
+        url: `/personal/ver-legajo/${legajoColaborador}`,
+        type: 'GET',
+        success: function (response) {
+            if (response.success) {
+
+                const d = response.data;
+
+                // Datos personales
+                $('#inputLegajo').val(d.LEGAJO);
+                $('#inputNombre').val(d.COLABORADOR);
+                $('#inputEstado').val(d.ESTADO);
+                $('#inputDni').val(d.DNI);
+                $('#inputCuil').val(d.CUIL);
+                $('#inputFechaNacimiento').val(formatearFechaArgentina(d.FECHA_NAC));
+                $('#inputEdad').val(calcularEdad(d.FECHA_NAC));
+
+                // Contacto
+                $('#inputEmail').val(d.CORREO);
+                $('#inputTelefono').val(d.TELEFONO);
+                $('#inputDomicilio').val(d.DOMICILIO);
+                $('#inputLocalidad').val(d.LOCALIDAD);
+
+                // Socioeconómicos
+                $('#inputEstadoCivil').val(d.ESTADO_CIVIL);
+                $('#inputGenero').val(d.GENERO);
+                $('#inputObraSocial').val(d.OBRA_SOCIAL);
+                $('#inputCodigoOS').val(d.COD_OS);
+                $('#inputTitulo').val(d.TITULO);
+                $('#inputDescripTitulo').val(d.DESCRIP_TITULO);
+                $('#inputMatricula').val(d.MAT_PROF);
+
+                // Laborales
+                $('#inputTipoContrato').val(d.TIPO_CONTRATO);
+                $('#inputFechaIngreso').val(formatearFechaArgentina(d.FECHA_INGRESO));
+                $('#inputFechaFinPrueba').val(formatearFechaArgentina(d.FECHA_FIN_PRUEBA));
+                $('#inputAntiguedad').val(calcularAntiguedad(d.FECHA_INGRESO));
+                $('#inputFechaEgreso').val(d.FECHA_EGRESO);
+                $('#inputArea').val(d.AREA);
+                $('#inputServicio').val(d.SERVICIO);
+                $('#inputConvenio').val(d.CONVENIO);
+                $('#inputCategoria').val(d.CATEGORIA);
+                $('#inputRol').val(d.ROL);
+                $('#inputRegimen').val(d.REGIMEN);
+                $('#inputHorasDiarias').val(d.HORAS_DIARIAS);
+                $('#inputCordinador').val(d.COORDINADOR);
+                $('#inputAfiliado').val(d.AFILIADO);
+
+                $("#modalLegajoColaborador").modal("show");
+
+            } else {
+                Swal.fire("Error", response.mensaje, "error");
+            }
+        },
+        error: function () {
+            Swal.fire("Error", "No se pudo cargar el legajo", "error");
+        }
+    });
 }
 
+//dar de baja empleado
+function darDeBaja(legajoColaborador) {
+    Swal.fire({
+        title: '¿Dar de baja?',
+        text: 'El empleado quedará inactivo',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, dar de baja',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/personal/baja/${legajoColaborador}`,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (res) {
+                    Swal.fire('OK', res.mensaje, 'success');
+                    tablaPersonal.ajax.reload(null, false);
+                }
+            });
+        }
+    });
+    tablaPersonal.ajax.reload();
+}
+
+//carga dt personal
 $(document).ready(function () {
     tablaPersonal = $("#tb_personal");
 
@@ -167,7 +259,11 @@ $(document).ready(function () {
                             data-id="${data.LEGAJO}">
                             <i class="fa-solid fa-eye"></i> Ver legajo
                         </button>
-                        <button class="btn btn-sm btn-outline-warning"><i class="fa-solid fa-pen"></i>Editar</button>
+                        <button 
+                            class="btn btn-sm btn-outline-danger btn-DarBaja"
+                            data-id="${data.LEGAJO}">
+                            <i class="fa-solid fa-x"></i> Dar baja
+                        </button>
                     `;
                     },
                 },
@@ -215,9 +311,17 @@ $(document).ready(function () {
         $(document).on('click', '.btn-VerLegajo', function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const idColaborador = $(this).data('id');
-            console.log("Id recibido: " + idColaborador);
-            verLegajo(idColaborador);
+            const legajoColaborador = $(this).data('id');
+            console.log("Id recibido: " + legajoColaborador);
+            verLegajo(legajoColaborador);
+        });
+
+        $(document).on('click', '.btn-DarBaja', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const legajoColaborador = $(this).data('id');
+            console.log("Id recibido: " + legajoColaborador);
+            darDeBaja(legajoColaborador);
         });
     }
 });

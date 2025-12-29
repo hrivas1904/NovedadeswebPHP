@@ -70,6 +70,13 @@ Route::post('/personal/guardar', [PersonalController::class, 'store'])
 Route::get('/personal/listar', [PersonalController::class, 'listar'])
     ->name('personal.listar');
 
+Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLegajo']);
+
+Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado'])
+    ->name('personal.baja');
+
+
+
 
 //RUTAS DE SP NOVEDADES
 Route::get(

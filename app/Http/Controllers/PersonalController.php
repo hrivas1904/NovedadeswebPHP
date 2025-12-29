@@ -162,4 +162,49 @@ class PersonalController extends Controller
             ], 500);
         }
     }
+
+    public function verLegajo($legajo)
+    {
+        try {
+            $data = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
+
+            if (count($data) === 0) {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'No se encontró el legajo'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $data[0]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al obtener el legajo',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function bajaEmpleado($legajo)
+    {
+        try {
+            DB::statement("CALL SP_DAR_BAJA_EMPLEADO(?, @mensaje)", [$legajo]);
+
+            $res = DB::select("SELECT @mensaje AS mensaje");
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => $res[0]->mensaje
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al dar de baja',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
