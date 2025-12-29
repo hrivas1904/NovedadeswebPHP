@@ -20,12 +20,16 @@
                     <div class="row g-3 mb-3">
                         <div class="col-lg-auto col-md-3">
                             <label class="form-label">Fecha de carga</label>
-                            <input type="text" class="form-control" name="Legajo"
+                            <input type="text" class="form-control" name="fechaCarga"
                                 value="{{ now()->format('Y-m-d') }}" readonly />
                         </div>
                         <div class="col-lg-2 col-md-3">
                             <label class="form-label">Registrante</label>
-                            <input type="text" class="form-control" name="Legajo" readonly />
+                            <input type="text" class="form-control" name="registrante" value="{{ Auth::user()->name }}" readonly />
+                        </div>
+                        <div class="col-lg-2 col-md-3">
+                            <label class="form-label">Rol</label>
+                            <input type="text" class="form-control" name="rolRegistrante" value="{{ Auth::user()->rol }}" readonly />
                         </div>
                     </div>
 
@@ -40,42 +44,44 @@
                                 <div class="row g-3 mb-3">
                                     <div class="col-lg-2 col-md-3">
                                         <label class="form-label">Legajo N°</label>
-                                        <input type="text" class="form-control" name="Legajo" />
+                                        <input type="number" class="form-control" name="legajo" />
                                     </div>
                                     <div class="col-lg-4 col-md-4">
                                         <label class="form-label">Empleado</label>
-                                        <input type="text" class="form-control" name="Empleado" readonly />
+                                        <select id="selectEmpleado" class="form-control">
+                                            <option selected value="">Seleccione empleado</option>
+                                        </select>
                                     </div>
                                     <div class="col-lg-4 col-md-6">
                                         <label class="form-label">Servicio</label>
-                                        <input type="text" class="form-control" name="Servicio" readonly />
+                                        <input type="text" class="form-control" name="servicio" readonly />
                                     </div>
                                     <div class="col-lg-2 col-md-6">
                                         <label class="form-label">Antigüedad</label>
-                                        <input type="text" class="form-control" name="Servicio" readonly />
+                                        <input type="text" class="form-control" name="antiguedad" readonly />
                                     </div>
                                 </div>
 
                                 <div class="row g-3 mb-3">
                                     <div class="col-lg-2 col-md-3">
                                         <label class="form-label">Régimen</label>
-                                        <input type="text" class="form-control" name="Regimen" readonly />
+                                        <input type="text" class="form-control" name="regimen" readonly />
                                     </div>
                                     <div class="col-lg-2 col-md-3">
                                         <label class="form-label">Hs diarias</label>
-                                        <input type="text" class="form-control" name="HorasDiarias" readonly />
+                                        <input type="text" class="form-control" name="horasDiarias" readonly />
                                     </div>
                                     <div class="col-lg-3 col-md-4">
                                         <label class="form-label">Convenio</label>
-                                        <input type="text" class="form-control" name="Convenio" readonly />
+                                        <input type="text" class="form-control" name="convenio" readonly />
                                     </div>
                                     <div class="col-lg-2 col-md-4">
                                         <label class="form-label">Título</label>
-                                        <input type="text" class="form-control" name="Convenio" readonly />
+                                        <input type="text" class="form-control" name="titulo" readonly />
                                     </div>
                                     <div class="col-lg-2 col-md-4">
                                         <label class="form-label">Afiliado</label>
-                                        <input type="text" class="form-control" name="Convenio" readonly />
+                                        <input type="text" class="form-control" name="afiliado" readonly />
                                     </div>
                                 </div>
                             </div>
@@ -104,27 +110,27 @@
 
                                     <div class="col-lg-3 col-md-2">
                                         <label class="form-label">Código Finnegans</label>
-                                        <input type="text" id="codigoFinnegans" class="form-control" readonly>
+                                        <input type="text" id="codigoFinnegans" name="codigoNovedad" class="form-control" readonly>
                                     </div>
                                     <div class="row g-3 mb-3">
                                         <div class="col-lg-4 col-md-4">
                                             <label class="form-label">Fecha desde</label>
-                                            <input type="date" class="form-control" name="Empleado" />
+                                            <input type="date" class="form-control" name="fechaDesde" />
                                         </div>
                                         <div class="col-lg-4 col-md-4">
                                             <label class="form-label">Fecha hasta</label>
-                                            <input type="date" class="form-control" name="Cuil" />
+                                            <input type="date" class="form-control" name="fechaHasta" />
                                         </div>
                                         <div class="col-lg-3 col-md-3">
                                             <label class="form-label">Periodo (días)</label>
-                                            <input type="text" class="form-control" name="Cuil" readonly />
+                                            <input type="text" class="form-control" name="duracion" readonly />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 mt-4 mb-3">
+                        <div class="col-12 mt-4">
                             <div class="section-divider">
                                 <span>Información adicional</span>
                             </div>
