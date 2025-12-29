@@ -64,6 +64,12 @@ Route::get('/roles-empleados/por-categoria/{id}', [PersonalController::class, 'l
 Route::get('/obra-social/lista', [PersonalController::class, 'listarObraSocial'])
     ->name('obraSocial.lista');
 
+Route::post('/personal/guardar', [PersonalController::class, 'store'])
+    ->name('personal.store');
+
+Route::get('/personal/listar', [PersonalController::class, 'listar'])
+    ->name('personal.listar');
+
 
 //RUTAS DE SP NOVEDADES
 Route::get(
