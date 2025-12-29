@@ -1,8 +1,11 @@
 console.log("nominaPersonal.js cargado");
 
+let tablaPersonal;
+
+//calculo edad
 document.addEventListener("DOMContentLoaded", () => {
-    const inputFecha = document.getElementById("fechaNacimiento");
-    const inputEdad = document.getElementById("edad");
+    const inputFecha = document.getElementById("inputFechaNacimiento");
+    const inputEdad = document.getElementById("inputEdad");
 
     if (!inputFecha || !inputEdad) return;
 
@@ -24,6 +27,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         inputEdad.value = edad >= 0 ? edad : "";
+    });
+});
+
+//calculo antiguedad
+document.addEventListener("DOMContentLoaded", () => {
+    const inputFecha = document.getElementById("inputFechaIngreso");
+    const inputAntiguedad = document.getElementById("inputAntiguedad");
+
+    if (!inputFecha || !inputAntiguedad) return;
+
+    inputFecha.addEventListener("change", () => {
+        const fechaIngreso = new Date(inputFecha.value);
+
+        if (isNaN(fechaIngreso)) {
+            inputAntiguedad.value = "";
+            return;
+        }
+
+        const hoy = new Date();
+        let antiguedad = hoy.getFullYear() - fechaIngreso.getFullYear();
+
+        const mes = hoy.getMonth() - fechaIngreso.getMonth();
+        const dia = hoy.getDate() - fechaIngreso.getDate();
+
+        if (mes < 0 || (mes === 0 && dia < 0)) {
+            antiguedad--;
+        }
+
+        inputAntiguedad.value = antiguedad >= 0 ? antiguedad : "";
     });
 });
 
@@ -90,8 +122,13 @@ $(document).ready(function () {
     });
 });
 
+function verLegajo(idColaborador) {
+    console.log("Mostrando legajo:", idColaborador);
+    $("#modalLegajoColaborador").modal("show");
+}
+
 $(document).ready(function () {
-    let tablaPersonal = $("#tb_personal");
+    tablaPersonal = $("#tb_personal");
 
     if (tablaPersonal.length > 0) {
         let dt = new DataTable("#tb_personal", {
@@ -99,7 +136,6 @@ $(document).ready(function () {
                 url: "/personal/listar",
                 type: "GET",
                 data: function (d) {
-                    // Al usar el ID directamente aquí, evitamos el error de definición
                     d.area_id = $("#area").val();
                 },
             },
@@ -124,9 +160,13 @@ $(document).ready(function () {
                 },
                 {
                     data: null,
-                    render: function () {
+                    render: function (data) {
                         return `
-                        <button class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-eye"></i>Ver legajo</button>
+                        <button 
+                            class="btn btn-sm btn-outline-primary btn-VerLegajo"
+                            data-id="${data.LEGAJO}">
+                            <i class="fa-solid fa-eye"></i> Ver legajo
+                        </button>
                         <button class="btn btn-sm btn-outline-warning"><i class="fa-solid fa-pen"></i>Editar</button>
                     `;
                     },
@@ -171,6 +211,14 @@ $(document).ready(function () {
                 dt.ajax.reload();
             }
         }, 500);
+
+        $(document).on('click', '.btn-VerLegajo', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const idColaborador = $(this).data('id');
+            console.log("Id recibido: " + idColaborador);
+            verLegajo(idColaborador);
+        });
     }
 });
 
@@ -385,8 +433,7 @@ $("#formAltaColaborador").on("submit", function (e) {
 
                 $("#formAltaColaborador")[0].reset();
                 $("#modalAltaColaborador").modal("hide");
-
-                $('#tb_personal').ajax.reload();
+                tablaPersonal.ajax.reload();
             } else {
                 Swal.fire({
                     icon: "warning",
@@ -405,3 +452,11 @@ $("#formAltaColaborador").on("submit", function (e) {
         },
     });
 });
+
+function abrirModalLegajo() {
+    $("#modalLegajoColaborador").modal("show");
+}
+
+function cerrarModalLegajo() {
+    $("#modalLegajoColaborador").modal("hide");
+}
