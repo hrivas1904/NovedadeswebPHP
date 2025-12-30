@@ -9,7 +9,7 @@
     </div>
     <div class="container-fluid pt-3">
         <div class="row d-flex">
-            <div class="col-lg-6 col-sm-12 mb-3">
+            <div class="col-lg-7 col-sm-12 mb-3">
                 <div class="card" style="border-radius:15px;">
                     <div class="card-body">
                         <table id="tb_configuracion" class="table table-responsive">
@@ -18,6 +18,7 @@
                                     <th>Cód Finnegan</th>
                                     <th>Novedad</th>
                                     <th>Categoría</th>
+                                    <th>Valor</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -28,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6 col-sm-12">
+            <div class="col-lg-5 col-sm-12">
                 <div class="card" style="border-radius:15px;">
                     <div class="card-body">
 
@@ -57,8 +58,8 @@
                             </div>
                             <div class="row g-3">
                                 <div class="col-lg-12 col-md-3 text-end">
-                                    <button type="button" class="btn btn-secondary mx-2">Crear categoría</button>
-                                    <button type="submit" class="btn btn-primary">Crear nueva novedad</button>
+                                    <button type="button" class="btn btn-terciario mx-2">Crear categoría</button>
+                                    <button type="submit" class="btn btn-primario">Crear nueva novedad</button>
                                 </div>
                             </div>
                         </form>

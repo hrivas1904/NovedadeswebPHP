@@ -43,7 +43,7 @@ class NovedadesController extends Controller
     public function listarNovedadesPorCategoria($id)
     {
         try {
-            $novedades = DB::select('CALL SP_LISTA_NOVEDADES(?)', [$id]);
+            $novedades = DB::select('CALL SP_LISTA_NOVEDADESXCATEG(?)', [$id]);
 
             return response()->json($novedades);
         } catch (\Exception $e) {
@@ -67,32 +67,41 @@ class NovedadesController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function guardarNovedad(Request $request)
     {
         try {
-            $fechaCarga = Carbon::now()->format('Y-m-d');
-            $fechaDesde = Carbon::parse($request->fechaDesde)->format('Y-m-d');
-            $fechaHasta = Carbon::parse($request->fechaHasta)->format('Y-m-d');
 
-            DB::statement("CALL SP_REGISTRAR_NOVEDAD(?, ?, ?, ?, ?, ?, ?, @p_mensaje)", [
+            DB::statement("
+            CALL SP_REGISTRAR_NOVEDAD(
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @mensaje
+            )
+        ", [
                 $request->legajo,
-                $request->codigoNovedad,
-                $fechaCarga,
-                $fechaDesde,
-                $fechaHasta,
+                $request->idNovedad,
+                date('Y-m-d'),                 // fecha registro
+                $request->fechaDesde,
+                $request->fechaHasta,
+                $request->fechaAplicacion,
+                $request->valor1,
+                $request->valor2,
+                $request->centroCosto,
                 $request->duracion,
-                Auth::user()->name
+                $request->registrante,
+                $request->descripcion
             ]);
 
-            $resultado = DB::select("SELECT @p_mensaje as mensaje")[0];
+            $resultado = DB::select("SELECT @mensaje AS mensaje");
 
-            if ($resultado->mensaje === 'Novedad registrada correctamente') {
-                return response()->json(['success' => true, 'message' => $resultado->mensaje]);
-            } else {
-                return response()->json(['success' => false, 'message' => $resultado->mensaje], 400);
-            }
+            return response()->json([
+                'success' => true,
+                'mensaje' => $resultado[0]->mensaje
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al registrar la novedad',
+                'error'   => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -101,7 +110,7 @@ class NovedadesController extends Controller
         try {
             $areaId = ($request->area_id && $request->area_id != "") ? $request->area_id : null;
 
-            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES(?)", [$areaId]);
+            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?)", [$areaId]);
 
             return response()->json([
                 'data' => $ListaNovedades

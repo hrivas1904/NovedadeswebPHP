@@ -88,7 +88,7 @@ Route::get('/novedades/lista/{id}', [NovedadesController::class, 'listarNovedade
 Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
     ->name('novedades.data');
 
-Route::post('/novedades/registrar', [NovedadesController::class, 'store'])
+Route::post('/novedades/guardar', [PersonalController::class, 'guardarNovedad'])
     ->name('novedades.store');
 
 Route::get('/novedades/listarNovedadesPorArea', [NovedadesController::class, 'listarNovedadesPorArea'])

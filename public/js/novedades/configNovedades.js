@@ -23,6 +23,7 @@ $(document).ready(function () {
                 { data: "CODIGO_NOVEDAD" },
                 { data: "NOVEDAD" },
                 { data: "CATEG" },
+                { data: "TIPO_VALOR"},
                 {
                     data: "CODIGO_NOVEDAD",
                     render: function (data) {

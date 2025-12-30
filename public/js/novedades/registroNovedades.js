@@ -1,3 +1,84 @@
+//sp para cargar selector areas
+$(document).ready(function () {
+    cargarAreas();
+});
+
+function cargarAreas() {
+    $.ajax({
+        url: "/areas/lista",
+        method: "GET",
+        success: function (data) {
+            const select = $(".js-select-area");
+            const areaFija = $("#areaFija").val(); // puede ser undefined
+
+            select.empty();
+            select.append('<option value="">Seleccione área</option>');
+
+            data.forEach((area) => {
+                select.append(`
+                    <option value="${area.id_area}">
+                        ${area.nombre}
+                    </option>
+                `);
+            });
+
+            // 👉 LÓGICA CORRECTA
+            if (areaFija) {
+                select.val(areaFija);
+                select.prop("disabled", true);
+            } else {
+                select.prop("disabled", false);
+            }
+        },
+        error: function () {
+            console.error("Error cargando áreas");
+        },
+    });
+}
+
+//sp para cargar selector de colaboradores
+$(document).ready(function () {
+    cargarColaboradores();
+    $('#area').on('change', function () {
+        cargarColaboradores();
+    });
+});
+
+function cargarColaboradores() {
+    $.ajax({
+        url: "/personal/listar",
+        type: "GET",
+        data: {
+            area_id: $("#area").val()
+        },
+        success: function (data) {
+            const select = $(".js-selector-colaborador");
+            const areaFija = $("#area").val();
+
+            select.empty();
+            select.append('<option value="">Seleccione colaborador</option>');
+
+            data.forEach((empleado) => {
+                select.append(`
+                    <option value="${empleado.legajo}">
+                        ${empleado.colaborador}
+                    </option>
+                `);
+            });
+
+            // Si el área está fija, bloquea el selector
+            if (areaFija) {
+                select.prop("disabled", false); // 👈 dejalo seleccionable
+            } else {
+                select.prop("disabled", false);
+            }
+        },
+        error: function () {
+            console.error("Error cargando colaboradores");
+        },
+    });
+}
+
 function calcularDuracion() {
     const fechaDesdeInput = document.querySelector('[name="fechaDesde"]');
     const fechaHastaInput = document.querySelector('[name="fechaHasta"]');
@@ -35,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectCategoria = document.getElementById("selectCategoria");
     const selectNovedad = document.getElementById("selectNovedad");
     const inputCodigo = document.getElementById("codigoFinnegans");
+    const idNovedad = document.getElementById("idNovedad");
 
     cargarCategorias();
 
@@ -55,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 data.forEach((item) => {
                     const option = document.createElement("option");
-                    option.value = item.CODIGO_NOVEDAD;
+                    option.value = item.ID_NOVEDAD;
                     option.textContent = item.NOMBRE;
                     option.dataset.codigo = item.CODIGO_NOVEDAD;
 
@@ -69,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
     selectNovedad.addEventListener("change", () => {
         const selected = selectNovedad.options[selectNovedad.selectedIndex];
         inputCodigo.value = selected.dataset.codigo || "";
+        console.log(idNovedad.value());
     });
 });
 
@@ -110,47 +193,44 @@ $(document).ready(function () {
         });
     });
 
-    function enviarNovedad() {
-        let form = $("#formCargaNovedad");
+    $('#btnRegistrarNovedad').on('click', function () {
 
-        $.ajax({
-            url: $("#formCargaNovedad").attr("action"),
-            method: "POST",
-            data: form.serialize(),
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            },
-            beforeSend: function () {
-                $('button[type="submit"]')
-                    .prop("disabled", true)
-                    .html(
-                        '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...'
-                    );
-            },
-            success: function (response) {
+    const form = $('#formCargaNovedad');
+
+    $.ajax({
+        url: '/novedades/guardar',
+        type: 'POST',
+        data: form.serialize(),
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+
+        success: function (response) {
+
+            if (response.success) {
                 Swal.fire({
-                    icon: "success",
-                    title: "¡Éxito!",
-                    text: response.message,
-                }).then(() => {
-                    location.reload();
+                    icon: 'success',
+                    title: 'Correcto',
+                    text: response.mensaje
                 });
-            },
-            error: function (xhr) {
-                $('button[type="submit"]')
-                    .prop("disabled", false)
-                    .html(
-                        '<i class="fa-solid fa-floppy-disk me-1"></i> Registrar novedad'
-                    );
-                let msg = xhr.responseJSON
-                    ? xhr.responseJSON.message
-                    : "Error al procesar la solicitud";
+
+                form[0].reset();
+            } else {
                 Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: msg,
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.mensaje
                 });
-            },
-        });
-    }
-});
+            }
+        },
+
+        error: function (xhr) {
+            console.error(xhr.responseText);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo registrar la novedad'
+            });
+        }
+    });
