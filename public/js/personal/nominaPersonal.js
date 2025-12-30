@@ -128,8 +128,13 @@ $(document).ready(function () {
 });
 
 //ver legajo
-function verLegajo(legajoColaborador) {
+function verLegajo(legajoColaborador, nombre) {
     console.log("Mostrando legajo:", legajoColaborador);
+
+    $('#tituloLegajo').html(`
+        <i class="fa-solid fa-id-card me-2"></i>
+        Legajo de <strong>${nombre}</strong>
+    `);
 
     $.ajax({
         url: `/personal/ver-legajo/${legajoColaborador}`,
@@ -232,6 +237,12 @@ $(document).ready(function () {
                 },
             },
             paging: true,
+            paginate: {
+                first: "",
+                last: "",
+                next: "",
+                previous: "",
+            },
             columns: [
                 { data: "LEGAJO" },
                 { data: "COLABORADOR" },
@@ -256,7 +267,7 @@ $(document).ready(function () {
                         return `
                         <button 
                             class="btn btn-sm btn-outline-primary btn-VerLegajo"
-                            data-id="${data.LEGAJO}">
+                            data-id="${data.LEGAJO}" data-nombre="${data.COLABORADOR}">                            
                             <i class="fa-solid fa-eye"></i> Ver legajo
                         </button>
                         <button 
@@ -312,8 +323,9 @@ $(document).ready(function () {
             event.preventDefault();
             event.stopPropagation();
             const legajoColaborador = $(this).data('id');
-            console.log("Id recibido: " + legajoColaborador);
-            verLegajo(legajoColaborador);
+            const nombre = $(this).data('nombre');
+            console.log("Legajo recibido: " + legajoColaborador);
+            verLegajo(legajoColaborador, nombre);
         });
 
         $(document).on('click', '.btn-DarBaja', function (event) {

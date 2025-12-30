@@ -1,0 +1,210 @@
+/* ================================
+   MODALES - ESTILO GENERAL
+================================ */
+
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    background-color: var(--color-body);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Header */
+.modal-header {
+    background: linear-gradient(
+        135deg,
+        var(--color-default),
+        var(--color-second)
+    );
+    color: var(--color-white);
+    border-bottom: none;
+    padding: 1rem 1.5rem;
+}
+
+.modal-title {
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+    opacity: 0.9;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+/* Body */
+.modal-body {
+    background-color: var(--color-body);
+    padding: 1.5rem;
+}
+
+/* Footer */
+.modal-footer {
+    background-color: var(--color-light);
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+/* ================================
+   SECCIONES INTERNAS
+================================ */
+
+.section-divider {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.section-divider span {
+    padding: 0 10px;
+    font-weight: 600;
+    color: var(--color-default);
+    position: relative;
+    z-index: 2;
+}
+
+.section-divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-light);
+    z-index: 1;
+}
+
+/* Caja de datos */
+.empleado-box {
+    background-color: var(--color-white);
+    border-radius: 10px;
+    border: 1px solid var(--color-light);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Inputs readonly */
+.empleado-box input[readonly] {
+    background-color: #f8fafc;
+    border-color: #d1d5db;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+/* Labels */
+.empleado-box .form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* ================================
+   BOTONES
+================================ */
+
+.modal-footer .btn {
+    padding: 0.45rem 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+.modal-footer .btn-primary {
+    background-color: var(--color-accent-green);
+    border: none;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #009c7c;
+}
+
+.modal-footer .btn-secondary,
+.modal-footer .btn-danger {
+    background-color: var(--color-default);
+    border: none;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: #00395f;
+}
+
+/* ================================
+   ANIMACIÓN SUAVE
+================================ */
+
+.modal.fade .modal-dialog {
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0);
+}
+
+/*######################################*/
+/* ============================
+   BOTONES ESTÁNDAR DEL SISTEMA
+============================ */
+
+/* Botón Primario */
+.btn-primario {
+    background-color: var(--color-accent-green);
+    border: none;
+    padding: 0.45rem 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+.btn-primario:hover {
+    background-color: #009c7c;
+    color: #fff;
+}
+
+.btn-primario:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 177, 141, 0.4);
+}
+
+/* Botón Secundario */
+.btn-secundario {
+    background-color: var(--color-default);
+    border: none;
+    padding: 0.45rem 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+.btn-secundario:hover {
+    background-color: #00395f;
+    color: #fff;
+}
+
+.btn-secundario:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 74, 124, 0.4);
+}
+
+/* Botón Peligro (baja, eliminar) */
+.btn-peligro {
+    background-color: #dc3545;
+    border: none;
+    padding: 0.45rem 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+.btn-peligro:hover {
+    background-color: #b02a37;
+}
+
+/* Botón Deshabilitado */
+.btn-primario:disabled,
+.btn-secundario:disabled,
+.btn-peligro:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

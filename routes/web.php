@@ -51,6 +51,7 @@ Route::post('/ingresar', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
+
 //RUTAS DE SP PERSONAL
 Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
     ->name('areas.lista');
@@ -75,19 +76,20 @@ Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLega
 Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado'])
     ->name('personal.baja');
 
-
-
+    
 
 //RUTAS DE SP NOVEDADES
-Route::get(
-    '/categorias-novedad/lista',
-    [NovedadesController::class, 'listarCategorias']
-)->name('categorias.novedad');
+Route::get('/categorias-novedad/lista', [NovedadesController::class, 'listarCategorias'])
+    ->name('categorias.novedad');
 
-Route::get(
-    '/novedades/lista/{id}',
-    [NovedadesController::class, 'listarNovedadesPorCategoria']
-)->name('novedades.porCategoria');
+Route::get('/novedades/lista/{id}', [NovedadesController::class, 'listarNovedadesPorCategoria'])
+    ->name('novedades.porCategoria');
 
 Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
     ->name('novedades.data');
+
+Route::post('/novedades/registrar', [NovedadesController::class, 'store'])
+    ->name('novedades.store');
+
+Route::get('/novedades/listarNovedadesPorArea', [NovedadesController::class, 'listarNovedadesPorArea'])
+    ->name('novedades.listarNovedadesPorArea');
