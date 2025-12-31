@@ -150,7 +150,7 @@
 .btn-primario {
     background-color: var(--color-accent-green);
     border: none;
-    padding: 0.45rem 1rem;
+    padding: 0.45rem;
     font-weight: 500;
     border-radius: 6px;
     color: #fff;
@@ -170,7 +170,7 @@
 .btn-secundario {
     background-color: var(--color-default);
     border: none;
-    padding: 0.45rem 1rem;
+    padding: 0.45rem;
     font-weight: 500;
     border-radius: 6px;
     color: #fff;
@@ -190,7 +190,7 @@
 .btn-peligro {
     background-color: #dc3545;
     border: none;
-    padding: 0.45rem 1rem;
+    padding: 0.45rem;
     font-weight: 500;
     border-radius: 6px;
     color: #fff;
@@ -213,7 +213,7 @@
     background-color: #6c7a89; /* gris azulado elegante */
     color: #ffffff;
     border: none;
-    padding: 0.45rem 1rem;
+    padding: 0.45rem;
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease-in-out;
@@ -232,4 +232,56 @@
     background-color: #b0b8c1;
     cursor: not-allowed;
     opacity: 0.7;
+}
+
+.btn-alerta {
+    background-color: #f4c430; /* amarillo alerta */
+    color: #1f2937;            /* texto oscuro */
+    border: none;
+    padding: 0.45rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-alerta:hover {
+    background-color: #e0b324; /* más oscuro */
+    color: #1f2937;
+}
+
+.btn-alerta:active {
+    transform: scale(0.97);
+}
+
+.btn-alerta:disabled {
+    background-color: #f6df93;
+    color: #6b7280;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.btn-exito {
+    background-color: #22c55e; /* verde éxito */
+    color: #ffffff;
+    border: none;
+    padding: 0.45rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-exito:hover {
+    background-color: #16a34a;
+    color: #ffffff;
+}
+
+.btn-exito:active {
+    transform: scale(0.97);
+}
+
+.btn-exito:disabled {
+    background-color: #86efac;
+    color: #065f46;
+    cursor: not-allowed;
+    opacity: 0.8;
 }

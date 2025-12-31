@@ -266,14 +266,24 @@ $(document).ready(function () {
                     render: function (data) {
                         return `
                         <button 
-                            class="btn btn-sm btn-outline-primary btn-VerLegajo"
+                            class="btn-secundario btn-VerLegajo"
                             data-id="${data.LEGAJO}" data-nombre="${data.COLABORADOR}">                            
-                            <i class="fa-solid fa-eye"></i> Ver legajo
+                            <i class="fa-solid fa-eye"></i> Legajo
                         </button>
                         <button 
-                            class="btn btn-sm btn-outline-danger btn-DarBaja"
+                            class="btn-peligro btn-DarBaja"
                             data-id="${data.LEGAJO}">
-                            <i class="fa-solid fa-x"></i> Dar baja
+                            <i class="fa-solid fa-x"></i> Baja
+                        </button>
+                        <button 
+                            class="btn-alerta btn-DarBaja"
+                            data-id="${data.LEGAJO}">
+                            <i class="fa-solid fa-pencil"></i> Editar
+                        </button>
+                        <button 
+                            class="btn-primario btn-DarBaja"
+                            data-id="${data.LEGAJO}">
+                            <i class="fa-solid fa-floppy-disk"></i> Novedad
                         </button>
                     `;
                     },
