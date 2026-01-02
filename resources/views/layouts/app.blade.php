@@ -14,8 +14,8 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/datatable.css') }}">
-    <!--<link rel="stylesheet" href="{{ asset('css/formularios.css') }}">-->
+    <link rel="stylesheet" href="{{ asset('css/styleDt.css') }}">
+    <!--<link rel="stylesheet" href="{{ asset('css/botones.css') }}">-->
     <link rel="stylesheet" href="{{ asset('css/modales.css') }}">
 </head>
 

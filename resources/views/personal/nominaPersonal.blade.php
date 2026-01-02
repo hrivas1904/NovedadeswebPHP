@@ -10,7 +10,7 @@
 
     <div class="card" style="border-radius:15px;">
         <div class="card-header">
-            <div class="row d-flex">
+            <div class="row d-flex align-item-center">
                 <div class="col-9 d-flex justify-content-start align-items-center gap-3">
                     <h6>Nómina del Personal</h6>
                     <select id="area" name="area" class="form-select js-select-area" style="width: auto;"
@@ -30,15 +30,15 @@
                 </div>
                 <div class="col-3 text-end">
                     <button type="button" class="btn btn-primario" onclick="abrirModal()">
-                        Nuevo Colaborador
+                        <i class="fa-solid fa-user me-2"></i> Nuevo Colaborador
                     </button>
                 </div>
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table id="tb_personal" class="table">
-                    <thead class="text-start">
+            <div class="table-responsive px-2">
+                <table id="tb_personal" class="table table-striped table-bordered">
+                    <thead class="thead-dark">
                         <tr>
                             <th>Legajo N°</th>
                             <th>Empleado</th>
@@ -53,9 +53,6 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -65,6 +62,7 @@
 @endsection
 
 @push('modals')
+
 <div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 
@@ -553,6 +551,170 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalRegNovedadColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
+    aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content p-2">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Registrar novedad de sueldo
+                </h5>
+                <button type="button" class="btn-close" onclick="cerrarModalNovedad()"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formCargaNovedad" action="{{ route('novedades.store') }}" method="POST">
+
+                    <div class="section-divider mb-3">
+                        <span>Información general</span>
+                    </div>
+
+                    <div class="empleado-box p-3 mb-4">
+                        <div class="row g-3">
+                            <div class="col-lg-1 col-md-3">
+                                <label class="form-label">Fecha de registro</label>
+                                <input type="text" class="form-control" name="fechaRegistro"
+                                    value="{{ now()->format('d-m-Y') }}" readonly>
+                            </div>
+
+                            <div class="col-lg-2 col-md-4">
+                                <label class="form-label">Registrante</label>
+                                <input type="text" class="form-control" value="{{ Auth::user()->name }}" name="registrante" readonly>
+                            </div>
+
+                            <div class="col-lg-2 col-md-4">
+                                <label class="form-label">Rol</label>
+                                <input type="text" class="form-control" value="{{ Auth::user()->rol }}" readonly>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="section-divider mb-3">
+                        <span>Información del empleado</span>
+                    </div>
+
+                    <div class="empleado-box p-3 mb-4">
+                        <div class="row g-3">
+                            <div class="col-lg-1">
+                                <label class="form-label">Legajo</label>
+                                <input type="number" class="form-control" name="legajo" id="inputLegajo" required readonly>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Empleado</label>
+                                <input type="text" class="form-control" name="legajo" id="inputColaborador" required readonly>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Servicio</label>
+                                <input type="text" class="form-control" name="servicio" readonly>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Antigüedad</label>
+                                <input type="text" class="form-control" name="antiguedad" readonly>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <label class="form-label">Régimen</label>
+                                <input type="text" class="form-control" name="regimen" readonly>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <label class="form-label">Hs diarias</label>
+                                <input type="text" class="form-control" name="horasDiarias" readonly>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <label class="form-label">Convenio</label>
+                                <input type="text" class="form-control" name="convenio" readonly>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <label class="form-label">Título</label>
+                                <input type="text" class="form-control" name="titulo" readonly>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <label class="form-label">Afiliado</label>
+                                <input type="text" class="form-control" name="afiliado" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-divider mb-3">
+                        <span>Registrar novedad de sueldo</span>
+                    </div>
+
+                    <div class="empleado-box p-3">
+                        <div class="row g-3">
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Tipo de novedad</label>
+                                <select id="selectCategoriaNovedad" class="form-select" required>
+                                    <option value="">Seleccionar tipo</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Novedad</label>
+                                <select id="selectNovedad" name="idNovedad" class="form-select" disabled required>
+                                    <option value="">Seleccionar novedad</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Código Finnegans</label>
+                                <input type="text" class="form-control" id="codigoFinnegans" name="codigoNovedad"
+                                    readonly>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Fecha aplicación</label>
+                                <input type="date" class="form-control" name="fechaAplicacion"
+                                    onchange="calcularDuracion()" required>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Fecha desde</label>
+                                <input type="date" class="form-control" name="fechaDesde"
+                                    onchange="calcularDuracion()" required>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Fecha hasta</label>
+                                <input type="date" class="form-control" name="fechaHasta"
+                                    onchange="calcularDuracion()" required>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="form-label">Período (días)</label>
+                                <input type="text" class="form-control" name="duracion" readonly required>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="form-label">Descipción</label>
+                                <input type="text" class="form-control" name="descripcion" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secundario" onclick="cerrarModalNovedad()">Cancelar</button>
+                <button type="submit" class="btn btn-primario" form="formCargaNovedad" id="btnRegistrarNovedad">
+                    <i class="fa-solid fa-floppy-disk me-1"></i>
+                    Registrar novedad
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endpush
 
 @push('scripts')

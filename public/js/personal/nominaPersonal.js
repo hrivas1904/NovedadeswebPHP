@@ -4,7 +4,7 @@ let tablaPersonal;
 
 //calculo edad
 function calcularEdad(fecha) {
-    if (!fecha) return '';
+    if (!fecha) return "";
 
     const nacimiento = new Date(fecha);
     const hoy = new Date();
@@ -21,7 +21,7 @@ function calcularEdad(fecha) {
 
 //calculo antiguedad
 function calcularAntiguedad(fecha) {
-    if (!fecha) return '';
+    if (!fecha) return "";
 
     const ingreso = new Date(fecha);
     const hoy = new Date();
@@ -40,29 +40,28 @@ function calcularAntiguedad(fecha) {
         meses += 12;
     }
 
-    let texto = '';
+    let texto = "";
 
     if (años > 0) {
-        texto += `${años} año${años > 1 ? 's' : ''}`;
+        texto += `${años} año${años > 1 ? "s" : ""}`;
     }
 
     if (meses > 0) {
-        texto += (texto ? ' ' : '') + `${meses} mes${meses > 1 ? 'es' : ''}`;
+        texto += (texto ? " " : "") + `${meses} mes${meses > 1 ? "es" : ""}`;
     }
 
-    return texto || '0 meses';
+    return texto || "0 meses";
 }
 
 //formato fecha arg
 function formatearFechaArgentina(fecha) {
-    if (!fecha) return '';
+    if (!fecha) return "";
 
-    const partes = fecha.split('-'); // yyyy-mm-dd
+    const partes = fecha.split("-"); // yyyy-mm-dd
     if (partes.length !== 3) return fecha;
 
     return `${partes[2]}-${partes[1]}-${partes[0]}`;
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
     const tipoContrato = document.getElementById("tipoContrato");
@@ -131,96 +130,113 @@ $(document).ready(function () {
 function verLegajo(legajoColaborador, nombre) {
     console.log("Mostrando legajo:", legajoColaborador);
 
-    $('#tituloLegajo').html(`
+    $("#tituloLegajo").html(`
         <i class="fa-solid fa-id-card me-2"></i>
         Legajo de <strong>${nombre}</strong>
     `);
 
     $.ajax({
         url: `/personal/ver-legajo/${legajoColaborador}`,
-        type: 'GET',
+        type: "GET",
         success: function (response) {
             if (response.success) {
-
                 const d = response.data;
 
                 // Datos personales
-                $('#inputLegajo').val(d.LEGAJO);
-                $('#inputNombre').val(d.COLABORADOR);
-                $('#inputEstado').val(d.ESTADO);
-                $('#inputDni').val(d.DNI);
-                $('#inputCuil').val(d.CUIL);
-                $('#inputFechaNacimiento').val(formatearFechaArgentina(d.FECHA_NAC));
-                $('#inputEdad').val(calcularEdad(d.FECHA_NAC));
+                $("#inputLegajo").val(d.LEGAJO);
+                $("#inputNombre").val(d.COLABORADOR);
+                $("#inputEstado").val(d.ESTADO);
+                $("#inputDni").val(d.DNI);
+                $("#inputCuil").val(d.CUIL);
+                $("#inputFechaNacimiento").val(
+                    formatearFechaArgentina(d.FECHA_NAC)
+                );
+                $("#inputEdad").val(calcularEdad(d.FECHA_NAC));
 
                 // Contacto
-                $('#inputEmail').val(d.CORREO);
-                $('#inputTelefono').val(d.TELEFONO);
-                $('#inputDomicilio').val(d.DOMICILIO);
-                $('#inputLocalidad').val(d.LOCALIDAD);
+                $("#inputEmail").val(d.CORREO);
+                $("#inputTelefono").val(d.TELEFONO);
+                $("#inputDomicilio").val(d.DOMICILIO);
+                $("#inputLocalidad").val(d.LOCALIDAD);
 
                 // Socioeconómicos
-                $('#inputEstadoCivil').val(d.ESTADO_CIVIL);
-                $('#inputGenero').val(d.GENERO);
-                $('#inputObraSocial').val(d.OBRA_SOCIAL);
-                $('#inputCodigoOS').val(d.COD_OS);
-                $('#inputTitulo').val(d.TITULO);
-                $('#inputDescripTitulo').val(d.DESCRIP_TITULO);
-                $('#inputMatricula').val(d.MAT_PROF);
+                $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
+                $("#inputGenero").val(d.GENERO);
+                $("#inputObraSocial").val(d.OBRA_SOCIAL);
+                $("#inputCodigoOS").val(d.COD_OS);
+                $("#inputTitulo").val(d.TITULO);
+                $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
+                $("#inputMatricula").val(d.MAT_PROF);
 
                 // Laborales
-                $('#inputTipoContrato').val(d.TIPO_CONTRATO);
-                $('#inputFechaIngreso').val(formatearFechaArgentina(d.FECHA_INGRESO));
-                $('#inputFechaFinPrueba').val(formatearFechaArgentina(d.FECHA_FIN_PRUEBA));
-                $('#inputAntiguedad').val(calcularAntiguedad(d.FECHA_INGRESO));
-                $('#inputFechaEgreso').val(d.FECHA_EGRESO);
-                $('#inputArea').val(d.AREA);
-                $('#inputServicio').val(d.SERVICIO);
-                $('#inputConvenio').val(d.CONVENIO);
-                $('#inputCategoria').val(d.CATEGORIA);
-                $('#inputRol').val(d.ROL);
-                $('#inputRegimen').val(d.REGIMEN);
-                $('#inputHorasDiarias').val(d.HORAS_DIARIAS);
-                $('#inputCordinador').val(d.COORDINADOR);
-                $('#inputAfiliado').val(d.AFILIADO);
+                $("#inputTipoContrato").val(d.TIPO_CONTRATO);
+                $("#inputFechaIngreso").val(
+                    formatearFechaArgentina(d.FECHA_INGRESO)
+                );
+                $("#inputFechaFinPrueba").val(
+                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA)
+                );
+                $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
+                $("#inputFechaEgreso").val(d.FECHA_EGRESO);
+                $("#inputArea").val(d.AREA);
+                $("#inputServicio").val(d.SERVICIO);
+                $("#inputConvenio").val(d.CONVENIO);
+                $("#inputCategoria").val(d.CATEGORIA);
+                $("#inputRol").val(d.ROL);
+                $("#inputRegimen").val(d.REGIMEN);
+                $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
+                $("#inputCordinador").val(d.COORDINADOR);
+                $("#inputAfiliado").val(d.AFILIADO);
 
                 $("#modalLegajoColaborador").modal("show");
-
             } else {
                 Swal.fire("Error", response.mensaje, "error");
             }
         },
         error: function () {
             Swal.fire("Error", "No se pudo cargar el legajo", "error");
-        }
+        },
     });
 }
 
 //dar de baja empleado
 function darDeBaja(legajoColaborador) {
     Swal.fire({
-        title: '¿Dar de baja?',
-        text: 'El empleado quedará inactivo',
-        icon: 'warning',
+        title: "¿Dar de baja?",
+        text: "El empleado quedará inactivo",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Sí, dar de baja',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: "Sí, dar de baja",
+        cancelButtonText: "Cancelar",
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
                 url: `/personal/baja/${legajoColaborador}`,
-                type: 'POST',
+                type: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content"
+                    ),
                 },
                 success: function (res) {
-                    Swal.fire('OK', res.mensaje, 'success');
+                    Swal.fire("OK", res.mensaje, "success");
                     tablaPersonal.ajax.reload(null, false);
-                }
+                },
             });
         }
     });
     tablaPersonal.ajax.reload();
+}
+
+//carga novedad
+function registrarNovedad(legajoColaborador) {
+    console.log("Cargar novedad:", legajoColaborador);
+
+    const modal = $('#modalRegNovedadColaborador');
+
+    modal.modal('show');
+
+    $('#inputLegajo').val(legajoColaborador);
 }
 
 //carga dt personal
@@ -228,7 +244,7 @@ $(document).ready(function () {
     tablaPersonal = $("#tb_personal");
 
     if (tablaPersonal.length > 0) {
-        let dt = new DataTable("#tb_personal", {
+        let dt = new DataTable(tablaPersonal, {
             ajax: {
                 url: "/personal/listar",
                 type: "GET",
@@ -236,15 +252,26 @@ $(document).ready(function () {
                     d.area_id = $("#area").val();
                 },
             },
-            paging: true,
-            paginate: {
-                first: "",
-                last: "",
-                next: "",
-                previous: "",
-            },
+            scrollX: true,
+            ordering: true,
+            autoWidth: false,
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                lengthMenu: "_MENU_",
+                paginate: {
+                    first: "<<",
+                    previous: "<",
+                    next: ">",
+                    last: ">>"
+                },
+            }, 
             columns: [
-                { data: "LEGAJO" },
+                {
+                    data: "LEGAJO",
+                    render: function (data, type, row) {
+                        return data.toString().padStart(5, "0");
+                    },
+                },
                 { data: "COLABORADOR" },
                 { data: "DNI" },
                 { data: "ANTIGUEDAD" },
@@ -281,37 +308,31 @@ $(document).ready(function () {
                             <i class="fa-solid fa-pencil"></i> Editar
                         </button>
                         <button 
-                            class="btn-primario btn-DarBaja"
+                            class="btn-primario btn-RegNovedad"
                             data-id="${data.LEGAJO}">
                             <i class="fa-solid fa-floppy-disk"></i> Novedad
                         </button>
                     `;
                     },
                 },
-            ],
-            scrollX: true,
-            language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
-            },
-            paging: false,
-            autoWidth: false,
-            dom: "<'dt-top d-flex align-items-center justify-content-between'Bf>rt<'dt-bottom'p>",
+            ],                       
+            dom: "<'d-top d-flex align-items-center gap-2'lB<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'ip>",
             buttons: [
                 {
                     extend: "excelHtml5",
-                    text: "Exportar Excel",
+                    text: '<i class="fa-solid fa-file-excel"></i> Excel',
                     className: "btn-export-excel",
                     exportOptions: { columns: ":visible" },
                 },
                 {
                     extend: "pdfHtml5",
-                    text: "Exportar PDF",
+                    text: '<i class="fa-solid fa-file-pdf"></i> PDF',
                     className: "btn-export-pdf",
                     exportOptions: { columns: ":visible" },
                 },
                 {
                     extend: "print",
-                    text: "Imprimir",
+                    text: '<i class="fa-solid fa-print"></i> Imprimir',
                     title: "Productos en sucursal",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-printer",
@@ -329,21 +350,29 @@ $(document).ready(function () {
             }
         }, 500);
 
-        $(document).on('click', '.btn-VerLegajo', function (event) {
+        $(document).on("click", ".btn-VerLegajo", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const legajoColaborador = $(this).data('id');
-            const nombre = $(this).data('nombre');
+            const legajoColaborador = $(this).data("id");
+            const nombre = $(this).data("nombre");
             console.log("Legajo recibido: " + legajoColaborador);
             verLegajo(legajoColaborador, nombre);
         });
 
-        $(document).on('click', '.btn-DarBaja', function (event) {
+        $(document).on("click", ".btn-DarBaja", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const legajoColaborador = $(this).data('id');
+            const legajoColaborador = $(this).data("id");
             console.log("Id recibido: " + legajoColaborador);
             darDeBaja(legajoColaborador);
+        });
+
+        $(document).on("click", ".btn-RegNovedad", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const legajoColaborador = $(this).data("id");
+            console.log("Id recibido: " + legajoColaborador);
+            registrarNovedad(legajoColaborador);
         });
     }
 });
@@ -585,4 +614,101 @@ function abrirModalLegajo() {
 
 function cerrarModalLegajo() {
     $("#modalLegajoColaborador").modal("hide");
+}
+
+function abrirModalNovedad() {
+    $("#modalRegNovedadColaborador").modal("show");
+}
+
+function cerrarModalNovedad() {
+    $("#formCargaNovedad")[0].reset();
+    $("#modalRegNovedadColaborador").modal("hide");
+}
+
+function calcularDuracion() {
+    const fechaDesdeInput = document.querySelector('[name="fechaDesde"]');
+    const fechaHastaInput = document.querySelector('[name="fechaHasta"]');
+    const duracionInput = document.querySelector('[name="duracion"]');
+
+    if (!fechaDesdeInput.value || !fechaHastaInput.value) {
+        duracionInput.value = "";
+        return;
+    }
+
+    const fechaDesde = new Date(fechaDesdeInput.value);
+    const fechaHasta = new Date(fechaHastaInput.value);
+
+    // Validación: fecha hasta no puede ser menor
+    if (fechaHasta < fechaDesde) {
+        Swal.fire({
+            icon: "warning",
+            title: "Fecha incorrecta",
+            text: "La fecha hasta no puede ser anterior a la fecha desde.",
+        });
+
+        fechaHastaInput.value = "";
+        duracionInput.value = "";
+        return;
+    }
+
+    // Cálculo de días (incluye mismo día)
+    const diffTime = fechaHasta.getTime() - fechaDesde.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    duracionInput.value = diffDays;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const selectCategoria = document.getElementById("selectCategoria");
+    const selectNovedad = document.getElementById("selectNovedad");
+    const inputCodigo = document.getElementById("codigoFinnegans");
+
+    cargarCategoriasNovedad();
+
+    selectCategoria.addEventListener("change", () => {
+        const idCategoria = selectCategoria.value;
+
+        selectNovedad.innerHTML =
+            '<option value="">Seleccionar novedad</option>';
+        selectNovedad.disabled = true;
+        inputCodigo.value = "";
+
+        if (!idCategoria) return;
+
+        fetch(`/novedades/lista/${idCategoria}`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (!Array.isArray(data)) return;
+
+                data.forEach((item) => {
+                    const option = document.createElement("option");
+                    option.value = item.ID_NOVEDAD;
+                    option.textContent = item.NOMBRE;
+
+                    selectNovedad.appendChild(option);
+                });
+
+                selectNovedad.disabled = false;
+            });
+    });
+
+    selectNovedad.addEventListener("change", () => {
+        const selected = selectNovedad.options[selectNovedad.selectedIndex];
+        inputCodigo.value = selected.dataset.codigo || "";
+    });
+});
+
+function cargarCategoriasNovedad() {
+    fetch("/categorias-novedad/lista")
+        .then((res) => res.json())
+        .then((data) => {
+            const select = document.getElementById("selectCategoriaNovedad");
+
+            data.forEach((cat) => {
+                const option = document.createElement("option");
+                option.value = cat.ID_CATEG;
+                option.textContent = cat.NOMBRE;
+                select.appendChild(option);
+            });
+        });
 }
