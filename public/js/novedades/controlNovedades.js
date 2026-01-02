@@ -49,6 +49,7 @@ $(document).ready(function () {
                     d.area_id = $("#area").val();
                 },
             },
+            scrollX: true,
             paging: true,
             paginate: {
                 first: "",
@@ -56,22 +57,35 @@ $(document).ready(function () {
                 next: "",
                 previous: "",
             },
+            columnDefs: [
+                {
+                    targets: [6, 12, 13, 14, 15],
+                    visible: false,
+                    searchable: false,
+                },
+            ],
             columns: [
-                { data: "FECHA_CARGA" },
+                { data: "REGISTRO" },
+                { data: "FECHA_REGISTRO" },
                 { data: "AREA" },
+                { data: "COLABORADOR" },
                 {
                     data: "LEGAJO",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "COLABORADOR" },
                 { data: "CODIGO_NOVEDAD" },
                 { data: "CATEGORIA" },
                 { data: "NOVEDAD_NOMBRE" },
                 { data: "FECHA_DESDE" },
                 { data: "FECHA_HASTA" },
+                { data: "FECHA_APLICACION" },
                 { data: "DURACION" },
+                { data: "VALOR2" },
+                { data: "CENTRO_COSTO" },
+                { data: "REGISTRANTE" },
+                { data: "DESCRIPCION" },
             ],
             scrollX: true,
             language: {
@@ -83,19 +97,43 @@ $(document).ready(function () {
             buttons: [
                 {
                     extend: "excelHtml5",
-                    text: "Exportar Excel",
+                    text: '<i class="fa-solid fa-file-excel"></i> Excel',
                     className: "btn-export-excel",
-                    exportOptions: { columns: ":visible" },
+                    title: "",
+                    exportOptions: {
+                        columns: [4, 5, 13, 11, 12, 10, 8, 9, 15],
+                        format: {
+                            header: function (data, columnIdx) {
+                                const headersMap = {
+                                    4: "LEGAJO",
+                                    5: "NOVEDAD",
+                                    13: "CENTROCOSTO",
+                                    11: "VALOR1",
+                                    12: "VALOR2",
+                                    10: "FECHAAPLICACION",
+                                    8: "FECHADESDE",
+                                    9: "FECHAHASTA",
+                                    15: "DESCRIPCION",
+                                };
+                                return headersMap.hasOwnProperty(columnIdx)
+                                    ? headersMap[columnIdx]
+                                    : data;
+                            },
+                        },
+                    },
+                    customize: function (xlsx) {
+                        var sheet = xlsx.xl.worksheets["sheet1.xml"];
+                    },
                 },
                 {
                     extend: "pdfHtml5",
-                    text: "Exportar PDF",
+                    text: '<i class="fa-solid fa-file-pdf"></i> PDF',
                     className: "btn-export-pdf",
                     exportOptions: { columns: ":visible" },
                 },
                 {
                     extend: "print",
-                    text: "Imprimir",
+                    text: '<i class="fa-solid fa-print"></i> Imprimir',
                     title: "Productos en sucursal",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-printer",
@@ -130,4 +168,6 @@ $(document).ready(function () {
             darDeBaja(legajoColaborador);
         });
     }
+
+    
 });

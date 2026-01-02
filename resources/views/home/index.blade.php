@@ -18,12 +18,15 @@
                 </button>
                 <div class="hero-submenu">
                     <a href="/nomina">Nómina del Personal</a>
+                    @if(Auth::user()->rol === 'Administrador/a')
                     <a href="/registroAsistencia">Registro de Asistencia</a>
                     <a href="/registroAsistencia">Control de Asistencia</a>
                     <a href="/cronograma">Cronograma del Personal</a>
+                    @endif
                 </div>
             </div>
 
+            @if(Auth::user()->rol === 'Administrador/a')
             <div class="hero-card">
                 <button class="hero-btn">
                     Gestión de Novedades
@@ -47,6 +50,8 @@
                     Tablero de Control
                 </a>
             </div>
+
+            @endif
 
         </div>
     </div>

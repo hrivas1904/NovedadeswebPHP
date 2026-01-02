@@ -63,6 +63,21 @@ function formatearFechaArgentina(fecha) {
     return `${partes[2]}-${partes[1]}-${partes[0]}`;
 }
 
+//función para tomar el último día del mes
+function setFechaAplicacionUltimoDiaMes() {
+    const hoy = new Date();
+
+    // Último día del mes actual
+    const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+
+    // Formato YYYY-MM-DD
+    const fechaFormateada = ultimoDia.toISOString().split("T")[0];
+
+    // Setear en el input
+    document.querySelector('input[name="fechaAplicacion"]').value =
+        fechaFormateada;
+}
+
 //seleccionar tipo de contrato
 document.addEventListener("DOMContentLoaded", () => {
     const tipoContrato = document.getElementById("tipoContrato");
@@ -202,9 +217,9 @@ function verLegajo(legajoColaborador, nombre) {
 }
 
 //dar de baja empleado
-function darDeBaja(legajoColaborador) {
+function darDeBaja(legajoColaborador, nombre) {
     Swal.fire({
-        title: "¿Dar de baja?",
+        title: `¿Dar de baja a <strong>${nombre}</strong>?`,
         text: "El empleado quedará inactivo",
         icon: "warning",
         showCancelButton: true,
@@ -232,18 +247,46 @@ function darDeBaja(legajoColaborador) {
 //carga novedad
 function registrarNovedad(legajoColaborador) {
     console.log("Cargar novedad:", legajoColaborador);
+    setFechaAplicacionUltimoDiaMes();
+    const modal = $("#modalRegNovedadColaborador");
 
-    const modal = $('#modalRegNovedadColaborador');
+    $.ajax({
+        url: `/personal/info/${legajoColaborador}`,
+        type: "GET",
+        success: function (data) {
+            $("#tituloRegNovedad").html(`
+                <i class="fa-solid fa-id-card me-2"></i>
+                Registrar novedad de sueldo a <strong>${data.COLABORADOR}</strong>
+            `);
 
-    modal.modal('show');
+            $("input[name='legajo']").val(data.LEGAJO);
+            $("input[name='colaborador']").val(data.COLABORADOR);
+            $("input[name='servicio']").val(data.SERVICIO);
+            $("input[name='antiguedad']").val(
+                calcularAntiguedad(data.FECHA_INGRESO)
+            );
+            $("input[name='regimen']").val(data.REGIMEN);
+            $("input[name='horasDiarias']").val(data.HORAS_DIARIAS);
+            $("input[name='convenio']").val(data.CONVENIO);
+            $("input[name='titulo']").val(data.TITULO);
+            $("input[name='afiliado']").val(data.AFILIADO);
 
-    $('#inputLegajo').val(legajoColaborador);
+            modal.modal("show");
+        },
+        error: function () {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo obtener la información del colaborador",
+            });
+        },
+    });
 }
 
 //carga dt personal
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
-        tablaPersonal=$("#tb_personal").DataTable({
+        tablaPersonal = $("#tb_personal").DataTable({
             ajax: {
                 url: "/personal/listar",
                 type: "GET",
@@ -262,9 +305,9 @@ $(document).ready(function () {
                     first: "<<",
                     previous: "<",
                     next: ">",
-                    last: ">>"
+                    last: ">>",
                 },
-            }, 
+            },
             columns: [
                 {
                     data: "LEGAJO",
@@ -291,31 +334,51 @@ $(document).ready(function () {
                 {
                     data: null,
                     render: function (data) {
-                        return `
-                        <button 
-                            class="btn-secundario btn-VerLegajo"
-                            data-id="${data.LEGAJO}" data-nombre="${data.COLABORADOR}">                            
-                            <i class="fa-solid fa-eye"></i> Legajo
-                        </button>
-                        <button 
-                            class="btn-peligro btn-DarBaja"
-                            data-id="${data.LEGAJO}">
-                            <i class="fa-solid fa-x"></i> Baja
-                        </button>
-                        <button 
-                            class="btn-alerta btn-DarBaja"
-                            data-id="${data.LEGAJO}">
-                            <i class="fa-solid fa-pencil"></i> Editar
-                        </button>
-                        <button 
-                            class="btn-primario btn-RegNovedad"
-                            data-id="${data.LEGAJO}">
-                            <i class="fa-solid fa-floppy-disk"></i> Novedad
-                        </button>
-                    `;
+                        let botones = `
+                            <button 
+                                class="btn-secundario btn-VerLegajo"
+                                data-id="${data.LEGAJO}"
+                                data-nombre="${data.COLABORADOR}">
+                                <i class="fa-solid fa-eye"></i> Legajo
+                            </button>
+                        `;
+
+                        // SOLO ADMIN
+                        if (USER_ROLE === "Administrador/a") {
+                            botones += `
+                            <button 
+                                class="btn-peligro btn-DarBaja"
+                                data-id="${data.LEGAJO}"
+                                data-nombre="${data.COLABORADOR}">
+                                <i class="fa-solid fa-x"></i> Baja
+                            </button>
+
+                            <button 
+                                class="btn-alerta btn-Editar"
+                                data-id="${data.LEGAJO}">
+                                <i class="fa-solid fa-pencil"></i> Editar
+                            </button>
+                        `;
+                        }
+
+                        // ADMIN + COORDINADOR
+                        if (
+                            USER_ROLE === "Administrador/a" ||
+                            USER_ROLE === "Coordinador/a"
+                        ) {
+                            botones += `
+                            <button 
+                                class="btn-primario btn-RegNovedad"
+                                data-id="${data.LEGAJO}">
+                                <i class="fa-solid fa-floppy-disk"></i> Novedad
+                            </button>
+                        `;
+                        }
+
+                        return botones;
                     },
                 },
-            ],                       
+            ],
             dom: "<'d-top d-flex align-items-center gap-2'lB<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'ip>",
             buttons: [
                 {
@@ -363,8 +426,9 @@ $(document).ready(function () {
             event.preventDefault();
             event.stopPropagation();
             const legajoColaborador = $(this).data("id");
+            const nombre = $(this).data("nombre");
             console.log("Id recibido: " + legajoColaborador);
-            darDeBaja(legajoColaborador);
+            darDeBaja(legajoColaborador, nombre);
         });
 
         $(document).on("click", ".btn-RegNovedad", function (event) {
@@ -650,7 +714,6 @@ function calcularDuracion() {
 
 //selector de categorías de novedades de sueldo
 $(document).ready(function () {
-
     cargarCategoriasNovedades();
 
     $("#selectCategoriaNovedades").on("change", function () {
@@ -683,7 +746,7 @@ function cargarCategoriasNovedades() {
             select.empty();
             select.append('<option value="">Seleccione categoría</option>');
 
-            data.forEach(cat => {
+            data.forEach((cat) => {
                 select.append(`
                     <option value="${cat.ID_CATEG}">
                         ${cat.NOMBRE}
@@ -693,7 +756,7 @@ function cargarCategoriasNovedades() {
         },
         error: function (xhr, status, error) {
             console.error("Error cargando categorías:", error);
-        }
+        },
     });
 }
 
@@ -702,14 +765,14 @@ function cargarNovedadesPorCategoria(idCategoria) {
         url: `/novedades/lista/${idCategoria}`,
         type: "GET",
         success: function (data) {
-
             const select = $("#selectNovedad");
 
-            select.empty()
-                  .append('<option value="">Seleccionar novedad</option>')
-                  .prop("disabled", false);
+            select
+                .empty()
+                .append('<option value="">Seleccionar novedad</option>')
+                .prop("disabled", false);
 
-            data.forEach(nov => {
+            data.forEach((nov) => {
                 select.append(`
                     <option 
                         value="${nov.ID_NOVEDAD}"
@@ -721,7 +784,7 @@ function cargarNovedadesPorCategoria(idCategoria) {
         },
         error: function () {
             console.error("Error al cargar novedades");
-        }
+        },
     });
 }
 
@@ -734,3 +797,78 @@ function resetearNovedades() {
     $("#codigoFinnegans").val("");
     $("#idNovedad").val("");
 }
+
+$("#formCargaNovedad").on("submit", function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: "/novedades/registrar",
+        type: "POST",
+        data: $(this).serialize(),
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Correcto",
+                    text: response.mensaje,
+                });
+
+                $("#formCargaNovedad")[0].reset();
+                $("#modalRegNovedadColaborador").modal("hide");
+
+                if (typeof tablaPersonal !== "undefined") {
+                    tablaPersonal.ajax.reload(null, false);
+                }
+            } else {
+                Swal.fire("Atención", response.mensaje, "warning");
+            }
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo registrar la novedad",
+            });
+        },
+    });
+
+    $("#tb_historialNovedades").DataTable({
+        ajax: {
+            url: "/novedades/historial/" + $("#inputLegajo").val(),
+            type: "GET",
+            dataSrc: "",
+        },
+
+        paging: false,
+        searching: false,
+        info: false,
+        ordering: true,
+
+        columns: [
+            {
+                data: "FECHA_REGISTRO",
+                render: (d) => (d ? d.split("T")[0] : ""),
+            },
+            { data: "CATEGORIA" },
+            { data: "NOVEDAD_NOMBRE" },
+            {
+                data: "FECHA_DESDE",
+                render: (d) => (d ? d.split("T")[0] : ""),
+            },
+            {
+                data: "FECHA_HASTA",
+                render: (d) => (d ? d.split("T")[0] : ""),
+            },
+            { data: "DURACION" },
+        ],
+
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+        },
+    });
+});

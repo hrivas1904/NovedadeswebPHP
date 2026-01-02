@@ -29,9 +29,11 @@
 
                     </div>
                     <div class="col-3 text-end">
+                        @if(Auth::user()->rol === 'Administrador/a')
                         <button type="button" class="btn btn-primario" onclick="abrirModal()">
                             <i class="fa-solid fa-user me-2"></i> Nuevo Colaborador
                         </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -533,9 +535,6 @@
                                                 <th>Periodo</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -607,7 +606,7 @@
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Empleado</label>
-                                    <input type="text" class="form-control" name="legajo" id="inputColaborador"
+                                    <input type="text" class="form-control" name="colaborador" id="inputColaborador"
                                         required readonly>
                                 </div>
 
@@ -674,13 +673,12 @@
                                     <input type="text" class="form-control" id="codigoFinnegans" readonly>
                                 </div>
 
-                                <input type="hidden" id="idNovedad" name="idNovedad">
-
+                                <input type="hidden" id="idNovedad" name="idNovedad" required readonly>
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha aplicación</label>
                                     <input type="date" class="form-control" name="fechaAplicacion"
-                                        onchange="calcularDuracion()" required>
+                                        onchange="" required>
                                 </div>
 
                                 <div class="col-lg-2">
@@ -702,7 +700,7 @@
 
                                 <div class="col-lg-4">
                                     <label class="form-label">Descipción</label>
-                                    <input type="text" class="form-control" name="descripcion" required>
+                                    <input type="text" class="form-control" name="descripcion">
                                 </div>
                             </div>
                         </div>

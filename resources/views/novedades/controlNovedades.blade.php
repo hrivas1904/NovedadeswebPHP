@@ -35,20 +35,24 @@
                 <table id="tb_control" class="table">
                     <thead>
                         <tr>
-                            <th>Fecha reg</th>
-                            <th>Área</th>
-                            <th>Legajo</th>
-                            <th>Empleado</th>
-                            <th>Cód Finnegan</th>
-                            <th>Tipo</th>
-                            <th>Novedad</th>
-                            <th>Fecha desde</th>
-                            <th>Fecha hasta</th>
-                            <th>Duración (Días)</th>
+                            <th>N°</th>
+                            <th>FECHA</th>
+                            <th>AREA</th>
+                            <th>COLABORADOR</th>
+                            <th>LEGAJO</th>
+                            <th>CÓDIGO</th>
+                            <th>CATEG</th>
+                            <th>NOVEDAD</th>
+                            <th>F DESDE</th>
+                            <th>F HASTA</th>
+                            <th>F APLICACIÓN</th>
+                            <th>CANT</th>
+                            <th>VALOR2</th>
+                            <th>CENTRO_COSTO</th>
+                            <th>REGISTRANTE</th>
+                            <th>DESCRIP</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
                 </table>
             </div>
         </div>

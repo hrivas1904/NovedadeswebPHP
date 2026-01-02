@@ -29,6 +29,7 @@
         </div>
 
         <ul class="nav-list">
+            @if(Auth::user()->rol === 'Administrador/a')
             <li>
                 <a href="{{ route('dashboard') }}">
                     <i class="bx bx-grid-alt"></i>
@@ -36,6 +37,7 @@
                 </a>
                 <span class="tooltip">Dashboard</span>
             </li>
+            @endif
 
             <li class="submenu">
                 <input type="checkbox" id="menu-personal">
@@ -46,13 +48,16 @@
                 </label>
                 <ul class="sub-menu">
                     <li><a href="{{ route('nominaPersonal') }}">Nómina de Personal</a></li>
+                    @if(Auth::user()->rol === 'Administrador/a')
                     <li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>
                     <li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>
                     <li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>
+                    @endif
                 </ul>
                 <span class="tooltip">Personal</span>
             </li>
 
+            
             <li class="submenu">
                 <input type="checkbox" id="menu-novedades">
                 <label for="menu-novedades">
@@ -61,13 +66,15 @@
                     <i class="bx bx-chevron-down arrow"></i>
                 </label>
                 <ul class="sub-menu">
-                    <li><a href="{{ route('registroNovedades') }}">Registro de Novedades</a></li>
                     <li><a href="{{ route('controlNovedades') }}">Control de Novedades</a></li>
+                    @if(Auth::user()->rol === 'Administrador/a')
                     <li><a href="{{ route('configNovedades') }}">Configuración de Novedades</a></li>
+                    @endif
                 </ul>
                 <span class="tooltip">Novedades</span>
             </li>
 
+            @if(Auth::user()->rol === 'Administrador/a')
             <li class="submenu">
                 <input type="checkbox" id="menu-config">
                 <label for="menu-config">
@@ -82,6 +89,7 @@
                 </ul>
                 <span class="tooltip">Configuraciones</span>
             </li>
+            @endif
 
             <div class="branding-footer">
                 <div class="branding-profile-box">

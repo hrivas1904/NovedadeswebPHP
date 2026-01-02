@@ -28,7 +28,12 @@ class NovedadesController extends Controller
     public function listarCategorias()
     {
         try {
-            $categorias = DB::select('CALL SP_LISTA_CATEG_NOVEDADES()');
+            $rol = Auth::user()->rol;
+
+            $categorias = DB::select(
+                'CALL SP_LISTA_CATEG_NOVEDADES_POR_ROL(?)',
+                [$rol]
+            );
 
             return response()->json($categorias);
         } catch (\Exception $e) {
@@ -67,28 +72,30 @@ class NovedadesController extends Controller
         }
     }
 
-    public function guardarNovedad(Request $request)
+
+    public function registrarNovedad(Request $request)
     {
         try {
 
-            DB::statement("
-            CALL SP_REGISTRAR_NOVEDAD(
+            DB::statement(
+                "CALL SP_REGISTRAR_NOVEDAD(
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @mensaje
-            )
-        ", [
-                $request->legajo,
-                $request->idNovedad,
-                date('Y-m-d'),                 // fecha registro
-                $request->fechaDesde,
-                $request->fechaHasta,
-                $request->fechaAplicacion,
-                $request->valor1,
-                $request->valor2,
-                $request->centroCosto,
-                $request->duracion,
-                $request->registrante,
-                $request->descripcion
-            ]);
+            )",
+                [
+                    $request->legajo,
+                    $request->idNovedad,
+                    now(), // fecha registro
+                    $request->fechaDesde,
+                    $request->fechaHasta,
+                    $request->fechaAplicacion,
+                    $request->valor1 ?? null,
+                    $request->valor2 ?? null,
+                    $request->centroCosto ?? null,
+                    $request->duracion,
+                    auth()->user()->name,
+                    $request->descripcion?? null
+                ]
+            );
 
             $resultado = DB::select("SELECT @mensaje AS mensaje");
 
@@ -97,10 +104,11 @@ class NovedadesController extends Controller
                 'mensaje' => $resultado[0]->mensaje
             ]);
         } catch (\Exception $e) {
+
             return response()->json([
                 'success' => false,
                 'mensaje' => 'Error al registrar la novedad',
-                'error'   => $e->getMessage()
+                'error' => $e->getMessage()
             ], 500);
         }
     }

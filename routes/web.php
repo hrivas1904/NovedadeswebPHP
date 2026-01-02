@@ -76,7 +76,13 @@ Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLega
 Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado'])
     ->name('personal.baja');
 
-    
+Route::get(
+    '/novedades/historial/{legajo}',
+    [NovedadesController::class, 'historialNovedades']
+);
+
+
+
 
 //RUTAS DE SP NOVEDADES
 Route::get('/categorias-novedad/lista', [NovedadesController::class, 'listarCategorias'])
@@ -88,8 +94,16 @@ Route::get('/novedades/lista/{id}', [NovedadesController::class, 'listarNovedade
 Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
     ->name('novedades.data');
 
-Route::post('/novedades/guardar', [PersonalController::class, 'guardarNovedad'])
-    ->name('novedades.store');
+Route::post(
+    '/novedades/registrar',
+    [NovedadesController::class, 'registrarNovedad']
+)->name('novedades.store');
+
 
 Route::get('/novedades/listarNovedadesPorArea', [NovedadesController::class, 'listarNovedadesPorArea'])
     ->name('novedades.listarNovedadesPorArea');
+
+Route::get(
+    '/personal/info/{legajo}',
+    [PersonalController::class, 'infoMinimaEmpleado']
+)->name('personal.info');

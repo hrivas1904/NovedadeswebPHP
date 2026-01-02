@@ -207,4 +207,29 @@ class PersonalController extends Controller
             ], 500);
         }
     }
+
+    public function infoMinimaEmpleado($legajo)
+    {
+        $data = DB::select("CALL SP_INFO_MINIMA_EMPLEADO(?)", [$legajo]);
+
+        return response()->json($data[0] ?? null);
+    }
+
+    public function historialNovedades($legajo)
+    {
+        try {
+            $data = DB::select(
+                "CALL SP_LISTA_NOVEDADESXCOLABORADOR(?)",
+                [$legajo]
+            );
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error al cargar historial',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
