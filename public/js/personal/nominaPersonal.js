@@ -63,6 +63,7 @@ function formatearFechaArgentina(fecha) {
     return `${partes[2]}-${partes[1]}-${partes[0]}`;
 }
 
+//seleccionar tipo de contrato
 document.addEventListener("DOMContentLoaded", () => {
     const tipoContrato = document.getElementById("tipoContrato");
     const fechaInicio = document.getElementById("fechaInicio");
@@ -110,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+//selector de titulo
 $(document).ready(function () {
     // Escuchar el evento 'change' del selector de título
     $("#select-titulo").on("change", function () {
@@ -220,12 +222,11 @@ function darDeBaja(legajoColaborador) {
                 },
                 success: function (res) {
                     Swal.fire("OK", res.mensaje, "success");
-                    tablaPersonal.ajax.reload(null, false);
+                    $("#tb_personal").ajax.reload(null, false);
                 },
             });
         }
     });
-    tablaPersonal.ajax.reload();
 }
 
 //carga novedad
@@ -241,13 +242,12 @@ function registrarNovedad(legajoColaborador) {
 
 //carga dt personal
 $(document).ready(function () {
-    tablaPersonal = $("#tb_personal");
-
-    if (tablaPersonal.length > 0) {
-        let dt = new DataTable(tablaPersonal, {
+    if ($("#tb_personal").length > 0) {
+        tablaPersonal=$("#tb_personal").DataTable({
             ajax: {
                 url: "/personal/listar",
                 type: "GET",
+                dataSrc: "data",
                 data: function (d) {
                     d.area_id = $("#area").val();
                 },
@@ -341,12 +341,12 @@ $(document).ready(function () {
         });
 
         $("#area").on("change", function () {
-            dt.ajax.reload();
+            tablaPersonal.ajax.reload();
         });
 
         setTimeout(function () {
             if ($("#area").val() !== "" && $("#area").val() !== null) {
-                dt.ajax.reload();
+                tablaPersonal.ajax.reload();
             }
         }, 500);
 
@@ -376,16 +376,6 @@ $(document).ready(function () {
         });
     }
 });
-
-function previewImagen(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            document.getElementById("previewFoto").src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
 
 //sp para cargar selector areas
 $(document).ready(function () {
@@ -557,6 +547,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+//alta de colaborador
 function abrirModal() {
     $("#modalAltaColaborador").modal("show");
 }
@@ -608,6 +599,7 @@ $("#formAltaColaborador").on("submit", function (e) {
     });
 });
 
+//legajo del colaborador
 function abrirModalLegajo() {
     $("#modalLegajoColaborador").modal("show");
 }
@@ -616,6 +608,7 @@ function cerrarModalLegajo() {
     $("#modalLegajoColaborador").modal("hide");
 }
 
+//#########REGISTRO DE NOVEDADES#########//
 function abrirModalNovedad() {
     $("#modalRegNovedadColaborador").modal("show");
 }
@@ -625,6 +618,7 @@ function cerrarModalNovedad() {
     $("#modalRegNovedadColaborador").modal("hide");
 }
 
+//calculo periodo de novedad
 function calcularDuracion() {
     const fechaDesdeInput = document.querySelector('[name="fechaDesde"]');
     const fechaHastaInput = document.querySelector('[name="fechaHasta"]');
@@ -640,11 +634,7 @@ function calcularDuracion() {
 
     // Validación: fecha hasta no puede ser menor
     if (fechaHasta < fechaDesde) {
-        Swal.fire({
-            icon: "warning",
-            title: "Fecha incorrecta",
-            text: "La fecha hasta no puede ser anterior a la fecha desde.",
-        });
+        alert("La fecha hasta no puede ser anterior a la fecha desde");
 
         fechaHastaInput.value = "";
         duracionInput.value = "";
@@ -658,57 +648,89 @@ function calcularDuracion() {
     duracionInput.value = diffDays;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const selectCategoria = document.getElementById("selectCategoria");
-    const selectNovedad = document.getElementById("selectNovedad");
-    const inputCodigo = document.getElementById("codigoFinnegans");
+//selector de categorías de novedades de sueldo
+$(document).ready(function () {
 
-    cargarCategoriasNovedad();
+    cargarCategoriasNovedades();
 
-    selectCategoria.addEventListener("change", () => {
-        const idCategoria = selectCategoria.value;
+    $("#selectCategoriaNovedades").on("change", function () {
+        const idCategoria = $(this).val();
 
-        selectNovedad.innerHTML =
-            '<option value="">Seleccionar novedad</option>';
-        selectNovedad.disabled = true;
-        inputCodigo.value = "";
+        if (!idCategoria) {
+            resetearNovedades();
+            return;
+        }
 
-        if (!idCategoria) return;
-
-        fetch(`/novedades/lista/${idCategoria}`)
-            .then((res) => res.json())
-            .then((data) => {
-                if (!Array.isArray(data)) return;
-
-                data.forEach((item) => {
-                    const option = document.createElement("option");
-                    option.value = item.ID_NOVEDAD;
-                    option.textContent = item.NOMBRE;
-
-                    selectNovedad.appendChild(option);
-                });
-
-                selectNovedad.disabled = false;
-            });
+        cargarNovedadesPorCategoria(idCategoria);
     });
 
-    selectNovedad.addEventListener("change", () => {
-        const selected = selectNovedad.options[selectNovedad.selectedIndex];
-        inputCodigo.value = selected.dataset.codigo || "";
+    $("#selectNovedad").on("change", function () {
+        const selected = $(this).find(":selected");
+
+        $("#codigoFinnegans").val(selected.data("codigo") || "");
+        $("#idNovedad").val(selected.val() || "");
     });
 });
 
-function cargarCategoriasNovedad() {
-    fetch("/categorias-novedad/lista")
-        .then((res) => res.json())
-        .then((data) => {
-            const select = document.getElementById("selectCategoriaNovedad");
+function cargarCategoriasNovedades() {
+    $.ajax({
+        url: "/categorias-novedad/lista",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            const select = $("#selectCategoriaNovedades");
 
-            data.forEach((cat) => {
-                const option = document.createElement("option");
-                option.value = cat.ID_CATEG;
-                option.textContent = cat.NOMBRE;
-                select.appendChild(option);
+            select.empty();
+            select.append('<option value="">Seleccione categoría</option>');
+
+            data.forEach(cat => {
+                select.append(`
+                    <option value="${cat.ID_CATEG}">
+                        ${cat.NOMBRE}
+                    </option>
+                `);
             });
-        });
+        },
+        error: function (xhr, status, error) {
+            console.error("Error cargando categorías:", error);
+        }
+    });
+}
+
+function cargarNovedadesPorCategoria(idCategoria) {
+    $.ajax({
+        url: `/novedades/lista/${idCategoria}`,
+        type: "GET",
+        success: function (data) {
+
+            const select = $("#selectNovedad");
+
+            select.empty()
+                  .append('<option value="">Seleccionar novedad</option>')
+                  .prop("disabled", false);
+
+            data.forEach(nov => {
+                select.append(`
+                    <option 
+                        value="${nov.ID_NOVEDAD}"
+                        data-codigo="${nov.CODIGO_NOVEDAD}">
+                        ${nov.NOMBRE}
+                    </option>
+                `);
+            });
+        },
+        error: function () {
+            console.error("Error al cargar novedades");
+        }
+    });
+}
+
+function resetearNovedades() {
+    $("#selectNovedad")
+        .empty()
+        .append('<option value="">Seleccionar novedad</option>')
+        .prop("disabled", true);
+
+    $("#codigoFinnegans").val("");
+    $("#idNovedad").val("");
 }

@@ -155,11 +155,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function cargarCategorias() {
+function cargarCategoriasNovedades() {
     fetch("/categorias-novedad/lista")
         .then((res) => res.json())
         .then((data) => {
-            const select = document.getElementById("selectCategoria");
+            const select = document.getElementById("selectCategoriaNovedades");
 
             data.forEach((cat) => {
                 const option = document.createElement("option");
@@ -191,7 +191,8 @@ $(document).ready(function () {
                 enviarNovedad();
             }
         });
-    });
+    })
+});
 
     $('#btnRegistrarNovedad').on('click', function () {
 
