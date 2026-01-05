@@ -43,12 +43,12 @@
                             <th>CÓDIGO</th>
                             <th>CATEG</th>
                             <th>NOVEDAD</th>
-                            <th>F DESDE</th>
-                            <th>F HASTA</th>
-                            <th>F APLICACIÓN</th>
+                            <th>DESDE</th>
+                            <th>HASTA</th>
+                            <th>APLICACIÓN</th>
                             <th>CANT</th>
                             <th>VALOR2</th>
-                            <th>CENTRO_COSTO</th>
+                            <th>CENTROCOSTO</th>
                             <th>REGISTRANTE</th>
                             <th>DESCRIP</th>
                         </tr>

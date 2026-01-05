@@ -1,0 +1,93 @@
+.dashboard-container {
+    background: #f3f5f9;
+}
+
+.filter-card {
+    background: linear-gradient(
+        135deg,
+        var(--color-default),
+        var(--color-second)
+    );
+    color: #ffffff;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+    .filter-card .form-label {
+        color: #e9ecef;
+    }
+
+    .filter-card .form-select,
+    .filter-card .form-control {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.4);
+        color: #ffffff;
+    }
+
+.kpi-card {
+    border: none;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.kpi-label {
+    font-size: .78rem;
+    text-transform: uppercase;
+    color: #6c757d;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0d1b2a;
+}
+
+.kpi-value-small {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #0d1b2a;
+}
+
+.kpi-subvalue {
+    font-size: .8rem;
+    color: #6c757d;
+}
+
+.chart-card,
+.table-card {
+    border: none;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.chart-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0d1b2a;
+}
+
+.table-card thead tr {
+    background-color: #f1f3f8;
+}
+
+.table-card thead th {
+    font-size: .8rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+}
+
+.table-card tbody td {
+    font-size: .86rem;
+    color: #343a40;
+}
+
+.dashboard-summary li {
+    display: flex;
+    justify-content: space-between;
+    padding: .35rem 0;
+    border-bottom: 1px dashed #e0e4ec;
+}

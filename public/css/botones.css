@@ -1,185 +1,229 @@
-/* =====================================================
-   SISTEMA DE BOTONES - BASE GLOBAL
-===================================================== */
+/*######################################*/
+/* ============================
+   BOTONES ESTÁNDAR DEL SISTEMA
+============================ */
 
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 38px;
-    height: 38px;
-    padding: 0 12px;
-
-    border-radius: 6px;
-    border: none;
-
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1;
-
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-
-.btn i {
-    font-size: 16px;
-    line-height: 1;
-}
-
-/* Cuando el botón tiene SOLO ícono */
-.btn-icon {
-    width: 38px;
-    padding: 0;
-}
-
-/* Estado deshabilitado */
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* =====================================================
-   COLORES BASE DEL SISTEMA
-===================================================== */
-
-:root {
-    --color-primario: #00b18d;
-    --color-secundario: #003f66;
-    --color-terciario: #6c7a89;
-    --color-exito: #22c55e;
-    --color-peligro: #dc3545;
-    --color-alerta: #f4c430;
-}
-
-/* =====================================================
-   BOTONES NORMALES (SOLID)
-===================================================== */
-
-/* PRIMARIO */
+/* Botón Primario */
 .btn-primario {
-    background-color: var(--color-primario);
+    background-color: var(--color-accent-green);
+    border: none;
+    padding: 0.45rem;
+    font-weight: 500;
+    border-radius: 6px;
     color: #fff;
+    transition: all 0.2s ease;
 }
+
 .btn-primario:hover {
     background-color: #009c7c;
+    color: #fff;
 }
 
-/* SECUNDARIO */
+.btn-primario:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 177, 141, 0.4);
+}
+
+/* Botón Secundario */
 .btn-secundario {
-    background-color: var(--color-secundario);
+    background-color: var(--color-default);
+    border: none;
+    padding: 0.45rem;
+    font-weight: 500;
+    border-radius: 6px;
     color: #fff;
+    transition: all 0.2s ease;
 }
+
 .btn-secundario:hover {
-    background-color: #00314f;
-}
-
-/* TERCIARIO */
-.btn-terciario {
-    background-color: var(--color-terciario);
+    background-color: #00395f;
     color: #fff;
 }
-.btn-terciario:hover {
-    background-color: #5a6673;
+
+.btn-secundario:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 74, 124, 0.4);
 }
 
-/* ÉXITO */
-.btn-exito {
-    background-color: var(--color-exito);
-    color: #fff;
-}
-.btn-exito:hover {
-    background-color: #16a34a;
-}
-
-/* PELIGRO */
+/* Botón Peligro (baja, eliminar) */
 .btn-peligro {
-    background-color: var(--color-peligro);
+    background-color: #dc3545;
+    border: none;
+    padding: 0.45rem;
+    font-weight: 500;
+    border-radius: 6px;
     color: #fff;
+    transition: all 0.2s ease;
 }
+
 .btn-peligro:hover {
     background-color: #b02a37;
 }
 
-/* ALERTA */
+/* Botón Deshabilitado */
+.btn-primario:disabled,
+.btn-secundario:disabled,
+.btn-peligro:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-terciario {
+    background-color: #6c7a89; /* gris azulado elegante */
+    color: #ffffff;
+    border: none;
+    padding: 0.45rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-terciario:hover {
+    background-color: #5a6673;
+    color: #ffffff;
+}
+
+.btn-terciario:active {
+    transform: scale(0.97);
+}
+
+.btn-terciario:disabled {
+    background-color: #b0b8c1;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
 .btn-alerta {
-    background-color: var(--color-alerta);
+    background-color: #f4c430; /* amarillo alerta */
+    color: #1f2937;            /* texto oscuro */
+    border: none;
+    padding: 0.45rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-alerta:hover {
+    background-color: #e0b324; /* más oscuro */
     color: #1f2937;
 }
-.btn-alerta:hover {
-    background-color: #e0b324;
+
+.btn-alerta:active {
+    transform: scale(0.97);
 }
 
-/* =====================================================
-   BOTONES MINIMAL (ELEGANTES)
-===================================================== */
-
-.btn-minimal {
-    background: transparent;
-    border: 1.5px solid transparent;
+.btn-alerta:disabled {
+    background-color: #f6df93;
+    color: #6b7280;
+    cursor: not-allowed;
+    opacity: 0.8;
 }
 
-/* PRIMARIO */
-.btn-minimal-primario {
-    color: var(--color-primario);
-}
-.btn-minimal-primario:hover {
-    background: rgba(0, 177, 141, 0.12);
-    border-color: var(--color-primario);
-}
-
-/* SECUNDARIO */
-.btn-minimal-secundario {
-    color: var(--color-secundario);
-}
-.btn-minimal-secundario:hover {
-    background: rgba(0, 63, 102, 0.12);
-    border-color: var(--color-secundario);
+.btn-exito {
+    background-color: #22c55e; /* verde éxito */
+    color: #ffffff;
+    border: none;
+    padding: 0.45rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
 }
 
-/* TERCIARIO */
-.btn-minimal-terciario {
-    color: var(--color-terciario);
-}
-.btn-minimal-terciario:hover {
-    background: rgba(108, 122, 137, 0.15);
-    border-color: var(--color-terciario);
+.btn-exito:hover {
+    background-color: #16a34a;
+    color: #ffffff;
 }
 
-/* ÉXITO */
-.btn-minimal-exito {
-    color: var(--color-exito);
-}
-.btn-minimal-exito:hover {
-    background: rgba(34, 197, 94, 0.18);
-    border-color: var(--color-exito);
+.btn-exito:active {
+    transform: scale(0.97);
 }
 
-/* PELIGRO */
-.btn-minimal-peligro {
-    color: var(--color-peligro);
-}
-.btn-minimal-peligro:hover {
-    background: rgba(220, 53, 69, 0.18);
-    border-color: var(--color-peligro);
+.btn-exito:disabled {
+    background-color: #86efac;
+    color: #065f46;
+    cursor: not-allowed;
+    opacity: 0.8;
 }
 
-/* ALERTA */
-.btn-minimal-alerta {
-    color: var(--color-alerta);
-}
-.btn-minimal-alerta:hover {
-    background: rgba(244, 196, 48, 0.25);
-    border-color: var(--color-alerta);
+/* ============================
+   BOTONES MINIMALISTAS
+============================ */
+
+.btn-min {
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.4rem 0.6rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
 }
 
-/* =====================================================
-   TAMAÑO COMPACTO (DataTables / Iconos)
-===================================================== */
+.btn-min:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
-.btn-sm {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    font-size: 14px;
+.btn-min-primario {
+    color: var(--color-accent-green);
+    border-color: var(--color-accent-green);
+}
+
+.btn-min-primario:hover {
+    background-color: rgba(0, 177, 141, 0.08);
+}
+
+.btn-min-primario:focus {
+    box-shadow: 0 0 0 0.15rem rgba(0, 177, 141, 0.25);
+}
+
+.btn-min-secundario {
+    color: var(--color-default);
+    border-color: var(--color-default);
+}
+
+.btn-min-secundario:hover {
+    background-color: rgba(0, 74, 124, 0.08);
+}
+
+.btn-min-secundario:focus {
+    box-shadow: 0 0 0 0.15rem rgba(0, 74, 124, 0.25);
+}
+
+.btn-min-peligro {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-min-peligro:hover {
+    background-color: rgba(220, 53, 69, 0.08);
+}
+
+.btn-min-peligro:focus {
+    box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25);
+}
+
+.btn-min-alerta {
+    color: #d4a017;
+    border-color: #f4c430;
+}
+
+.btn-min-alerta:hover {
+    background-color: rgba(244, 196, 48, 0.15);
+}
+
+.btn-min-exito {
+    color: #16a34a;
+    border-color: #22c55e;
+}
+
+.btn-min-exito:hover {
+    background-color: rgba(34, 197, 94, 0.12);
+}
+
+.btn-min-terciario {
+    color: #6c7a89;
+    border-color: #6c7a89;
+}
+
+.btn-min-terciario:hover {
+    background-color: rgba(108, 122, 137, 0.12);
 }

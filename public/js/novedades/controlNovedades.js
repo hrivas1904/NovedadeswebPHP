@@ -64,6 +64,7 @@ $(document).ready(function () {
                     searchable: false,
                 },
             ],
+            order: [[0, 'desc']],
             columns: [
                 { data: "REGISTRO" },
                 { data: "FECHA_REGISTRO" },

@@ -10,15 +10,16 @@ $(document).ready(function () {
             },
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                lengthMenu: "_MENU_",
+                paginate: {
+                    first: "<<",
+                    previous: "<",
+                    next: ">",
+                    last: ">>",
+                },
             },
             order: [[2, "asc"]],
             info: true,
-            paginate: {
-                first: "",
-                last: "",
-                next: "",
-                previous: "",
-            },
             columns: [
                 { data: "CODIGO_NOVEDAD" },
                 { data: "NOVEDAD" },
@@ -28,7 +29,7 @@ $(document).ready(function () {
                     data: "CODIGO_NOVEDAD",
                     render: function (data) {
                         return `
-                            <button type="button" class="btn btn-sm btn-outline-primary btn-edit" data-id="${data}">
+                            <button type="button" class="btn-alerta btn-edit" data-id="${data}">
                                 <i class="fas fa-edit"></i> Editar
                             </button>
                         `;
@@ -37,22 +38,22 @@ $(document).ready(function () {
                     searchable: false,
                 },
             ],
-            dom:
-                "<'d-flex justify-content-between align-items-center mb-3'lfB>" +
-                "rt" +
-                "<'d-flex justify-content-between'p>",
+            dom: "<'d-top d-flex align-items-center gap-2'lB<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'ip>",
             buttons: [
                 {
                     extend: "excelHtml5",
                     className: "btn-export-excel",
-                    text: "Excel",
+                    text: '<i class="fa-solid fa-file-excel"></i> Excel', 
                 },
                 {
                     extend: "pdfHtml5",
+                    text: '<i class="fa-solid fa-file-pdf"></i> PDF',
                     className: "btn-export-pdf",
-                    text: "PDF",
                 },
-                { extend: "print", className: "btn-printer", text: "Imprimir" },
+                { extend: "print", 
+                  className: "btn-printer",
+                  text: '<i class="fa-solid fa-print"></i> Imprimir' 
+                },
             ],
             scrollX: true,
         });

@@ -1,0 +1,143 @@
+.cronograma-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.cronograma-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 75vh;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.cronograma-table {
+    table-layout: fixed !important;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    .cronograma-table th,
+    .cronograma-table td {
+        border: 1px solid #dee2e6;
+        padding: 6px;
+        text-align: center;
+        white-space: nowrap;
+        padding: 2px;
+    }
+
+    .cronograma-table thead th {
+        background: #0d6efd;
+        color: white;
+        text-align: center;
+        padding: 6px;
+        white-space: nowrap;
+        border-right: 1px solid #e5e5e5;
+    }
+
+        .cronograma-table thead th small {
+            font-weight: 400;
+            font-size: 0.7rem;
+            opacity: 0.85;
+        }
+
+/* Inputs por día */
+.day-cell {
+    width: 3.2ch; /* 3 letras mayúsculas */
+    max-width: 3.2ch;
+    min-width: 3.2ch;
+    padding: 2px 0;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+    .day-cell:focus {
+        outline: none;
+        background: #e7f1ff;
+        border-radius: 4px;
+    }
+
+/* Columnas fijas izquierda */
+.sticky-col {
+    position: sticky;
+    left: 0;
+    background: #f8f9fa;
+    z-index: 2;
+}
+
+.col-dni {
+    left: 0;
+    min-width: 80px;
+}
+
+.col-legajo {
+    left: 80px;
+    min-width: 70px;
+}
+
+.col-nombre {
+    left: 150px;
+    min-width: 180px;
+}
+
+.col-servicio {
+    left: 330px;
+    min-width: 160px;
+}
+
+.col-regimen {
+    left: 490px;
+    min-width: 90px;
+}
+
+/* Columna fija derecha */
+.sticky-col-right {
+    position: sticky;
+    right: 0;
+    background: #e9ecef;
+    z-index: 2;
+    font-weight: 700;
+}
+
+/* Total horas */
+.col-total {
+    min-width: 110px;
+}
+
+.total-horas {
+    font-size: 0.9rem;
+    color: #0d6efd;
+}
+
+/* Fines de semana */
+.cronograma-table th:nth-child(12),
+.cronograma-table th:nth-child(13),
+.cronograma-table th:nth-child(19),
+.cronograma-table th:nth-child(20),
+.cronograma-table th:nth-child(26),
+.cronograma-table th:nth-child(27) {
+    background: #198754;
+}
+
+/* Estados especiales */
+.day-cell[value="VAC"] {
+    color: #dc3545;
+}
+
+.day-cell[value="FR"] {
+    color: #6c757d;
+}
+
+.day-cell[value="GU"] {
+    color: #fd7e14;
+}
+
+.cronograma-table td:has(.day-cell) {
+    width: 3.2ch;
+}
+
+

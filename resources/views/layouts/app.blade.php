@@ -15,8 +15,11 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styleDt.css') }}">
-    <!--<link rel="stylesheet" href="{{ asset('css/botones.css') }}">-->
+    <link rel="stylesheet" href="{{ asset('css/botones.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modales.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cronograma.css') }}">
+
 </head>
 
 <body>
@@ -129,6 +132,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/script.js') }}"></script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>

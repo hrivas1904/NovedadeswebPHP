@@ -55,7 +55,7 @@
 
             <div class="hero-card">
                 <a href="/dashboard" class="hero-btn simple">
-                    Tablero de Control
+                    Dashboard de Control
                 </a>
             </div>
 
