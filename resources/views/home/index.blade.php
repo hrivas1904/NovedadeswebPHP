@@ -26,22 +26,30 @@
                 </div>
             </div>
 
-            @if(Auth::user()->rol === 'Administrador/a')
+            
             <div class="hero-card">
                 <button class="hero-btn">
                     Gestión de Novedades
                 </button>
                 <div class="hero-submenu">
-                    <a href="/registroNovedades">Registrar Novedades</a>
                     <a href="/controlNovedades">Control de Novedades</a>
+                    @if(Auth::user()->rol === 'Administrador/a')
                     <a href="/configNovedades">Configuración de Novedades</a>
+                    @endif
                 </div>
             </div>
 
+            @if(Auth::user()->rol === 'Administrador/a')
+
             <div class="hero-card">
-                <a href="/ajustes" class="hero-btn simple">
-                    Configuraciones
-                </a>
+                <button class="hero-btn">
+                    <i class="fa-solid fa-users"></i>
+                    Gestión del Personal
+                </button>
+                <div class="hero-submenu">
+                    <a href="/ajustes">Configuraciones</a>
+                    <a href="#">Usuarios y permisos</a>
+                </div>
             </div>
 
 
