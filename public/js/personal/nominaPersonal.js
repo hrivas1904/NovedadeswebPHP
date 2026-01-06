@@ -5,7 +5,6 @@ let tablaPersonal;
 let tablaHistorialNovedades = null;
 let legajoActivo = null;
 
-
 //calculo edad
 function calcularEdad(fecha) {
     if (!fecha) return "";
@@ -149,11 +148,9 @@ $(document).ready(function () {
 
 //historial novedades
 function inicializarORefrescarHistorial() {
-
     if (tablaHistorialNovedades) {
         // 👉 SOLO refresca
-        tablaHistorialNovedades
-            .ajax
+        tablaHistorialNovedades.ajax
             .url(`/novedades/historial/${legajoActivo}`)
             .load(null, false);
         return;
@@ -164,15 +161,24 @@ function inicializarORefrescarHistorial() {
         ajax: {
             url: `/novedades/historial/${legajoActivo}`,
             type: "GET",
-            dataSrc: ""
+            dataSrc: "",
         },
         columns: [
-            { data: "FECHA_REGISTRO", render: d => d ? moment(d).format("DD/MM/YYYY") : "-" },
+            {
+                data: "FECHA_REGISTRO",
+                render: (d) => (d ? moment(d).format("DD/MM/YYYY") : "-"),
+            },
             { data: "CATEGORIA" },
             { data: "NOVEDAD_NOMBRE" },
-            { data: "FECHA_DESDE", render: d => d ? moment(d).format("DD/MM/YYYY") : "-" },
-            { data: "FECHA_HASTA", render: d => d ? moment(d).format("DD/MM/YYYY") : "-" },
-            { data: "DURACION", render: d => d ?? "-" },
+            {
+                data: "FECHA_DESDE",
+                render: (d) => (d ? moment(d).format("DD/MM/YYYY") : "-"),
+            },
+            {
+                data: "FECHA_HASTA",
+                render: (d) => (d ? moment(d).format("DD/MM/YYYY") : "-"),
+            },
+            { data: "DURACION", render: (d) => d ?? "-" },
             {
                 data: "REGISTRO",
                 orderable: false,
@@ -186,23 +192,29 @@ function inicializarORefrescarHistorial() {
                             <i class="fa-solid fa-eye"></i> Ver
                         </button>
                     `;
-                }
-            }
+                },
+            },
         ],
-        responsive: false,   // 🔑 MUY importante en modales
+        responsive: false, // 🔑 MUY importante en modales
         autoWidth: false,
         paging: true,
         searching: true,
         ordering: true,
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-        }
+            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+            lengthMenu: "_MENU_",
+            paginate: {
+                first: "<<",
+                previous: "<",
+                next: ">",
+                last: ">>",
+            },
+        },
     });
 }
 
 //ver legajo
 function verLegajo(legajoColaborador, nombre) {
-
     console.log("Mostrando legajo:", legajoColaborador);
     legajoActivo = legajoColaborador;
 
@@ -218,7 +230,48 @@ function verLegajo(legajoColaborador, nombre) {
             if (response.success) {
                 const d = response.data;
 
-                // (todo tu seteo de inputs está bien, no se toca)
+                $("#inputLegajo").val(d.LEGAJO);
+                $("#inputNombre").val(d.COLABORADOR);
+                $("#inputEstado").val(d.ESTADO);
+                $("#inputDni").val(d.DNI);
+                $("#inputCuil").val(d.CUIL);
+                $("#inputFechaNacimiento").val(
+                    formatearFechaArgentina(d.FECHA_NAC)
+                );
+
+                $("#inputEdad").val(calcularEdad(d.FECHA_NAC));
+                $("#inputEmail").val(d.CORREO);
+                $("#inputTelefono").val(d.TELEFONO);
+                $("#inputDomicilio").val(d.DOMICILIO);
+                $("#inputLocalidad").val(d.LOCALIDAD);
+
+                $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
+                $("#inputGenero").val(d.GENERO);
+                $("#inputObraSocial").val(d.OBRA_SOCIAL);
+                $("#inputCodigoOS").val(d.COD_OS);
+                $("#inputTitulo").val(d.TITULO);
+                $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
+                $("#inputMatricula").val(d.MAT_PROF);
+
+                $("#inputTipoContrato").val(d.TIPO_CONTRATO);
+                $("#inputFechaIngreso").val(
+                    formatearFechaArgentina(d.FECHA_INGRESO)
+                );
+                $("#inputFechaFinPrueba").val(
+                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA)
+                );
+
+                $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
+                $("#inputFechaEgreso").val(d.FECHA_EGRESO);
+                $("#inputArea").val(d.AREA);
+                $("#inputServicio").val(d.SERVICIO);
+                $("#inputConvenio").val(d.CONVENIO);
+                $("#inputCategoria").val(d.CATEGORIA);
+                $("#inputRol").val(d.ROL);
+                $("#inputRegimen").val(d.REGIMEN);
+                $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
+                $("#inputCordinador").val(d.COORDINADOR);
+                $("#inputAfiliado").val(d.AFILIADO);
 
                 $("#modalLegajoColaborador").modal("show");
 
@@ -228,14 +281,13 @@ function verLegajo(legajoColaborador, nombre) {
                     .on("shown.bs.modal", function () {
                         inicializarORefrescarHistorial();
                     });
-
             } else {
                 Swal.fire("Error", response.mensaje, "error");
             }
         },
         error: function () {
             Swal.fire("Error", "No se pudo cargar el legajo", "error");
-        }
+        },
     });
 }
 
@@ -865,7 +917,6 @@ $("#formCargaNovedad").on("submit", function (e) {
                 if (typeof tablaPersonal !== "undefined") {
                     tablaPersonal.ajax.reload(null, false);
                 }
-
             } else {
                 Swal.fire("Atención", response.mensaje, "warning");
             }
@@ -873,6 +924,6 @@ $("#formCargaNovedad").on("submit", function (e) {
         error: function (xhr) {
             console.error(xhr.responseText);
             Swal.fire("Error", "No se pudo registrar la novedad", "error");
-        }
+        },
     });
 });
