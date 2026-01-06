@@ -49,22 +49,14 @@ $(document).ready(function () {
                     d.area_id = $("#area").val();
                 },
             },
-            scrollX: true,
-            paging: true,
-            paginate: {
-                first: "",
-                last: "",
-                next: "",
-                previous: "",
-            },
             columnDefs: [
                 {
-                    targets: [6, 12, 13, 14, 15],
+                    targets: [6, 12, 13, 14, 10],
                     visible: false,
                     searchable: false,
                 },
             ],
-            order: [[0, 'desc']],
+            order: [[0, "desc"]],
             columns: [
                 { data: "REGISTRO" },
                 { data: "FECHA_REGISTRO" },
@@ -89,12 +81,19 @@ $(document).ready(function () {
                 { data: "DESCRIPCION" },
             ],
             scrollX: true,
+            paging: true,
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                lengthMenu: "_MENU_",
+                paginate: {
+                    first: "<<",
+                    previous: "<",
+                    next: ">",
+                    last: ">>",
+                },
             },
-            paging: false,
             autoWidth: false,
-            dom: "<'dt-top d-flex align-items-center justify-content-between'Bf>rt<'dt-bottom'p>",
+            dom: "<'d-top d-flex align-items-center gap-2'lB<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'ip>",
             buttons: [
                 {
                     extend: "excelHtml5",
@@ -169,6 +168,4 @@ $(document).ready(function () {
             darDeBaja(legajoColaborador);
         });
     }
-
-    
 });

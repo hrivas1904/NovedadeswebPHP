@@ -93,7 +93,7 @@ class NovedadesController extends Controller
                     $request->centroCosto ?? null,
                     $request->duracion,
                     auth()->user()->name,
-                    $request->descripcion?? null
+                    $request->descripcion ?? null
                 ]
             );
 
@@ -129,5 +129,45 @@ class NovedadesController extends Controller
                 'mensaje' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function verNovedad($codigo)
+    {
+        $novedad = DB::select(
+            'CALL SP_VER_NOVEDAD(?)',
+            [$codigo]
+        );
+
+        if (empty($novedad)) {
+            return response()->json(['error' => 'Novedad no encontrada'], 404);
+        }
+
+        return response()->json($novedad[0]);
+    }
+
+    public function altaNuevaNovedad(Request $request)
+    {
+        $request->validate([
+            'codigo'     => 'required|string|max:50',
+            'nombre'     => 'required|string|max:250',
+            'id_categ'   => 'required|integer',
+            'tipo_valor' => 'nullable|string|max:50'
+        ]);
+
+        DB::statement(
+            'CALL SP_NUEVA_NOVEDAD(?, ?, ?, ?, @mensaje)',
+            [
+                $request->codigo,
+                $request->nombre,
+                $request->id_categ,
+                $request->tipo_valor
+            ]
+        );
+
+        $mensaje = DB::selectOne('SELECT @mensaje AS mensaje')->mensaje;
+
+        return response()->json([
+            'mensaje' => $mensaje
+        ]);
     }
 }

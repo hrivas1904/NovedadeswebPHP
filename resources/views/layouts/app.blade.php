@@ -32,14 +32,14 @@
         </div>
 
         <ul class="nav-list">
-            @if(Auth::user()->rol === 'Administrador/a')
-            <li>
-                <a href="{{ route('dashboard') }}">
-                    <i class="bx bx-grid-alt"></i>
-                    <span class="link_name">Dashboard</span>
-                </a>
-                <span class="tooltip">Dashboard</span>
-            </li>
+            @if (Auth::user()->rol === 'Administrador/a')
+                <li>
+                    <a href="{{ route('dashboard') }}">
+                        <i class="bx bx-grid-alt"></i>
+                        <span class="link_name">Dashboard</span>
+                    </a>
+                    <span class="tooltip">Dashboard</span>
+                </li>
             @endif
 
             <li class="submenu">
@@ -51,16 +51,16 @@
                 </label>
                 <ul class="sub-menu">
                     <li><a href="{{ route('nominaPersonal') }}">Nómina de Personal</a></li>
-                    @if(Auth::user()->rol === 'Administrador/a')
-                    <li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>
-                    <li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>
-                    <li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>
+                    @if (Auth::user()->rol === 'Administrador/a')
+                        <!--<li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>-->
+                        <!--<li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>-->
+                        <li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>
                     @endif
                 </ul>
                 <span class="tooltip">Personal</span>
             </li>
 
-            
+
             <li class="submenu">
                 <input type="checkbox" id="menu-novedades">
                 <label for="menu-novedades">
@@ -70,28 +70,27 @@
                 </label>
                 <ul class="sub-menu">
                     <li><a href="{{ route('controlNovedades') }}">Control de Novedades</a></li>
-                    @if(Auth::user()->rol === 'Administrador/a')
-                    <li><a href="{{ route('configNovedades') }}">Configuración de Novedades</a></li>
+                    @if (Auth::user()->rol === 'Administrador/a')
+                        <li><a href="{{ route('configNovedades') }}">Configuración de Novedades</a></li>
                     @endif
                 </ul>
                 <span class="tooltip">Novedades</span>
             </li>
 
-            @if(Auth::user()->rol === 'Administrador/a')
-            <li class="submenu">
-                <input type="checkbox" id="menu-config">
-                <label for="menu-config">
-                    <i class="bx bx-cog"></i>
-                    <span class="link_name">Configuraciones</span>
-                    <i class="bx bx-chevron-down arrow"></i>
-                </label>
-                <ul class="sub-menu">
-                    <li><a href="{{ route('ajustes') }}">Configuraciones</a></li>
-                    <li><a href="#">Usuarios y Permisos</a></li>
-                    <li><a href="#">Cambiar Rol</a></li>
-                </ul>
-                <span class="tooltip">Configuraciones</span>
-            </li>
+            @if (Auth::user()->rol === 'Administrador/a')
+                <li class="submenu">
+                    <input type="checkbox" id="menu-config">
+                    <label for="menu-config">
+                        <i class="bx bx-cog"></i>
+                        <span class="link_name">Configuraciones</span>
+                        <i class="bx bx-chevron-down arrow"></i>
+                    </label>
+                    <ul class="sub-menu">
+                        <li><a href="{{ route('ajustes') }}">Configuraciones</a></li>
+                        <li><a href="#">Usuarios y Permisos</a></li>
+                    </ul>
+                    <span class="tooltip">Configuraciones</span>
+                </li>
             @endif
 
             <div class="branding-footer">
@@ -104,10 +103,9 @@
                         </span>
 
                         <span class="branding-user-role">
-                            @if(Auth::user()->area)
-                            {{ Auth::user()->area->NOMBRE }}
+                            @if (Auth::user()->area)
+                                {{ Auth::user()->area->NOMBRE }}
                             @else
-
                             @endif
                         </span>
                     </div>
@@ -138,6 +136,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>

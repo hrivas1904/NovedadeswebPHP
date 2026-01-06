@@ -78,7 +78,7 @@ Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado
 
 Route::get(
     '/novedades/historial/{legajo}',
-    [NovedadesController::class, 'historialNovedades']
+    [PersonalController::class, 'historialNovedades']
 );
 
 
@@ -107,3 +107,7 @@ Route::get(
     '/personal/info/{legajo}',
     [PersonalController::class, 'infoMinimaEmpleado']
 )->name('personal.info');
+
+Route::get('/novedades/{codigo}', [NovedadesController::class, 'verNovedad']);
+
+Route::post('/novedades', [NovedadesController::class, 'altaNuevaNovedad']);

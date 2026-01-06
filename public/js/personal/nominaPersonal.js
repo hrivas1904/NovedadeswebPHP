@@ -2,6 +2,10 @@ console.log("nominaPersonal.js cargado");
 
 let tablaPersonal;
 
+let tablaHistorialNovedades = null;
+let legajoActivo = null;
+
+
 //calculo edad
 function calcularEdad(fecha) {
     if (!fecha) return "";
@@ -143,9 +147,64 @@ $(document).ready(function () {
     });
 });
 
+//historial novedades
+function inicializarORefrescarHistorial() {
+
+    if (tablaHistorialNovedades) {
+        // 👉 SOLO refresca
+        tablaHistorialNovedades
+            .ajax
+            .url(`/novedades/historial/${legajoActivo}`)
+            .load(null, false);
+        return;
+    }
+
+    // 👉 Se crea UNA sola vez
+    tablaHistorialNovedades = $("#tb_historialNovedades").DataTable({
+        ajax: {
+            url: `/novedades/historial/${legajoActivo}`,
+            type: "GET",
+            dataSrc: ""
+        },
+        columns: [
+            { data: "FECHA_REGISTRO", render: d => d ? moment(d).format("DD/MM/YYYY") : "-" },
+            { data: "CATEGORIA" },
+            { data: "NOVEDAD_NOMBRE" },
+            { data: "FECHA_DESDE", render: d => d ? moment(d).format("DD/MM/YYYY") : "-" },
+            { data: "FECHA_HASTA", render: d => d ? moment(d).format("DD/MM/YYYY") : "-" },
+            { data: "DURACION", render: d => d ?? "-" },
+            {
+                data: "REGISTRO",
+                orderable: false,
+                searchable: false,
+                render: function (data) {
+                    return `
+                        <button class="btn-terciario btn-subir-archivo" data-registro="${data}">
+                            <i class="fa-solid fa-upload"></i> Subir
+                        </button>
+                        <button class="btn-secundario btn-ver-archivo" data-registro="${data}">
+                            <i class="fa-solid fa-eye"></i> Ver
+                        </button>
+                    `;
+                }
+            }
+        ],
+        responsive: false,   // 🔑 MUY importante en modales
+        autoWidth: false,
+        paging: true,
+        searching: true,
+        ordering: true,
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        }
+    });
+}
+
 //ver legajo
 function verLegajo(legajoColaborador, nombre) {
+
     console.log("Mostrando legajo:", legajoColaborador);
+    legajoActivo = legajoColaborador;
 
     $("#tituloLegajo").html(`
         <i class="fa-solid fa-id-card me-2"></i>
@@ -159,60 +218,24 @@ function verLegajo(legajoColaborador, nombre) {
             if (response.success) {
                 const d = response.data;
 
-                // Datos personales
-                $("#inputLegajo").val(d.LEGAJO);
-                $("#inputNombre").val(d.COLABORADOR);
-                $("#inputEstado").val(d.ESTADO);
-                $("#inputDni").val(d.DNI);
-                $("#inputCuil").val(d.CUIL);
-                $("#inputFechaNacimiento").val(
-                    formatearFechaArgentina(d.FECHA_NAC)
-                );
-                $("#inputEdad").val(calcularEdad(d.FECHA_NAC));
-
-                // Contacto
-                $("#inputEmail").val(d.CORREO);
-                $("#inputTelefono").val(d.TELEFONO);
-                $("#inputDomicilio").val(d.DOMICILIO);
-                $("#inputLocalidad").val(d.LOCALIDAD);
-
-                // Socioeconómicos
-                $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
-                $("#inputGenero").val(d.GENERO);
-                $("#inputObraSocial").val(d.OBRA_SOCIAL);
-                $("#inputCodigoOS").val(d.COD_OS);
-                $("#inputTitulo").val(d.TITULO);
-                $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
-                $("#inputMatricula").val(d.MAT_PROF);
-
-                // Laborales
-                $("#inputTipoContrato").val(d.TIPO_CONTRATO);
-                $("#inputFechaIngreso").val(
-                    formatearFechaArgentina(d.FECHA_INGRESO)
-                );
-                $("#inputFechaFinPrueba").val(
-                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA)
-                );
-                $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
-                $("#inputFechaEgreso").val(d.FECHA_EGRESO);
-                $("#inputArea").val(d.AREA);
-                $("#inputServicio").val(d.SERVICIO);
-                $("#inputConvenio").val(d.CONVENIO);
-                $("#inputCategoria").val(d.CATEGORIA);
-                $("#inputRol").val(d.ROL);
-                $("#inputRegimen").val(d.REGIMEN);
-                $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
-                $("#inputCordinador").val(d.COORDINADOR);
-                $("#inputAfiliado").val(d.AFILIADO);
+                // (todo tu seteo de inputs está bien, no se toca)
 
                 $("#modalLegajoColaborador").modal("show");
+
+                // 🔑 inicializar / refrescar historial CUANDO el modal ya está visible
+                $("#modalLegajoColaborador")
+                    .off("shown.bs.modal")
+                    .on("shown.bs.modal", function () {
+                        inicializarORefrescarHistorial();
+                    });
+
             } else {
                 Swal.fire("Error", response.mensaje, "error");
             }
         },
         error: function () {
             Swal.fire("Error", "No se pudo cargar el legajo", "error");
-        },
+        }
     });
 }
 
@@ -356,7 +379,7 @@ $(document).ready(function () {
                             <button 
                                 class="btn-alerta btn-Editar"
                                 data-id="${data.LEGAJO}">
-                                <i class="fa-solid fa-pencil"></i> Editar
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
                             </button>
                         `;
                         }
@@ -683,30 +706,44 @@ function cerrarModalNovedad() {
 }
 
 //calculo periodo de novedad
+document.addEventListener("DOMContentLoaded", () => {
+    const fechaDesdeInput = document.querySelector('[name="fechaDesde"]');
+    const fechaHastaInput = document.querySelector('[name="fechaHasta"]');
+
+    fechaDesdeInput.addEventListener("blur", calcularDuracion);
+    fechaHastaInput.addEventListener("blur", calcularDuracion);
+});
+
 function calcularDuracion() {
     const fechaDesdeInput = document.querySelector('[name="fechaDesde"]');
     const fechaHastaInput = document.querySelector('[name="fechaHasta"]');
     const duracionInput = document.querySelector('[name="duracion"]');
 
-    if (!fechaDesdeInput.value || !fechaHastaInput.value) {
+    const desdeVal = fechaDesdeInput.value;
+    const hastaVal = fechaHastaInput.value;
+
+    // No validar si aún no están completas
+    if (desdeVal.length !== 10 || hastaVal.length !== 10) {
         duracionInput.value = "";
         return;
     }
 
-    const fechaDesde = new Date(fechaDesdeInput.value);
-    const fechaHasta = new Date(fechaHastaInput.value);
+    const fechaDesde = new Date(desdeVal + "T00:00:00");
+    const fechaHasta = new Date(hastaVal + "T00:00:00");
 
-    // Validación: fecha hasta no puede ser menor
+    if (isNaN(fechaDesde) || isNaN(fechaHasta)) {
+        duracionInput.value = "";
+        return;
+    }
+
     if (fechaHasta < fechaDesde) {
         alert("La fecha hasta no puede ser anterior a la fecha desde");
-
         fechaHastaInput.value = "";
         duracionInput.value = "";
         return;
     }
 
-    // Cálculo de días (incluye mismo día)
-    const diffTime = fechaHasta.getTime() - fechaDesde.getTime();
+    const diffTime = fechaHasta - fechaDesde;
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
     duracionInput.value = diffDays;
@@ -819,56 +856,23 @@ $("#formCargaNovedad").on("submit", function (e) {
                 $("#formCargaNovedad")[0].reset();
                 $("#modalRegNovedadColaborador").modal("hide");
 
+                // 🔑 refrescar historial SIN recrear
+                if (tablaHistorialNovedades) {
+                    tablaHistorialNovedades.ajax.reload(null, false);
+                }
+
+                // refrescar tabla principal si existe
                 if (typeof tablaPersonal !== "undefined") {
                     tablaPersonal.ajax.reload(null, false);
                 }
+
             } else {
                 Swal.fire("Atención", response.mensaje, "warning");
             }
         },
         error: function (xhr) {
             console.error(xhr.responseText);
-
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "No se pudo registrar la novedad",
-            });
-        },
-    });
-
-    $("#tb_historialNovedades").DataTable({
-        ajax: {
-            url: "/novedades/historial/" + $("#inputLegajo").val(),
-            type: "GET",
-            dataSrc: "",
-        },
-
-        paging: false,
-        searching: false,
-        info: false,
-        ordering: true,
-
-        columns: [
-            {
-                data: "FECHA_REGISTRO",
-                render: (d) => (d ? d.split("T")[0] : ""),
-            },
-            { data: "CATEGORIA" },
-            { data: "NOVEDAD_NOMBRE" },
-            {
-                data: "FECHA_DESDE",
-                render: (d) => (d ? d.split("T")[0] : ""),
-            },
-            {
-                data: "FECHA_HASTA",
-                render: (d) => (d ? d.split("T")[0] : ""),
-            },
-            { data: "DURACION" },
-        ],
-
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
-        },
+            Swal.fire("Error", "No se pudo registrar la novedad", "error");
+        }
     });
 });

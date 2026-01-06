@@ -29,10 +29,10 @@
 
                     </div>
                     <div class="col-3 text-end">
-                        @if(Auth::user()->rol === 'Administrador/a')
-                        <button type="button" class="btn btn-primario" onclick="abrirModal()">
-                            <i class="fa-solid fa-user me-2"></i> Nuevo Colaborador
-                        </button>
+                        @if (Auth::user()->rol === 'Administrador/a')
+                            <button type="button" class="btn btn-primario" onclick="abrirModal()">
+                                <i class="fa-solid fa-user me-2"></i> Nuevo Colaborador
+                            </button>
                         @endif
                     </div>
                 </div>
@@ -533,8 +533,10 @@
                                                 <th>Fecha desde</th>
                                                 <th>Fecha hasta</th>
                                                 <th>Periodo</th>
+                                                <th>Justificatorios</th>
                                             </tr>
                                         </thead>
+                                        <tbody></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -677,20 +679,18 @@
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha aplicación</label>
-                                    <input type="date" class="form-control" name="fechaAplicacion"
-                                        onchange="" required>
+                                    <input type="date" class="form-control" name="fechaAplicacion" onchange=""
+                                        required readonly>
                                 </div>
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha desde</label>
-                                    <input type="date" class="form-control" name="fechaDesde"
-                                        onchange="calcularDuracion()" required>
+                                    <input type="date" class="form-control" name="fechaDesde" required>
                                 </div>
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha hasta</label>
-                                    <input type="date" class="form-control" name="fechaHasta"
-                                        onchange="calcularDuracion()" required>
+                                    <input type="date" class="form-control" name="fechaHasta" required>
                                 </div>
 
                                 <div class="col-lg-2">
@@ -713,6 +713,39 @@
                         Registrar novedad
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSubirArchivo" tabindex="-1">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-upload me-2"></i>
+                        Subir archivo
+                    </h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form id="formSubirArchivo" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+
+                        <input type="hidden" name="id_registro" id="inputRegistroArchivo">
+
+                        <label class="form-label">Archivo</label>
+                        <input type="file" name="archivo" class="form-control" accept=".pdf,.jpg,.png" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-primario">
+                            Subir
+                        </button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>

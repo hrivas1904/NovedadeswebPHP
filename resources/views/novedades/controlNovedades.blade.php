@@ -32,7 +32,7 @@
         </div>
         <div class="table-responsive">
             <div class="card-body">
-                <table id="tb_control" class="table">
+                <table id="tb_control" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>N°</th>
@@ -40,12 +40,12 @@
                             <th>AREA</th>
                             <th>COLABORADOR</th>
                             <th>LEGAJO</th>
-                            <th>CÓDIGO</th>
+                            <th>CODIGO</th>
                             <th>CATEG</th>
                             <th>NOVEDAD</th>
                             <th>DESDE</th>
                             <th>HASTA</th>
-                            <th>APLICACIÓN</th>
+                            <th>FECHAAPLICACION</th>
                             <th>CANT</th>
                             <th>VALOR2</th>
                             <th>CENTROCOSTO</th>

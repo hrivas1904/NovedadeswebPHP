@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" type="stylesheet">
+
     <style>
         :root {
             --color-default: #004a7c;
@@ -128,12 +130,12 @@
             <p>Por favor, ingresa usuario y contraseña</p>
         </div>
 
-        @if($errors->any())
-        <div class="error-message">
-            @foreach ($errors->all() as $error)
-            <div>{{ $error }}</div>
-            @endforeach
-        </div>
+        @if ($errors->any())
+            <div class="error-message">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
         @endif
 
         <form action="{{ route('login.post') }}" method="POST">
@@ -144,11 +146,33 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">CONTRASEÑA</label>
-                <input type="password" name="password" class="form-control" required>
+                <input id="inputPassword" type="password" name="password" class="form-control" required>
+                <div class="row-cols d-flex justify-content-end mt-2">
+                    <button type="button" id="btn-verPassword" style="color: #0b3c6d; background-color: transparent; border: none" onclick="mostrarPassword()">
+                        Mostrar contraseña
+                    </button>
+                </div>
             </div>
             <button type="submit" class="btn-login">INGRESAR</button>
         </form>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function mostrarPassword() {
+            const inputPass = document.getElementById('inputPassword');
+            const btn = document.getElementById('btn-verPassword');
+
+            if (inputPass.type === 'password') {
+                inputPass.type = 'text';
+                btn.textContent = 'Ocultar contraseña';
+            } else {
+                inputPass.type = 'password';
+                btn.textContent = 'Mostrar contraseña';
+            }
+        }
+    </script>
 
 </body>
 
