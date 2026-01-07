@@ -42,7 +42,7 @@
                     <table id="tb_personal" class="table table-striped table-bordered table-hover align-middle nowrap">
                         <thead class="thead-dark">
                             <tr>
-                                <th>LEG N°</th>
+                                <th>LEGAJO N°</th>
                                 <th>COLABORADOR</th>
                                 <th>DNI</th>
                                 <th>ANTIGÜEDAD</th>
