@@ -39,20 +39,20 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive px-2">
-                    <table id="tb_personal" class="table table-striped table-bordered">
+                    <table id="tb_personal" class="table table-striped table-bordered table-hover align-middle nowrap">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Legajo N°</th>
-                                <th>Empleado</th>
+                                <th>LEG N°</th>
+                                <th>COLABORADOR</th>
                                 <th>DNI</th>
-                                <th>Antigüedad</th>
-                                <th>Área</th>
-                                <th>Categoría</th>
-                                <th>Régimen</th>
-                                <th>Horas diarias</th>
-                                <th>Convenio</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th>ANTIGÜEDAD</th>
+                                <th>ÁREA</th>
+                                <th>CATEGORÍA</th>
+                                <th>RÉG</th>
+                                <th>HD</th>
+                                <th>CONVENIO</th>
+                                <th>ESTADO</th>
+                                <th>ACCIONES</th>
                             </tr>
                         </thead>
                     </table>
@@ -220,7 +220,7 @@
                                 </div>
                                 <div class="empleado-box p-3">
                                     <div class="row g-3">
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Tipo de contrato</label>
                                             <select name="tipo_contrato" id="tipoContrato" class="form-select" required>
                                                 <option selected="">Seleccione opción</option>
@@ -240,7 +240,7 @@
                                             <input type="date" name="fecha_fin_prueba" id="fechaFin"
                                                 class="form-control">
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Área</label>
                                             <select name="area_id" id="area" class="form-select js-select-area">
                                             </select>
@@ -251,29 +251,29 @@
                                                 <option selected value="">Seleccione servicio</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Convenio</label>
                                             <select name="posee_convenio" id="convenio" class="form-select">
                                                 <option selected value="">Seleccione opción</option>
-                                                <option value="Si">Si</option>
-                                                <option value="No">No</option>
+                                                <option value="Sanidad">Sanidad</option>
+                                                <option value="Fuera de convenio">Fuera de convenio</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Categoría</label>
                                             <select name="categoria_id" id="categoria"
                                                 class="form-select js-select-categoria">
                                                 <option selected disabled value="">Seleccione categoría</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 col-sm-2" >
                                             <label class="form-label">Rol</label>
                                             <select name="rol_interno_id" id="rol_interno"
                                                 class="form-select js-select-rol">
                                                 <option selected disabled value="">Seleccione rol</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Régimen (hs)</label>
                                             <select name="regimen_horas" id="selectRegimen" class="form-select">
                                                 <option selected value="">Seleccione régimen</option>
@@ -287,12 +287,12 @@
                                                 <option value="20">20</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-lg-1 col-sm-2">
                                             <label class="form-label">Horas diarias</label>
                                             <input type="text" name="horas_diarias" id="horasDiarias"
                                                 class="form-control" readonly required title="Horas Diarias">
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Es coordinador</label>
                                             <select name="es_coordinador" id="es_coordinador" class="form-select">
                                                 <option selected value="">Seleccione opción</option>
@@ -300,7 +300,7 @@
                                                 <option value="No">No</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Afiliado</label>
                                             <select name="es_afiliado" id="es_afiliado" class="form-select">
                                                 <option selected value="">Seleccione opción</option>
@@ -461,15 +461,15 @@
                                             <label class="form-label">Tipo de contrato</label>
                                             <input type="text" id="inputTipoContrato" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Fecha ingreso</label>
                                             <input type="text" id="inputFechaIngreso" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Fecha fin prueba</label>
                                             <input type="text" id="inputFechaFinPrueba" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Fecha egreso</label>
                                             <input type="text" id="inputFechaEgreso" class="form-control" readonly>
                                         </div>
@@ -485,7 +485,7 @@
                                             <label class="form-label">Servicio</label>
                                             <input type="text" id="inputServicio" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Convenio</label>
                                             <input type="text" id="inputConvenio" class="form-control" readonly>
                                         </div>
@@ -497,7 +497,7 @@
                                             <label class="form-label">Rol</label>
                                             <input type="text" id="inputRol" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-1">
                                             <label class="form-label">Régimen (hs)</label>
                                             <input type="text" id="inputRegimen" class="form-control" readonly>
                                         </div>
@@ -506,11 +506,11 @@
                                             <input type="text" id="inputHorasDiarias" class="form-control" readonly
                                                 required title="Horas Diarias">
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-1">
                                             <label class="form-label">Es coordinador</label>
                                             <input type="text" id="inputCordinador" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-1">
                                             <label class="form-label">Afiliado</label>
                                             <input type="text" id="inputAfiliado" class="form-control" readonly>
                                         </div>
@@ -524,7 +524,7 @@
                                     <span>Historial de Novedades</span>
                                 </div>
                                 <div class="card table-responsive">
-                                    <table id="tb_historialNovedades" class="table">
+                                    <table id="tb_historialNovedades" class="table table-striped table-bordered table-hover align-middle nowrap">
                                         <thead class="text-start">
                                             <tr>
                                                 <th>Fecha registro</th>
@@ -574,7 +574,7 @@
 
                         <div class="empleado-box p-3 mb-4">
                             <div class="row g-3">
-                                <div class="col-lg-1 col-md-3">
+                                <div class="col-lg-2 col-md-3">
                                     <label class="form-label">Fecha de registro</label>
                                     <input type="text" class="form-control" name="fechaRegistro"
                                         value="{{ now()->format('d-m-Y') }}" readonly>

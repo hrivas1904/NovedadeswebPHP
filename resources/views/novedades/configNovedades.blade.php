@@ -18,7 +18,6 @@
                                         <th>Cód Finnegan</th>
                                         <th>Novedad</th>
                                         <th>Categoría</th>
-                                        <th>Valor</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>

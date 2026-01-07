@@ -122,7 +122,7 @@
             </div>
         </ul>
     </div>
-    <section class="home-section p-4">
+    <section class="home-section px-2 py-3">
         @yield('content')
     </section>
 

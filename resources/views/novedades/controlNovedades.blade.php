@@ -32,16 +32,17 @@
         </div>
         <div class="table-responsive">
             <div class="card-body">
-                <table id="tb_control" class="table table-striped table-bordered">
+                <table id="tb_control" class="table table-striped table-bordered table-hover align-middle nowrap">
                     <thead>
                         <tr>
                             <th>N°</th>
                             <th>FECHA</th>
                             <th>AREA</th>
+                            <th>REGISTRANTE</th>
                             <th>COLABORADOR</th>
                             <th>LEGAJO</th>
                             <th>CODIGO</th>
-                            <th>CATEG</th>
+                            <th>CATEGORIA</th>
                             <th>NOVEDAD</th>
                             <th>DESDE</th>
                             <th>HASTA</th>
@@ -49,8 +50,7 @@
                             <th>CANT</th>
                             <th>VALOR2</th>
                             <th>CENTROCOSTO</th>
-                            <th>REGISTRANTE</th>
-                            <th>DESCRIP</th>
+                            <th>DESCRIPCION</th>
                         </tr>
                     </thead>
                 </table>

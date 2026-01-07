@@ -1,3 +1,12 @@
+function formatearFechaArgentina(fecha) {
+    if (!fecha) return "";
+
+    const partes = fecha.split("-"); // yyyy-mm-dd
+    if (partes.length !== 3) return fecha;
+
+    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+}
+
 //sp para cargar selector areas
 $(document).ready(function () {
     cargarAreas();
@@ -51,7 +60,7 @@ $(document).ready(function () {
             },
             columnDefs: [
                 {
-                    targets: [6, 12, 13, 14, 10],
+                    targets: [0, 7, 5, 11, 13, 14],
                     visible: false,
                     searchable: false,
                 },
@@ -59,8 +68,14 @@ $(document).ready(function () {
             order: [[0, "desc"]],
             columns: [
                 { data: "REGISTRO" },
-                { data: "FECHA_REGISTRO" },
+                {
+                    data: "FECHA_REGISTRO",
+                    render: function (data) {
+                        return formatearFechaArgentina(data);
+                    },
+                },
                 { data: "AREA" },
+                { data: "REGISTRANTE" },
                 { data: "COLABORADOR" },
                 {
                     data: "LEGAJO",
@@ -77,11 +92,12 @@ $(document).ready(function () {
                 { data: "DURACION" },
                 { data: "VALOR2" },
                 { data: "CENTRO_COSTO" },
-                { data: "REGISTRANTE" },
                 { data: "DESCRIPCION" },
             ],
             scrollX: true,
-            paging: true,
+            paging: false,
+            scrollCollapse: true,
+            scrollY: "65vh",
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
                 lengthMenu: "_MENU_",
@@ -93,7 +109,7 @@ $(document).ready(function () {
                 },
             },
             autoWidth: false,
-            dom: "<'d-top d-flex align-items-center gap-2'lB<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'ip>",
+            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'>",
             buttons: [
                 {
                     extend: "excelHtml5",
@@ -101,28 +117,30 @@ $(document).ready(function () {
                     className: "btn-export-excel",
                     title: "",
                     exportOptions: {
-                        columns: [4, 5, 13, 11, 12, 10, 8, 9, 15],
-                        format: {
-                            header: function (data, columnIdx) {
-                                const headersMap = {
-                                    4: "LEGAJO",
-                                    5: "NOVEDAD",
-                                    13: "CENTROCOSTO",
-                                    11: "VALOR1",
-                                    12: "VALOR2",
-                                    10: "FECHAAPLICACION",
-                                    8: "FECHADESDE",
-                                    9: "FECHAHASTA",
-                                    15: "DESCRIPCION",
-                                };
-                                return headersMap.hasOwnProperty(columnIdx)
-                                    ? headersMap[columnIdx]
-                                    : data;
-                            },
-                        },
+                        columns: [5, 6, 14, 12, 13, 11, 9, 10, 15],
                     },
                     customize: function (xlsx) {
                         var sheet = xlsx.xl.worksheets["sheet1.xml"];
+                        var row = $("row:first c", sheet);
+
+                        // Sobrescribir los encabezados manualmente
+                        const headers = [
+                            "LEGAJO",
+                            "CODIGO",
+                            "CENTROCOSTO",
+                            "VALOR1",
+                            "VALOR2",
+                            "FECHAAPLICACION",
+                            "FECHADESDE",
+                            "FECHAHASTA",
+                            "DESCRIPCION",
+                        ];
+
+                        row.each(function (index) {
+                            if (headers[index]) {
+                                $("is t", this).text(headers[index]);
+                            }
+                        });
                     },
                 },
                 {

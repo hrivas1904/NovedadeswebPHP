@@ -54,12 +54,11 @@ $(document).ready(function () {
                 },
             },
             order: [[2, "asc"]],
-            info: true,
+            info: false,
             columns: [
-                { data: "CODIGO_NOVEDAD" },
+                { data: "CODIGO_NOVEDAD", width:"10%" },
                 { data: "NOVEDAD" },
                 { data: "CATEG" },
-                { data: "TIPO_VALOR" },
                 {
                     data: "CODIGO_NOVEDAD",
                     render: function (data) {
@@ -73,7 +72,7 @@ $(document).ready(function () {
                     searchable: false,
                 },
             ],
-            dom: "<'d-top d-flex align-items-center gap-2'lB<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'ip>",
+            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'>",
             buttons: [
                 {
                     extend: "excelHtml5",
@@ -92,6 +91,9 @@ $(document).ready(function () {
                 },
             ],
             scrollX: true,
+            paging: false,
+            scrollCollapse: true,
+            scrollY: "65vh",
         });
     }
 

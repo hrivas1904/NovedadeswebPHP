@@ -146,17 +146,14 @@ $(document).ready(function () {
     });
 });
 
-//historial novedades
 function inicializarORefrescarHistorial() {
     if (tablaHistorialNovedades) {
-        // 👉 SOLO refresca
         tablaHistorialNovedades.ajax
             .url(`/novedades/historial/${legajoActivo}`)
             .load(null, false);
         return;
     }
 
-    // 👉 Se crea UNA sola vez
     tablaHistorialNovedades = $("#tb_historialNovedades").DataTable({
         ajax: {
             url: `/novedades/historial/${legajoActivo}`,
@@ -166,17 +163,23 @@ function inicializarORefrescarHistorial() {
         columns: [
             {
                 data: "FECHA_REGISTRO",
-                render: (d) => (d ? moment(d).format("DD/MM/YYYY") : "-"),
+                render: function (data) {
+                    return formatearFechaArgentina(data);
+                },
             },
             { data: "CATEGORIA" },
             { data: "NOVEDAD_NOMBRE" },
             {
                 data: "FECHA_DESDE",
-                render: (d) => (d ? moment(d).format("DD/MM/YYYY") : "-"),
+                render: function (data) {
+                    return formatearFechaArgentina(data);
+                },
             },
             {
                 data: "FECHA_HASTA",
-                render: (d) => (d ? moment(d).format("DD/MM/YYYY") : "-"),
+                render: function (data) {
+                    return formatearFechaArgentina(data);
+                },
             },
             { data: "DURACION", render: (d) => d ?? "-" },
             {
@@ -195,21 +198,37 @@ function inicializarORefrescarHistorial() {
                 },
             },
         ],
-        responsive: false, // 🔑 MUY importante en modales
-        autoWidth: false,
-        paging: true,
+        scrollX: true,
+        paging: false,
+        scrollCollapse: true,
+        scrollY: "40vh",
         searching: true,
         ordering: true,
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
-            lengthMenu: "_MENU_",
-            paginate: {
-                first: "<<",
-                previous: "<",
-                next: ">",
-                last: ">>",
-            },
         },
+        dom: "<'d-top d-flex align-items-center gap-2 mt-2 mx-2'B<'d-flex ms-auto'f>><'m-2'rt><'d-bottom d-flex align-items-center justify-content-between mx-2 mb-2'>",
+        buttons: [
+            {
+                extend: "excelHtml5",
+                text: '<i class="fa-solid fa-file-excel"></i> Excel',
+                className: "btn-export-excel",
+                exportOptions: { columns: ":visible" },
+            },
+            {
+                extend: "pdfHtml5",
+                text: '<i class="fa-solid fa-file-pdf"></i> PDF',
+                className: "btn-export-pdf",
+                exportOptions: { columns: ":visible" },
+            },
+            {
+                extend: "print",
+                text: '<i class="fa-solid fa-print"></i> Imprimir',
+                title: "Productos en sucursal",
+                exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
+                className: "btn-printer",
+            },
+        ],
     });
 }
 
@@ -371,17 +390,11 @@ $(document).ready(function () {
                 },
             },
             scrollX: true,
-            ordering: true,
-            autoWidth: false,
+            paging: false,
+            scrollCollapse: true,
+            scrollY: "65vh",
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
-                lengthMenu: "_MENU_",
-                paginate: {
-                    first: "<<",
-                    previous: "<",
-                    next: ">",
-                    last: ">>",
-                },
             },
             columns: [
                 {
@@ -392,7 +405,15 @@ $(document).ready(function () {
                 },
                 { data: "COLABORADOR" },
                 { data: "DNI" },
-                { data: "ANTIGUEDAD" },
+                {
+                    data: "FECHA_INGRESO",
+                    render: function (data, type, row) {
+                        if (type === "display" || type === "filter") {
+                            return calcularAntiguedad(data);
+                        }
+                        return data;
+                    },
+                },
                 { data: "AREA" },
                 { data: "CATEGORIA" },
                 { data: "REGIMEN" },
@@ -408,6 +429,7 @@ $(document).ready(function () {
                 },
                 {
                     data: null,
+                    orderable: false,
                     render: function (data) {
                         let botones = `
                             <button 
@@ -454,7 +476,7 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom: "<'d-top d-flex align-items-center gap-2'lB<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'ip>",
+            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'>",
             buttons: [
                 {
                     extend: "excelHtml5",
