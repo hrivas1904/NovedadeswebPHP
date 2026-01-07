@@ -398,15 +398,17 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    data: "LEGAJO",
+                    data: "LEGAJO", 
+                    width: "5%",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "COLABORADOR" },
-                { data: "DNI" },
+                { data: "COLABORADOR", width: "17%" },
+                { data: "DNI", width: "5%" },
                 {
                     data: "FECHA_INGRESO",
+                    width: "5%",
                     render: function (data, type, row) {
                         if (type === "display" || type === "filter") {
                             return calcularAntiguedad(data);
@@ -414,13 +416,14 @@ $(document).ready(function () {
                         return data;
                     },
                 },
-                { data: "AREA" },
-                { data: "CATEGORIA" },
-                { data: "REGIMEN" },
-                { data: "HORAS_DIARIAS" },
-                { data: "CONVENIO" },
+                { data: "AREA", width: "5%" },
+                { data: "CATEGORIA", width: "6%" },
+                { data: "REGIMEN", width: "3%" },
+                { data: "HORAS_DIARIAS", width: "3%" },
+                { data: "CONVENIO", width: "5%" },
                 {
                     data: "ESTADO",
+                    width: "3%",
                     render: function (data) {
                         let clase =
                             data === "Activo" ? "bg-success" : "bg-danger";
