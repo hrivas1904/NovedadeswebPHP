@@ -42,7 +42,7 @@
                     <table id="tb_personal" class="table table-striped table-bordered table-hover align-middle nowrap">
                         <thead class="thead-dark">
                             <tr>
-                                <th>LEGAJO N°</th>
+                                <th>LEGAJO</th>
                                 <th>COLABORADOR</th>
                                 <th>DNI</th>
                                 <th>ANTIGÜEDAD</th>
@@ -176,7 +176,7 @@
                                                 <option selected value="">Seleccione género</option>
                                                 <option value="Masculino">Masculino</option>
                                                 <option value="Femenino">Femenino</option>
-                                                <option value="Otro">Otro</option>
+                                                <option value="No binario">Otro</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-6">
@@ -247,7 +247,7 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Servicio</label>
-                                            <select name="servicio_id" id="servicio" class="form-select">
+                                            <select name="servicio_id" id="servicio" class="form-select js-select-servicio" disable>
                                                 <option selected value="">Seleccione servicio</option>
                                             </select>
                                         </div>
@@ -328,7 +328,7 @@
     </div>
 
     <div class="modal fade" id="modalLegajoColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        aria-hidden="true" data-bs-backdrop="static">
 
         <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">
@@ -553,7 +553,7 @@
     </div>
 
     <div class="modal fade" id="modalRegNovedadColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        aria-hidden="true" data-bs-backdrop="static">
 
         <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">

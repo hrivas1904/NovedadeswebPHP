@@ -232,4 +232,24 @@ class PersonalController extends Controller
             ], 500);
         }
     }
+
+    public function listarServiciosxArea($id)
+{
+    try {
+        $servicios = DB::select(
+            'CALL SP_LISTA_SERVICIOS(?)',
+            [$id]
+        );
+
+        return response()->json($servicios);
+
+    } catch (\Throwable $e) {
+
+        return response()->json([
+            'error' => true,
+            'mensaje' => 'Error al cargar servicios',
+            'detalle' => $e->getMessage()
+        ], 500);
+    }
+}
 }

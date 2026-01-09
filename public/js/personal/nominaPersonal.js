@@ -163,6 +163,7 @@ function inicializarORefrescarHistorial() {
         columns: [
             {
                 data: "FECHA_REGISTRO",
+                width: "6%",
                 render: function (data) {
                     return formatearFechaArgentina(data);
                 },
@@ -399,7 +400,7 @@ $(document).ready(function () {
             columns: [
                 {
                     data: "LEGAJO", 
-                    width: "5%",
+                    width: "2%",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
@@ -645,6 +646,45 @@ $(document).on("change", ".js-select-categoria", function () {
         },
         error: function (err) {
             console.error("Error cargando roles", err);
+        },
+    });
+});
+
+//sp para cargar selector de servicios
+$(document).on("change", ".js-select-area", function () {
+    const idArea = $(this).val();
+    const selectServicio = $(".js-select-servicio");
+
+    selectServicio
+        .empty()
+        .append('<option value="">Seleccione servicio</option>')
+        .prop("disabled", true);
+
+    if (!idArea) return;
+
+    $.ajax({
+        url: `/servicios-empleados/por-area/${idArea}`,
+        method: "GET",
+        dataType: "json",
+        success: function (data) {
+
+            if (!Array.isArray(data)) {
+                console.error("Respuesta inválida:", data);
+                return;
+            }
+
+            data.forEach(servicio => {
+                selectServicio.append(
+                    `<option value="${servicio.id_servicios}">
+                        ${servicio.servicio}
+                    </option>`
+                );
+            });
+
+            selectServicio.prop("disabled", false);
+        },
+        error: function (err) {
+            console.error("Error cargando servicios", err);
         },
     });
 });

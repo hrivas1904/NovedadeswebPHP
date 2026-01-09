@@ -81,6 +81,8 @@ Route::get(
     [PersonalController::class, 'historialNovedades']
 );
 
+Route::get('/servicios-empleados/por-area/{id}', [PersonalController::class, 'listarServiciosxArea'])
+    ->name('personal.servicios');
 
 
 
