@@ -3,6 +3,7 @@ html, body {
     padding: 0;
     height: 100%;
     font-family: 'Franklin Gothic Medium', sans-serif;
+    font-size: 0.75rem;
 }
 
 .hero {

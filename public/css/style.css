@@ -2,8 +2,14 @@
 
 body {
     min-height: 100vh;
-    font-family: "Roboto", sans-serif;
     z-index: 1055;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Franklin Gothic Medium', sans-serif;
+    font-size: 0.9rem;
 }
 
 /*.tituloVista {

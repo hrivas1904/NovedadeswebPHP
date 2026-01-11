@@ -399,16 +399,18 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    data: "LEGAJO", 
+                    data: "LEGAJO",
+                    className: "text-start",
                     width: "2%",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "COLABORADOR", width: "17%" },
-                { data: "DNI", width: "5%" },
+                { data: "COLABORADOR", width: "16%", className: "text-start" },
+                { data: "DNI", width: "5%", className: "text-start" },
                 {
                     data: "FECHA_INGRESO",
+                    className: "text-start",
                     width: "5%",
                     render: function (data, type, row) {
                         if (type === "display" || type === "filter") {
@@ -417,14 +419,15 @@ $(document).ready(function () {
                         return data;
                     },
                 },
-                { data: "AREA", width: "5%" },
-                { data: "CATEGORIA", width: "6%" },
-                { data: "REGIMEN", width: "3%" },
-                { data: "HORAS_DIARIAS", width: "3%" },
-                { data: "CONVENIO", width: "5%" },
+                { data: "AREA", width: "5%", className: "text-start" },
+                { data: "CATEGORIA", width: "6%", className: "text-start" },
+                { data: "REGIMEN", width: "3%", className: "text-center" },
+                { data: "HORAS_DIARIAS", width: "3%", className: "text-center" },
+                { data: "CONVENIO", width: "4%", className: "text-start" },
                 {
                     data: "ESTADO",
                     width: "3%",
+                    className: "text-center",
                     render: function (data) {
                         let clase =
                             data === "Activo" ? "bg-success" : "bg-danger";
@@ -433,6 +436,7 @@ $(document).ready(function () {
                 },
                 {
                     data: null,
+                    className: "text-center",
                     orderable: false,
                     render: function (data) {
                         let botones = `
@@ -480,7 +484,7 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'>",
+            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-start'i>",
             buttons: [
                 {
                     extend: "excelHtml5",
