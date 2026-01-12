@@ -138,7 +138,7 @@ $(document).ready(function () {
         const valor = $(this).val();
         const inputs = $("#input-descripcion, #input-mp");
 
-        if (valor === "Si") {
+        if (valor === "SI") {
             // Habilitar inputs y limpiar si es necesario
             inputs.prop("disabled", false);
         } else {
@@ -182,8 +182,7 @@ function subirComprobantes(files) {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (resp) {
-            Swal.fire("OK", resp.mensaje, "success");
-            $("#inputComprobantes").val("");
+            alert("Comprobante subido exitosamente")
         },
         error: function (xhr) {
             Swal.fire("Error", "No se pudo subir el comprobante", "error");
@@ -202,13 +201,11 @@ $(document).on("click", ".btn-ver-archivo", function (e) {
 });
 
 function verComprobantes(idNovedad) {
-
     $.ajax({
         url: `/novedades/${idNovedad}/comprobantes`,
         method: "GET",
         dataType: "json",
         success: function (response) {
-
             const contenedor = $("#contenedorComprobantes");
             contenedor.html("");
 
@@ -219,9 +216,7 @@ function verComprobantes(idNovedad) {
                     </div>`
                 );
             } else {
-
-                response.forEach(comp => {
-
+                response.forEach((comp) => {
                     const url = `/comprobantes/${comp.id}/ver`;
 
                     contenedor.append(`
@@ -243,8 +238,12 @@ function verComprobantes(idNovedad) {
         },
         error: function (xhr) {
             console.error(xhr.responseText);
-            Swal.fire("Error", "No se pudieron cargar los comprobantes", "error");
-        }
+            Swal.fire(
+                "Error",
+                "No se pudieron cargar los comprobantes",
+                "error"
+            );
+        },
     });
 }
 
@@ -532,7 +531,7 @@ $(document).ready(function () {
                     className: "text-center",
                     render: function (data) {
                         let clase =
-                            data === "Activo" ? "bg-success" : "bg-danger";
+                            data === "ACTIVO" ? "bg-success" : "bg-danger";
                         return `<span style="font-size: 0.80rem;" class="badge ${clase}">${data}</span>`;
                     },
                 },
