@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class NovedadesController extends Controller
@@ -169,5 +170,97 @@ class NovedadesController extends Controller
         return response()->json([
             'mensaje' => $mensaje
         ]);
+    }
+
+    public function subirComprobante(Request $request)
+    {
+        $request->validate([
+            'id_nxe' => 'required|integer|exists:novedadxempleados,id_nxe',
+            'comprobantes' => 'required',
+            'comprobantes.*' => 'file|max:5120'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $idNxe   = $request->id_nxe;
+            $usuario = auth()->id();
+
+            foreach ($request->file('comprobantes') as $archivo) {
+
+                $nombreOriginal = $archivo->getClientOriginalName();
+                $mime           = $archivo->getMimeType();
+                $extension      = $archivo->getClientOriginalExtension();
+
+                $nombreArchivo = uniqid('comp_') . '.' . $extension;
+                $ruta = "comprobantes/novedades/{$idNxe}";
+
+                $archivo->storeAs($ruta, $nombreArchivo);
+
+                $idComprobante = DB::table('comprobantes')->insertGetId([
+                    'nombre_original' => $nombreOriginal,
+                    'nombre_archivo'  => $nombreArchivo,
+                    'ruta'            => $ruta,
+                    'tipo_mime'       => $mime,
+                    'usuario'         => $usuario,
+                    'fecha_subida'    => now()
+                ]);
+
+                DB::table('comprobantesxnovedad')->insert([
+                    'id_comprobante' => $idComprobante,
+                    'id_novedad'     => $idNxe
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Comprobante/s subido/s correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al subir el comprobante',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function listarComprobantes($id)
+    {
+        $comprobantes = DB::table('comprobantes as c')
+            ->join('comprobantesxnovedad as cxn', 'cxn.id_comprobante', '=', 'c.id')
+            ->where('cxn.id_novedad', $id)
+            ->select('c.id')
+            ->orderBy('c.fecha_subida')
+            ->get();
+
+        return response()->json($comprobantes);
+    }
+
+    public function verComprobante($id)
+    {
+        $comp = DB::table('comprobantes')->where('id', $id)->first();
+
+        if (!$comp) {
+            abort(404);
+        }
+
+        $path = $comp->ruta . '/' . $comp->nombre_archivo;
+
+        if (!Storage::disk('private')->exists($path)) {
+            abort(404, 'Archivo no encontrado');
+        }
+
+        return Storage::disk('private')->response(
+            $path,
+            null,
+            ['Content-Type' => $comp->tipo_mime]
+        );
     }
 }

@@ -113,3 +113,17 @@ Route::get(
 Route::get('/novedades/{codigo}', [NovedadesController::class, 'verNovedad']);
 
 Route::post('/novedades', [NovedadesController::class, 'altaNuevaNovedad']);
+
+Route::post('/novedades/subir-comprobante', 
+    [NovedadesController::class, 'subirComprobante']
+)->name('novedades.subirComprobante');
+
+Route::get(
+    '/novedades/{id}/comprobantes',
+    [NovedadesController::class, 'listarComprobantes']
+);
+
+Route::get(
+    '/comprobantes/{id}/ver',
+    [NovedadesController::class, 'verComprobante']
+);

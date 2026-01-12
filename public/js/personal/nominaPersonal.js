@@ -5,6 +5,8 @@ let tablaPersonal;
 let tablaHistorialNovedades = null;
 let legajoActivo = null;
 
+let registroSeleccionado = null;
+
 //calculo edad
 function calcularEdad(fecha) {
     if (!fecha) return "";
@@ -146,6 +148,106 @@ $(document).ready(function () {
     });
 });
 
+//subir comprobante
+$(document).on("click", ".btn-subir-archivo", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    registroSeleccionado = $(this).data("registro");
+    $("#inputComprobantes").click();
+});
+
+$("#inputComprobantes").on("change", function () {
+    const files = this.files;
+    if (!files || files.length === 0) return;
+
+    subirComprobantes(files);
+});
+
+function subirComprobantes(files) {
+    let formData = new FormData();
+    formData.append("id_nxe", registroSeleccionado);
+
+    for (let i = 0; i < files.length; i++) {
+        formData.append("comprobantes[]", files[i]);
+    }
+
+    $.ajax({
+        url: "/novedades/subir-comprobante", // 👈 TU RUTA
+        method: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (resp) {
+            Swal.fire("OK", resp.mensaje, "success");
+            $("#inputComprobantes").val("");
+        },
+        error: function (xhr) {
+            Swal.fire("Error", "No se pudo subir el comprobante", "error");
+            console.error(xhr.responseText);
+        },
+    });
+}
+
+//ver comprobantes
+$(document).on("click", ".btn-ver-archivo", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const idNovedad = $(this).data("registro");
+    verComprobantes(idNovedad);
+});
+
+function verComprobantes(idNovedad) {
+
+    $.ajax({
+        url: `/novedades/${idNovedad}/comprobantes`,
+        method: "GET",
+        dataType: "json",
+        success: function (response) {
+
+            const contenedor = $("#contenedorComprobantes");
+            contenedor.html("");
+
+            if (!response || response.length === 0) {
+                contenedor.html(
+                    `<div class="alert alert-info">
+                        Esta novedad no tiene comprobantes.
+                    </div>`
+                );
+            } else {
+
+                response.forEach(comp => {
+
+                    const url = `/comprobantes/${comp.id}/ver`;
+
+                    contenedor.append(`
+                        <div class="mb-4 border rounded p-2">
+                            <iframe
+                                src="${url}"
+                                style="width:100%; height:600px; border:none;"
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    `);
+                });
+            }
+
+            const modal = new bootstrap.Modal(
+                document.getElementById("modalVerComprobantes")
+            );
+            modal.show();
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
+            Swal.fire("Error", "No se pudieron cargar los comprobantes", "error");
+        }
+    });
+}
+
 function inicializarORefrescarHistorial() {
     if (tablaHistorialNovedades) {
         tablaHistorialNovedades.ajax
@@ -182,17 +284,24 @@ function inicializarORefrescarHistorial() {
                     return formatearFechaArgentina(data);
                 },
             },
-            { data: "DURACION", render: (d) => d ?? "-" },
+            {
+                data: "DURACION",
+                className: "text-start",
+                render: (d) => d ?? "-",
+            },
             {
                 data: "REGISTRO",
                 orderable: false,
                 searchable: false,
+                className: "text-center",
                 render: function (data) {
                     return `
-                        <button class="btn-terciario btn-subir-archivo" data-registro="${data}">
+                        <button type="button" class="btn-terciario btn-subir-archivo" data-registro="${data}">
                             <i class="fa-solid fa-upload"></i> Subir
                         </button>
-                        <button class="btn-secundario btn-ver-archivo" data-registro="${data}">
+                        <button type="button"
+                            class="btn-secundario btn-ver-archivo"
+                            data-registro="{{ REGISTRO }}">
                             <i class="fa-solid fa-eye"></i> Ver
                         </button>
                     `;
@@ -408,21 +517,14 @@ $(document).ready(function () {
                 },
                 { data: "COLABORADOR", width: "16%", className: "text-start" },
                 { data: "DNI", width: "5%", className: "text-start" },
-                {
-                    data: "FECHA_INGRESO",
-                    className: "text-start",
-                    width: "5%",
-                    render: function (data, type, row) {
-                        if (type === "display" || type === "filter") {
-                            return calcularAntiguedad(data);
-                        }
-                        return data;
-                    },
-                },
                 { data: "AREA", width: "5%", className: "text-start" },
                 { data: "CATEGORIA", width: "6%", className: "text-start" },
                 { data: "REGIMEN", width: "3%", className: "text-center" },
-                { data: "HORAS_DIARIAS", width: "3%", className: "text-center" },
+                {
+                    data: "HORAS_DIARIAS",
+                    width: "3%",
+                    className: "text-center",
+                },
                 { data: "CONVENIO", width: "4%", className: "text-start" },
                 {
                     data: "ESTADO",
@@ -671,13 +773,12 @@ $(document).on("change", ".js-select-area", function () {
         method: "GET",
         dataType: "json",
         success: function (data) {
-
             if (!Array.isArray(data)) {
                 console.error("Respuesta inválida:", data);
                 return;
             }
 
-            data.forEach(servicio => {
+            data.forEach((servicio) => {
                 selectServicio.append(
                     `<option value="${servicio.id_servicios}">
                         ${servicio.servicio}
