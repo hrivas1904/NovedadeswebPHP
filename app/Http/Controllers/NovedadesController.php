@@ -231,11 +231,11 @@ class NovedadesController extends Controller
         }
     }
 
-    public function listarComprobantes($id)
+    public function listarComprobantes($idNovedad)
     {
         $comprobantes = DB::table('comprobantes as c')
             ->join('comprobantesxnovedad as cxn', 'cxn.id_comprobante', '=', 'c.id')
-            ->where('cxn.id_novedad', $id)
+            ->where('cxn.id_novedad', $idNovedad) // 👈 ESTE ID
             ->select('c.id')
             ->orderBy('c.fecha_subida')
             ->get();

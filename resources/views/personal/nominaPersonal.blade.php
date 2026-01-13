@@ -527,13 +527,14 @@
                                         class="table table-striped table-bordered table-hover align-middle nowrap">
                                         <thead>
                                             <tr>
+                                                <th>N°</th>
                                                 <th>Fecha registro</th>
                                                 <th>Categoría</th>
                                                 <th>Novedad</th>
                                                 <th>Fecha desde</th>
                                                 <th>Fecha hasta</th>
                                                 <th>Periodo</th>
-                                                <th>Justificativos</th>
+                                                <th>Comprobantes</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>

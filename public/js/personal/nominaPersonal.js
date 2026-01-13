@@ -192,6 +192,7 @@ function subirComprobantes(files) {
 }
 
 //ver comprobantes
+
 $(document).on("click", ".btn-ver-archivo", function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -262,6 +263,7 @@ function inicializarORefrescarHistorial() {
             dataSrc: "",
         },
         columns: [
+            { data: "REGISTRO" },
             {
                 data: "FECHA_REGISTRO",
                 width: "6%",
@@ -300,7 +302,7 @@ function inicializarORefrescarHistorial() {
                         </button>
                         <button type="button"
                             class="btn-secundario btn-ver-archivo"
-                            data-registro="{{ REGISTRO }}">
+                            data-registro="${data}">
                             <i class="fa-solid fa-eye"></i> Ver
                         </button>
                     `;
