@@ -84,6 +84,8 @@ Route::get(
 Route::get('/servicios-empleados/por-area/{id}', [PersonalController::class, 'listarServiciosxArea'])
     ->name('personal.servicios');
 
+Route::put('/personal/{legajo}', [PersonalController::class, 'update']);
+
 
 
 //RUTAS DE SP NOVEDADES

@@ -488,6 +488,102 @@ function registrarNovedad(legajoColaborador) {
     });
 }
 
+//edit empleado
+$(document).on("click", ".btn-Editar", function (e) {
+    e.preventDefault();
+    const legajo = $(this).data("id");
+    abrirModalEditarEmpleado(legajo);
+});
+
+function abrirModalEditarEmpleado(legajo) {
+    $.ajax({
+        url: `/personal/ver-legajo/${legajo}`,
+        type: "GET",
+        success: function (data) {
+
+            $("#tituloEdit").html(`
+                <i class="fa-solid fa-user-pen me-2"></i>
+                Editar colaborador <strong>${data.COLABORADOR}</strong>
+            `);
+
+            $("#edit_legajo").val(data.LEGAJO);
+
+            // Datos personales
+            $("#nombre_completo").val(data.COLABORADOR);
+            $("#estado").val(data.ESTADO);
+            $("#dni").val(data.DNI);
+            $("#cuil").val(data.CUIL);
+            $("#fecha_nacimiento").val(data.FECHA_NAC);
+
+            // Contacto
+            $("#email").val(data.CORREO);
+            $("#telefono").val(data.TELEFONO);
+            $("#domicilio").val(data.DOMICILIO);
+            $("#localidad").val(data.LOCALIDAD);
+
+            // Socioeconómicos
+            $("#estado_civil").val(data.ESTADO_CIVIL);
+            $("#genero").val(data.GENERO);
+
+            $("#obraSocial").val(data.ID_OS).trigger("change");
+            $("#codigoOS").val(data.COD_OS);
+
+            $("#select-titulo").val(data.TITULO);
+            $("#input-descripcion").val(data.DESCRIP_TITULO);
+            $("#input-mp").val(data.MAT_PROF);
+
+            // Laborales
+            $("#tipoContrato").val(data.TIPO_CONTRATO);
+            $("#fechaInicio").val(data.FECHA_INGRESO);
+            $("#fechaFin").val(data.FECHA_FIN_PRUEBA);
+
+            $("#area").val(data.ID_AREA).trigger("change");
+            $("#servicio").val(data.ID_SERVICIO);
+            $("#categoria").val(data.ID_CATEG);
+            $("#rol_interno").val(data.ID_ROL);
+
+            $("#selectRegimen").val(data.REGIMEN);
+            $("#horasDiarias").val(data.HORAS_DIARIAS);
+
+            $("#es_coordinador").val(data.COORDINADOR);
+            $("#es_afiliado").val(data.AFILIADO);
+
+            new bootstrap.Modal(
+                document.getElementById("modalEditEmpleado")
+            ).show();
+        },
+        error: function () {
+            alert("Error al cargar empleado");
+        }
+    });
+}
+
+$("#formEditEmpleado").on("submit", function (e) {
+    e.preventDefault();
+
+    const legajo = $("#edit_legajo").val();
+
+    $.ajax({
+        url: `/personal/${legajo}`,
+        type: "POST",
+        data: $(this).serialize(),
+        success: function () {
+            alert("Empleado actualizado correctamente");
+            $("#modalEditEmpleado").modal("hide");
+            tablaPersonal.ajax.reload(null, false);
+        },
+        error: function () {
+            alert("Error al actualizar empleado");
+        }
+    });
+});
+
+function cerrarEdicionEmpleado() {
+    $("#formEditEmpleado")[0].reset();
+    $("#modalEditEmpleado").modal("hide");
+    $('.modal-backdrop').remove();
+}
+
 //sp para cargar selector areas
 $(document).ready(function () {
     cargarAreas();
@@ -542,6 +638,7 @@ $(document).ready(function () {
                     }
                 },
             },
+            autoWidth: false,
             scrollX: true,
             paging: false,
             scrollCollapse: true,
@@ -553,25 +650,22 @@ $(document).ready(function () {
                 {
                     data: "LEGAJO",
                     className: "text-start",
-                    width: "2%",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "COLABORADOR", width: "16%", className: "text-start" },
-                { data: "DNI", width: "5%", className: "text-start" },
+                { data: "COLABORADOR", className: "text-start" },
+                { data: "DNI", className: "text-start" },
                 { data: "AREA", width: "5%", className: "text-start" },
-                { data: "CATEGORIA", width: "6%", className: "text-start" },
-                { data: "REGIMEN", width: "3%", className: "text-center" },
+                { data: "CATEGORIA", className: "text-start" },
+                { data: "REGIMEN", className: "text-center" },
                 {
                     data: "HORAS_DIARIAS",
-                    width: "3%",
                     className: "text-center",
                 },
-                { data: "CONVENIO", width: "4%", className: "text-start" },
+                { data: "CONVENIO", width: "5%", className: "text-start" },
                 {
                     data: "ESTADO",
-                    width: "3%",
                     className: "text-center",
                     render: function (data) {
                         let clase =
@@ -582,14 +676,16 @@ $(document).ready(function () {
                 {
                     data: null,
                     className: "text-center",
+                    width: "auto",
                     orderable: false,
                     render: function (data) {
                         let botones = `
                             <button 
                                 class="btn-secundario btn-VerLegajo"
                                 data-id="${data.LEGAJO}"
+                                title='Ver legajo'
                                 data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-eye"></i> Legajo
+                                <i class="fa-solid fa-eye"></i>
                             </button>
                         `;
 
@@ -599,14 +695,16 @@ $(document).ready(function () {
                             <button 
                                 class="btn-peligro btn-DarBaja"
                                 data-id="${data.LEGAJO}"
+                                title='Dar de baja'
                                 data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-x"></i> Baja
+                                <i class="fa-solid fa-x"></i>
                             </button>
 
                             <button 
                                 class="btn-alerta btn-Editar"
+                                title='Editar'
                                 data-id="${data.LEGAJO}">
-                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                                <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                         `;
                         }
@@ -619,8 +717,9 @@ $(document).ready(function () {
                             botones += `
                             <button 
                                 class="btn-primario btn-RegNovedad"
+                                title='Cargar novedad'
                                 data-id="${data.LEGAJO}">
-                                <i class="fa-solid fa-floppy-disk"></i> Novedad
+                                <i class="fa-solid fa-floppy-disk"></i>
                             </button>
                         `;
                         }
@@ -687,6 +786,14 @@ $(document).ready(function () {
             const legajoColaborador = $(this).data("id");
             console.log("Id recibido: " + legajoColaborador);
             registrarNovedad(legajoColaborador);
+        });
+
+        $(document).on("click", ".btn-Editar", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const legajoColaborador = $(this).data("id");
+            console.log("Id recibido: " + legajoColaborador);
+            abrirModalEditarEmpleado(legajoColaborador);
         });
     }
 });

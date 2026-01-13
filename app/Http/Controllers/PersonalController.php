@@ -282,6 +282,24 @@ class PersonalController extends Controller
             ], 500);
         }
     }
-    
-    
+
+    public function show($legajo)
+    {
+        $empleado = DB::table('empleados')
+            ->where('LEGAJO', $legajo)
+            ->first();
+
+        return response()->json($empleado);
+    }
+
+    public function update(Request $request, $legajo)
+    {
+        DB::table('empleados')
+            ->where('LEGAJO', $legajo)
+            ->update(
+                $request->except(['_token', '_method', 'legajo'])
+            );
+
+        return response()->json(['success' => true]);
+    }
 }

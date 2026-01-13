@@ -7,7 +7,7 @@
 .btn-primario {
     background-color: var(--color-accent-green);
     border: none;
-    padding: 0.45rem;
+    padding: 0.5rem 0.8rem;
     font-weight: 500;
     border-radius: 6px;
     color: #fff;
@@ -27,7 +27,7 @@
 .btn-secundario {
     background-color: var(--color-default);
     border: none;
-    padding: 0.45rem;
+    padding: 0.5rem 0.65rem;
     font-weight: 500;
     border-radius: 6px;
     color: #fff;
@@ -47,7 +47,7 @@
 .btn-peligro {
     background-color: #dc3545;
     border: none;
-    padding: 0.45rem;
+    padding: 0.5rem 0.8rem;
     font-weight: 500;
     border-radius: 6px;
     color: #fff;
@@ -95,7 +95,7 @@
     background-color: #f4c430; /* amarillo alerta */
     color: #1f2937;            /* texto oscuro */
     border: none;
-    padding: 0.45rem;
+    padding: 0.5rem 0.7rem;
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease-in-out;
