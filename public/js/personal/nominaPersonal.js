@@ -182,7 +182,7 @@ function subirComprobantes(files) {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (resp) {
-            alert("Comprobante subido exitosamente")
+            alert("Comprobante subido exitosamente");
         },
         error: function (xhr) {
             Swal.fire("Error", "No se pudo subir el comprobante", "error");
@@ -488,6 +488,44 @@ function registrarNovedad(legajoColaborador) {
     });
 }
 
+//sp para cargar selector areas
+$(document).ready(function () {
+    cargarAreas();
+});
+
+function cargarAreas() {
+    $.ajax({
+        url: "/areas/lista",
+        method: "GET",
+        success: function (data) {
+            const select = $(".js-select-area");
+            const areaFija = $("#areaFija").val(); // puede ser undefined
+
+            select.empty();
+            select.append('<option value="">Seleccione área</option>');
+
+            data.forEach((area) => {
+                select.append(`
+                    <option value="${area.id_area}">
+                        ${area.nombre}
+                    </option>
+                `);
+            });
+
+            // 👉 LÓGICA CORRECTA
+            if (areaFija) {
+                select.val(areaFija);
+                select.prop("disabled", true);
+            } else {
+                select.prop("disabled", false);
+            }
+        },
+        error: function () {
+            console.error("Error cargando áreas");
+        },
+    });
+}
+
 //carga dt personal
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
@@ -497,7 +535,11 @@ $(document).ready(function () {
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
-                    d.area_id = $("#area").val();
+                    if (USER_ROLE !== "Administrador/a") {
+                        d.area_id = USER_AREA_ID;
+                    } else {
+                        d.area_id = $("#area").val();
+                    }
                 },
             },
             scrollX: true,
@@ -648,44 +690,6 @@ $(document).ready(function () {
         });
     }
 });
-
-//sp para cargar selector areas
-$(document).ready(function () {
-    cargarAreas();
-});
-
-function cargarAreas() {
-    $.ajax({
-        url: "/areas/lista",
-        method: "GET",
-        success: function (data) {
-            const select = $(".js-select-area");
-            const areaFija = $("#areaFija").val(); // puede ser undefined
-
-            select.empty();
-            select.append('<option value="">Seleccione área</option>');
-
-            data.forEach((area) => {
-                select.append(`
-                    <option value="${area.id_area}">
-                        ${area.nombre}
-                    </option>
-                `);
-            });
-
-            // 👉 LÓGICA CORRECTA
-            if (areaFija) {
-                select.val(areaFija);
-                select.prop("disabled", true);
-            } else {
-                select.prop("disabled", false);
-            }
-        },
-        error: function () {
-            console.error("Error cargando áreas");
-        },
-    });
-}
 
 //sp para cargar selector categorias
 $(document).ready(function () {

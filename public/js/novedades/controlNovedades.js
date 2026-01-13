@@ -55,7 +55,11 @@ $(document).ready(function () {
                 url: "/novedades/listarNovedadesPorArea",
                 type: "GET",
                 data: function (d) {
-                    d.area_id = $("#area").val();
+                    if (USER_ROLE !== "Administrador/a") {
+                        d.area_id = USER_AREA_ID;
+                    } else {
+                        d.area_id = $("#area").val();
+                    }
                 },
             },
             columnDefs: [
@@ -86,8 +90,18 @@ $(document).ready(function () {
                 { data: "CODIGO_NOVEDAD" },
                 { data: "CATEGORIA" },
                 { data: "NOVEDAD_NOMBRE" },
-                { data: "FECHA_DESDE" },
-                { data: "FECHA_HASTA" },
+                { 
+                    data: "FECHA_DESDE",
+                    render: function (data) {
+                        return formatearFechaArgentina(data);
+                    }, 
+                },
+                { 
+                    data: "FECHA_HASTA",
+                    render: function (data) {
+                        return formatearFechaArgentina(data);
+                    }, 
+                },
                 { data: "FECHA_APLICACION" },
                 { data: "DURACION" },
                 { data: "VALOR2" },

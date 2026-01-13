@@ -15,10 +15,10 @@
                     <div class="col-9 d-flex justify-content-start align-items-center gap-3">
                         <h6>Nómina del Personal</h6>
                         <select id="area" name="area" class="form-select js-select-area" style="width: auto;"
-                            {{ Auth::user()->rol !== 'Administrador' ? 'disabled' : '' }}>
+                            {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
                         </select>
 
-                        @if (Auth::user()->rol !== 'Administrador')
+                        @if (Auth::user()->rol !== 'Administrador/a')
                             <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                         @endif
 
@@ -702,6 +702,11 @@
                                 <div class="col-lg-4">
                                     <label class="form-label">Descipción</label>
                                     <input type="text" class="form-control" name="descripcion">
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <label class="form-label">Comprobante</label>
+                                    <input type="file" class="form-control">
                                 </div>
                             </div>
                         </div>

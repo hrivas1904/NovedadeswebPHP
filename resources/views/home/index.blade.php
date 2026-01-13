@@ -8,7 +8,7 @@
     <div class="hero-overlay">
 
         <h1 class="hero-title">
-            ¡Bienvenido, <strong>{{ Auth::user()->name }}</strong>!
+            ¡Hola, <strong>{{ Auth::user()->name }}</strong>!
         </h1>
 
         <div class="hero-menu">
@@ -21,7 +21,9 @@
 
                 <div class="menu-dropdown">
                     <a href="/nomina">Nómina del Personal</a>
+                    @if(Auth::user()->rol === 'Administrador/a')
                     <a href="/cronograma">Cronograma del Personal</a>
+                    @endif
                 </div>
             </div>
 
