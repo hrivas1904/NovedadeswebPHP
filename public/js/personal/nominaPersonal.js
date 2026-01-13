@@ -65,7 +65,7 @@ function formatearFechaArgentina(fecha) {
     const partes = fecha.split("-"); // yyyy-mm-dd
     if (partes.length !== 3) return fecha;
 
-    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
 //función para tomar el último día del mes
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const fecha = new Date(inicio);
 
-        if (tipo === "Plazo fijo") {
+        if (tipo === "Tiempo indeterminado") {
             fecha.setMonth(fecha.getMonth() + 6);
             fechaFin.value = fecha.toISOString().split("T")[0];
         } else if (tipo === "Pasantía" || tipo === "Práctica profesional") {
@@ -489,74 +489,78 @@ function registrarNovedad(legajoColaborador) {
 }
 
 //edit empleado
-$(document).on("click", ".btn-Editar", function (e) {
-    e.preventDefault();
-    const legajo = $(this).data("id");
-    abrirModalEditarEmpleado(legajo);
-});
+function editEmpleados(legajoColaborador) {
+    console.log("Mostrando legajo:", legajoColaborador);
+    legajoActivo = legajoColaborador;
 
-function abrirModalEditarEmpleado(legajo) {
     $.ajax({
-        url: `/personal/ver-legajo/${legajo}`,
+        url: `/personal/ver-legajo/${legajoColaborador}`,
         type: "GET",
-        success: function (data) {
+        success: function (response) {
+            if (response.success) {
+                const d = response.data;
 
-            $("#tituloEdit").html(`
-                <i class="fa-solid fa-user-pen me-2"></i>
-                Editar colaborador <strong>${data.COLABORADOR}</strong>
-            `);
+                $("#inputLegajo").val(d.LEGAJO);
+                $("#inputNombre").val(d.COLABORADOR);
+                $("#inputEstado").val(d.ESTADO);
+                $("#inputDni").val(d.DNI);
+                $("#inputCuil").val(d.CUIL);
+                $("#inputFechaNacimiento").val(
+                    formatearFechaArgentina(d.FECHA_NAC)
+                );
 
-            $("#edit_legajo").val(data.LEGAJO);
+                $("#inputEdad").val(calcularEdad(d.FECHA_NAC));
+                $("#inputEmail").val(d.CORREO);
+                $("#inputTelefono").val(d.TELEFONO);
+                $("#inputDomicilio").val(d.DOMICILIO);
+                $("#inputLocalidad").val(d.LOCALIDAD);
 
-            // Datos personales
-            $("#nombre_completo").val(data.COLABORADOR);
-            $("#estado").val(data.ESTADO);
-            $("#dni").val(data.DNI);
-            $("#cuil").val(data.CUIL);
-            $("#fecha_nacimiento").val(data.FECHA_NAC);
+                $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
+                $("#inputGenero").val(d.GENERO);
+                $("#inputObraSocial").val(d.OBRA_SOCIAL);
+                $("#inputCodigoOS").val(d.COD_OS);
+                $("#inputTitulo").val(d.TITULO);
+                $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
+                $("#inputMatricula").val(d.MAT_PROF);
 
-            // Contacto
-            $("#email").val(data.CORREO);
-            $("#telefono").val(data.TELEFONO);
-            $("#domicilio").val(data.DOMICILIO);
-            $("#localidad").val(data.LOCALIDAD);
+                $("#inputTipoContrato").val(d.TIPO_CONTRATO);
+                $("#inputFechaIngreso").val(
+                    formatearFechaArgentina(d.FECHA_INGRESO)
+                );
+                $("#inputFechaFinPrueba").val(
+                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA)
+                );
 
-            // Socioeconómicos
-            $("#estado_civil").val(data.ESTADO_CIVIL);
-            $("#genero").val(data.GENERO);
+                $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
+                $("#inputFechaEgreso").val(d.FECHA_EGRESO);
+                $("#inputArea").val(d.AREA);
+                $("#inputServicio").val(d.SERVICIO);
+                $("#inputConvenio").val(d.CONVENIO);
+                $("#inputCategoria").val(d.CATEGORIA);
+                $("#inputRol").val(d.ROL);
+                $("#inputRegimen").val(d.REGIMEN);
+                $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
+                $("#inputCordinador").val(d.COORDINADOR);
+                $("#inputAfiliado").val(d.AFILIADO);
 
-            $("#obraSocial").val(data.ID_OS).trigger("change");
-            $("#codigoOS").val(data.COD_OS);
+                $("#modalLegajoColaborador").modal("show");
 
-            $("#select-titulo").val(data.TITULO);
-            $("#input-descripcion").val(data.DESCRIP_TITULO);
-            $("#input-mp").val(data.MAT_PROF);
-
-            // Laborales
-            $("#tipoContrato").val(data.TIPO_CONTRATO);
-            $("#fechaInicio").val(data.FECHA_INGRESO);
-            $("#fechaFin").val(data.FECHA_FIN_PRUEBA);
-
-            $("#area").val(data.ID_AREA).trigger("change");
-            $("#servicio").val(data.ID_SERVICIO);
-            $("#categoria").val(data.ID_CATEG);
-            $("#rol_interno").val(data.ID_ROL);
-
-            $("#selectRegimen").val(data.REGIMEN);
-            $("#horasDiarias").val(data.HORAS_DIARIAS);
-
-            $("#es_coordinador").val(data.COORDINADOR);
-            $("#es_afiliado").val(data.AFILIADO);
-
-            new bootstrap.Modal(
-                document.getElementById("modalEditEmpleado")
-            ).show();
+                // 🔑 inicializar / refrescar historial CUANDO el modal ya está visible
+                $("#modalLegajoColaborador")
+                    .off("shown.bs.modal")
+                    .on("shown.bs.modal", function () {
+                        inicializarORefrescarHistorial();
+                    });
+            } else {
+                Swal.fire("Error", response.mensaje, "error");
+            }
         },
         error: function () {
-            alert("Error al cargar empleado");
-        }
+            Swal.fire("Error", "No se pudo cargar el legajo", "error");
+        },
     });
 }
+
 
 $("#formEditEmpleado").on("submit", function (e) {
     e.preventDefault();
@@ -654,10 +658,10 @@ $(document).ready(function () {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "COLABORADOR", className: "text-start" },
+                { data: "COLABORADOR", width:'16%', className: "text-start" },
                 { data: "DNI", className: "text-start" },
                 { data: "AREA", width: "5%", className: "text-start" },
-                { data: "CATEGORIA", className: "text-start" },
+                { data: "CATEGORIA",width:'7%', className: "text-start" },
                 { data: "REGIMEN", className: "text-center" },
                 {
                     data: "HORAS_DIARIAS",
@@ -745,7 +749,7 @@ $(document).ready(function () {
                 {
                     extend: "print",
                     text: '<i class="fa-solid fa-print"></i> Imprimir',
-                    title: "Productos en sucursal",
+                    title: "Nómina de personal",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-printer",
                 },
@@ -793,7 +797,7 @@ $(document).ready(function () {
             event.stopPropagation();
             const legajoColaborador = $(this).data("id");
             console.log("Id recibido: " + legajoColaborador);
-            abrirModalEditarEmpleado(legajoColaborador);
+            editEmpleados(legajoColaborador);
         });
     }
 });

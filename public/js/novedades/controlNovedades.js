@@ -4,7 +4,7 @@ function formatearFechaArgentina(fecha) {
     const partes = fecha.split("-"); // yyyy-mm-dd
     if (partes.length !== 3) return fecha;
 
-    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
 //sp para cargar selector areas
@@ -90,17 +90,17 @@ $(document).ready(function () {
                 { data: "CODIGO_NOVEDAD" },
                 { data: "CATEGORIA" },
                 { data: "NOVEDAD_NOMBRE" },
-                { 
+                {
                     data: "FECHA_DESDE",
                     render: function (data) {
                         return formatearFechaArgentina(data);
-                    }, 
+                    },
                 },
-                { 
+                {
                     data: "FECHA_HASTA",
                     render: function (data) {
                         return formatearFechaArgentina(data);
-                    }, 
+                    },
                 },
                 { data: "FECHA_APLICACION" },
                 { data: "DURACION" },
@@ -166,7 +166,9 @@ $(document).ready(function () {
                 {
                     extend: "print",
                     text: '<i class="fa-solid fa-print"></i> Imprimir',
-                    title: "Productos en sucursal",
+                    title: "Registro de novedades",
+                    orientation: "landscape",
+                    pageSize: "A4",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-printer",
                 },
