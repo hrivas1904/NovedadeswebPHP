@@ -48,8 +48,8 @@
                                 <th>DNI</th>
                                 <th>ÁREA</th>
                                 <th>CATEGORÍA</th>
-                                <th>RÉG</th>
-                                <th>HD</th>
+                                <th>RÉGIMEN</th>
+                                <th>H/D</th>
                                 <th>CONVENIO</th>
                                 <th>ESTADO</th>
                                 <th>ACCIONES</th>

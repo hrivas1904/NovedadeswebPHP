@@ -653,23 +653,27 @@ $(document).ready(function () {
             columns: [
                 {
                     data: "LEGAJO",
+                    width: "auto",
                     className: "text-start",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "COLABORADOR", width:'16%', className: "text-start" },
-                { data: "DNI", className: "text-start" },
-                { data: "AREA", width: "5%", className: "text-start" },
-                { data: "CATEGORIA",width:'7%', className: "text-start" },
-                { data: "REGIMEN", className: "text-center" },
+                { data: "COLABORADOR", width: "auto", className: "text-start" },
+                { data: "DNI", width: "auto",className: "text-start" },
+                { data: "AREA", width: "6%", className: "text-start" },
+                { data: "CATEGORIA",width: "4%", className: "text-start" },
+                { data: "REGIMEN", width: "auto", className: "text-center" },
                 {
                     data: "HORAS_DIARIAS",
+                    width: "2%",
                     className: "text-center",
+                    width: "auto",
                 },
-                { data: "CONVENIO", width: "5%", className: "text-start" },
+                { data: "CONVENIO", width: "2%", className: "text-start" },
                 {
                     data: "ESTADO",
+                    width: "auto",
                     className: "text-center",
                     render: function (data) {
                         let clase =
@@ -732,7 +736,7 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-start'i>",
+            dom: "<'d-top d-flex align-items-center gap-2 mt-3'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-start'i>",
             buttons: [
                 {
                     extend: "excelHtml5",

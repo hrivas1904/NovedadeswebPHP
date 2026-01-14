@@ -71,7 +71,7 @@
     cursor: pointer;
 }
 
-/* INPUT DE BÚSQUEDA */
+/* INPUT DE BÚSQUEDA 
 .dataTables_filter input {
     padding: 6px 10px;
     border-radius: 6px;
@@ -80,9 +80,8 @@
     font-size: 0.85rem;
     transition: all .2s ease;
 }
-
-/* FOCUS */
+    
 .dataTables_filter input:focus {
     border-color: #0d6efd;
     box-shadow: 0 0 0 0.1rem rgba(13,110,253,.25);
-}
+}*/
