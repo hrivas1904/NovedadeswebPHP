@@ -441,8 +441,12 @@ function darDeBaja(legajoColaborador, nombre) {
                     ),
                 },
                 success: function (res) {
-                    Swal.fire("OK", res.mensaje, "success");
-                    $("#tb_personal").ajax.reload(null, false);
+                    if (res.success) {
+                        Swal.fire("OK", res.mensaje, "success");
+                        tablaPersonal.ajax.reload(null, false);
+                    } else {
+                        Swal.fire("Atención", resp.mensaje, "warning");
+                    }
                 },
             });
         }
@@ -489,9 +493,14 @@ function registrarNovedad(legajoColaborador) {
 }
 
 //edit empleado
-function editEmpleados(legajoColaborador) {
+function editEmpleados(legajoColaborador, nombre) {
     console.log("Mostrando legajo:", legajoColaborador);
     legajoActivo = legajoColaborador;
+
+    $("#tituloEdit").html(`
+        <i class="fa-solid fa-user-pen me-2"></i>
+        Editar legajo de <strong>${nombre}</strong>
+    `);
 
     $.ajax({
         url: `/personal/ver-legajo/${legajoColaborador}`,
@@ -500,40 +509,40 @@ function editEmpleados(legajoColaborador) {
             if (response.success) {
                 const d = response.data;
 
-                $("#inputLegajo").val(d.LEGAJO);
-                $("#inputNombre").val(d.COLABORADOR);
-                $("#inputEstado").val(d.ESTADO);
-                $("#inputDni").val(d.DNI);
-                $("#inputCuil").val(d.CUIL);
-                $("#inputFechaNacimiento").val(
+                $("#inputEditLegajo").val(d.LEGAJO);
+                $("#inputEditNombre").val(d.COLABORADOR);
+                $("#estadoEdit").val(d.ESTADO);
+                $("#inputEditDni").val(d.DNI);
+                $("#inputEditCuil").val(d.CUIL);
+                $("#inputEditFechaNacimiento").val(
                     formatearFechaArgentina(d.FECHA_NAC)
                 );
 
-                $("#inputEdad").val(calcularEdad(d.FECHA_NAC));
-                $("#inputEmail").val(d.CORREO);
-                $("#inputTelefono").val(d.TELEFONO);
-                $("#inputDomicilio").val(d.DOMICILIO);
-                $("#inputLocalidad").val(d.LOCALIDAD);
+                $("#inputEditEdad").val(calcularEdad(d.FECHA_NAC));
+                $("#inputEditEmail").val(d.CORREO);
+                $("#inputEditTelefono").val(d.TELEFONO);
+                $("#inputEditDomicilio").val(d.DOMICILIO);
+                $("#inputEditLocalidad").val(d.LOCALIDAD);
 
-                $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
-                $("#inputGenero").val(d.GENERO);
-                $("#inputObraSocial").val(d.OBRA_SOCIAL);
-                $("#inputCodigoOS").val(d.COD_OS);
-                $("#inputTitulo").val(d.TITULO);
-                $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
-                $("#inputMatricula").val(d.MAT_PROF);
+                $("#estadoCivilEdit").val(d.ESTADO_CIVIL);
+                $("#generoEdit").val(d.GENERO);
+                $("#osEdit").val(d.ID_OS);
+                $("#inputEditCodigoOS").val(d.COD_OS);
+                $("#inputEditTitulo").val(d.TITULO);
+                $("#inputEditDescripTitulo").val(d.DESCRIP_TITULO);
+                $("#inputEditMatricula").val(d.MAT_PROF);
 
-                $("#inputTipoContrato").val(d.TIPO_CONTRATO);
-                $("#inputFechaIngreso").val(
+                $("#tipoContratoEdit").val(d.TIPO_CONTRATO);
+                $("#inputEditFechaIngreso").val(
                     formatearFechaArgentina(d.FECHA_INGRESO)
                 );
-                $("#inputFechaFinPrueba").val(
+                $("#inputEditFechaFinPrueba").val(
                     formatearFechaArgentina(d.FECHA_FIN_PRUEBA)
                 );
 
-                $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
-                $("#inputFechaEgreso").val(d.FECHA_EGRESO);
-                $("#inputArea").val(d.AREA);
+                $("#inputEditAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
+                $("#inputEditFechaEgreso").val(d.FECHA_EGRESO);
+                $("#areaEdit").val(d.ID_AREA);
                 $("#inputServicio").val(d.SERVICIO);
                 $("#inputConvenio").val(d.CONVENIO);
                 $("#inputCategoria").val(d.CATEGORIA);
@@ -543,14 +552,7 @@ function editEmpleados(legajoColaborador) {
                 $("#inputCordinador").val(d.COORDINADOR);
                 $("#inputAfiliado").val(d.AFILIADO);
 
-                $("#modalLegajoColaborador").modal("show");
-
-                // 🔑 inicializar / refrescar historial CUANDO el modal ya está visible
-                $("#modalLegajoColaborador")
-                    .off("shown.bs.modal")
-                    .on("shown.bs.modal", function () {
-                        inicializarORefrescarHistorial();
-                    });
+                $("#modalEditColaborador").modal("show");
             } else {
                 Swal.fire("Error", response.mensaje, "error");
             }
@@ -582,8 +584,8 @@ $("#formEditEmpleado").on("submit", function (e) {
 });
 
 function cerrarEdicionEmpleado() {
-    $("#formEditEmpleado")[0].reset();
-    $("#modalEditEmpleado").modal("hide");
+    $("#formEditColaborador")[0].reset();
+    $("#modalEditColaborador").modal("hide");
     $(".modal-backdrop").remove();
 }
 
@@ -802,7 +804,10 @@ $(document).ready(function () {
                         `;
 
                         // SOLO ADMIN
-                        if (USER_ROLE === "Administrador/a") {
+                        if (
+                            USER_ROLE === "Administrador/a" &&
+                            data.ESTADO === "ACTIVO"
+                        ) {
                             botones += `
                             <button 
                                 class="btn-peligro btn-DarBaja"
@@ -811,11 +816,12 @@ $(document).ready(function () {
                                 data-nombre="${data.COLABORADOR}">
                                 <i class="fa-solid fa-x"></i>
                             </button>
-
+                            
                             <button 
                                 class="btn-alerta btn-Editar"
                                 title='Editar'
-                                data-id="${data.LEGAJO}">
+                                data-id="${data.LEGAJO}"
+                                data-nombre="${data.COLABORADOR}">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                         `;
@@ -877,7 +883,7 @@ $(document).ready(function () {
             $("#filtroRegimen").val(null);
             $("#filtroConvenio").val(null);
             $("#filtroEstado").val(null);
-            tablaPersonal.search('').draw();
+            tablaPersonal.search("").draw();
             tablaPersonal.ajax.reload();
         });
 
@@ -917,8 +923,9 @@ $(document).ready(function () {
             event.preventDefault();
             event.stopPropagation();
             const legajoColaborador = $(this).data("id");
+            const nombre = $(this).data("nombre");
             console.log("Id recibido: " + legajoColaborador);
-            editEmpleados(legajoColaborador);
+            editEmpleados(legajoColaborador,nombre);
         });
     }
 });
@@ -1051,6 +1058,40 @@ function cargarObrasSociales() {
         .then((response) => response.json())
         .then((data) => {
             const select = document.getElementById("obraSocial");
+
+            data.forEach((item) => {
+                const option = document.createElement("option");
+                option.value = item.id;
+                option.textContent = item.nombre;
+                option.setAttribute("data-codigo", item.codigo);
+
+                select.appendChild(option);
+            });
+        })
+        .catch((error) => {
+            console.error("Error cargando obras sociales:", error);
+        });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    cargarObrasSocialesEdit();
+
+    const select = document.getElementById("osEdit");
+    const inputCodigo = document.getElementById("inputEditCodigoOS");
+
+    select.addEventListener("change", function () {
+        const selected = this.options[this.selectedIndex];
+        const codigo = selected.getAttribute("data-codigo");
+
+        inputCodigo.value = codigo ? codigo : "";
+    });
+});
+
+function cargarObrasSocialesEdit() {
+    fetch("/obra-social/lista")
+        .then((response) => response.json())
+        .then((data) => {
+            const select = document.getElementById("osEdit");
 
             data.forEach((item) => {
                 const option = document.createElement("option");

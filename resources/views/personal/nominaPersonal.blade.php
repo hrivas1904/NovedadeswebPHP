@@ -73,7 +73,7 @@
 
 @push('modals')
     <div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        aria-hidden="true" data-bs-backdrop="static">
 
         <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">
@@ -169,7 +169,6 @@
                                                 <option value="CASADO/A">CASADO/A</option>
                                                 <option value="DIVORCIADO/A">DIVORCIADO/A</option>
                                                 <option value="VIUDO/A">VIUDO/A</option>
-                                                <option value="UNIÓN CONVIVENCIAL">UNIÓN CONVIVENCIAL</option>
                                                 <option value="N/D">N/D</option>
                                             </select>
                                         </div>
@@ -227,10 +226,10 @@
                                             <label class="form-label">Tipo de contrato</label>
                                             <select name="tipo_contrato" id="tipoContrato" class="form-select" required>
                                                 <option selected="">Seleccione opción</option>
-                                                <option value="Tiempo fijo">Tiempo fijo</option>
-                                                <option value="Tiempo indeterminado">Plazo indeterminado</option>
-                                                <option value="Pasantía">Pasantía</option>
-                                                <option value="Práctica profesional">Práctica profesional</option>
+                                                <option value="Tiempo fijo">PLAZO FIJO</option>
+                                                <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
+                                                <option value="Pasantía">PASANTÍA</option>
+                                                <option value="Práctica profesional">PRÁCTICA PROFESIONAL</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-2">
@@ -252,13 +251,11 @@
                                             <label class="form-label">Servicio</label>
                                             <select name="servicio_id" id="servicio"
                                                 class="form-select js-select-servicio" disable>
-                                                <option selected value="">Seleccione servicio</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Convenio</label>
                                             <select name="posee_convenio" id="convenio" class="form-select">
-                                                <option selected value="">Seleccione opción</option>
                                                 <option value="SANIDAD">SANIDAD</option>
                                                 <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
                                             </select>
@@ -267,14 +264,12 @@
                                             <label class="form-label">Categoría</label>
                                             <select name="categoria_id" id="categoria"
                                                 class="form-select js-select-categoria">
-                                                <option selected disabled value="">Seleccione categoría</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Rol</label>
                                             <select name="rol_interno_id" id="rol_interno"
                                                 class="form-select js-select-rol">
-                                                <option selected disabled value="">Seleccione rol</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-2 col-sm-2">
@@ -571,11 +566,11 @@
                     <h5 class="modal-title" id="tituloEdit">
                         <i class="fa-solid fa-user-pen"></i> Editar colaborador
                     </h5>
-                    <button type="button" class="btn-close" onclick="cerrarModalLegajo()"></button>
+                    <button type="button" class="btn-close" onclick="cerrarEdicionEmpleado()"></button>
                 </div>
 
                 <div class="modal-body">
-                    <form id="formAltaColaborador">
+                    <form id="formEditColaborador">
                         @csrf
                         <div class="row g-4 mb-4">
                             <div class="col-lg-6">
@@ -586,32 +581,35 @@
                                     <div class="row g-3">
                                         <div class="col-lg-3">
                                             <label class="form-label">Legajo</label>
-                                            <input type="text" id="inputLegajo" class="form-control" readonly>
+                                            <input type="text" id="inputEditLegajo" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-7">
                                             <label class="form-label">Apellido y Nombre</label>
-                                            <input type="text" id="inputNombre" class="form-control" readonly>
+                                            <input type="text" id="inputEditNombre" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Estado</label>
-                                            <input type="text" id="inputEstado" class="form-control" readonly>
+                                            <select id="estadoEdit" class="form-select" disabled>
+                                                <option value="ACTIVO">ACTIVO</option>
+                                                <option value="DE BAJA">DE BAJA</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">DNI</label>
-                                            <input type="text" id="inputDni" class="form-control" readonly>
+                                            <input type="text" id="inputEditDni" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">CUIL</label>
-                                            <input type="text" id="inputCuil" class="form-control" readonly>
+                                            <input type="text" id="inputEditCuil" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Fecha nacimiento</label>
-                                            <input type="text" id="inputFechaNacimiento" class="form-control"
+                                            <input type="text" id="inputEditFechaNacimiento" class="form-control"
                                                 readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Edad</label>
-                                            <input type="text" id="inputEdad" class="form-control" readonly>
+                                            <input type="text" id="inputEditEdad" class="form-control" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -625,19 +623,19 @@
                                     <div class="row g-3">
                                         <div class="col-lg-7">
                                             <label class="form-label">Correo electrónico</label>
-                                            <input type="text" id="inputEmail" class="form-control" readonly>
+                                            <input type="text" id="inputEditEmail" class="form-control">
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Teléfono</label>
-                                            <input type="tel" id="inputTelefono" class="form-control" readonly>
+                                            <input type="tel" id="inputEditTelefono" class="form-control">
                                         </div>
                                         <div class="col-lg-7">
                                             <label class="form-label">Domicilio</label>
-                                            <input type="text" id="inputDomicilio" class="form-control" readonly>
+                                            <input type="text" id="inputEditDomicilio" class="form-control">
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Localidad</label>
-                                            <input type="text" id="inputLocalidad" class="form-control" readonly>
+                                            <input type="text" id="inputEditLocalidad" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -653,31 +651,45 @@
                                     <div class="row g-3">
                                         <div class="col-lg-3">
                                             <label class="form-label">Estado civil</label>
-                                            <input type="text" id="inputEstadoCivil" class="form-control" readonly>
+                                            <select id="estadoCivilEdit" class="form-select" required>
+                                                <option selected value="">Seleccione estado civil</option>
+                                                <option value="SOLTERO/A">SOLTERO/A</option>
+                                                <option value="CASADO/A">CASADO/A</option>
+                                                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
+                                                <option value="VIUDO/A">VIUDO/A</option>
+                                                <option value="N/D">N/D</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Género</label>
-                                            <input type="text" id="inputGenero" class="form-control" readonly>
+                                            <select id="generoEdit" class="form-select" required>
+                                                <option selected value="">Seleccione género</option>
+                                                <option value="MASCULINO">MASCULINO</option>
+                                                <option value="FEMENINO">FEMENINO</option>
+                                                <option value="NO BINARIO">NO BINARIO</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label">Obra social</label>
-                                            <input type="text" id="inputObraSocial" class="form-control" readonly>
+                                            <select id="osEdit" class="form-select">
+                                                <option value="">Seleccione obra social</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Código OS</label>
-                                            <input type="text" id="inputCodigoOS" class="form-control" readonly>
+                                            <input type="text" id="inputEditCodigoOS" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Título</label>
-                                            <input type="text" id="inputTitulo" class="form-control" readonly>
+                                            <input type="text" id="inputEditTitulo" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label">Descripción de Título</label>
-                                            <input type="text" id="inputDescripTitulo" class="form-control" readonly>
+                                            <input type="text" id="inputEditDescripTitulo" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">M.P.</label>
-                                            <input type="text" id="inputMatricula" class="form-control" readonly>
+                                            <input type="text" id="inputEditMatricula" class="form-control" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -693,27 +705,33 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Tipo de contrato</label>
-                                            <input type="text" id="inputTipoContrato" class="form-control" readonly>
+                                            <select id="tipoContratoEdit" class="form-select">
+                                                <option value="Tiempo fijo">PLAZO FIJO</option>
+                                                <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
+                                                <option value="Pasantía">PASANTÍA</option>
+                                                <option value="Práctica profesional">PRÁCTICA PROFESIONAL</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha ingreso</label>
-                                            <input type="text" id="inputFechaIngreso" class="form-control" readonly>
+                                            <input type="text" id="inputEditFechaIngreso" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha fin prueba</label>
-                                            <input type="text" id="inputFechaFinPrueba" class="form-control" readonly>
+                                            <input type="text" id="inputEditFechaFinPrueba" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha egreso</label>
-                                            <input type="text" id="inputFechaEgreso" class="form-control" readonly>
+                                            <input type="text" id="inputEditFechaEgreso" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Antiguedad</label>
-                                            <input type="text" id="inputAntiguedad" class="form-control" readonly>
+                                            <input type="text" id="inputEditAntiguedad" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Área</label>
-                                            <input type="text" id="inputArea" class="form-control" readonly>
+                                            <select id="areaEdit" class="form-select js-select-area">
+                                            </select>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Servicio</label>
@@ -752,38 +770,10 @@
                                 </div>
                             </div>
                         </div>
-
-                        <input type="file" id="inputComprobantes" accept="pdf,image/*" multiple hidden>
-
-                        <div class="row g-4 mb-4">
-                            <div class="col-12">
-                                <div class="section-divider mb-3">
-                                    <span>Historial de Novedades</span>
-                                </div>
-                                <div class="card table-responsive">
-                                    <table id="tb_historialNovedades"
-                                        class="table table-striped table-bordered table-hover align-middle nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th>N°</th>
-                                                <th>Fecha registro</th>
-                                                <th>Categoría</th>
-                                                <th>Novedad</th>
-                                                <th>Fecha desde</th>
-                                                <th>Fecha hasta</th>
-                                                <th>Periodo</th>
-                                                <th>Comprobantes</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="cerrarModalLegajo()">
+                    <button class="btn btn-primary" onclick="cerrarEdicionEmpleado()">
                         Atrás
                     </button>
                 </div>
