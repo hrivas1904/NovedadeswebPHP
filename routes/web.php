@@ -25,6 +25,8 @@ Route::get('/registroAsistencia', [PersonalController::class, 'registroAsistenci
 Route::get('/controlAsistencia', [PersonalController::class, 'controlAsistencia'])
     ->name('controlAsistencia');
 
+Route::get('/configuraciones', [PersonalController::class, 'configuraciones'])
+->name('configuraciones');
 
 
 Route::get('/registroNovedades', [NovedadesController::class, 'registroNovedades'])

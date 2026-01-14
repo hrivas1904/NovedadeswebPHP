@@ -29,6 +29,11 @@ class PersonalController extends Controller
         return view('personal.registroAsistencia');
     }
 
+    public function Configuraciones()
+    {
+        return view('personal.configuraciones');
+    }
+
     public function listarAreas()
     {
         try {
