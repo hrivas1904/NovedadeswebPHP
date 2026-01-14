@@ -877,6 +877,7 @@ $(document).ready(function () {
             $("#filtroRegimen").val(null);
             $("#filtroConvenio").val(null);
             $("#filtroEstado").val(null);
+            tablaPersonal.search('').draw();
             tablaPersonal.ajax.reload();
         });
 
