@@ -561,7 +561,6 @@ function editEmpleados(legajoColaborador) {
     });
 }
 
-
 $("#formEditEmpleado").on("submit", function (e) {
     e.preventDefault();
 
@@ -578,19 +577,23 @@ $("#formEditEmpleado").on("submit", function (e) {
         },
         error: function () {
             alert("Error al actualizar empleado");
-        }
+        },
     });
 });
 
 function cerrarEdicionEmpleado() {
     $("#formEditEmpleado")[0].reset();
     $("#modalEditEmpleado").modal("hide");
-    $('.modal-backdrop').remove();
+    $(".modal-backdrop").remove();
 }
 
-//sp para cargar selector areas
+//sp para cargar selectores filtros
 $(document).ready(function () {
     cargarAreas();
+    cargarFiltroCateg();
+    cargarFiltroConvenio();
+    cargarFiltroRegimen();
+    cargarFiltroEstados();
 });
 
 function cargarAreas() {
@@ -626,6 +629,102 @@ function cargarAreas() {
     });
 }
 
+function cargarFiltroCateg() {
+    $.ajax({
+        url: "/categorias-empleados/lista",
+        method: "GET",
+        success: function (data) {
+            const select = $(".js-select-categFiltro");
+
+            select.empty();
+            select.append('<option value="">Seleccione categoría</option>');
+
+            data.forEach((categoria) => {
+                select.append(`
+                    <option value="${categoria.id_categ}">
+                        ${categoria.nombre}
+                    </option>
+                `);
+            });
+        },
+        error: function () {
+            console.error("Error cargando categorías");
+        },
+    });
+}
+
+function cargarFiltroConvenio() {
+    $.ajax({
+        url: "/convenios/lista",
+        method: "GET",
+        success: function (data) {
+            const select = $(".js-select-convenioFiltro");
+
+            select.empty();
+            select.append('<option value="">Seleccione convenio</option>');
+
+            data.forEach((convenio) => {
+                select.append(`
+                    <option value="${convenio.convenio}">
+                        ${convenio.convenio}
+                    </option>
+                `);
+            });
+        },
+        error: function () {
+            console.error("Error cargando categorías");
+        },
+    });
+}
+
+function cargarFiltroRegimen() {
+    $.ajax({
+        url: "/regimenes/lista",
+        method: "GET",
+        success: function (data) {
+            const select = $(".js-select-regFiltro");
+
+            select.empty();
+            select.append('<option value="">Seleccione régimen</option>');
+
+            data.forEach((regimen) => {
+                select.append(`
+                    <option value="${regimen.regimen}">
+                        ${regimen.regimen}
+                    </option>
+                `);
+            });
+        },
+        error: function () {
+            console.error("Error cargando categorías");
+        },
+    });
+}
+
+function cargarFiltroEstados() {
+    $.ajax({
+        url: "/estados/lista",
+        method: "GET",
+        success: function (data) {
+            const select = $(".js-select-estadoFiltro");
+
+            select.empty();
+            select.append('<option value="">Seleccione estado</option>');
+
+            data.forEach((estado) => {
+                select.append(`
+                    <option value="${estado.estado}">
+                        ${estado.estado}
+                    </option>
+                `);
+            });
+        },
+        error: function () {
+            console.error("Error cargando estado");
+        },
+    });
+}
+
 //carga dt personal
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
@@ -638,12 +737,17 @@ $(document).ready(function () {
                     if (USER_ROLE !== "Administrador/a") {
                         d.area_id = USER_AREA_ID;
                     } else {
-                        d.area_id = $("#area").val();
+                        d.area_id = $("#filtroArea").val() || null;
                     }
+
+                    d.categ_id = $("#filtroCategoria").val() || null;
+                    d.p_regimen = $("#filtroRegimen").val() || null;
+                    d.p_convenio = $("#filtroConvenio").val() || null;
+                    d.p_estado = $("#filtroEstado").val() || null;
                 },
             },
             autoWidth: false,
-            scrollX: true,
+            scrollX: false,
             paging: false,
             scrollCollapse: true,
             scrollY: "65vh",
@@ -653,17 +757,17 @@ $(document).ready(function () {
             columns: [
                 {
                     data: "LEGAJO",
-                    width: "auto",
+                    width: "4%",
                     className: "text-start",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
                 },
                 { data: "COLABORADOR", width: "auto", className: "text-start" },
-                { data: "DNI", width: "auto",className: "text-start" },
+                { data: "DNI", width: "5%", className: "text-start" },
                 { data: "AREA", width: "6%", className: "text-start" },
-                { data: "CATEGORIA",width: "4%", className: "text-start" },
-                { data: "REGIMEN", width: "auto", className: "text-center" },
+                { data: "CATEGORIA", width: "4%", className: "text-start" },
+                { data: "REGIMEN", width: "6", className: "text-center" },
                 {
                     data: "HORAS_DIARIAS",
                     width: "2%",
@@ -673,7 +777,7 @@ $(document).ready(function () {
                 { data: "CONVENIO", width: "2%", className: "text-start" },
                 {
                     data: "ESTADO",
-                    width: "auto",
+                    width: "3%",
                     className: "text-center",
                     render: function (data) {
                         let clase =
@@ -719,8 +823,9 @@ $(document).ready(function () {
 
                         // ADMIN + COORDINADOR
                         if (
-                            USER_ROLE === "Administrador/a" ||
-                            USER_ROLE === "Coordinador/a"
+                            (USER_ROLE === "Administrador/a" ||
+                                USER_ROLE === "Coordinador/a") &&
+                            data.ESTADO === "ACTIVO"
                         ) {
                             botones += `
                             <button 
@@ -736,7 +841,7 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom: "<'d-top d-flex align-items-center gap-2 mt-3'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-start'i>",
+            dom: "<'d-top d-flex align-items-center gap-2 mt-1'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-start'i>",
             buttons: [
                 {
                     extend: "excelHtml5",
@@ -760,7 +865,18 @@ $(document).ready(function () {
             ],
         });
 
-        $("#area").on("change", function () {
+        $(
+            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado"
+        ).on("change", function () {
+            tablaPersonal.ajax.reload();
+        });
+
+        $("#btn-limpiar-filtros").on("click", function () {
+            $("#filtroArea").val(null);
+            $("#filtroCategoria").val(null);
+            $("#filtroRegimen").val(null);
+            $("#filtroConvenio").val(null);
+            $("#filtroEstado").val(null);
             tablaPersonal.ajax.reload();
         });
 

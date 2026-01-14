@@ -57,6 +57,48 @@ class PersonalController extends Controller
         }
     }
 
+    public function listarTipoConvenio()
+    {
+        try {
+            $convenios = DB::select('CALL SP_TIPOS_CONVENIO()');
+
+            return response()->json($convenios);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener convenios',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function listarRegimenes()
+    {
+        try {
+            $regimen = DB::select('CALL SP_LISTA_REGIMEN()');
+
+            return response()->json($regimen);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener regimenes',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function listarEstados()
+    {
+        try {
+            $estados = DB::select('CALL SP_TIPO_ESTADOS()');
+
+            return response()->json($estados);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener estados',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function listarRolesXCategoria($id)
     {
         try {
@@ -179,9 +221,16 @@ class PersonalController extends Controller
     public function listar(Request $request)
     {
         try {
-            $areaId = ($request->area_id && $request->area_id != "") ? $request->area_id : null;
+            $areaId    = $request->area_id ?: null;
+            $categId   = $request->categ_id ?: null;
+            $estado    = $request->p_estado ?: null;
+            $convenio  = $request->p_convenio ?: null;
+            $regimen   = $request->p_regimen ?: null;
 
-            $empleados = DB::select("CALL SP_LISTA_EMPLEADOS(?)", [$areaId]);
+            $empleados = DB::select(
+                "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?)",
+                [$areaId, $categId, $estado, $convenio, $regimen]
+            );
 
             return response()->json([
                 'data' => $empleados

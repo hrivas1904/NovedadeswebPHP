@@ -12,16 +12,24 @@
         <div class="card" style="border-radius:15px;">
             <div class="card-header">
                 <div class="row d-flex align-item-center">
-                    <div class="col-9 d-flex justify-content-start align-items-center gap-3">
-                        <h6>Nómina del Personal</h6>
-                        <select id="area" name="area" class="form-select js-select-area" style="width: auto;"
-                            {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
+                    <div class="col-10 d-flex justify-content-start align-items-center gap-3">
+                        <select id="filtroArea" class="form-select js-select-area" style="width:auto;"
+                            {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
                         </select>
 
                         @if (Auth::user()->rol !== 'Administrador/a')
                             <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                         @endif
 
+                        <select id="filtroCategoria" class="form-select js-select-categFiltro" style="width:auto;"></select>
+                        <select id="filtroRegimen" class="form-select js-select-regFiltro" style="width:auto;"></select>
+                        <select id="filtroConvenio" class="form-select js-select-convenioFiltro"
+                            style="width:auto;"></select>
+                        <select id="filtroEstado" class="form-select js-select-estadoFiltro" style="width:auto;"></select>
+
+                        <button type="button" id="btn-limpiar-filtros" class="btn-secundario">
+                            <i class="fa-solid fa-eraser"></i> Limpiar filtros
+                        </button>
 
                         <script>
                             const USER_ROLE = "{{ Auth::user()->rol }}";
@@ -29,7 +37,7 @@
                         </script>
 
                     </div>
-                    <div class="col-3 text-end">
+                    <div class="col-2 text-end">
                         @if (Auth::user()->rol === 'Administrador/a')
                             <button type="button" class="btn btn-primario" onclick="abrirModal()">
                                 <i class="fa-solid fa-user me-2"></i> Nuevo Colaborador
@@ -48,8 +56,8 @@
                                 <th>DNI</th>
                                 <th>ÁREA</th>
                                 <th>CATEGORÍA</th>
-                                <th>RÉGIMEN</th>
-                                <th>H/D</th>
+                                <th>RÉG</th>
+                                <th>HD</th>
                                 <th>CONVENIO</th>
                                 <th>ESTADO</th>
                                 <th>ACCIONES</th>

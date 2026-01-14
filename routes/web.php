@@ -59,6 +59,15 @@ Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
 Route::get('/categorias-empleados/lista', [PersonalController::class, 'listarCategorias'])
     ->name('categorias.lista');
 
+Route::get('/convenios/lista', [PersonalController::class, 'listarTipoConvenio'])
+->name('convenios.lista');
+
+Route::get('/regimenes/lista', [PersonalController::class, 'listarRegimenes'])
+->name('regimenes.lista');
+
+Route::get('/estados/lista', [PersonalController::class, 'listarEstados'])
+->name('estados.lista');
+
 Route::get('/roles-empleados/por-categoria/{id}', [PersonalController::class, 'listarRolesXCategoria'])
     ->name('roles.lista');
 
