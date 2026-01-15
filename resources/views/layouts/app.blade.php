@@ -36,13 +36,13 @@
 
         <ul class="nav-list">
             @if (Auth::user()->rol === 'Administrador/a')
-                <li>
-                    <a href="{{ route('dashboard') }}">
-                        <i class="bx bx-grid-alt"></i>
-                        <span class="link_name">Dashboard</span>
-                    </a>
-                    <span class="tooltip">Dashboard</span>
-                </li>
+            <li>
+                <a href="{{ route('dashboard') }}">
+                    <i class="bx bx-grid-alt"></i>
+                    <span class="link_name">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
             @endif
 
             <li class="submenu">
@@ -55,9 +55,9 @@
                 <ul class="sub-menu">
                     <li><a href="{{ route('nominaPersonal') }}">Nómina de Personal</a></li>
                     @if (Auth::user()->rol === 'Administrador/a')
-                        <!--<li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>-->
-                        <!--<li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>-->
-                        <li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>
+                    <!--<li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>-->
+                    <!--<li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>-->
+                    <li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>
                     @endif
                 </ul>
                 <span class="tooltip">Personal</span>
@@ -74,27 +74,35 @@
                 <ul class="sub-menu">
                     <li><a href="{{ route('controlNovedades') }}">Control de Novedades</a></li>
                     @if (Auth::user()->rol === 'Administrador/a')
-                        <li><a href="{{ route('configNovedades') }}">Configuración de Novedades</a></li>
+                    <li><a href="{{ route('configNovedades') }}">Configuración de Novedades</a></li>
                     @endif
                 </ul>
                 <span class="tooltip">Novedades</span>
             </li>
 
             @if (Auth::user()->rol === 'Administrador/a')
-                <li class="submenu">
-                    <input type="checkbox" id="menu-config">
-                    <label for="menu-config">
-                        <i class="bx bx-cog"></i>
-                        <span class="link_name">Configuraciones</span>
-                        <i class="bx bx-chevron-down arrow"></i>
-                    </label>
-                    <ul class="sub-menu">
-                        <li><a href="{{ route('ajustes') }}">Configuraciones</a></li>
-                        <li><a href="#">Usuarios y Permisos</a></li>
-                    </ul>
-                    <span class="tooltip">Configuraciones</span>
-                </li>
+            <li class="submenu">
+                <input type="checkbox" id="menu-config">
+                <label for="menu-config">
+                    <i class="bx bx-cog"></i>
+                    <span class="link_name">Configuraciones</span>
+                    <i class="bx bx-chevron-down arrow"></i>
+                </label>
+                <ul class="sub-menu">
+                    <li><a href="{{ route('ajustes') }}">Configuraciones</a></li>
+                    <li><a href="#">Usuarios y Permisos</a></li>
+                </ul>
+                <span class="tooltip">Configuraciones</span>
+            </li>
             @endif
+
+            <li>
+                <a href="{{ route('ayuda') }}">
+                    <i class='bx  bx-help-circle'></i>
+                    <span class="link_name">Ayuda</span>
+                </a>
+                <span class="tooltip">Ayuda</span>
+            </li>
 
             <div class="branding-footer">
                 <div class="branding-profile-box">
@@ -107,7 +115,7 @@
 
                         <span class="branding-user-role">
                             @if (Auth::user()->area)
-                                {{ Auth::user()->area->NOMBRE }}
+                            {{ Auth::user()->area->NOMBRE }}
                             @else
                             @endif
                         </span>

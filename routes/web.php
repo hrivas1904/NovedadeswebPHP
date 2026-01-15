@@ -46,6 +46,8 @@ Route::get('/ajustes', [AjustesController::class, 'ajustes'])
 Route::get('/configPerfil', [AjustesController::class, 'configPerfil'])
     ->name('configPerfil');
 
+Route::get('/ayuda', [HomeController::class, 'ayuda'])
+    ->name('ayuda');
 
 
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
