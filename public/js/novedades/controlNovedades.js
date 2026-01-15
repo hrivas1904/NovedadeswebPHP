@@ -45,7 +45,7 @@ function cargarAreas() {
     });
 }
 
-//carga dt personal
+//carga dt novedades
 $(document).ready(function () {
     tablaPersonal = $("#tb_control");
 

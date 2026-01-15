@@ -13,7 +13,7 @@
             <div class="row d-flex">
                 <div class="col-9 d-flex justify-content-start align-items-center">
                     <select id="area" name="area" class="form-select js-select-area" style="width: auto;"
-                        {{ Auth::user()->rol !== 'Administrador' ? 'disabled' : '' }}>
+                        {{ Auth::user()->rol !== 'Administrador' ? 'hidden' : '' }}>
                     </select>
 
                     @if (Auth::user()->rol !== 'Administrador')
