@@ -57,8 +57,9 @@
                     @if (Auth::user()->rol === 'Administrador/a')
                     <!--<li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>-->
                     <!--<li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>-->
-                    <li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>
+                    <li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>                    
                     @endif
+                    <li><a href="#">Calendario de Servicios</a></li>
                 </ul>
                 <span class="tooltip">Personal</span>
             </li>

@@ -5,6 +5,7 @@ use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\NovedadesController;
 use App\Http\Controllers\AjustesController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NotificacionController;
 
 Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
@@ -142,3 +143,13 @@ Route::get(
     '/comprobantes/{id}/ver',
     [NovedadesController::class, 'verComprobante']
 );
+
+//mensajes
+Route::post('/notificaciones/publicar', 
+[NotificacionController::class, 'registrarNovedad'])
+->middleware('auth');
+
+Route::get('/notificaciones/lista',
+[NotificacionController::class, 'listarNotificaciones'])
+->middleware('auth')
+->name('notificaciones.lista');

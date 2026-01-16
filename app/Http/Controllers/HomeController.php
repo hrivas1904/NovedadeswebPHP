@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -11,11 +14,13 @@ class HomeController extends Controller
         return view('home.inicio');
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
         return view('home.dashboard');
     }
 
-    public function ayuda(){
+    public function ayuda()
+    {
         return view('home.ayuda');
     }
 }
