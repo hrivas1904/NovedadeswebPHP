@@ -17,6 +17,7 @@
         <div id="publicarNotificacion" class="row mb-4">
             <div class="col-12">
                 <div class="empleado-box p-3">
+                    <input id="txtNotificacionTitulo" class="form-control mb-2" placeholder="Escriba el asunto...">
                     <textarea id="txtNotificacion" class="form-control" placeholder="Escriba el comunicado..."></textarea>
                     <div class="d-flex justify-content-end mt-3 gap-3">
                         <button type="button" id='btnCancelarRedactarComunicado' class="btn-secundario">

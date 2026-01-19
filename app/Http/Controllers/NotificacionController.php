@@ -25,10 +25,11 @@ class NotificacionController extends Controller
         try {
 
             DB::statement(
-                "CALL SP_PUBLICAR_NOTIFICACION(?, ?, @p_mensaje)",
+                "CALL SP_PUBLICAR_NOTIFICACION(?, ?, ?, @p_mensaje)",
                 [
                     Auth::user()->id,
-                    $request->contenido
+                    $request->contenido,
+                    $request->titulo
                 ]
             );
 

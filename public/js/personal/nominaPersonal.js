@@ -1427,3 +1427,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const fechaInicio = document.getElementById("fechaDesdeNovedad");
+    const fechaFin = document.getElementById("fechaHastaNovedad");
+
+    let novedadSeleccionada = null;
+
+    const sinFechas = [
+        'Horas extras 50%',
+        'Horas extras 100%',
+        'Feriado',
+        'Adicional administrativo'
+    ];
+
+    $('#selectNovedad').on('select2:select', function (e) {
+
+        novedadSeleccionada = e.params.data;
+        const textoLicencia = novedadSeleccionada.text.trim();
+
+        if (sinFechas.includes(textoLicencia)) {
+
+            fechaInicio.hidden = true;
+            fechaFin.hidden = true;
+            document.getElementById('lblfechaDesdeNovedad').hidden=true;
+            document.getElementById('lblfechaHastaNovedad').hidden=true;
+
+        } else {
+
+            fechaInicio.hidden = false;
+            fechaFin.hidden = false;
+            document.getElementById('lblfechaDesdeNovedad').hidden=false;
+            document.getElementById('lblfechaHastaNovedad').hidden=false;
+        }
+
+    });
+
+});

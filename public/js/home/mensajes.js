@@ -1,5 +1,6 @@
 $("#btnRedactarComunicado").click(function () {
     let contenido = $("#txtNotificacion").val().trim();
+    let titulo = $("#txtNotificacionTitulo").val().trim();
 
     if (contenido == "") {
         Swal.fire({
@@ -14,6 +15,7 @@ $("#btnRedactarComunicado").click(function () {
         type: "POST",
         data: {
             contenido: contenido,
+            titulo: titulo,
             _token: $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (data) {
@@ -24,6 +26,7 @@ $("#btnRedactarComunicado").click(function () {
                 });
 
                 $("#txtNotificacion").val("");
+                $("#txtNotificacionTitulo").val("");
                 cargarNotificaciones();
             } else {
                 Swal.fire({
@@ -37,8 +40,6 @@ $("#btnRedactarComunicado").click(function () {
         },
     });
 });
-
-
 
 $(document).ready(function () {
     cargarNotificaciones();
@@ -83,8 +84,9 @@ function cargarNotificaciones() {
 
                     contenedor.append(`
                         <div class="border-bottom pb-2 mb-3">
-                             <small class="text-muted">Publicado por <strong>${n.name}</strong></small>
+                            <small class="text-muted">Publicado por <strong>${n.name}</strong></small>
                             <small class="text-muted float-end">${n.fecha_publicacion}</small>
+                            <h4 style="color: #0b3c6d;"><strong>${n.titulo}</strong></h4>                                                        
                             <h5 style="color: #1e293b;">${n.contenido}</h5>                            
                             ${botones}                                                        
                         </div>

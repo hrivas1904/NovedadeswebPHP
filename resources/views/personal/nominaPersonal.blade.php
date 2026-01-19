@@ -907,12 +907,12 @@
                                 </div>
 
                                 <div class="col-lg-2">
-                                    <label class="form-label">Fecha desde</label>
+                                    <label id="lblfechaDesdeNovedad" class="form-label">Fecha desde</label>
                                     <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad" required>
                                 </div>
 
                                 <div class="col-lg-2">
-                                    <label class="form-label">Fecha hasta</label>
+                                    <label id="lblfechaHastaNovedad" class="form-label">Fecha hasta</label>
                                     <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad" required>
                                 </div>
 
