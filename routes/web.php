@@ -106,8 +106,8 @@ Route::put('/personal/{legajo}', [PersonalController::class, 'update']);
 Route::get('/categorias-novedad/lista', [NovedadesController::class, 'listarCategorias'])
     ->name('categorias.novedad');
 
-Route::get('/novedades/lista/{id}', [NovedadesController::class, 'listarNovedadesPorCategoria'])
-    ->name('novedades.porCategoria');
+Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])
+    ->name('novedades.lista');
 
 Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
     ->name('novedades.data');

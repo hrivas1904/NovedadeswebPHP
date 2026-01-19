@@ -589,10 +589,7 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Estado</label>
-                                            <select id="estadoEdit" class="form-select" disabled>
-                                                <option value="ACTIVO">ACTIVO</option>
-                                                <option value="DE BAJA">DE BAJA</option>
-                                            </select>
+                                            <input type="text" id="estadoEdit" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">DNI</label>
@@ -685,7 +682,8 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label">Descripción de Título</label>
-                                            <input type="text" id="inputEditDescripTitulo" class="form-control" readonly>
+                                            <input type="text" id="inputEditDescripTitulo" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">M.P.</label>
@@ -714,15 +712,18 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha ingreso</label>
-                                            <input type="text" id="inputEditFechaIngreso" class="form-control" readonly>
+                                            <input type="text" id="inputEditFechaIngreso" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha fin prueba</label>
-                                            <input type="text" id="inputEditFechaFinPrueba" class="form-control" readonly>
+                                            <input type="text" id="inputEditFechaFinPrueba" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha egreso</label>
-                                            <input type="text" id="inputEditFechaEgreso" class="form-control" readonly>
+                                            <input type="text" id="inputEditFechaEgreso" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Antiguedad</label>
@@ -885,16 +886,9 @@
                         <div class="empleado-box p-3">
                             <div class="row g-3">
 
-                                <div class="col-lg-2">
-                                    <label class="form-label">Tipo de novedad</label>
-                                    <select id="selectCategoriaNovedades" class="form-select" required>
-                                        <option value="">Seleccionar tipo</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-lg-2">
-                                    <label class="form-label">Novedad</label>
-                                    <select id="selectNovedad" name="idNovedad" class="form-select" disabled required>
+                                <div class="col-lg-3">
+                                    <label for="" class="form-label">Novedad</label>
+                                    <select id="selectNovedad" name="idNovedad" class="form-select selectjs" required>
                                         <option value="">Seleccionar novedad</option>
                                     </select>
                                 </div>
@@ -914,15 +908,15 @@
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha desde</label>
-                                    <input type="date" class="form-control" name="fechaDesde" required>
+                                    <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad" required>
                                 </div>
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha hasta</label>
-                                    <input type="date" class="form-control" name="fechaHasta" required>
+                                    <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad" required>
                                 </div>
 
-                                <div class="col-lg-2">
+                                <div class="col-lg-1">
                                     <label class="form-label">Período (días)</label>
                                     <input type="text" class="form-control" name="duracion" readonly required>
                                 </div>

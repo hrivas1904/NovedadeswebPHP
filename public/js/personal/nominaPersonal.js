@@ -540,7 +540,9 @@ function editEmpleados(legajoColaborador, nombre) {
                     formatearFechaArgentina(d.FECHA_FIN_PRUEBA)
                 );
 
-                $("#inputEditAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
+                $("#inputEditAntiguedad").val(
+                    calcularAntiguedad(d.FECHA_INGRESO)
+                );
                 $("#inputEditFechaEgreso").val(d.FECHA_EGRESO);
                 $("#areaEdit").val(d.ID_AREA);
                 $("#inputServicio").val(d.SERVICIO);
@@ -925,7 +927,7 @@ $(document).ready(function () {
             const legajoColaborador = $(this).data("id");
             const nombre = $(this).data("nombre");
             console.log("Id recibido: " + legajoColaborador);
-            editEmpleados(legajoColaborador,nombre);
+            editEmpleados(legajoColaborador, nombre);
         });
     }
 });
@@ -1202,6 +1204,7 @@ function abrirModalNovedad() {
 
 function cerrarModalNovedad() {
     $("#formCargaNovedad")[0].reset();
+    $("#selectNovedad").val(null).trigger("change");
     $("#modalRegNovedadColaborador").modal("hide");
 }
 
@@ -1250,80 +1253,57 @@ function calcularDuracion() {
 }
 
 //selector de categorías de novedades de sueldo
-$(document).ready(function () {
-    cargarCategoriasNovedades();
-
-    $("#selectCategoriaNovedades").on("change", function () {
-        const idCategoria = $(this).val();
-
-        if (!idCategoria) {
-            resetearNovedades();
-            return;
-        }
-
-        cargarNovedadesPorCategoria(idCategoria);
-    });
-
-    $("#selectNovedad").on("change", function () {
-        const selected = $(this).find(":selected");
-
-        $("#codigoFinnegans").val(selected.data("codigo") || "");
-        $("#idNovedad").val(selected.val() || "");
-    });
+$("#selectNovedad").on("select2:select", function (e) {
+    const data = e.params.data;
+    console.log(data); // para debug
+    $("#codigoFinnegans").val(data.codigo);
+    $("#idNovedad").val(data.id);
 });
 
-function cargarCategoriasNovedades() {
-    $.ajax({
-        url: "/categorias-novedad/lista",
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            const select = $("#selectCategoriaNovedades");
+$(document).ready(function () {
+    $("#selectNovedad").select2({
+        dropdownParent: $("#modalRegNovedadColaborador"),
+        placeholder: "Buscar novedad",
+        minimumInputLength: 2,
+        width: "100%",
+        language: {
+            inputTooShort: function () {
+                return "Ingrese al menos 2 caracteres";
+            },
 
-            select.empty();
-            select.append('<option value="">Seleccione categoría</option>');
+            searching: function () {
+                return "Buscando...";
+            },
 
-            data.forEach((cat) => {
-                select.append(`
-                    <option value="${cat.ID_CATEG}">
-                        ${cat.NOMBRE}
-                    </option>
-                `);
-            });
+            noResults: function () {
+                return "No se encontraron resultados";
+            },
+
+            loadingMore: function () {
+                return "Cargando más resultados...";
+            },
         },
-        error: function (xhr, status, error) {
-            console.error("Error cargando categorías:", error);
-        },
-    });
-}
+        ajax: {
+            url: "/novedades/lista",
+            dataType: "json",
+            delay: 300,
 
-function cargarNovedadesPorCategoria(idCategoria) {
-    $.ajax({
-        url: `/novedades/lista/${idCategoria}`,
-        type: "GET",
-        success: function (data) {
-            const select = $("#selectNovedad");
+            data: function (params) {
+                console.log("BUSQUEDA:", params.term);
+                return {
+                    q: params.term,
+                };
+            },
 
-            select
-                .empty()
-                .append('<option value="">Seleccionar novedad</option>')
-                .prop("disabled", false);
-
-            data.forEach((nov) => {
-                select.append(`
-                    <option 
-                        value="${nov.ID_NOVEDAD}"
-                        data-codigo="${nov.CODIGO_NOVEDAD}">
-                        ${nov.NOMBRE}
-                    </option>
-                `);
-            });
-        },
-        error: function () {
-            console.error("Error al cargar novedades");
+            processResults: function (data) {
+                console.log("RESPUESTA:", data);
+                return {
+                    results: data,
+                };
+            },
         },
     });
-}
+});
 
 function resetearNovedades() {
     $("#selectNovedad")
@@ -1374,4 +1354,76 @@ $("#formCargaNovedad").on("submit", function (e) {
             Swal.fire("Error", "No se pudo registrar la novedad", "error");
         },
     });
+});
+
+//duración de licencias
+document.addEventListener("DOMContentLoaded", () => {
+
+    const fechaInicio = document.getElementById("fechaDesdeNovedad");
+    const fechaFin = document.getElementById("fechaHastaNovedad");
+
+    let novedadSeleccionada = null;
+
+    const diasLicencias = {
+        "Licencia profiláctica": 14,
+        "Licencia por maternidad": 90,
+        "Licencia por paternidad": 3,
+        "Licencia por matrimonio": 14,
+        "Licencia por mudanza": 1,
+        "Licencia por estudio": 1,
+        "Licencia por familiar enfermo": 6,
+        "Licencia por fallecimiento cónyuge": 7,
+        "Licencia por fallecimiento padres, hijos y/o hermanos a cargo": 7,
+        "Licencia por fallecimiento abuelos, hermanos y/o nietos": 2,
+        "Licencia por fallecimiento tío, suegro, yerno, cuñado": 1,
+        "Licencia por casamiento hijos": 1,
+        "Licencia anual": 35
+    };
+
+    // CAPTURAR SELECT2
+    $('#selectNovedad').on('select2:select', function (e) {
+        novedadSeleccionada = e.params.data;
+        calcularFechaFin();
+    });
+
+    // CAMBIO FECHA INICIO
+    fechaInicio.addEventListener("change", calcularFechaFin);
+
+    function calcularFechaFin() {
+
+        if (!fechaInicio.value || !novedadSeleccionada) return;
+
+        const textoLicencia = novedadSeleccionada.text.trim();
+
+        const dias = diasLicencias[textoLicencia];
+
+        // Si no tiene regla → no calcular
+        if (!dias) return;
+
+        let fecha = new Date(fechaInicio.value);
+
+        fecha.setDate(fecha.getDate() + dias);
+
+        // Formato seguro YYYY-MM-DD
+        const yyyy = fecha.getFullYear();
+        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dd = String(fecha.getDate()).padStart(2, '0');
+
+        fechaFin.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    // VALIDACIÓN MANUAL
+    fechaFin.addEventListener("change", () => {
+
+        if (!fechaInicio.value || !fechaFin.value) return;
+
+        const inicio = new Date(fechaInicio.value);
+        const fin = new Date(fechaFin.value);
+
+        if (fin < inicio) {
+            alert("La fecha de fin no puede ser anterior a la fecha de inicio.");
+            fechaFin.value = "";
+        }
+    });
+
 });
