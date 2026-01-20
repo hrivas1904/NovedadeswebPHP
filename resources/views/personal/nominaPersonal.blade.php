@@ -532,7 +532,6 @@
                                             <tr>
                                                 <th>N°</th>
                                                 <th>Fecha registro</th>
-                                                <th>Categoría</th>
                                                 <th>Novedad</th>
                                                 <th>Fecha desde</th>
                                                 <th>Fecha hasta</th>
@@ -907,22 +906,27 @@
                                 </div>
 
                                 <div class="col-lg-2">
-                                    <label id="lblfechaDesdeNovedad" class="form-label">Fecha desde</label>
+                                    <label class="form-label">Fecha desde</label>
                                     <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad" required>
                                 </div>
 
                                 <div class="col-lg-2">
-                                    <label id="lblfechaHastaNovedad" class="form-label">Fecha hasta</label>
+                                    <label class="form-label">Fecha hasta</label>
                                     <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad" required>
                                 </div>
 
-                                <div class="col-lg-1">
+                                <div class="col-lg-1" id="divPeriodoDias" hidden>
                                     <label class="form-label">Período (días)</label>
                                     <input type="text" class="form-control" name="duracion" readonly required>
                                 </div>
 
+                                <div class="col-lg-1" id="divCantidadHoras" hidden>
+                                    <label class="form-label">Horas</label>
+                                    <input type="text" class="form-control" name="horas" required>
+                                </div>
+
                                 <div class="col-lg-4">
-                                    <label class="form-label">Descipción</label>
+                                    <label class="form-label">Descripción</label>
                                     <input type="text" class="form-control" name="descripcion">
                                 </div>
 

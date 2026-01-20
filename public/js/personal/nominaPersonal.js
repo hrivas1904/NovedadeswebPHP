@@ -271,7 +271,6 @@ function inicializarORefrescarHistorial() {
                     return formatearFechaArgentina(data);
                 },
             },
-            { data: "CATEGORIA" },
             { data: "NOVEDAD_NOMBRE" },
             {
                 data: "FECHA_DESDE",
@@ -1357,14 +1356,8 @@ $("#formCargaNovedad").on("submit", function (e) {
 });
 
 //duración de licencias
-document.addEventListener("DOMContentLoaded", () => {
 
-    const fechaInicio = document.getElementById("fechaDesdeNovedad");
-    const fechaFin = document.getElementById("fechaHastaNovedad");
-
-    let novedadSeleccionada = null;
-
-    const diasLicencias = {
+let diasLicencias = {
         "Licencia profiláctica": 14,
         "Licencia por maternidad": 90,
         "Licencia por paternidad": 3,
@@ -1379,6 +1372,20 @@ document.addEventListener("DOMContentLoaded", () => {
         "Licencia por casamiento hijos": 1,
         "Licencia anual": 35
     };
+
+let sinFechas = [
+    'Horas extras 50%',
+    'Horas extras 100%',
+    'Feriado',
+    'Adicional administrativo'
+];
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const fechaInicio = document.getElementById("fechaDesdeNovedad");
+    const fechaFin = document.getElementById("fechaHastaNovedad");
+
+    let novedadSeleccionada = null;
 
     // CAPTURAR SELECT2
     $('#selectNovedad').on('select2:select', function (e) {
@@ -1435,13 +1442,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let novedadSeleccionada = null;
 
-    const sinFechas = [
-        'Horas extras 50%',
-        'Horas extras 100%',
-        'Feriado',
-        'Adicional administrativo'
-    ];
-
     $('#selectNovedad').on('select2:select', function (e) {
 
         novedadSeleccionada = e.params.data;
@@ -1449,17 +1449,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (sinFechas.includes(textoLicencia)) {
 
-            fechaInicio.hidden = true;
-            fechaFin.hidden = true;
-            document.getElementById('lblfechaDesdeNovedad').hidden=true;
-            document.getElementById('lblfechaHastaNovedad').hidden=true;
+            document.getElementById('divPeriodoDias').hidden=true;
+            document.getElementById('divCantidadHoras').hidden=false;
 
         } else {
 
-            fechaInicio.hidden = false;
-            fechaFin.hidden = false;
-            document.getElementById('lblfechaDesdeNovedad').hidden=false;
-            document.getElementById('lblfechaHastaNovedad').hidden=false;
+            document.getElementById('divPeriodoDias').hidden=false;
+            document.getElementById('divCantidadHoras').hidden=false
         }
 
     });
