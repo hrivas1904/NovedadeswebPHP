@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (fin < inicio) {
             alert(
-                "La fecha de fin no puede ser anterior a la fecha de inicio."
+                "La fecha de fin no puede ser anterior a la fecha de inicio.",
             );
             fechaFin.value = "";
         }
@@ -214,7 +214,7 @@ function verComprobantes(idNovedad) {
                 contenedor.html(
                     `<div class="alert alert-info">
                         Esta novedad no tiene comprobantes.
-                    </div>`
+                    </div>`,
                 );
             } else {
                 response.forEach((comp) => {
@@ -233,7 +233,7 @@ function verComprobantes(idNovedad) {
             }
 
             const modal = new bootstrap.Modal(
-                document.getElementById("modalVerComprobantes")
+                document.getElementById("modalVerComprobantes"),
             );
             modal.show();
         },
@@ -242,7 +242,7 @@ function verComprobantes(idNovedad) {
             Swal.fire(
                 "Error",
                 "No se pudieron cargar los comprobantes",
-                "error"
+                "error",
             );
         },
     });
@@ -365,7 +365,7 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#inputDni").val(d.DNI);
                 $("#inputCuil").val(d.CUIL);
                 $("#inputFechaNacimiento").val(
-                    formatearFechaArgentina(d.FECHA_NAC)
+                    formatearFechaArgentina(d.FECHA_NAC),
                 );
 
                 $("#inputEdad").val(calcularEdad(d.FECHA_NAC));
@@ -384,10 +384,10 @@ function verLegajo(legajoColaborador, nombre) {
 
                 $("#inputTipoContrato").val(d.TIPO_CONTRATO);
                 $("#inputFechaIngreso").val(
-                    formatearFechaArgentina(d.FECHA_INGRESO)
+                    formatearFechaArgentina(d.FECHA_INGRESO),
                 );
                 $("#inputFechaFinPrueba").val(
-                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA)
+                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA),
                 );
 
                 $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
@@ -436,7 +436,7 @@ function darDeBaja(legajoColaborador, nombre) {
                 type: "POST",
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content"
+                        "content",
                     ),
                 },
                 success: function (res) {
@@ -471,7 +471,7 @@ function registrarNovedad(legajoColaborador) {
             $("input[name='colaborador']").val(data.COLABORADOR);
             $("input[name='servicio']").val(data.SERVICIO);
             $("input[name='antiguedad']").val(
-                calcularAntiguedad(data.FECHA_INGRESO)
+                calcularAntiguedad(data.FECHA_INGRESO),
             );
             $("input[name='regimen']").val(data.REGIMEN);
             $("input[name='horasDiarias']").val(data.HORAS_DIARIAS);
@@ -514,7 +514,7 @@ function editEmpleados(legajoColaborador, nombre) {
                 $("#inputEditDni").val(d.DNI);
                 $("#inputEditCuil").val(d.CUIL);
                 $("#inputEditFechaNacimiento").val(
-                    formatearFechaArgentina(d.FECHA_NAC)
+                    formatearFechaArgentina(d.FECHA_NAC),
                 );
 
                 $("#inputEditEdad").val(calcularEdad(d.FECHA_NAC));
@@ -533,14 +533,14 @@ function editEmpleados(legajoColaborador, nombre) {
 
                 $("#tipoContratoEdit").val(d.TIPO_CONTRATO);
                 $("#inputEditFechaIngreso").val(
-                    formatearFechaArgentina(d.FECHA_INGRESO)
+                    formatearFechaArgentina(d.FECHA_INGRESO),
                 );
                 $("#inputEditFechaFinPrueba").val(
-                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA)
+                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA),
                 );
 
                 $("#inputEditAntiguedad").val(
-                    calcularAntiguedad(d.FECHA_INGRESO)
+                    calcularAntiguedad(d.FECHA_INGRESO),
                 );
                 $("#inputEditFechaEgreso").val(d.FECHA_EGRESO);
                 $("#areaEdit").val(d.ID_AREA);
@@ -873,7 +873,7 @@ $(document).ready(function () {
         });
 
         $(
-            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado"
+            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado",
         ).on("change", function () {
             tablaPersonal.ajax.reload();
         });
@@ -952,7 +952,7 @@ function cargarCategorias() {
                     select.append(
                         `<option value="${cat.id_categ}">
                             ${cat.nombre}
-                        </option>`
+                        </option>`,
                     );
                 });
 
@@ -989,7 +989,7 @@ $(document).on("change", ".js-select-categoria", function () {
                 selectRol.append(
                     `<option value="${rol.id_rol}">
                         ${rol.nombre}
-                    </option>`
+                    </option>`,
                 );
             });
 
@@ -1027,7 +1027,7 @@ $(document).on("change", ".js-select-area", function () {
                 selectServicio.append(
                     `<option value="${servicio.id_servicios}">
                         ${servicio.servicio}
-                    </option>`
+                    </option>`,
                 );
             });
 
@@ -1317,6 +1317,18 @@ function resetearNovedades() {
 $("#formCargaNovedad").on("submit", function (e) {
     e.preventDefault();
 
+    const dias = document.getElementById("inputDias").value;
+    const horas = document.getElementById("inputHoras").value;
+    const cantidad=0;
+
+    if (dias && dias.trim() !== "") {
+        $("#cantidadFinal").val(dias);
+    } else if (horas && horas.trim() !== "") {
+        $("#cantidadFinal").val(horas);
+    } else {
+        $("#cantidadFinal").val(null);
+    }
+
     $.ajax({
         url: "/novedades/registrar",
         type: "POST",
@@ -1358,106 +1370,92 @@ $("#formCargaNovedad").on("submit", function (e) {
 //duración de licencias
 
 let diasLicencias = {
-        "Licencia profiláctica": 14,
-        "Licencia por maternidad": 90,
-        "Licencia por paternidad": 3,
-        "Licencia por matrimonio": 14,
-        "Licencia por mudanza": 1,
-        "Licencia por estudio": 1,
-        "Licencia por familiar enfermo": 6,
-        "Licencia por fallecimiento cónyuge": 7,
-        "Licencia por fallecimiento padres, hijos y/o hermanos a cargo": 7,
-        "Licencia por fallecimiento abuelos, hermanos y/o nietos": 2,
-        "Licencia por fallecimiento tío, suegro, yerno, cuñado": 1,
-        "Licencia por casamiento hijos": 1,
-        "Licencia anual": 35
-    };
+    "Licencia profiláctica": 14,
+    "Licencia por maternidad": 90,
+    "Licencia por paternidad": 3,
+    "Licencia por matrimonio": 14,
+    "Licencia por mudanza": 1,
+    "Licencia por estudio": 1,
+    "Licencia por familiar enfermo": 6,
+    "Licencia por fallecimiento cónyuge": 7,
+    "Licencia por fallecimiento padres, hijos y/o hermanos a cargo": 7,
+    "Licencia por fallecimiento abuelos, hermanos y/o nietos": 2,
+    "Licencia por fallecimiento tío, suegro, yerno, cuñado": 1,
+    "Licencia por casamiento hijos": 1,
+    "Licencia anual": 35,
+};
 
 let sinFechas = [
-    'Horas extras 50%',
-    'Horas extras 100%',
-    'Feriado',
-    'Adicional administrativo'
+    "Horas extras 50%",
+    "Horas extras 100%",
+    "Feriado",
+    "Adicional administrativo",
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const fechaInicio = document.getElementById("fechaDesdeNovedad");
     const fechaFin = document.getElementById("fechaHastaNovedad");
 
     let novedadSeleccionada = null;
 
-    // CAPTURAR SELECT2
-    $('#selectNovedad').on('select2:select', function (e) {
+    $("#selectNovedad").on("select2:select", function (e) {
         novedadSeleccionada = e.params.data;
         calcularFechaFin();
     });
 
-    // CAMBIO FECHA INICIO
     fechaInicio.addEventListener("change", calcularFechaFin);
 
     function calcularFechaFin() {
-
         if (!fechaInicio.value || !novedadSeleccionada) return;
 
         const textoLicencia = novedadSeleccionada.text.trim();
 
         const dias = diasLicencias[textoLicencia];
 
-        // Si no tiene regla → no calcular
         if (!dias) return;
 
         let fecha = new Date(fechaInicio.value);
 
         fecha.setDate(fecha.getDate() + dias);
 
-        // Formato seguro YYYY-MM-DD
         const yyyy = fecha.getFullYear();
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
-        const dd = String(fecha.getDate()).padStart(2, '0');
+        const mm = String(fecha.getMonth() + 1).padStart(2, "0");
+        const dd = String(fecha.getDate()).padStart(2, "0");
 
         fechaFin.value = `${yyyy}-${mm}-${dd}`;
     }
 
-    // VALIDACIÓN MANUAL
     fechaFin.addEventListener("change", () => {
-
         if (!fechaInicio.value || !fechaFin.value) return;
 
         const inicio = new Date(fechaInicio.value);
         const fin = new Date(fechaFin.value);
 
         if (fin < inicio) {
-            alert("La fecha de fin no puede ser anterior a la fecha de inicio.");
+            alert(
+                "La fecha de fin no puede ser anterior a la fecha de inicio.",
+            );
             fechaFin.value = "";
         }
     });
-
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const fechaInicio = document.getElementById("fechaDesdeNovedad");
     const fechaFin = document.getElementById("fechaHastaNovedad");
 
     let novedadSeleccionada = null;
 
-    $('#selectNovedad').on('select2:select', function (e) {
-
+    $("#selectNovedad").on("select2:select", function (e) {
         novedadSeleccionada = e.params.data;
         const textoLicencia = novedadSeleccionada.text.trim();
 
         if (sinFechas.includes(textoLicencia)) {
-
-            document.getElementById('divPeriodoDias').hidden=true;
-            document.getElementById('divCantidadHoras').hidden=false;
-
+            document.getElementById("divPeriodoDias").hidden = true;
+            document.getElementById("divCantidadHoras").hidden = false;
         } else {
-
-            document.getElementById('divPeriodoDias').hidden=false;
-            document.getElementById('divCantidadHoras').hidden=false
+            document.getElementById("divPeriodoDias").hidden = false;
+            document.getElementById("divCantidadHoras").hidden = true;
         }
-
     });
-
 });

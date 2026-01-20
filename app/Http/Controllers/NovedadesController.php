@@ -89,7 +89,7 @@ class NovedadesController extends Controller
                     $request->valor1 ?? null,
                     $request->valor2 ?? null,
                     $request->centroCosto ?? null,
-                    $request->duracion,
+                    $request->cantidadFinal,
                     auth()->user()->name,
                     $request->descripcion ?? null
                 ]

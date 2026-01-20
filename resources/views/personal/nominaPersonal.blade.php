@@ -535,7 +535,7 @@
                                                 <th>Novedad</th>
                                                 <th>Fecha desde</th>
                                                 <th>Fecha hasta</th>
-                                                <th>Periodo</th>
+                                                <th>Días/Horas</th>
                                                 <th>Comprobantes</th>
                                             </tr>
                                         </thead>
@@ -915,15 +915,17 @@
                                     <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad" required>
                                 </div>
 
-                                <div class="col-lg-1" id="divPeriodoDias" hidden>
+                                <div class="col-lg-1" id="divPeriodoDias">
                                     <label class="form-label">Período (días)</label>
-                                    <input type="text" class="form-control" name="duracion" readonly required>
+                                    <input id="inputDias" type="text" class="form-control" readonly required>
                                 </div>
 
                                 <div class="col-lg-1" id="divCantidadHoras" hidden>
                                     <label class="form-label">Horas</label>
-                                    <input type="text" class="form-control" name="horas" required>
+                                    <input id="inputHoras" type="text" class="form-control" required>
                                 </div>
+
+                                <input type="hidden" name="cantidadFinal" id="cantidadFinal">
 
                                 <div class="col-lg-4">
                                     <label class="form-label">Descripción</label>
