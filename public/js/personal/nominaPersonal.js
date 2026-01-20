@@ -1459,3 +1459,77 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+$("#btnAgregarTitulo").on("click", function () {
+
+    $("#divTitulos").removeAttr("hidden");
+
+    const html = `
+        <div class="row d-flex">
+            <div class="col-lg-6">
+                <label class="form-label">Descripción de Título</label>
+                <input type="text" name="titulo_descripcion[]" 
+                    class="form-control">
+            </div>
+
+            <div class="col-lg-2">
+                <label class="form-label">M.P.</label>
+                <input type="text" name="matricula_profesional[]" 
+                    class="form-control">
+            </div>
+
+            <div class="col-lg-2 d-flex align-items-end">
+                <button type="button" class="btnQuitarTitulo btn-peligro">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    $("#divTitulos").append(html);
+
+});
+
+$(document).on("click", ".btnQuitarTitulo", function () {
+
+    $(this).closest(".col-lg-2").prev().prev().remove();
+    $(this).closest(".col-lg-2").prev().remove();
+    $(this).closest(".col-lg-2").remove();
+});
+
+$("#btnAgregarHijo").on("click", function () {
+
+    $("#divHijos").removeAttr("hidden");
+
+    const html = `
+        <div class="row d-flex">
+            <div class="col-lg-6">
+                <label class="form-label">Nombre y Apellido</label>
+                <input type="text" name="hijo_nombre[]" 
+                    class="form-control">
+            </div>
+
+            <div class="col-lg-2">
+                <label class="form-label">DNI</label>
+                <input type="text" name="hijo_dni[]" 
+                    class="form-control">
+            </div>
+
+            <div class="col-lg-2 d-flex align-items-end">
+                <button type="button" class="btnQuitarHijo btn-peligro">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    $("#divHijos").append(html);
+
+});
+
+$(document).on("click", ".btnQuitarHijo", function () {
+
+    $(this).closest(".col-lg-2").prev().prev().remove();
+    $(this).closest(".col-lg-2").prev().remove();
+    $(this).closest(".col-lg-2").remove();
+});
