@@ -103,8 +103,6 @@ Route::put('/personal/{legajo}', [PersonalController::class, 'update']);
 
 
 //RUTAS DE SP NOVEDADES
-Route::get('/categorias-novedad/lista', [NovedadesController::class, 'listarCategorias'])
-    ->name('categorias.novedad');
 
 Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])
     ->name('novedades.lista');

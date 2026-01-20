@@ -64,7 +64,7 @@ $(document).ready(function () {
             },
             columnDefs: [
                 {
-                    targets: [0, 7, 5, 11, 13, 14],
+                    targets: [0, 6, 5, 10, 12, 13],
                     visible: false,
                     searchable: false,
                 },
@@ -88,7 +88,6 @@ $(document).ready(function () {
                     },
                 },
                 { data: "CODIGO_NOVEDAD" },
-                { data: "CATEGORIA" },
                 { data: "NOVEDAD_NOMBRE" },
                 {
                     data: "FECHA_DESDE",
@@ -102,7 +101,12 @@ $(document).ready(function () {
                         return formatearFechaArgentina(data);
                     },
                 },
-                { data: "FECHA_APLICACION" },
+                {
+                    data: "FECHA_APLICACION",
+                    render: function (data) {
+                        return formatearFechaArgentina(data);
+                    },
+                },
                 { data: "DURACION" },
                 { data: "VALOR2" },
                 { data: "CENTRO_COSTO" },
@@ -131,7 +135,7 @@ $(document).ready(function () {
                     className: "btn-export-excel",
                     title: "",
                     exportOptions: {
-                        columns: [5, 6, 14, 12, 13, 11, 9, 10, 15],
+                        columns: [5, 6, 13, 11, 12, 10, 8, 9, 14],
                     },
                     customize: function (xlsx) {
                         var sheet = xlsx.xl.worksheets["sheet1.xml"];

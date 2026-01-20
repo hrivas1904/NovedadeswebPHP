@@ -17,7 +17,7 @@
                                     <tr>
                                         <th>Cód Finnegan</th>
                                         <th>Novedad</th>
-                                        <th>Categoría</th>
+                                        <th>Límite</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -42,13 +42,6 @@
                                 @csrf
 
                                 <div class="row g-3 mb-3">
-                                    <div class="col-lg-6 col-md-3">
-                                        <label class="form-label">Categoría</label>
-                                        <select id="selectCategoriaNovedades" name="id_categ" class="form-select" required>
-                                            <option value="">Seleccionar tipo</option>
-                                        </select>
-                                    </div>
-
                                     <div class="col-lg-6 col-md-3">
                                         <label class="form-label">Cód Finnegan</label>
                                         <input type="text" class="form-control" name="codigo" required />
@@ -99,7 +92,7 @@
                         <div class="row g-4 mb-4">
                             <div class="col-lg-12">
                                 <div class="section-divider mb-3">
-                                    <span>Información general</span>
+                                    <span>Parámtrización</span>
                                 </div>
                                 <div class="empleado-box p-3">
                                     <div class="row g-3">
@@ -111,12 +104,6 @@
                                             <label class="form-label">Novedad</label>
                                             <input type="text" id="inputNovedad" class="form-control">
                                         </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Categoría</label>
-                                            <select id="selectEditCategoriaNovedades" class="form-select" required>
-                                                <option value="">Seleccionar tipo</option>
-                                            </select>
-                                        </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Valor</label>
                                             <select id="selectEditTipoValor" class="form-select" required>
@@ -125,18 +112,10 @@
                                                 <option value="Horas">Horas</option>
                                             </select>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row g-4 mb-4">
-                            <div class="col-lg-12">
-                                <div class="section-divider mb-3">
-                                    <span>Parametrización de novedad</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <div class="row g-3">
-
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Cantidad máxima</label>
+                                            <input type="text" id="inputCantidadMaxima" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
                             </div>

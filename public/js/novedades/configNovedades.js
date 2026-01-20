@@ -5,7 +5,7 @@ function verNovedad(codigo) {
         success: function (data) {
             $("#inputCodigo").val(data.codigo_novedad);
             $("#inputNovedad").val(data.nombre);
-            $("#selectEditCategoriaNovedades").val(data.id_categ);
+            $("#inputCantidadMaxima").val(data.limite);
             $("#selectEditTipoValor").val(data.tipo_valor);
 
             $("#modalEdicionNovedad").modal("show");
@@ -58,7 +58,7 @@ $(document).ready(function () {
             columns: [
                 { data: "CODIGO_NOVEDAD", width:"10%" },
                 { data: "NOVEDAD" },
-                { data: "CATEG" },
+                { data: "limite" },
                 {
                     data: "CODIGO_NOVEDAD",
                     render: function (data) {
@@ -106,60 +106,6 @@ $(document).ready(function () {
     });
 });
 
-//sp para cargar selector categorias
-$(document).ready(function () {
-    cargarCategoriasNovedades();
-    cargarCategoriasNovedadesEdit();
-});
-
-function cargarCategoriasNovedades() {
-    $.ajax({
-        url: "/categorias-novedad/lista",
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            const select = $("#selectCategoriaNovedades");
-
-            select.empty();
-            select.append('<option value="">Seleccione categoría</option>');
-
-            data.forEach((cat) => {
-                select.append(`
-                    <option value="${cat.ID_CATEG}">
-                        ${cat.NOMBRE}
-                    </option>
-                `);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error("Error cargando categorías:", error);
-        },
-    });
-}
-
-function cargarCategoriasNovedadesEdit() {
-    $.ajax({
-        url: "/categorias-novedad/lista",
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            const select = $("#selectEditCategoriaNovedades");
-
-            select.empty();
-
-            data.forEach((cat) => {
-                select.append(`
-                    <option value="${cat.ID_CATEG}">
-                        ${cat.NOMBRE}
-                    </option>
-                `);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error("Error cargando categorías:", error);
-        },
-    });
-}
 
 $("#formNuevaNovedad").on("submit", function (e) {
     e.preventDefault();

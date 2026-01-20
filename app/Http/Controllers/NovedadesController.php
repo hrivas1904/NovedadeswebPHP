@@ -148,7 +148,6 @@ class NovedadesController extends Controller
         $request->validate([
             'codigo'     => 'required|string|max:50',
             'nombre'     => 'required|string|max:250',
-            'id_categ'   => 'required|integer',
             'tipo_valor' => 'nullable|string|max:50'
         ]);
 
@@ -157,7 +156,6 @@ class NovedadesController extends Controller
             [
                 $request->codigo,
                 $request->nombre,
-                $request->id_categ,
                 $request->tipo_valor
             ]
         );
