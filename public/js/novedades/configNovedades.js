@@ -53,18 +53,19 @@ $(document).ready(function () {
                     last: ">>",
                 },
             },
-            order: [[2, "asc"]],
+            order: [[1, "asc"]],
             info: false,
             columns: [
+                { data: "ID_NOVEDAD", 'visible':false },
                 { data: "CODIGO_NOVEDAD", width:"10%" },
                 { data: "NOVEDAD" },
                 { data: "limite" },
                 {
-                    data: "CODIGO_NOVEDAD",
+                    data: "ID_NOVEDAD", className: "text-center",
                     render: function (data) {
                         return `
                             <button class="btn-alerta btn-edit" data-id="${data}">
-                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                                <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                         `;
                     },

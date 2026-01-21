@@ -15,10 +15,11 @@
                             <table id="tb_configuracion" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Cód Finnegan</th>
-                                        <th>Novedad</th>
-                                        <th>Límite</th>
-                                        <th>Acciones</th>
+                                        <th>ID</th>
+                                        <th>CÓDIGO</th>
+                                        <th>NOVEDAD</th>
+                                        <th>LÍMITE</th>
+                                        <th>ACCIONES</th>
                                     </tr>
                                 </thead>
                                 <tbody>
