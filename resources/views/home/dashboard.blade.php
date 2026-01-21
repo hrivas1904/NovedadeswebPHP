@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+            <div class="col-xl-auto col-lg-auto col-md-4 col-6">
                 <div class="card kpi-card">
                     <div class="card-body">
                         <div class="kpi-label">Colaboradores de baja</div>
@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+            <div class="col-xl-auto col-lg-auto col-md-4 col-6">
                 <div class="card kpi-card">
                     <div class="card-body">
                         <div class="kpi-label">Más frecuente</div>
@@ -157,7 +157,7 @@
                             <div class="card-header">
                                 <span class="chart-title">Novedades por mes</span>
                             </div>
-                            <div class="card-body" style="position: relative; height: 300px;>
+                            <div class="card-body">
                                 <canvas id="chartNovedadesMes"></canvas>
                                 <div class="mt-2 small text-muted">
                                     Mes con más novedades: <span id="lblMesMaxNovedades">—</span>

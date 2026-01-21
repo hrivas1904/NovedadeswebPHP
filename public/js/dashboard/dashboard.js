@@ -17,8 +17,7 @@ $(document).ready(function () {
     cargarChartNovedadesPorTipo();
     cargarChartNovedadesPorArea();
     cargarTablaNovedadesTipo();
-    cargarTablaNovedadesArea();
-    cargarChartNovedadesPorMes();    
+    cargarTablaNovedadesArea();    
 });
 
 function capitalizar(texto) {
