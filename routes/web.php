@@ -151,3 +151,6 @@ Route::get('/notificaciones/lista',
 [NotificacionController::class, 'listarNotificaciones'])
 ->middleware('auth')
 ->name('notificaciones.lista');
+
+//dashboard
+Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);
