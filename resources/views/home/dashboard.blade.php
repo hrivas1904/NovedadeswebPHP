@@ -51,9 +51,8 @@
             <div class="col-xl-2 col-lg-4 col-md-4 col-6">
                 <div class="card kpi-card">
                     <div class="card-body">
-                        <div class="kpi-label">Empleados activos</div>
+                        <div class="kpi-label">Colaboradores activos</div>
                         <div id="kpiEmpleadosActivos" class="kpi-value">0</div>
-                        <div id="kpiEmpleadosActivosDetalle" class="kpi-subvalue">—</div>
                     </div>
                 </div>
             </div>
@@ -61,9 +60,8 @@
             <div class="col-xl-2 col-lg-4 col-md-4 col-6">
                 <div class="card kpi-card">
                     <div class="card-body">
-                        <div class="kpi-label">Empleados de baja</div>
+                        <div class="kpi-label">Colaboradores de baja</div>
                         <div id="kpiEmpleadosBaja" class="kpi-value">0</div>
-                        <div id="kpiEmpleadosBajaDetalle" class="kpi-subvalue">—</div>
                     </div>
                 </div>
             </div>
@@ -73,7 +71,6 @@
                     <div class="card-body">
                         <div class="kpi-label">Total novedades</div>
                         <div id="kpiTotalNovedades" class="kpi-value">0</div>
-                        <div id="kpiTotalNovedadesDetalle" class="kpi-subvalue">—</div>
                     </div>
                 </div>
             </div>
@@ -83,7 +80,6 @@
                     <div class="card-body">
                         <div class="kpi-label">Novedades mes actual</div>
                         <div id="kpiNovedadesMes" class="kpi-value">0</div>
-                        <div id="kpiNovedadesMesDetalle" class="kpi-subvalue">—</div>
                     </div>
                 </div>
             </div>
@@ -161,7 +157,7 @@
                             <div class="card-header">
                                 <span class="chart-title">Novedades por mes</span>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="position: relative; height: 300px;>
                                 <canvas id="chartNovedadesMes"></canvas>
                                 <div class="mt-2 small text-muted">
                                     Mes con más novedades: <span id="lblMesMaxNovedades">—</span>
@@ -178,7 +174,7 @@
                             <div class="card-body">
                                 <canvas id="chartTopEmpleados"></canvas>
                                 <div class="mt-2 small text-muted">
-                                    Empleado con más novedades: <span id="lblEmpleadoTop">—</span>
+                                    Colaborador con más novedades: <span id="lblEmpleadoTop">—</span>
                                 </div>
                             </div>
                         </div>
@@ -197,7 +193,6 @@
                                     <thead>
                                         <tr>
                                             <th>Tipo</th>
-                                            <th>Categoría</th>
                                             <th>Cantidad</th>
                                             <th>%</th>
                                         </tr>

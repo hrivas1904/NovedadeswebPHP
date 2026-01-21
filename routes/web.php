@@ -6,6 +6,7 @@ use App\Http\Controllers\NovedadesController;
 use App\Http\Controllers\AjustesController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotificacionController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
@@ -154,3 +155,15 @@ Route::get('/notificaciones/lista',
 
 //dashboard
 Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);
+Route::get('/dashboard/colaboradores-activos', [DashboardController::class, 'colaboradoresActivos']);
+Route::get('/dashboard/colaboradores-baja', [DashboardController::class, 'colaboradoresBaja']);
+Route::get('/dashboard/novedades-historicos', [DashboardController::class, 'historicoNovedades']);
+Route::get('/dashboard/novedades-mes-actual', [DashboardController::class, 'novedadesMesActual']);
+Route::get('/dashboard/novedades-mas-frec', [DashboardController::class, 'novedadesMasFrecuente']);
+Route::get('/dashboard/novedades-menos-frec', [DashboardController::class, 'novedadesMenosFrecuente']);
+Route::get('/dashboard/area-mas-novedades', [DashboardController::class, 'areaMasNovedades']);
+Route::get('/dashboard/area-menos-novedades', [DashboardController::class, 'areaMenosNovedades']);
+Route::get('/dashboard/novedades-por-area', [DashboardController::class, 'novedadesPorArea']);
+Route::get('/dashboard/novedades-por-mes', [DashboardController::class, 'novedadesPorMes']);
+Route::get('/dashboard/top-empleados-novedades', [DashboardController::class, 'topEmpleadosNovedades']);
+
