@@ -127,7 +127,7 @@ $(document).ready(function () {
                 },
             },
             autoWidth: false,
-            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'>",
+            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-center'i>",
             buttons: [
                 {
                     extend: "excelHtml5",
