@@ -10,6 +10,11 @@ let filtrosDashboard = {
     hasta: null
 };
 
+$("#btnImprimirDashboard").on("click", function () {
+    window.print();
+});
+
+
 function capitalizar(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
@@ -26,6 +31,48 @@ function obtenerFiltrosFechas() {
         hasta: hasta
     };
 }
+
+function cargarHistoricoColab() {
+    $.ajax({
+        url: "/dashboard/historico-colaboradores",
+        type: "GET",
+        dataType: "json",
+
+        success: function (data) {
+            $("#kpiEmpleadosHistoricos").text(data.TOTAL);
+        },
+
+        error: function (xhr) {
+            console.error("Error colaboradores:", xhr.responseText);
+            $("#kpiEmpleadosHistoricos").text("—");
+        }
+    });
+}
+
+function cargarIndiceRotacional() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
+    $.ajax({
+        url: "/dashboard/tasa-rotacional",
+        type: "GET",
+        dataType: "json",
+
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
+
+        success: function (data) {
+            $("#kpiTasaRotacional").text(data.tasaRotacional);
+        },
+
+        error: function (xhr) {
+            console.error("Error colaboradores activos:", xhr.responseText);
+            $("#kpiTasaRotacional").text("—");
+        }
+    });
+}
+
 
 function cargarColaboradoresActivos() {
     const filtros = obtenerFiltrosFechas();
@@ -406,7 +453,7 @@ function cargarChartNovedadesMes() {
 
             data.forEach(item => {
 
-                labels.push(item.mes);
+                labels.push(capitalizar(item.mes+' '+item.anio));
                 values.push(item.cantidad);
 
                 if (item.cantidad > maxCantidad) {
@@ -607,7 +654,6 @@ function cargarTablaNovedadesArea() {
             url: '/dashboard/novedades-por-area',
             dataSrc: '',
             data: function (d) {
-                // 🔥 inyecta filtros actuales
                 return filtrosDashboard;
             },
         },
@@ -649,7 +695,8 @@ function cargarTablaNovedadesArea() {
 }
 
 function recargarDashboard() {
-
+    obtenerFiltrosFechas();
+    cargarHistoricoColab();
     cargarColaboradoresActivos();
     cargarColaboradoresBaja();
     cargarHistoricoNovedades();
@@ -658,12 +705,13 @@ function recargarDashboard() {
     cargarNovedadesMenosFrecuente();
     cargarAreaMasNovedades();
     cargarAreaMenosNovedades();
+    cargarIndiceRotacional(); 
     cargarChartNovedadesPorTipo();
     cargarChartNovedadesPorArea();
     cargarChartNovedadesMes();
     cargarTopEmpleadosNovedades();
     cargarTablaNovedadesTipo();
-    cargarTablaNovedadesArea();
+    cargarTablaNovedadesArea();       
 }
 
 $("#btnAplicarFiltros").on("click", function () {
@@ -686,6 +734,8 @@ $('#btnLimpiarFiltros').on('click', function () {
 });
 
 $(document).ready(function () {
+    obtenerFiltrosFechas();
+    cargarHistoricoColab();
     cargarColaboradoresActivos();
     cargarColaboradoresBaja();
     cargarHistoricoNovedades();
@@ -694,12 +744,13 @@ $(document).ready(function () {
     cargarNovedadesMenosFrecuente();
     cargarAreaMasNovedades();
     cargarAreaMenosNovedades();
+    cargarIndiceRotacional();
     cargarChartNovedadesPorTipo();
     cargarChartNovedadesPorArea();
     cargarTablaNovedadesTipo();
     cargarTablaNovedadesArea();    
     cargarChartNovedadesMes();
-    cargarTopEmpleadosNovedades()
+    cargarTopEmpleadosNovedades();
 });
 
 

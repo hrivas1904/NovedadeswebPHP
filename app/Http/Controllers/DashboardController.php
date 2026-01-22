@@ -7,10 +7,25 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    public function historicoColaboradores()
+    {
+        $result = DB::select('CALL SP_TOTAL_HISTORICO_COLAB()');
+
+        return response()->json($result[0]);
+    }
+
+    public function tasaRotacional(Request $request)
+    {
+        $desde = $request->query('desde') ?: null;
+        $hasta = $request->query('hasta') ?: null;
+        $result = DB::select('CALL SP_INDICE_ROTACIONAL(?, ?)', [$desde, $hasta]);
+        return response()->json($result[0]);
+    }
+
     public function colaboradoresActivos(Request $request)
     {
-        $desde = $request->query('desde')?:null;
-        $hasta = $request->query('hasta')?:null;
+        $desde = $request->query('desde') ?: null;
+        $hasta = $request->query('hasta') ?: null;
         $result = DB::select('CALL SP_COLABS_ACTIVOS(?, ?)', [$desde, $hasta]);
         return response()->json($result[0]);
     }

@@ -166,4 +166,5 @@ Route::get('/dashboard/area-menos-novedades', [DashboardController::class, 'area
 Route::get('/dashboard/novedades-por-area', [DashboardController::class, 'novedadesPorArea']);
 Route::get('/dashboard/novedades-por-mes', [DashboardController::class, 'novedadesPorMes']);
 Route::get('/dashboard/top-empleados-novedades', [DashboardController::class, 'topEmpleadosNovedades']);
-
+Route::get('/dashboard/historico-colaboradores', [DashboardController::class, 'historicoColaboradores']);
+Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotacional']);

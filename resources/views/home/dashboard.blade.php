@@ -39,7 +39,7 @@
                             </button>
                         </div>
                         <div class="col-md-auto d-flex">
-                            <button id="btnAplicarFiltros" class=btn-terciario flex-grow-1">
+                            <button id="btnImprimirDashboard" class=btn-terciario flex-grow-1">
                                 <i class="fa-solid fa-print"></i> Imprimir
                             </button>
                         </div>
@@ -50,6 +50,15 @@
     </div>
 
     <div class="row g-3 mb-3">
+
+        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+            <div class="card kpi-card">
+                <div class="card-body">
+                    <div class="kpi-label">Total histórico colaboradores</div>
+                    <div id="kpiEmpleadosHistoricos" class="kpi-value">0</div>
+                </div>
+            </div>
+        </div>
 
         <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="card kpi-card">
@@ -123,6 +132,15 @@
                     <div class="kpi-label">Área con menos novedades</div>
                     <div id="kpiAreaMenosNovedades" class="kpi-value-small">—</div>
                     <div id="kpiAreaMenosNovedadesDetalle" class="kpi-subvalue">—</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+            <div class="card kpi-card">
+                <div class="card-body">
+                    <div class="kpi-label">Índice de Rotación de Personal</div>
+                    <div id="kpiTasaRotacional" class="kpi-value">0</div>
                 </div>
             </div>
         </div>
