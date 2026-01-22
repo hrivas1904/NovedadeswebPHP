@@ -5,22 +5,10 @@ let tablaNovedadesTipo = null;
 let tablaNovedadesArea = null;
 let chartNovedadesMes = null;
 
-$(document).ready(function () {
-    cargarColaboradoresActivos();
-    cargarColaboradoresBaja();
-    cargarHistoricoNovedades();
-    cargarNovedadesMesActual();
-    cargarNovedadesMasFrecuente();
-    cargarNovedadesMenosFrecuente();
-    cargarAreaMasNovedades();
-    cargarAreaMenosNovedades();
-    cargarChartNovedadesPorTipo();
-    cargarChartNovedadesPorArea();
-    cargarTablaNovedadesTipo();
-    cargarTablaNovedadesArea();    
-    cargarChartNovedadesMes();
-    cargarTopEmpleadosNovedades()
-});
+let filtrosDashboard = {
+    desde: null,
+    hasta: null
+};
 
 function capitalizar(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
@@ -28,36 +16,53 @@ function capitalizar(texto) {
 
 function obtenerFiltrosFechas() {
 
+    const desde = document.getElementById('filtroDesde').value;
+    const hasta = document.getElementById('filtroHasta').value;
+
+    console.log('Desde:', desde, 'Hasta:', hasta);
+
     return {
-        desde: $('#filtroDesde').val(),
-        hasta: $('#filtroHasta').val()
+        desde: desde,
+        hasta: hasta
     };
 }
 
 function cargarColaboradoresActivos() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/colaboradores-activos",
         type: "GET",
         dataType: "json",
 
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
+
         success: function (data) {
             $("#kpiEmpleadosActivos").text(data.total);
         },
 
-        error: function (xhr, status, error) {
-            console.error("Error colaboradores activos:", error);
-            console.log(xhr.responseText);
-
+        error: function (xhr) {
+            console.error("Error colaboradores activos:", xhr.responseText);
             $("#kpiEmpleadosActivos").text("—");
-        },
+        }
     });
 }
 
 function cargarColaboradoresBaja() {
+
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/colaboradores-baja",
         type: "GET",
         dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
         success: function (data) {
             $("#kpiEmpleadosBaja").text(data.total);
@@ -73,10 +78,16 @@ function cargarColaboradoresBaja() {
 }
 
 function cargarHistoricoNovedades() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/novedades-historicos",
         type: "GET",
         dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
         success: function (data) {
             $("#kpiTotalNovedades").text(data.total);
@@ -111,10 +122,16 @@ function cargarNovedadesMesActual() {
 }
 
 function cargarNovedadesMasFrecuente() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/novedades-mas-frec",
         type: "GET",
         dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
         success: function (data) {
             $("#kpiNovedadMasFrecuente").text(data.novedad);
@@ -132,10 +149,16 @@ function cargarNovedadesMasFrecuente() {
 }
 
 function cargarNovedadesMenosFrecuente() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/novedades-menos-frec",
         type: "GET",
         dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
         success: function (data) {
             $("#kpiNovedadMenosFrecuente").text(data.novedad);
@@ -153,10 +176,16 @@ function cargarNovedadesMenosFrecuente() {
 }
 
 function cargarAreaMasNovedades() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/area-mas-novedades",
         type: "GET",
         dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
         success: function (data) {
             $("#kpiAreaMasNovedades").text(data.area);
@@ -174,10 +203,16 @@ function cargarAreaMasNovedades() {
 }
 
 function cargarAreaMenosNovedades() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/area-menos-novedades",
         type: "GET",
         dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
         success: function (data) {
             $("#kpiAreaMenosNovedades").text(data.area);
@@ -195,10 +230,16 @@ function cargarAreaMenosNovedades() {
 }
 
 function cargarChartNovedadesPorTipo() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/novedades-por-tipo",
         type: "GET",
         dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
         success: function (data) {
             // data = [{ novedad: "...", cantidad: 12 }, ...]
@@ -268,10 +309,16 @@ function cargarChartNovedadesPorTipo() {
 }
 
 function cargarChartNovedadesPorArea() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/novedades-por-area",
         type: "GET",
         dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
         success: function (data) {
             // data = [{ area: "...", cantidad: 20 }]
@@ -338,10 +385,18 @@ function cargarChartNovedadesPorArea() {
 }
 
 function cargarChartNovedadesMes() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);    
+    $.ajax({
+        url: "/dashboard/novedades-por-mes",
+        type: "GET",
+        dataType: "json",
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta
+        },
 
-    fetch('/dashboard/novedades-por-mes')
-        .then(response => response.json())
-        .then(data => {
+        success: function (data) {
 
             const labels = [];
             const values = [];
@@ -349,7 +404,6 @@ function cargarChartNovedadesMes() {
             let maxCantidad = 0;
             let mesMax = '';
 
-            // Limpieza segura
             data.forEach(item => {
 
                 labels.push(item.mes);
@@ -362,11 +416,11 @@ function cargarChartNovedadesMes() {
 
             });
 
-            document.getElementById('lblMesMaxNovedades').innerText = mesMax || '—';
+            $("#lblMesMaxNovedades").text(mesMax || '—');
 
             const ctx = document.getElementById('chartNovedadesMes').getContext('2d');
 
-            // ⚠️ Destruir gráfico anterior (CLAVE para evitar bug infinito)
+            // 🔥 Destruir instancia anterior
             if (chartNovedadesMes) {
                 chartNovedadesMes.destroy();
             }
@@ -392,7 +446,7 @@ function cargarChartNovedadesMes() {
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                precision: 0   // evita decimales raros
+                                precision: 0
                             }
                         }
                     },
@@ -408,22 +462,22 @@ function cargarChartNovedadesMes() {
                     }
                 }
             });
+        },
 
-        })
-        .catch(error => {
-            console.error('Error cargando novedades por mes:', error);
-        });
+        error: function (xhr) {
+            console.error("Error cargando novedades por mes:", xhr.responseText);
+        }
+    });
 }
 
 function cargarTopEmpleadosNovedades() {
 
     const filtros = obtenerFiltrosFechas();
-
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: '/dashboard/top-empleados-novedades',
         type: 'GET',
         dataType: 'json',
-
         data: {
             desde: filtros.desde,
             hasta: filtros.hasta
@@ -496,6 +550,13 @@ function cargarTablaNovedadesTipo() {
 
         ajax: {
             url: '/dashboard/novedades-por-tipo',
+            type: 'GET',
+
+            data: function (d) {
+                // 🔥 inyecta filtros actuales
+                return filtrosDashboard;
+            },
+
             dataSrc: ''
         },
 
@@ -506,9 +567,7 @@ function cargarTablaNovedadesTipo() {
 
         columns: [
 
-            {
-                data: 'novedad'
-            },
+            { data: 'novedad' },
 
             {
                 data: 'cantidad',
@@ -518,7 +577,7 @@ function cargarTablaNovedadesTipo() {
             {
                 data: null,
                 className: 'text-end',
-                render: function (data, type, row, meta) {
+                render: function (data, type, row) {
 
                     const total = tablaNovedadesTipo
                         .column(1)
@@ -546,7 +605,11 @@ function cargarTablaNovedadesArea() {
 
         ajax: {
             url: '/dashboard/novedades-por-area',
-            dataSrc: ''
+            dataSrc: '',
+            data: function (d) {
+                // 🔥 inyecta filtros actuales
+                return filtrosDashboard;
+            },
         },
 
         paging: false,
@@ -585,11 +648,32 @@ function cargarTablaNovedadesArea() {
     });
 }
 
-$('#btnAplicarFiltros').on('click', function () {
+function recargarDashboard() {
 
-    cargarTopEmpleadosNovedades();
+    cargarColaboradoresActivos();
+    cargarColaboradoresBaja();
+    cargarHistoricoNovedades();
+    cargarNovedadesMesActual();
+    cargarNovedadesMasFrecuente();
+    cargarNovedadesMenosFrecuente();
+    cargarAreaMasNovedades();
+    cargarAreaMenosNovedades();
+    cargarChartNovedadesPorTipo();
+    cargarChartNovedadesPorArea();
     cargarChartNovedadesMes();
+    cargarTopEmpleadosNovedades();
+    cargarTablaNovedadesTipo();
+    cargarTablaNovedadesArea();
+}
 
+$("#btnAplicarFiltros").on("click", function () {
+
+    filtrosDashboard.desde = $("#filtroDesde").val() || null;
+    filtrosDashboard.hasta = $("#filtroHasta").val() || null;
+
+    console.log("Filtros activos:", filtrosDashboard);
+
+    recargarDashboard();
 });
 
 $('#btnLimpiarFiltros').on('click', function () {
@@ -597,7 +681,25 @@ $('#btnLimpiarFiltros').on('click', function () {
     $('#filtroDesde').val('');
     $('#filtroHasta').val('');
 
-    cargarTopEmpleadosNovedades();
-    cargarChartNovedadesMes();
+    recargarDashboard();
 
 });
+
+$(document).ready(function () {
+    cargarColaboradoresActivos();
+    cargarColaboradoresBaja();
+    cargarHistoricoNovedades();
+    cargarNovedadesMesActual();
+    cargarNovedadesMasFrecuente();
+    cargarNovedadesMenosFrecuente();
+    cargarAreaMasNovedades();
+    cargarAreaMenosNovedades();
+    cargarChartNovedadesPorTipo();
+    cargarChartNovedadesPorArea();
+    cargarTablaNovedadesTipo();
+    cargarTablaNovedadesArea();    
+    cargarChartNovedadesMes();
+    cargarTopEmpleadosNovedades()
+});
+
+

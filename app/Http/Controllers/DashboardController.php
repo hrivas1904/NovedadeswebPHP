@@ -9,8 +9,8 @@ class DashboardController extends Controller
 {
     public function colaboradoresActivos(Request $request)
     {
-        $desde = $request->query('desde');
-        $hasta = $request->query('hasta');
+        $desde = $request->query('desde')?:null;
+        $hasta = $request->query('hasta')?:null;
         $result = DB::select('CALL SP_COLABS_ACTIVOS(?, ?)', [$desde, $hasta]);
         return response()->json($result[0]);
     }
