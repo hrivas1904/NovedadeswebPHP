@@ -83,6 +83,21 @@
                 <span class="tooltip">Novedades</span>
             </li>
 
+            <li class="submenu">
+                <input type="checkbox" id="menu-calidad">
+                <label for="menu-calidad">
+                    <i class="bx bx-user"></i>
+                    <span class="link_name">Gestión de calidad</span>
+                    <i class="bx bx-chevron-down arrow"></i>
+                </label>
+                <ul class="sub-menu">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">CMI</a></li>                    
+                    <li><a href="#">Encuestas</a></li>
+                </ul>
+                <span class="tooltip">Calidad</span>
+            </li>
+
             @if (Auth::user()->rol === 'Administrador/a')
             <li class="submenu">
                 <input type="checkbox" id="menu-config">
