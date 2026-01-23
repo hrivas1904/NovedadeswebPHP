@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\NovedadesController;
 use App\Http\Controllers\AjustesController;
+use App\Http\Controllers\CalendarioServController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\DashboardController;
@@ -13,7 +14,6 @@ Route::get('/index', [HomeController::class, 'index'])
 
 Route::get('/dashboard', [HomeController::class, 'dashboard'])
     ->name('dashboard');
-
 
 Route::get('/nomina', [PersonalController::class, 'nominaPersonal'])
     ->name('nominaPersonal');
@@ -56,7 +56,8 @@ Route::get('/', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/ingresar', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-
+Route::get('/calendario-servicios', [CalendarioServController::class, 'calendarioServicios'])
+    ->name('calendarioServicios');
 
 //RUTAS DE SP PERSONAL
 Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
@@ -168,3 +169,4 @@ Route::get('/dashboard/novedades-por-mes', [DashboardController::class, 'novedad
 Route::get('/dashboard/top-empleados-novedades', [DashboardController::class, 'topEmpleadosNovedades']);
 Route::get('/dashboard/historico-colaboradores', [DashboardController::class, 'historicoColaboradores']);
 Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotacional']);
+

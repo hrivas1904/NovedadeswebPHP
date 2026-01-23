@@ -61,7 +61,7 @@
                     <!--<li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>-->
                     <li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>                    
                     @endif
-                    <li><a href="#">Calendario de Servicios</a></li>
+                    <li><a href="{{ route('calendarioServicios') }}"">Calendario de Servicios</a></li>
                 </ul>
                 <span class="tooltip">Personal</span>
             </li>

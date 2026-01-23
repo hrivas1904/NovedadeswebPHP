@@ -841,6 +841,14 @@ $(document).ready(function () {
                                 data-id="${data.LEGAJO}">
                                 <i class="fa-solid fa-floppy-disk"></i>
                             </button>
+
+                            <button 
+                                class="btn-terciario btn-PracticasHospitalarias"
+                                data-id="${data.LEGAJO}"
+                                title='Atención médica'
+                                data-nombre="${data.COLABORADOR}">
+                                <i class="fa-solid fa-briefcase-medical"></i>
+                            </button>
                         `;
                         }
 

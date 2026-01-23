@@ -47,7 +47,7 @@
 .btn-peligro {
     background-color: #dc3545;
     border: none;
-    padding: 0.5rem 0.8rem;
+    padding: 0.5rem 0.82rem;
     font-weight: 500;
     border-radius: 6px;
     color: #fff;
@@ -70,7 +70,7 @@
     background-color: #6c7a89; /* gris azulado elegante */
     color: #ffffff;
     border: none;
-    padding: 0.45rem;
+    padding: 0.5rem 0.75rem;
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease-in-out;
