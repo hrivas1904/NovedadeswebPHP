@@ -28,7 +28,7 @@
                         <select id="filtroEstado" class="form-select js-select-estadoFiltro" style="width:auto;"></select>
 
                         <button type="button" id="btn-limpiar-filtros" class="btn-secundario">
-                            <i class="fa-solid fa-eraser"></i> Limpiar filtros
+                            <i class="fa-solid fa-eraser"></i> Limpiar
                         </button>
 
                         <script>

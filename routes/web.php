@@ -5,6 +5,7 @@ use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\NovedadesController;
 use App\Http\Controllers\AjustesController;
 use App\Http\Controllers\CalendarioServController;
+use App\Http\Controllers\CalidadController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\DashboardController;
@@ -153,6 +154,16 @@ Route::get('/notificaciones/lista',
 [NotificacionController::class, 'listarNotificaciones'])
 ->middleware('auth')
 ->name('notificaciones.lista');
+
+//calidad
+Route::get('/encuestasCalidad', [CalidadController::class, 'encuestasCalidad'])
+    ->name('encuestasCalidad');
+
+Route::get('/dashboardCalidad', [CalidadController::class, 'dashboardCalidad'])
+    ->name('dashboardCalidad');
+
+Route::get('/cmiCalidad', [CalidadController::class, 'cmiCalidad'])
+    ->name('cmiCalidad');
 
 //dashboard
 Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);

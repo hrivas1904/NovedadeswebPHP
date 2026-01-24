@@ -7,28 +7,26 @@ let chartNovedadesMes = null;
 
 let filtrosDashboard = {
     desde: null,
-    hasta: null
+    hasta: null,
 };
 
 $("#btnImprimirDashboard").on("click", function () {
     window.print();
 });
 
-
 function capitalizar(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
 function obtenerFiltrosFechas() {
+    const desde = document.getElementById("filtroDesde").value;
+    const hasta = document.getElementById("filtroHasta").value;
 
-    const desde = document.getElementById('filtroDesde').value;
-    const hasta = document.getElementById('filtroHasta').value;
-
-    console.log('Desde:', desde, 'Hasta:', hasta);
+    console.log("Desde:", desde, "Hasta:", hasta);
 
     return {
         desde: desde,
-        hasta: hasta
+        hasta: hasta,
     };
 }
 
@@ -45,7 +43,7 @@ function cargarHistoricoColab() {
         error: function (xhr) {
             console.error("Error colaboradores:", xhr.responseText);
             $("#kpiEmpleadosHistoricos").text("—");
-        }
+        },
     });
 }
 
@@ -59,7 +57,7 @@ function cargarIndiceRotacional() {
 
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -69,10 +67,9 @@ function cargarIndiceRotacional() {
         error: function (xhr) {
             console.error("Error colaboradores activos:", xhr.responseText);
             $("#kpiTasaRotacional").text("—");
-        }
+        },
     });
 }
-
 
 function cargarColaboradoresActivos() {
     const filtros = obtenerFiltrosFechas();
@@ -84,7 +81,7 @@ function cargarColaboradoresActivos() {
 
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -94,12 +91,11 @@ function cargarColaboradoresActivos() {
         error: function (xhr) {
             console.error("Error colaboradores activos:", xhr.responseText);
             $("#kpiEmpleadosActivos").text("—");
-        }
+        },
     });
 }
 
 function cargarColaboradoresBaja() {
-
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
@@ -108,7 +104,7 @@ function cargarColaboradoresBaja() {
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -133,7 +129,7 @@ function cargarHistoricoNovedades() {
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -177,7 +173,7 @@ function cargarNovedadesMasFrecuente() {
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -204,7 +200,7 @@ function cargarNovedadesMenosFrecuente() {
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -231,7 +227,7 @@ function cargarAreaMasNovedades() {
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -258,7 +254,7 @@ function cargarAreaMenosNovedades() {
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -285,7 +281,7 @@ function cargarChartNovedadesPorTipo() {
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -320,28 +316,37 @@ function cargarChartNovedadesPorTipo() {
 
                     plugins: {
                         legend: {
-                            position: "right", // se ve MUY bien en dashboards
+                            position: "right",
                         },
-                        tooltip: {
-                            callbacks: {
-                                // Tooltip personalizado
-                                label: function (context) {
-                                    const label = context.label || "";
-                                    const value = context.raw || 0;
-
-                                    const total = context.dataset.data.reduce(
-                                        (a, b) => a + b,
-                                        0,
-                                    );
-
-                                    const percent = (
-                                        (value / total) *
-                                        100
-                                    ).toFixed(1);
-
-                                    return `${label}: ${value} (${percent}%)`;
-                                },
+                        datalabels: {
+                            color: "#fff",
+                            font: {
+                                weight: "bold",
+                                size: 12,
                             },
+                            formatter: (value, ctx) => {
+                                const data = ctx.chart.data.datasets[0].data;
+                                const total = data.reduce((a, b) => a + b, 0);
+
+                                const porcentaje = (
+                                    (value / total) *
+                                    100
+                                ).toFixed(1);
+
+                                return porcentaje + "%";
+                            },
+                        },
+                    },
+                    datalabels: {
+                        color: "#000",
+                        anchor: "end",
+                        align: "end",
+                        offset: 10,
+                        formatter: (value, ctx) => {
+                            const data = ctx.chart.data.datasets[0].data;
+                            const total = data.reduce((a, b) => a + b, 0);
+
+                            return ((value / total) * 100).toFixed(1) + "%";
                         },
                     },
                 },
@@ -364,7 +369,7 @@ function cargarChartNovedadesPorArea() {
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
@@ -433,39 +438,38 @@ function cargarChartNovedadesPorArea() {
 
 function cargarChartNovedadesMes() {
     const filtros = obtenerFiltrosFechas();
-    console.log("Llamando AJAX con:", filtros);    
+    console.log("Llamando AJAX con:", filtros);
     $.ajax({
         url: "/dashboard/novedades-por-mes",
         type: "GET",
         dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
-
             const labels = [];
             const values = [];
 
             let maxCantidad = 0;
-            let mesMax = '';
+            let mesMax = "";
 
-            data.forEach(item => {
-
-                labels.push(capitalizar(item.mes+' '+item.anio));
+            data.forEach((item) => {
+                labels.push(capitalizar(item.mes + " " + item.anio));
                 values.push(item.cantidad);
 
                 if (item.cantidad > maxCantidad) {
                     maxCantidad = item.cantidad;
                     mesMax = item.mes;
                 }
-
             });
 
-            $("#lblMesMaxNovedades").text(mesMax || '—');
+            $("#lblMesMaxNovedades").text(mesMax || "—");
 
-            const ctx = document.getElementById('chartNovedadesMes').getContext('2d');
+            const ctx = document
+                .getElementById("chartNovedadesMes")
+                .getContext("2d");
 
             // 🔥 Destruir instancia anterior
             if (chartNovedadesMes) {
@@ -473,17 +477,19 @@ function cargarChartNovedadesMes() {
             }
 
             chartNovedadesMes = new Chart(ctx, {
-                type: 'line',
+                type: "line",
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: 'Cantidad de novedades',
-                        data: values,
-                        tension: 0.3,
-                        fill: false,
-                        borderWidth: 2,
-                        pointRadius: 4
-                    }]
+                    datasets: [
+                        {
+                            label: "Cantidad de novedades",
+                            data: values,
+                            tension: 0.3,
+                            fill: false,
+                            borderWidth: 2,
+                            pointRadius: 4,
+                        },
+                    ],
                 },
                 options: {
                     responsive: true,
@@ -493,45 +499,46 @@ function cargarChartNovedadesMes() {
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                precision: 0
-                            }
-                        }
+                                precision: 0,
+                            },
+                        },
                     },
 
                     plugins: {
                         legend: {
-                            display: false
+                            display: false,
                         },
                         tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    }
-                }
+                            mode: "index",
+                            intersect: false,
+                        },
+                    },
+                },
             });
         },
 
         error: function (xhr) {
-            console.error("Error cargando novedades por mes:", xhr.responseText);
-        }
+            console.error(
+                "Error cargando novedades por mes:",
+                xhr.responseText,
+            );
+        },
     });
 }
 
 function cargarTopEmpleadosNovedades() {
-
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: '/dashboard/top-empleados-novedades',
-        type: 'GET',
-        dataType: 'json',
+        url: "/dashboard/top-empleados-novedades",
+        type: "GET",
+        dataType: "json",
         data: {
             desde: filtros.desde,
-            hasta: filtros.hasta
+            hasta: filtros.hasta,
         },
 
         success: function (data) {
-
             if (!data || data.length === 0) {
                 return;
             }
@@ -539,12 +546,14 @@ function cargarTopEmpleadosNovedades() {
             const labels = [];
             const values = [];
 
-            data.forEach(item => {
+            data.forEach((item) => {
                 labels.push(item.colaborador);
                 values.push(Number(item.cantidad));
             });
 
-            const ctx = document.getElementById('chartTopEmpleados').getContext('2d');
+            const ctx = document
+                .getElementById("chartTopEmpleados")
+                .getContext("2d");
 
             if (chartTopEmpleados) {
                 chartTopEmpleados.destroy();
@@ -552,59 +561,59 @@ function cargarTopEmpleadosNovedades() {
             }
 
             chartTopEmpleados = new Chart(ctx, {
-                type: 'bar',
+                type: "bar",
 
                 data: {
                     labels: labels,
-                    datasets: [{
-                        data: values,
-                        borderRadius: 6,
-                        barThickness: 22
-                    }]
+                    datasets: [
+                        {
+                            data: values,
+                            borderRadius: 6,
+                            barThickness: 22,
+                        },
+                    ],
                 },
 
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    indexAxis: 'y',
+                    indexAxis: "y",
 
                     scales: {
                         x: {
                             beginAtZero: true,
-                            ticks: { precision: 0 }
-                        }
+                            ticks: { precision: 0 },
+                        },
                     },
 
                     plugins: {
-                        legend: { display: false }
-                    }
-                }
+                        legend: { display: false },
+                    },
+                },
             });
 
-            $('#lblEmpleadoTop').text(labels[0] ?? '—');
-        }
+            $("#lblEmpleadoTop").text(labels[0] ?? "—");
+        },
     });
 }
 
 function cargarTablaNovedadesTipo() {
-
     if (tablaNovedadesTipo) {
         tablaNovedadesTipo.destroy();
-        $('#tblNovedadesTipo tbody').empty();
+        $("#tblNovedadesTipo tbody").empty();
     }
 
-    tablaNovedadesTipo = $('#tblNovedadesTipo').DataTable({
-
+    tablaNovedadesTipo = $("#tblNovedadesTipo").DataTable({
         ajax: {
-            url: '/dashboard/novedades-por-tipo',
-            type: 'GET',
+            url: "/dashboard/novedades-por-tipo",
+            type: "GET",
 
             data: function (d) {
                 // 🔥 inyecta filtros actuales
                 return filtrosDashboard;
             },
 
-            dataSrc: ''
+            dataSrc: "",
         },
 
         paging: false,
@@ -613,46 +622,43 @@ function cargarTablaNovedadesTipo() {
         ordering: false,
 
         columns: [
-
-            { data: 'novedad' },
+            { data: "novedad" },
 
             {
-                data: 'cantidad',
-                className: 'text-end'
+                data: "cantidad",
+                className: "text-end",
             },
 
             {
                 data: null,
-                className: 'text-end',
+                className: "text-end",
                 render: function (data, type, row) {
-
                     const total = tablaNovedadesTipo
                         .column(1)
                         .data()
                         .reduce((a, b) => a + parseInt(b), 0);
 
-                    const porcentaje = ((row.cantidad / total) * 100).toFixed(1);
+                    const porcentaje = ((row.cantidad / total) * 100).toFixed(
+                        1,
+                    );
 
-                    return porcentaje + ' %';
-                }
-            }
-
-        ]
+                    return porcentaje + " %";
+                },
+            },
+        ],
     });
 }
 
 function cargarTablaNovedadesArea() {
-
     if (tablaNovedadesArea) {
         tablaNovedadesArea.destroy();
-        $('#tblNovedadesArea tbody').empty();
+        $("#tblNovedadesArea tbody").empty();
     }
 
-    tablaNovedadesArea = $('#tblNovedadesArea').DataTable({
-
+    tablaNovedadesArea = $("#tblNovedadesArea").DataTable({
         ajax: {
-            url: '/dashboard/novedades-por-area',
-            dataSrc: '',
+            url: "/dashboard/novedades-por-area",
+            dataSrc: "",
             data: function (d) {
                 return filtrosDashboard;
             },
@@ -664,33 +670,32 @@ function cargarTablaNovedadesArea() {
         ordering: false,
 
         columns: [
-
             {
-                data: 'area'
+                data: "area",
             },
 
             {
-                data: 'cantidad',
-                className: 'text-end'
+                data: "cantidad",
+                className: "text-end",
             },
 
             {
                 data: null,
-                className: 'text-end',
+                className: "text-end",
                 render: function (data, type, row, meta) {
-
                     const total = tablaNovedadesArea
                         .column(1)
                         .data()
                         .reduce((a, b) => a + parseInt(b), 0);
 
-                    const porcentaje = ((row.cantidad / total) * 100).toFixed(1);
+                    const porcentaje = ((row.cantidad / total) * 100).toFixed(
+                        1,
+                    );
 
-                    return porcentaje + ' %';
-                }
-            }
-
-        ]
+                    return porcentaje + " %";
+                },
+            },
+        ],
     });
 }
 
@@ -705,17 +710,16 @@ function recargarDashboard() {
     cargarNovedadesMenosFrecuente();
     cargarAreaMasNovedades();
     cargarAreaMenosNovedades();
-    cargarIndiceRotacional(); 
+    cargarIndiceRotacional();
     cargarChartNovedadesPorTipo();
     cargarChartNovedadesPorArea();
     cargarChartNovedadesMes();
     cargarTopEmpleadosNovedades();
     cargarTablaNovedadesTipo();
-    cargarTablaNovedadesArea();       
+    cargarTablaNovedadesArea();
 }
 
 $("#btnAplicarFiltros").on("click", function () {
-
     filtrosDashboard.desde = $("#filtroDesde").val() || null;
     filtrosDashboard.hasta = $("#filtroHasta").val() || null;
 
@@ -724,13 +728,11 @@ $("#btnAplicarFiltros").on("click", function () {
     recargarDashboard();
 });
 
-$('#btnLimpiarFiltros').on('click', function () {
-
-    $('#filtroDesde').val('');
-    $('#filtroHasta').val('');
+$("#btnLimpiarFiltros").on("click", function () {
+    $("#filtroDesde").val("");
+    $("#filtroHasta").val("");
 
     recargarDashboard();
-
 });
 
 $(document).ready(function () {
@@ -748,9 +750,7 @@ $(document).ready(function () {
     cargarChartNovedadesPorTipo();
     cargarChartNovedadesPorArea();
     cargarTablaNovedadesTipo();
-    cargarTablaNovedadesArea();    
+    cargarTablaNovedadesArea();
     cargarChartNovedadesMes();
     cargarTopEmpleadosNovedades();
 });
-
-

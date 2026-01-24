@@ -86,14 +86,14 @@
             <li class="submenu">
                 <input type="checkbox" id="menu-calidad">
                 <label for="menu-calidad">
-                    <i class="bx bx-user"></i>
+                    <i class='bx  bx-badge-check'></i>
                     <span class="link_name">Gestión de calidad</span>
                     <i class="bx bx-chevron-down arrow"></i>
                 </label>
                 <ul class="sub-menu">
-                    <li><a href="#">Dashboard</a></li>
-                    <li><a href="#">CMI</a></li>                    
-                    <li><a href="#">Encuestas</a></li>
+                    <li><a href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
+                    <li><a href="{{ route('cmiCalidad') }}">CMI</a></li>                    
+                    <li><a href="{{ route('encuestasCalidad') }}">Encuestas</a></li>
                 </ul>
                 <span class="tooltip">Calidad</span>
             </li>
@@ -175,6 +175,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 
     @stack('modals')
     @stack('scripts')

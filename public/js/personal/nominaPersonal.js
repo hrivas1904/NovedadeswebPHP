@@ -749,7 +749,7 @@ $(document).ready(function () {
                     d.p_estado = $("#filtroEstado").val() || null;
                 },
             },
-            autoWidth: false,
+            autoWidth: true,
             scrollX: false,
             paging: false,
             scrollCollapse: true,
