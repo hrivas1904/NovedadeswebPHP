@@ -860,8 +860,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalRegNovedadColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-        aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal fade" id="modalRegNovedadColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
 
         <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">

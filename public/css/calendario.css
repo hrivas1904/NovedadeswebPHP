@@ -1,0 +1,24 @@
+#calendarGrid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.calendar-day {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    min-height: 110px;
+    padding: 8px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.calendar-day-header{
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.calendar-empty{
+  min-height: 110px;
+}
