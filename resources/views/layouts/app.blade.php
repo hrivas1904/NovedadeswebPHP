@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('css/modales.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cronograma.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
 
 </head>
 
@@ -176,6 +177,8 @@
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 
 
     @stack('modals')

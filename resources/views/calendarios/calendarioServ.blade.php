@@ -14,26 +14,31 @@
         <form id="formNuevoEvento">
             <div class="row align-items-end g-2 my-2">
 
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <label class="form-label mb-1">Desde</label>
-                    <input id="filtroDesde" class="form-control" type="date">
-                </div>
+                <!--<div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                        <label class="form-label mb-1">Desde</label>
+                        <input id="filtroDesde" class="form-control" type="date">
+                    </div>
 
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <label class="form-label mb-1">Hasta</label>
-                    <input id="filtroHasta" class="form-control" type="date">
-                </div>
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                        <label class="form-label mb-1">Hasta</label>
+                        <input id="filtroHasta" class="form-control" type="date">
+                    </div>
 
-                <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                    <button type="button" id="btnAplicarFiltros" class="btn btn-primario w-100">
-                        <i class="fa-regular fa-circle-check"></i> Aplicar
-                    </button>
-                </div>
+                    <div class="col-xl-auto col-lg-auto col-md-4 col-6">
+                        <button type="button" id="btnAplicarFiltros" class="btn btn-primario w-100">
+                            <i class="fa-regular fa-circle-check"></i> Aplicar
+                        </button>
+                    </div>
 
-                <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                    <button type="button" id="btnLimpiarFiltros" class="btn btn-secundario w-100">
-                        <i class="fa-solid fa-eraser"></i> Limpiar
-                    </button>
+                    <div class="col-xl-auto col-lg-auto col-md-4 col-6">
+                        <button type="button" id="btnLimpiarFiltros" class="btn btn-secundario w-100">
+                            <i class="fa-solid fa-eraser"></i> Limpiar
+                        </button>
+                    </div>-->
+
+                <div class="col-xl-1 col-lg-1 col-md-4 col-6">
+                    <input id="nombreArea" class="form-control" readonly value="Servicios" disabled>
+                    <input id="idArea" class="form-control" hidden readonly value="15">
                 </div>
 
                 <div class="col-xl-auto col-lg-auto col-md-4 col-6">
@@ -57,14 +62,15 @@
             </div>
         </form>
 
-        <div class="calendar-header d-flex justify-content-between mb-3">
-            <button class="btn btn-tertiary" id="btnPrevMes">◀</button>
-            <h5 id="tituloMes"></h5>
-            <button class="btn btn-tertiary" id="btnNextMes">▶</button>
+        <div class="empleado-box p-2">
+            <div class="calendar-header d-flex justify-content-between mb-3">
+                <button class="btn btn-tertiary" id="btnPrevMes">◀</button>
+                <h5 id="tituloMes"></h5>
+                <button class="btn btn-tertiary" id="btnNextMes">▶</button>
+            </div>
+            <div id="calendarGrid" class="calendar-grid">
+            </div>
         </div>
-        <div id="calendarGrid" class="calendar-grid">
-        </div>
-
     </div>
 
 @endsection
@@ -103,16 +109,17 @@
                         <div class="row g-3">
                             <div class="col-lg-5">
                                 <label for="inputColaborador" class="form-label">Colaborador</label>
-                                <input id="inputColaborador" class="form-control" type="text" readonly required>
-                                <input id="idColaborador" type="hidden">
+                                <select id="selectColab" name="inputColab" class="form-select selectjs" required>
+                                    <option value="">Seleccionar colaborador</option>
+                                </select>
                             </div>
-                            <div class="col-lg-3">
-                                <label for="inputDni" class="form-label">DNI</label>
-                                <input id="inputDni" class="form-control" type="text" readonly>
+                            <div class="col-lg-2">
+                                <label for="inputLegajo" class="form-label">Legajo</label>
+                                <input id="inputLegajo" class="form-control" type="text" readonly>
                             </div>
                             <div class="col-lg-4">
-                                <label for="inputDni" class="form-label">Servicio</label>
-                                <input id="inputDni" class="form-control" type="text" readonly>
+                                <label for="inputServicio" class="form-label">Servicio</label>
+                                <input id="inputServicio" class="form-control" type="text" readonly>
                             </div>
                         </div>
                         <div class="row g-3 mt-2">
@@ -120,7 +127,7 @@
                                 <label for="selectTurnoEvento" class="form-label">Seleccione turno</label>
                                 <select id="selectTurnoEvento" class="form-select" required>
                                     <option value="">Seleccione turno</option>
-                                    <option value="Día">Día</option>
+                                    <option value="Mañana">Mañana</option>
                                     <option value="Tarde">Tarde</option>
                                     <option value="Noche">Noche</option>
                                 </select>
@@ -129,12 +136,6 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="checkEventoCaja" value="1">
                                     <label class="form-check-label" for="checkEventoCaja">Caja</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 d-flex align-items-end">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="checkEventoExtraNoche"value="1">
-                                    <label class="form-check-label" for="checkEventoExtraNoche">Noche</label>
                                 </div>
                             </div>
                         </div>

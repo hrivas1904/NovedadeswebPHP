@@ -14,7 +14,7 @@
                 <div class="row d-flex align-item-center">
                     <div class="col-10 d-flex justify-content-start align-items-center gap-3">
                         <select id="filtroArea" class="form-select js-select-area" style="width:auto;"
-                            {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
+                            {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
                         </select>
 
                         @if (Auth::user()->rol !== 'Administrador/a')

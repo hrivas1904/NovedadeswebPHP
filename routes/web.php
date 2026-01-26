@@ -165,6 +165,10 @@ Route::get('/dashboardCalidad', [CalidadController::class, 'dashboardCalidad'])
 Route::get('/cmiCalidad', [CalidadController::class, 'cmiCalidad'])
     ->name('cmiCalidad');
 
+
+//cronograma
+Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);
+
 //dashboard
 Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);
 Route::get('/dashboard/colaboradores-activos', [DashboardController::class, 'colaboradoresActivos']);
