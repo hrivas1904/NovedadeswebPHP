@@ -168,6 +168,7 @@ Route::get('/cmiCalidad', [CalidadController::class, 'cmiCalidad'])
 
 //cronograma
 Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);
+Route::post('/calendario/guardar', [CalendarioServController::class, 'guardarEvento']);
 
 //dashboard
 Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);

@@ -1,11 +1,28 @@
 let fechaActual = new Date();
 
-$('#selectColab').on('select2:select', function (e) {
+$(document).ready(function () {
+    function validarFechas() {
+        const fechaDesde = $("#inputFechaDesde").val();
+        const fechaHasta = $("#inputFechaHasta").val();
+
+        if (fechaDesde && fechaHasta) {
+            if (new Date(fechaDesde) > new Date(fechaHasta)) {
+                alert("La fecha Desde no puede ser mayor a la fecha Hasta");
+                $("#inputFechaHasta").val("");
+                $("#inputFechaDesde").val("");
+            }
+        }
+    }
+    $("#inputFechaDesde, #inputFechaHasta").on("change", function () {
+        validarFechas();
+    });
+});
+
+$("#selectColab").on("select2:select", function (e) {
     let data = e.params.data;
     console.log("Seleccionado:", data);
-    $('#inputLegajo').val(data.legajo);
-    $('#inputServicio').val(data.servicio);
-
+    $("#inputLegajo").val(data.legajo);
+    $("#inputServicio").val(data.servicio);
 });
 
 $(document).ready(function () {
@@ -36,16 +53,16 @@ $(document).ready(function () {
                 let idArea = $("#idArea").val();
                 return {
                     q: params.term,
-                    idArea: idArea
+                    idArea: idArea,
                 };
             },
             processResults: function (data) {
                 return {
-                    results: data
+                    results: data,
                 };
             },
-            cache: true
-        }
+            cache: true,
+        },
     });
 });
 
@@ -54,18 +71,61 @@ $("#btnCrearEvento").on("click", function () {
 });
 
 $("#btnCerrarModalEvento").on("click", function () {
-    $("#formNuevoEvento")[0].reset();
+    $("#formRegistrarEvento")[0].reset();
+    $("#selectColab").val("").trigger("change");
     $("#modalNuevaTarea").modal("hide");
 });
 
-$("#btnGuardarEvento").on("click", function () {
-    Swal.fire({
-        title: "Excelente",
-        text: "Evento registrado correctamente",
-        icon: "success",
+$(document).ready(function () {
+    $("#btnGuardarEvento").on("click", function (e) {
+        e.preventDefault();
+
+        // Referencia al formulario
+        const formulario = $("#formRegistrarEvento");
+
+        // Validación básica de HTML5 (required)
+        if (formulario[0].checkValidity()) {
+            const formData = formulario.serialize();
+
+            $.ajax({
+                url: "/calendario/guardar", // Genera la URL de Laravel
+                type: "POST",
+                data: formData,
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
+                beforeSend: function () {
+                    $("#btnGuardarEvento")
+                        .prop("disabled", true)
+                        .text("Guardando...");
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        formulario[0].reset();
+                        $('#selectColab').val(null).trigger('change');
+                        $("#modalNuevaTarea").modal("hide");                        
+                    }
+                },
+                error: function (xhr) {
+                    let errorMsg = "Ocurrió un error al guardar.";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    alert(errorMsg);
+                },
+                complete: function () {
+                    $("#btnGuardarEvento")
+                        .prop("disabled", false)
+                        .text("Guardar");
+                },
+            });
+        } else {
+            formulario[0].reportValidity();
+        }
     });
-    $("#formNuevoEvento")[0].reset();
-    $("#modalNuevaTarea").modal("hide");
 });
 
 function generarCalendario(fecha) {
@@ -102,7 +162,7 @@ function generarCalendario(fecha) {
         `);
     }
 
-    cargarEventosMes(year, month + 1);
+    //cargarEventosMes(year, month + 1);
 }
 
 $("#btnPrevMes").click(() => {
@@ -117,21 +177,19 @@ $("#btnNextMes").click(() => {
 
 generarCalendario(fechaActual);
 
-document.getElementById("btnExportarImagen").addEventListener("click", function () {
+document
+    .getElementById("btnExportarImagen")
+    .addEventListener("click", function () {
+        const calendario = document.querySelector(".calendar-grid");
 
-    const calendario = document.querySelector(".calendar-grid");
-
-    html2canvas(calendario, {
-        scale: 2,          // mejora resolución
-        useCORS: true,
-        backgroundColor: "#ffffff"
-    }).then(canvas => {
-
-        const link = document.createElement("a");
-        link.download = "calendario.png";
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-
+        html2canvas(calendario, {
+            scale: 2, // mejora resolución
+            useCORS: true,
+            backgroundColor: "#ffffff",
+        }).then((canvas) => {
+            const link = document.createElement("a");
+            link.download = "calendario.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
     });
-
-});
