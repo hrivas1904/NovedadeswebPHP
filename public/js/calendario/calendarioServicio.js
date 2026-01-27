@@ -29,11 +29,11 @@ $(document).ready(function () {
     $("#selectColab").select2({
         dropdownParent: $("#modalNuevaTarea"),
         placeholder: "Buscar colaborador",
-        minimumInputLength: 1,
+        minimumInputLength: 2,
         width: "100%",
         language: {
             inputTooShort: function () {
-                return "Ingrese al menos 1 carácter";
+                return "Ingrese al menos 2 caracteres";
             },
             searching: function () {
                 return "Buscando...";
@@ -105,8 +105,9 @@ $(document).ready(function () {
                     if (response.success) {
                         alert(response.message);
                         formulario[0].reset();
-                        $('#selectColab').val(null).trigger('change');
-                        $("#modalNuevaTarea").modal("hide");                        
+                        $("#selectColab").val(null).trigger("change");
+                        $("#modalNuevaTarea").modal("hide");
+                        generarCalendario(fechaActual);
                     }
                 },
                 error: function (xhr) {
@@ -128,13 +129,54 @@ $(document).ready(function () {
     });
 });
 
+function cargarEventosMes(year, month) {
+    const idArea = $("#idArea").val();
+
+    $.ajax({
+        url: `/calendario/eventos/${idArea}`,
+        type: "GET",
+        success: function (eventos) {
+            eventos.forEach((evento) => {
+                // Iteramos día por día desde fechaDesde hasta fechaHasta
+                let inicio = new Date(evento.fechaDesde + "T00:00:00");
+                let fin = new Date(evento.fechaHasta + "T00:00:00");
+
+                for (
+                    let d = new Date(inicio);
+                    d <= fin;
+                    d.setDate(d.getDate() + 1)
+                ) {
+                    // Formateamos la fecha actual del bucle para que coincida con el data-fecha
+                    let fechaString = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+
+                    // Buscamos el div del día correspondiente
+                    const contenedorDia = $(
+                        `.calendar-day[data-fecha="${fechaString}"] .calendar-events`,
+                    );
+
+                    if (contenedorDia.length) {
+                        const htmlEvento = `
+                            <div class="evento-item badge-turno-${evento.turno_sigla}">
+                                <small>${evento.colaborador.split(" ")[0]}</small> 
+                                <strong>${evento.turno_sigla}${evento.caja_sigla ? "+" + evento.caja_sigla : ""}</strong>
+                            </div>
+                        `;
+                        contenedorDia.append(htmlEvento);
+                    }
+                }
+            });
+        },
+    });
+}
+
 function generarCalendario(fecha) {
     const year = fecha.getFullYear();
     const month = fecha.getMonth();
     const primerDia = new Date(year, month, 1);
     const ultimoDia = new Date(year, month + 1, 0);
     const diasMes = ultimoDia.getDate();
-    const diaSemanaInicio = primerDia.getDay();
+    let diaSemanaInicio = primerDia.getDay();
+    let ajusteDiaInicio = diaSemanaInicio === 0 ? 6 : diaSemanaInicio - 1;
 
     $("#calendarGrid").html("");
     const diasSemana = ["L", "M", "M", "J", "V", "S", "D"];
@@ -149,20 +191,22 @@ function generarCalendario(fecha) {
         fecha.toLocaleString("es-AR", { month: "long", year: "numeric" }),
     );
 
-    for (let i = 0; i < diaSemanaInicio; i++) {
+    for (let i = 0; i < ajusteDiaInicio; i++) {
         $("#calendarGrid").append(`<div></div>`);
     }
 
     for (let dia = 1; dia <= diasMes; dia++) {
+        const mesFormateado = month + 1;
+        const diaFecha = `${year}-${mesFormateado}-${dia}`;
         $("#calendarGrid").append(`
-            <div class="calendar-day" data-fecha="${year}-${month + 1}-${dia}">
+            <div class="calendar-day" data-fecha="${diaFecha}">
                 <div class="calendar-day-header">${dia}</div>
                 <div class="calendar-events"></div>
             </div>
         `);
     }
 
-    //cargarEventosMes(year, month + 1);
+    cargarEventosMes(year, month + 1);
 }
 
 $("#btnPrevMes").click(() => {

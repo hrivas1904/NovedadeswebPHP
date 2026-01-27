@@ -69,4 +69,16 @@ class CalendarioServController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function obtenerEventos($idArea)
+    {
+        try {
+            // Ejecutamos el SP pasando el parámetro
+            $eventos = DB::select("CALL SP_COMPLETAR_CALENDARIO(?)", [$idArea]);
+
+            return response()->json($eventos);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

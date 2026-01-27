@@ -6,65 +6,75 @@
 
     <div class="container-fluid">
 
-        <div class="d-flex justify-content-between ms-auto align-item-end gap-3 my-2">
+        <div class="d-flex justify-content-between ms-auto align-item-end gap-3 mt-2 mb-1">
             <h3 class="pill-heading tituloVista">CALENDARIO DE SERVICIOS
             </h3>
         </div>
-        <div class="row align-items-end g-2 my-2">
+        <div class="row align-items-end g-2 my-2 d-none">
 
             <!--<div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                                        <label class="form-label mb-1">Desde</label>
-                                        <input id="filtroDesde" class="form-control" type="date">
-                                    </div>
+                                                        <label class="form-label mb-1">Desde</label>
+                                                        <input id="filtroDesde" class="form-control" type="date">
+                                                    </div>
 
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                                        <label class="form-label mb-1">Hasta</label>
-                                        <input id="filtroHasta" class="form-control" type="date">
-                                    </div>
+                                                    <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                                                        <label class="form-label mb-1">Hasta</label>
+                                                        <input id="filtroHasta" class="form-control" type="date">
+                                                    </div>
 
-                                    <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                                        <button type="button" id="btnAplicarFiltros" class="btn btn-primario w-100">
-                                            <i class="fa-regular fa-circle-check"></i> Aplicar
-                                        </button>
-                                    </div>
+                                                    <div class="col-xl-auto col-lg-auto col-md-4 col-6">
+                                                        <button type="button" id="btnAplicarFiltros" class="btn btn-primario w-100">
+                                                            <i class="fa-regular fa-circle-check"></i> Aplicar
+                                                        </button>
+                                                    </div>
 
-                                    <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                                        <button type="button" id="btnLimpiarFiltros" class="btn btn-secundario w-100">
-                                            <i class="fa-solid fa-eraser"></i> Limpiar
-                                        </button>
-                                    </div>-->
+                                                    <div class="col-xl-auto col-lg-auto col-md-4 col-6">
+                                                        <button type="button" id="btnLimpiarFiltros" class="btn btn-secundario w-100">
+                                                            <i class="fa-solid fa-eraser"></i> Limpiar
+                                                        </button>
+                                                    </div>-->
 
-            <div class="col-xl-1 col-lg-1 col-md-4 col-6">
-                <input id="nombreArea" class="form-control" readonly value="Servicios" disabled>
-                <input id="idArea" class="form-control" hidden readonly value="15">
-            </div>
 
-            <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                <button type="button" id="btnCrearEvento" class="btn btn-primario w-100">
-                    <i class="fa-solid fa-list-check"></i> Nueva evento
-                </button>
-            </div>
-
-            <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                <button type="button" id="btnExportarPdf" class="btn btn-peligro w-100">
-                    <i class="fa-solid fa-file-pdf"></i> PDF
-                </button>
-            </div>
-
-            <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                <button type="button" id="btnExportarImagen" class="btn btn-terciario w-100">
-                    <i class="fa-solid fa-image"></i> IMG
-                </button>
-            </div>
         </div>
 
         <div class="empleado-box p-2">
-            <div class="calendar-header d-flex justify-content-between mb-3">
-                <button class="btn btn-tertiary" id="btnPrevMes">◀</button>
-                <h5 id="tituloMes"></h5>
-                <button class="btn btn-tertiary" id="btnNextMes">▶</button>
+            <div class="row align-items-center g-3">
+                <div class="col-lg-5">
+                    <div class="calendar-header d-flex justify-content-between align-items-center bg-light p-2 rounded">
+                        <button class="btn btn-tertiary" id="btnPrevMes">◀</button>
+                        <h5 id="tituloMes" class="mb-0"></h5>
+                        <button class="btn btn-tertiary" id="btnNextMes">▶</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="row g-2 justify-content-lg-end align-items-center">
+                        <div class="col-xl-4 col-lg-4 col-md-12">
+                            <input id="nombreArea" class="form-control" readonly value="Servicios" disabled>
+                            <input id="idArea" hidden readonly value="15">
+                        </div>
+
+                        <div class="col-xl-auto col-lg-auto col-md-4 col-6">
+                            <button type="button" id="btnCrearEvento" class="btn btn-primario w-100">
+                                <i class="fa-solid fa-list-check"></i> Nuevo evento
+                            </button>
+                        </div>
+
+                        <div class="col-xl-auto col-lg-auto col-md-4 col-3">
+                            <button type="button" id="btnExportarPdf" class="btn btn-peligro w-100">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </button>
+                        </div>
+
+                        <div class="col-xl-auto col-lg-auto col-md-4 col-3">
+                            <button type="button" id="btnExportarImagen" class="btn btn-terciario w-100">
+                                <i class="fa-solid fa-image"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="calendarGrid" class="calendar-grid">
+            <div id="calendarGrid" class="calendar-grid mt-2">
             </div>
         </div>
     </div>
