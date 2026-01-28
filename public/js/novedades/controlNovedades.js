@@ -87,7 +87,7 @@ $(document).ready(function () {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "CODIGO_NOVEDAD" },
+                { data: "CODIGO_NOVEDAD", width: "3%", className: "text-start" },
                 { data: "NOVEDAD_NOMBRE" },
                 {
                     data: "FECHA_DESDE",
@@ -111,6 +111,23 @@ $(document).ready(function () {
                 { data: "VALOR2" },
                 { data: "CENTRO_COSTO" },
                 { data: "DESCRIPCION" },
+                {
+                    data: "REGISTRO",
+                    render: function (data, type, row) {
+                        // 'data' es el valor de la celda (REGISTRO)
+                        // 'row' contiene todo el objeto del empleado/evento
+                        return `
+                            <div class="d-flex align-items-center justify-content-between">
+                                <button type="button" 
+                                    class="btn btn-sm btn-alerta btn-editar-evento" 
+                                    data-id="${row.id}" 
+                                    title="Editar Registro">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                            </div>
+                        `;
+                    },
+                },
             ],
             scrollX: true,
             paging: false,

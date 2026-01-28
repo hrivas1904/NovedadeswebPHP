@@ -28,3 +28,113 @@
     margin-bottom: 4px;
     color: #111827;
 }
+
+.calendar-empty {
+    min-height: 100px;
+}
+
+.calendar-events-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.turno-row {
+    min-height: 22px;
+    display: grid;
+    gap: 2px;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tm-row, .tt-row {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.tn-row {
+    grid-template-columns: 1fr;
+}
+
+.event-item {
+    font-size: 9px;
+    background-color: #e9ecef;
+    border: 1px solid #dee2e6;
+    padding: 1px 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+/* BASE EVENTO */
+
+.event-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    animation: fadeIn 0.2s ease-in-out;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* TURNO MAÑANA (verde pastel) */
+
+.badge-TM {
+    background: #dcfce7;
+    color: #14532d;
+}
+
+/* TURNO TARDE (naranja pastel) */
+
+.badge-TT {
+    background: #ffedd5;
+    color: #9a3412;
+}
+
+/* TURNO NOCHE (azul/lila pastel) */
+
+.badge-TN {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+/* CAJA */
+
+.badge-caja {
+    background: rgba(0,0,0,0.15);
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-size: 8px;
+    margin-left: 3px;
+}
+
+/* TEXTO */
+
+.event-nombre {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-info {
+    font-size: 8px;
+    opacity: 0.9;
+}
+
+/* HOVER */
+
+.event-item:hover {
+    filter: brightness(0.95);
+}
+
+/* ANIMACIÓN */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}

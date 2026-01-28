@@ -6,7 +6,7 @@
 
     <div class="container-fluid">
 
-        <div class="d-flex justify-content-between ms-auto align-item-end gap-3 mt-2 mb-1">
+        <div class="d-flex justify-content-between ms-auto align-item-end gap-3 mt-2 mb-0">
             <h3 class="pill-heading tituloVista">CALENDARIO DE SERVICIOS
             </h3>
         </div>
@@ -74,7 +74,7 @@
                     </div>
                 </div>
             </div>
-            <div id="calendarGrid" class="calendar-grid mt-2">
+            <div id="calendarGrid" class="calendar-grid m-1">
             </div>
         </div>
     </div>

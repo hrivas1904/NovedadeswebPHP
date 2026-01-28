@@ -50,6 +50,7 @@
                             <th>VALOR2</th>
                             <th>CENTROCOSTO</th>
                             <th>DESCRIPCION</th>
+                            <th></th>
                         </tr>
                     </thead>
                 </table>
