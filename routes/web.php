@@ -127,9 +127,11 @@ Route::get(
     [PersonalController::class, 'infoMinimaEmpleado']
 )->name('personal.info');
 
-Route::get('/novedades/{codigo}', [NovedadesController::class, 'verNovedad']);
+Route::get('/novedades/{codigo}', [NovedadesController::class, 'verNovedad'])
+     ->whereNumber('codigo');
 
-Route::post('/novedades', [NovedadesController::class, 'altaNuevaNovedad']);
+
+Route::post('/novedades/alta-novedad', [NovedadesController::class, 'altaNuevaNovedad']);
 
 Route::post('/novedades/subir-comprobante', 
     [NovedadesController::class, 'subirComprobante']
@@ -144,6 +146,8 @@ Route::get(
     '/comprobantes/{id}/ver',
     [NovedadesController::class, 'verComprobante']
 );
+
+Route::get('/novedades/selector', [NovedadesController::class, 'listarNovedadesSelector']);
 
 //mensajes
 Route::post('/notificaciones/publicar', 

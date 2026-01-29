@@ -18,27 +18,18 @@ class CalendarioServController extends Controller
     public function listarColaboradoresArea(Request $request)
     {
         $idArea = $request->idArea;
-
-        if (!$idArea) {
-            return response()->json([]);
+        $colaboradores = DB::select('CALL SP_LISTA_COLABS_CALENDARIO(?)', [$idArea]);
+        if (empty($colaboradores)) {
+            return response()->json(['error' => 'No hay datos', 'id_recibido' => $idArea]);
         }
-
-        $colaboradores = DB::select(
-            'CALL SP_LISTA_COLABS_CALENDARIO(?)',
-            [$idArea]
-        );
-
-        $data = [];
-
-        foreach ($colaboradores as $c) {
-            $data[] = [
+        $data = collect($colaboradores)->map(function ($c) {
+            return [
                 'id' => $c->legajo,
                 'text' => $c->colaborador,
                 'legajo' => $c->legajo,
-                'servicio' => $c->nombre
+                'servicio' => $c->servicio
             ];
-        }
-
+        });
         return response()->json($data);
     }
 

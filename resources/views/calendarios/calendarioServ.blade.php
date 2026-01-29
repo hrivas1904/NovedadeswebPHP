@@ -10,32 +10,6 @@
             <h3 class="pill-heading tituloVista">CALENDARIO DE SERVICIOS
             </h3>
         </div>
-        <div class="row align-items-end g-2 my-2 d-none">
-
-            <!--<div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                                                        <label class="form-label mb-1">Desde</label>
-                                                        <input id="filtroDesde" class="form-control" type="date">
-                                                    </div>
-
-                                                    <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                                                        <label class="form-label mb-1">Hasta</label>
-                                                        <input id="filtroHasta" class="form-control" type="date">
-                                                    </div>
-
-                                                    <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                                                        <button type="button" id="btnAplicarFiltros" class="btn btn-primario w-100">
-                                                            <i class="fa-regular fa-circle-check"></i> Aplicar
-                                                        </button>
-                                                    </div>
-
-                                                    <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                                                        <button type="button" id="btnLimpiarFiltros" class="btn btn-secundario w-100">
-                                                            <i class="fa-solid fa-eraser"></i> Limpiar
-                                                        </button>
-                                                    </div>-->
-
-
-        </div>
 
         <div class="empleado-box p-2">
             <div class="row align-items-center g-3">
@@ -142,7 +116,7 @@
                                         <option value="Noche">Noche</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-2 d-flex align-items-end">
+                                <div class="col-lg-3 d-flex align-items-end gap-2">
                                     <label class="form-label" for="selectCaja">Caja</label>
                                     <select id="selectCaja" name="caja" class="form-select" required>
                                         <option value="0">NO</option>

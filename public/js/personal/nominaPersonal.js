@@ -192,7 +192,6 @@ function subirComprobantes(files) {
 }
 
 //ver comprobantes
-
 $(document).on("click", ".btn-ver-archivo", function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -1260,55 +1259,37 @@ function calcularDuracion() {
 }
 
 //selector de categorías de novedades de sueldo
-$("#selectNovedad").on("select2:select", function (e) {
-    const data = e.params.data;
-    console.log(data); // para debug
-    $("#codigoFinnegans").val(data.codigo);
-    $("#idNovedad").val(data.id);
-});
-
 $(document).ready(function () {
-    $("#selectNovedad").select2({
-        dropdownParent: $("#modalRegNovedadColaborador"),
-        placeholder: "Buscar novedad",
-        minimumInputLength: 2,
-        width: "100%",
-        language: {
-            inputTooShort: function () {
-                return "Ingrese al menos 2 caracteres";
-            },
+    const $select = $("#selectNovedad");
 
-            searching: function () {
-                return "Buscando...";
-            },
-
-            noResults: function () {
-                return "No se encontraron resultados";
-            },
-
-            loadingMore: function () {
-                return "Cargando más resultados...";
-            },
+    $.ajax({
+        url: "/novedades/selector",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            // Inicializar Select2 con los datos directamente
+            $select.select2({
+                data: data,
+                placeholder: "Seleccione una novedad",
+                allowClear: true,
+                width: "100%",
+                dropdownParent: $("#modalRegNovedadColaborador")
+            });
         },
-        ajax: {
-            url: "/novedades/lista",
-            dataType: "json",
-            delay: 300,
+        error: function (err) {
+            console.error("Error al cargar novedades:", err);
+        }
+    });
 
-            data: function (params) {
-                console.log("BUSQUEDA:", params.term);
-                return {
-                    q: params.term,
-                };
-            },
-
-            processResults: function (data) {
-                console.log("RESPUESTA:", data);
-                return {
-                    results: data,
-                };
-            },
-        },
+    // Event handler para capturar el código
+    $select.on("select2:select", function (e) {
+        const data = e.params.data;
+        console.log('Seleccionado:', data);
+        
+        // Buscar el código en los datos originales
+        const novedad = data;
+        $("#codigoFinnegans").val(novedad.codigo || '');
+        $("#idNovedad").val(data.id);
     });
 });
 
@@ -1327,7 +1308,7 @@ $("#formCargaNovedad").on("submit", function (e) {
 
     const dias = document.getElementById("inputDias").value;
     const horas = document.getElementById("inputHoras").value;
-    const cantidad=0;
+    const cantidad = 0;
 
     if (dias && dias.trim() !== "") {
         $("#cantidadFinal").val(dias);
@@ -1469,7 +1450,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 $("#btnAgregarTitulo").on("click", function () {
-
     $("#divTitulos").removeAttr("hidden");
 
     const html = `
@@ -1495,18 +1475,15 @@ $("#btnAgregarTitulo").on("click", function () {
     `;
 
     $("#divTitulos").append(html);
-
 });
 
 $(document).on("click", ".btnQuitarTitulo", function () {
-
     $(this).closest(".col-lg-2").prev().prev().remove();
     $(this).closest(".col-lg-2").prev().remove();
     $(this).closest(".col-lg-2").remove();
 });
 
 $("#btnAgregarHijo").on("click", function () {
-
     $("#divHijos").removeAttr("hidden");
 
     const html = `
@@ -1532,11 +1509,9 @@ $("#btnAgregarHijo").on("click", function () {
     `;
 
     $("#divHijos").append(html);
-
 });
 
 $(document).on("click", ".btnQuitarHijo", function () {
-
     $(this).closest(".col-lg-2").prev().prev().remove();
     $(this).closest(".col-lg-2").prev().remove();
     $(this).closest(".col-lg-2").remove();

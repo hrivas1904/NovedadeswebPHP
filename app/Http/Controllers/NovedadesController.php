@@ -46,17 +46,22 @@ class NovedadesController extends Controller
         }
     }
 
-    public function listarNovedades(Request $request)
+    public function listarNovedadesSelector()
     {
-        $busqueda = $request->q ?? '';
+        try {
 
-        $novedades = DB::select(
-            "CALL SP_BUSCAR_NOVEDADES(?)",
-            [$busqueda]
-        );
+            $novedades = DB::select('CALL SP_BUSCAR_NOVEDADES()');
 
-        return response()->json($novedades);
+            return response()->json($novedades);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => 'Error SP',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
     }
+
 
     public function cargarTablaNovedades()
     {

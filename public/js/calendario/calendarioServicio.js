@@ -1,4 +1,5 @@
 let fechaActual = new Date();
+let idArea;
 
 $(document).ready(function () {
     function validarFechas() {
@@ -18,6 +19,15 @@ $(document).ready(function () {
     });
 });
 
+$("#selectTurnoEvento").on("change", function () {
+    const selectorTurno = $(this).val();
+
+    if (selectorTurno === "Noche") {
+        $("#selectCaja").val("1");
+    }
+});
+
+//select2 de colabs
 $("#selectColab").on("select2:select", function (e) {
     let data = e.params.data;
     console.log("Seleccionado:", data);
@@ -26,43 +36,27 @@ $("#selectColab").on("select2:select", function (e) {
 });
 
 $(document).ready(function () {
-    $("#selectColab").select2({
-        dropdownParent: $("#modalNuevaTarea"),
-        placeholder: "Buscar colaborador",
-        minimumInputLength: 2,
-        width: "100%",
-        language: {
-            inputTooShort: function () {
-                return "Ingrese al menos 2 caracteres";
-            },
-            searching: function () {
-                return "Buscando...";
-            },
-            noResults: function () {
-                return "No se encontraron colaboradores";
-            },
-            loadingMore: function () {
-                return "Cargando más resultados...";
-            },
+    const idArea = parseInt($("#idArea").val());
+    const $select = $("#selectColab");
+
+    $.ajax({
+        url: "/calendario/colaboradores-area",
+        type: "GET",
+        data: { idArea: idArea },
+        dataType: "json",
+        success: function (data) {
+            // Inicializar Select2 UNA SOLA VEZ con los datos
+            $select.select2({
+                data: data,
+                placeholder: "Seleccione un colaborador",
+                allowClear: true,
+                width: "100%",
+                dropdownParent: $("#modalNuevaTarea")
+            });
         },
-        ajax: {
-            url: "/calendario/colaboradores-area",
-            dataType: "json",
-            delay: 300,
-            data: function (params) {
-                let idArea = $("#idArea").val();
-                return {
-                    q: params.term,
-                    idArea: idArea,
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: data,
-                };
-            },
-            cache: true,
-        },
+        error: function (err) {
+            console.error("Error al cargar colaboradores:", err);
+        }
     });
 });
 
