@@ -169,6 +169,11 @@ Route::get('/dashboardCalidad', [CalidadController::class, 'dashboardCalidad'])
 Route::get('/cmiCalidad', [CalidadController::class, 'cmiCalidad'])
     ->name('cmiCalidad');
 
+Route::get('/encuestas/tipos', [CalidadController::class, 'listarTiposEncuestas'])
+    ->name('encuestas.tipos');
+
+Route::post('/encuestas/importar', [CalidadController::class, 'importarExcel']);
+
 
 //cronograma
 Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);

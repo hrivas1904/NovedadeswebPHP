@@ -92,9 +92,9 @@
                     <i class="bx bx-chevron-down arrow"></i>
                 </label>
                 <ul class="sub-menu">
-                    <li><a href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
-                    <li><a href="{{ route('cmiCalidad') }}">CMI</a></li>                    
-                    <li><a href="{{ route('encuestasCalidad') }}">Encuestas</a></li>
+                    <li><a href="{{ route('dashboardCalidad') }}">Dashboard de SGC</a></li>
+                    <li><a href="{{ route('cmiCalidad') }}">CMI - BSC</a></li>                    
+                    <li><a href="{{ route('encuestasCalidad') }}">Análisis de encuestas</a></li>
                 </ul>
                 <span class="tooltip">Calidad</span>
             </li>
