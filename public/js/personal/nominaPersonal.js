@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!tipoContrato || !fechaInicio || !fechaFin) return;
 
-    function calcularFechaFin() {
+    function calcularFechaFinContrato() {
         const tipo = tipoContrato.value;
         const inicio = fechaInicio.value;
 
@@ -113,8 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    tipoContrato.addEventListener("change", calcularFechaFin);
-    fechaInicio.addEventListener("change", calcularFechaFin);
+    tipoContrato.addEventListener("change", calcularFechaFinContrato);
+    fechaInicio.addEventListener("change", calcularFechaFinContrato);
 
     fechaFin.addEventListener("change", () => {
         if (!fechaInicio.value || !fechaFin.value) return;
@@ -488,6 +488,22 @@ function registrarNovedad(legajoColaborador) {
             });
         },
     });
+
+    $(document).on("select2:select", "#selectNovedad", function (e) {
+        const codigoVacaciones = e.params.data.codigo;
+        console.log("Código directo:", codigoVacaciones);
+        if (codigoVacaciones === "N/D2") {
+            $(
+                "#divSelectTipoVacaciones, #divSelectAnnioVacaciones",
+            ).removeClass("d-none");
+
+            console.log("mostrando div selector");
+        } else {
+            $("#divSelectTipoVacaciones, #divSelectAnnioVacaciones").addClass(
+                "d-none",
+            );
+        }
+    });
 }
 
 //edit empleado
@@ -839,14 +855,6 @@ $(document).ready(function () {
                                 title='Cargar novedad'
                                 data-id="${data.LEGAJO}">
                                 <i class="fa-solid fa-floppy-disk"></i>
-                            </button>
-
-                            <button 
-                                class="btn-terciario btn-PracticasHospitalarias"
-                                data-id="${data.LEGAJO}"
-                                title='Atención médica'
-                                data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-briefcase-medical"></i>
                             </button>
                         `;
                         }
@@ -1273,22 +1281,22 @@ $(document).ready(function () {
                 placeholder: "Seleccione una novedad",
                 allowClear: true,
                 width: "100%",
-                dropdownParent: $("#modalRegNovedadColaborador")
+                dropdownParent: $("#modalRegNovedadColaborador"),
             });
         },
         error: function (err) {
             console.error("Error al cargar novedades:", err);
-        }
+        },
     });
 
     // Event handler para capturar el código
     $select.on("select2:select", function (e) {
         const data = e.params.data;
-        console.log('Seleccionado:', data);
-        
+        console.log("Seleccionado:", data);
+
         // Buscar el código en los datos originales
         const novedad = data;
-        $("#codigoFinnegans").val(novedad.codigo || '');
+        $("#codigoFinnegans").val(novedad.codigo || "");
         $("#idNovedad").val(data.id);
     });
 });
@@ -1303,12 +1311,49 @@ function resetearNovedades() {
     $("#idNovedad").val("");
 }
 
+function calcularDuracion() {
+
+    const fechaDesdeInput = document.getElementById("fechaDesdeNovedad");
+    const fechaHastaInput = document.getElementById("fechaHastaNovedad");
+    const duracionInput = document.getElementById("inputDias");
+
+    if (!fechaDesdeInput || !fechaHastaInput || !duracionInput) {
+        console.error("No se encontraron los inputs de fechas o duración");
+        return;
+    }
+
+    if (!fechaDesdeInput.value || !fechaHastaInput.value) {
+        duracionInput.value = "";
+        return;
+    }
+
+    const fechaDesde = new Date(fechaDesdeInput.value);
+    const fechaHasta = new Date(fechaHastaInput.value);
+
+    if (fechaHasta < fechaDesde) {
+
+        Swal.fire({
+            icon: "warning",
+            title: "Fecha incorrecta",
+            text: "La fecha hasta no puede ser anterior a la fecha desde.",
+        });
+
+        fechaHastaInput.value = "";
+        duracionInput.value = "";
+        return;
+    }
+
+    const diffTime = fechaHasta - fechaDesde;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    duracionInput.value = diffDays;
+}
+
 $("#formCargaNovedad").on("submit", function (e) {
     e.preventDefault();
 
     const dias = document.getElementById("inputDias").value;
     const horas = document.getElementById("inputHoras").value;
-    const cantidad = 0;
 
     if (dias && dias.trim() !== "") {
         $("#cantidadFinal").val(dias);

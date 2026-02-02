@@ -62,7 +62,6 @@ class NovedadesController extends Controller
         }
     }
 
-
     public function cargarTablaNovedades()
     {
         try {
@@ -75,14 +74,13 @@ class NovedadesController extends Controller
         }
     }
 
-
     public function registrarNovedad(Request $request)
     {
         try {
 
             DB::statement(
                 "CALL SP_REGISTRAR_NOVEDAD(
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @mensaje
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @mensaje
             )",
                 [
                     $request->legajo,
@@ -96,7 +94,9 @@ class NovedadesController extends Controller
                     $request->centroCosto ?? null,
                     $request->cantidadFinal,
                     auth()->user()->name,
-                    $request->descripcion ?? null
+                    $request->descripcion ?? null,
+                    $request->tipoVacaciones ?? null,
+                    $request->annio ?? null,
                 ]
             );
 

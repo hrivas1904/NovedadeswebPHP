@@ -39,7 +39,7 @@ function cargarAreas() {
 //sp para cargar selector de colaboradores
 $(document).ready(function () {
     cargarColaboradores();
-    $('#area').on('change', function () {
+    $("#area").on("change", function () {
         cargarColaboradores();
     });
 });
@@ -49,7 +49,7 @@ function cargarColaboradores() {
         url: "/personal/listar",
         type: "GET",
         data: {
-            area_id: $("#area").val()
+            area_id: $("#area").val(),
         },
         success: function (data) {
             const select = $(".js-selector-colaborador");
@@ -80,9 +80,15 @@ function cargarColaboradores() {
 }
 
 function calcularDuracion() {
-    const fechaDesdeInput = document.querySelector('[name="fechaDesde"]');
-    const fechaHastaInput = document.querySelector('[name="fechaHasta"]');
-    const duracionInput = document.querySelector('[name="duracion"]');
+
+    const fechaDesdeInput = document.getElementById("fechaDesdeNovedad");
+    const fechaHastaInput = document.getElementById("fechaHastaNovedad");
+    const duracionInput = document.getElementById("inputDias");
+
+    if (!fechaDesdeInput || !fechaHastaInput || !duracionInput) {
+        console.error("No se encontraron los inputs de fechas o duración");
+        return;
+    }
 
     if (!fechaDesdeInput.value || !fechaHastaInput.value) {
         duracionInput.value = "";
@@ -92,8 +98,8 @@ function calcularDuracion() {
     const fechaDesde = new Date(fechaDesdeInput.value);
     const fechaHasta = new Date(fechaHastaInput.value);
 
-    // Validación: fecha hasta no puede ser menor
     if (fechaHasta < fechaDesde) {
+
         Swal.fire({
             icon: "warning",
             title: "Fecha incorrecta",
@@ -105,12 +111,12 @@ function calcularDuracion() {
         return;
     }
 
-    // Cálculo de días (incluye mismo día)
-    const diffTime = fechaHasta.getTime() - fechaDesde.getTime();
+    const diffTime = fechaHasta - fechaDesde;
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
     duracionInput.value = diffDays;
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const selectCategoria = document.getElementById("selectCategoria");
@@ -191,36 +197,34 @@ $(document).ready(function () {
                 enviarNovedad();
             }
         });
-    })
+    });
 });
 
-    $('#btnRegistrarNovedad').on('click', function () {
-
-    const form = $('#formCargaNovedad');
+$("#btnRegistrarNovedad").on("click", function () {
+    const form = $("#formCargaNovedad");
 
     $.ajax({
-        url: '/novedades/guardar',
-        type: 'POST',
+        url: "/novedades/guardar",
+        type: "POST",
         data: form.serialize(),
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
 
         success: function (response) {
-
             if (response.success) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Correcto',
-                    text: response.mensaje
+                    icon: "success",
+                    title: "Correcto",
+                    text: response.mensaje,
                 });
 
                 form[0].reset();
             } else {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.mensaje
+                    icon: "error",
+                    title: "Error",
+                    text: response.mensaje,
                 });
             }
         },
@@ -229,9 +233,10 @@ $(document).ready(function () {
             console.error(xhr.responseText);
 
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo registrar la novedad'
+                icon: "error",
+                title: "Error",
+                text: "No se pudo registrar la novedad",
             });
-        }
+        },
     });
+});

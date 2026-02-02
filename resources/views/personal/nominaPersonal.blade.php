@@ -860,7 +860,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalRegNovedadColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal fade" id="modalRegNovedadColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true" data-bs-backdrop="static">
 
         <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">
@@ -985,34 +986,55 @@
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha desde</label>
-                                    <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad"
+                                    <input type="date" class="form-control" name="fechaDesde" onchange="calcularDuracion()" id="fechaDesdeNovedad"
                                         required>
                                 </div>
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha hasta</label>
-                                    <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad"
+                                    <input type="date" class="form-control" name="fechaHasta" onchange="calcularDuracion()" id="fechaHastaNovedad"
                                         required>
                                 </div>
 
                                 <div class="col-lg-1" id="divPeriodoDias">
                                     <label class="form-label">Período (días)</label>
-                                    <input id="inputDias" type="text" class="form-control" readonly required>
+                                    <input id="inputDias" name="duracionDias" type="text" class="form-control" readonly>
                                 </div>
 
                                 <div class="col-lg-1" id="divCantidadHoras" hidden>
                                     <label class="form-label">Horas</label>
-                                    <input id="inputHoras" type="text" class="form-control" required>
+                                    <input id="inputHoras" type="text" class="form-control">
                                 </div>
 
-                                <input type="hidden" name="cantidadFinal" id="cantidadFinal">
+                                <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>
 
                                 <div class="col-lg-4">
                                     <label class="form-label">Descripción</label>
-                                    <input type="text" class="form-control" name="descripcion">
+                                    <input type="text" class="form-control" name="descripcion"
+                                        placeholder="Descripción de la novedad (opcional)">
                                 </div>
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-2 d-none" id="divSelectTipoVacaciones" >
+                                    <label class="form-label">Tipo de vacaciones</label>
+                                    <select id="selectTipoVacaciones" name="tipoVacaciones" class="form-control"
+                                        {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
+                                        <option value="">Seleccione tipo de vacaciones</option>
+                                        <option value="2">Gozadas</option>
+                                        <option value="3" selected {{ Auth::user()->rol !== 'Administrador/a' ? 'selected' : '' }}>
+                                            Gozadas pagadas
+                                        </option>
+                                        <option value="4">Pagadas</option>
+                                        <option value="5">Vencidas</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-1 d-none" id="divSelectAnnioVacaciones">
+                                    <label class="form-label">Año</label>
+                                    <input type="number" class="form-control" name="annio"
+                                        placeholder="Ingrese año (obligatorio)">
+                                </div>
+
+                                <div class="col-lg-4 d-none">
                                     <label class="form-label">Comprobante</label>
                                     <input type="file" class="form-control">
                                 </div>
