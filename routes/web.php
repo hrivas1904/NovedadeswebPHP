@@ -146,6 +146,8 @@ Route::get(
 
 Route::get('/novedades/selector', [NovedadesController::class, 'listarNovedadesSelector']);
 
+Route::get('/novedades/lista', [NovedadesController::class, 'listar']);
+
 //mensajes
 Route::post('/notificaciones/publicar', 
 [NotificacionController::class, 'registrarNovedad'])

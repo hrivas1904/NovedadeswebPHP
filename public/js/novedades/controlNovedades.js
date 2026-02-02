@@ -10,6 +10,7 @@ function formatearFechaArgentina(fecha) {
 //sp para cargar selector areas
 $(document).ready(function () {
     cargarAreas();
+    cargarFiltroNovedad();
 });
 
 function cargarAreas() {
@@ -45,6 +46,54 @@ function cargarAreas() {
     });
 }
 
+function cargarFiltroNovedad() {
+    const select = $(".js-select-novedadFiltro");
+
+    select.prop("disabled", true);
+
+    $.ajax({
+        url: "/novedades/lista",
+        type: "GET",
+        dataType: "json",
+
+        success: function (data) {
+            console.log("Novedades:", data);
+
+            select.empty();
+
+            select.append(
+                $("<option>", {
+                    value: "",
+                    text: "Seleccione novedad",
+                }),
+            );
+
+            data.forEach((novedad) => {
+                select.append(
+                    $("<option>", {
+                        value: novedad.ID_NOVEDAD,
+                        text: novedad.NOMBRE,
+                    }),
+                );
+            });
+
+            select.prop("disabled", false);
+
+            // Si usás Select2
+            select.trigger("change");
+        },
+
+        error: function (xhr) {
+            console.error("Error AJAX:", xhr.responseText);
+
+            alert("Error cargando novedades");
+        },
+    });
+}
+function esLicenciaAnual() {
+    return $("#idNovedad").val() == "3";
+}
+
 //carga dt novedades
 $(document).ready(function () {
     tablaPersonal = $("#tb_control");
@@ -60,11 +109,12 @@ $(document).ready(function () {
                     } else {
                         d.area_id = $("#area").val();
                     }
+                    d.idNovedad = $("#idNovedad").val();
                 },
             },
             columnDefs: [
                 {
-                    targets: [0, 6, 5, 10, 12, 13],
+                    targets: [0, 6, 5, 10, 12, 13, 15, 16, 17],
                     visible: false,
                     searchable: false,
                 },
@@ -87,7 +137,11 @@ $(document).ready(function () {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "CODIGO_NOVEDAD", width: "3%", className: "text-start" },
+                {
+                    data: "CODIGO_NOVEDAD",
+                    width: "3%",
+                    className: "text-start",
+                },
                 { data: "NOVEDAD_NOMBRE" },
                 {
                     data: "FECHA_DESDE",
@@ -111,6 +165,9 @@ $(document).ready(function () {
                 { data: "VALOR2" },
                 { data: "CENTRO_COSTO" },
                 { data: "DESCRIPCION" },
+                { data: "EMPRESA" },
+                { data: "ANNIO" },
+                { data: "TIPO" },
                 {
                     data: "REGISTRO",
                     render: function (data, type, row) {
@@ -151,25 +208,48 @@ $(document).ready(function () {
                     text: '<i class="fa-solid fa-file-excel"></i> Excel',
                     className: "btn-export-excel",
                     title: "",
+
                     exportOptions: {
-                        columns: [5, 6, 13, 11, 12, 10, 8, 9, 14],
+                        columns: function (idx, data, node) {
+                            if (esLicenciaAnual()) {
+                                return [15, 8, 9, 11, 16, 5, 17].includes(idx);
+                            } else {
+                                return [
+                                    5, 6, 13, 11, 12, 10, 8, 9, 14,
+                                ].includes(idx);
+                            }
+                        },
                     },
+
                     customize: function (xlsx) {
                         var sheet = xlsx.xl.worksheets["sheet1.xml"];
                         var row = $("row:first c", sheet);
 
-                        // Sobrescribir los encabezados manualmente
-                        const headers = [
-                            "LEGAJO",
-                            "CODIGO",
-                            "CENTROCOSTO",
-                            "VALOR1",
-                            "VALOR2",
-                            "FECHAAPLICACION",
-                            "FECHADESDE",
-                            "FECHAHASTA",
-                            "DESCRIPCION",
-                        ];
+                        let headers;
+
+                        if (esLicenciaAnual()) {
+                            headers = [
+                                "EMPRESA",
+                                "FECHADESDE",
+                                "FECHAHASTA",
+                                "CANTIDADDIAS",
+                                "AÑO",
+                                "LEGAJO",
+                                "TIPO",
+                            ];
+                        } else {
+                            headers = [
+                                "LEGAJO",
+                                "CODIGO",
+                                "CENTROCOSTO",
+                                "VALOR1",
+                                "VALOR2",
+                                "FECHAAPLICACION",
+                                "FECHADESDE",
+                                "FECHAHASTA",
+                                "DESCRIPCION",
+                            ];
+                        }
 
                         row.each(function (index) {
                             if (headers[index]) {
@@ -197,6 +277,10 @@ $(document).ready(function () {
         });
 
         $("#area").on("change", function () {
+            dt.ajax.reload();
+        });
+
+        $("#idNovedad").on("change", function () {
             dt.ajax.reload();
         });
 

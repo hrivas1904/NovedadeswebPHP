@@ -119,9 +119,10 @@ class NovedadesController extends Controller
     public function listarNovedadesPorArea(Request $request)
     {
         try {
-            $areaId = ($request->area_id && $request->area_id != "") ? $request->area_id : null;
+            $areaId = ($request->area_id && $request->area_id !== "") ? (int)$request->area_id : null;
+            $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? (int)$request->idNovedad : null;
 
-            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?)", [$areaId]);
+            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?)", [$areaId, $idNovedad]);
 
             return response()->json([
                 'data' => $ListaNovedades
@@ -262,5 +263,22 @@ class NovedadesController extends Controller
             null,
             ['Content-Type' => $comp->tipo_mime]
         );
+    }
+
+    public function listar()
+    {
+        try {
+
+            $novedades = DB::select('CALL SP_LISTA_NOVEDADES()');
+
+            return response()->json($novedades);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error al cargar novedades',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
     }
 }
