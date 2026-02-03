@@ -7,6 +7,22 @@ let legajoActivo = null;
 
 let registroSeleccionado = null;
 
+$("#inputDias").on("change", function () {
+    let fechaDesdeStr = $("#fechaDesdeNovedad").val();
+    let dias = parseInt($(this).val());
+
+    if (!fechaDesdeStr || isNaN(dias)) return;
+
+    let fechaDesde = new Date(fechaDesdeStr);
+    fechaDesde.setDate(fechaDesde.getDate() + dias);
+
+    let yyyy = fechaDesde.getFullYear();
+    let mm = String(fechaDesde.getMonth() + 1).padStart(2, "0");
+    let dd = String(fechaDesde.getDate()).padStart(2, "0");
+
+    $("#fechaHastaNovedad").val(`${yyyy}-${mm}-${dd}`);
+});
+
 //calculo edad
 function calcularEdad(fecha) {
     if (!fecha) return "";
@@ -423,7 +439,7 @@ function verLegajo(legajoColaborador, nombre) {
 function darDeBaja(legajoColaborador, nombre) {
     Swal.fire({
         title: `¿Dar de baja a <strong>${nombre}</strong>?`,
-        text: "El empleado quedará inactivo",
+        text: "El colaborador quedará inactivo",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, dar de baja",
@@ -491,6 +507,7 @@ function registrarNovedad(legajoColaborador) {
 
     $(document).on("select2:select", "#selectNovedad", function (e) {
         const codigoVacaciones = e.params.data.codigo;
+        const nombreNovedad = e.params.data.text;
         console.log("Código directo:", codigoVacaciones);
         if (codigoVacaciones === "N/D2") {
             $(
@@ -502,7 +519,20 @@ function registrarNovedad(legajoColaborador) {
             $("#divSelectTipoVacaciones, #divSelectAnnioVacaciones").addClass(
                 "d-none",
             );
-        }
+        };
+
+        if (nombreNovedad === "Atención médica") {
+            $(
+                "#divFechaAtencion, #divNumeroAtencion, #divIngresarPacienteAtencion, #divConceptoAtencion, #divMontoAtencion, #divCantidadCuotas",
+            ).removeClass("d-none");
+
+            console.log("mostrando div selector");
+        } else {
+            $(
+                "#divFechaAtencion, #divNumeroAtencion, #divIngresarPacienteAtencion, #divConceptoAtencion, #divMontoAtencion, #divCantidadCuotas",
+            ).addClass("d-none");
+        };
+
     });
 }
 
@@ -1312,7 +1342,6 @@ function resetearNovedades() {
 }
 
 function calcularDuracion() {
-
     const fechaDesdeInput = document.getElementById("fechaDesdeNovedad");
     const fechaHastaInput = document.getElementById("fechaHastaNovedad");
     const duracionInput = document.getElementById("inputDias");
@@ -1331,7 +1360,6 @@ function calcularDuracion() {
     const fechaHasta = new Date(fechaHastaInput.value);
 
     if (fechaHasta < fechaDesde) {
-
         Swal.fire({
             icon: "warning",
             title: "Fecha incorrecta",
