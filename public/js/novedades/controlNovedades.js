@@ -114,7 +114,7 @@ $(document).ready(function () {
             },
             columnDefs: [
                 {
-                    targets: [0, 6, 5, 10, 12, 13, 15, 16, 17],
+                    targets: [5,6,8,9,10,11,12,17,18,19],
                     visible: false,
                     searchable: false,
                 },
@@ -128,7 +128,7 @@ $(document).ready(function () {
                         return formatearFechaArgentina(data);
                     },
                 },
-                { data: "AREA" },
+                { data: "AREA", width:"%4" },
                 { data: "REGISTRANTE" },
                 { data: "COLABORADOR" },
                 {
@@ -143,6 +143,16 @@ $(document).ready(function () {
                     className: "text-start",
                 },
                 { data: "NOVEDAD_NOMBRE" },
+                { data: "CENTRO_COSTO" },
+                { data: "DURACION" },
+                { data: "VALOR2" },
+                {
+                    data: "FECHA_APLICACION",
+                    render: function (data) {
+                        return formatearFechaArgentina(data);
+                    },
+                },
+                { data: "EMPRESA" },
                 {
                     data: "FECHA_DESDE",
                     render: function (data) {
@@ -155,21 +165,19 @@ $(document).ready(function () {
                         return formatearFechaArgentina(data);
                     },
                 },
+                { data: "DURACION" },
+                { data: "DESCRIPCION" },
+                { data: "ANNIO" },
                 {
-                    data: "FECHA_APLICACION",
-                    render: function (data) {
-                        return formatearFechaArgentina(data);
+                    data: "LEGAJO",
+                    render: function (data, type, row) {
+                        return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "DURACION" },
-                { data: "VALOR2" },
-                { data: "CENTRO_COSTO" },
-                { data: "DESCRIPCION" },
-                { data: "EMPRESA" },
-                { data: "ANNIO" },
                 { data: "TIPO" },
                 {
                     data: "REGISTRO",
+                    orderable: "false",
                     render: function (data, type, row) {
                         // 'data' es el valor de la celda (REGISTRO)
                         // 'row' contiene todo el objeto del empleado/evento
@@ -210,51 +218,69 @@ $(document).ready(function () {
                     title: "",
 
                     exportOptions: {
-                        columns: function (idx, data, node) {
+                        modifier: { order: "index" },
+                        orthogonal: "export",
+                        columns: function (idx) {
                             if (esLicenciaAnual()) {
-                                return [15, 8, 9, 11, 16, 5, 17].includes(idx);
+                                return [12, 13, 14, 15, 17, 18, 19].includes(
+                                    idx,
+                                );
                             } else {
                                 return [
-                                    5, 6, 13, 11, 12, 10, 8, 9, 14,
+                                    5, 6, 8, 9, 10, 11, 13, 14, 16,
                                 ].includes(idx);
                             }
                         },
                     },
 
+                    customizeData: function (data) {
+                        if (esLicenciaAnual()) {
+                            // ORDEN QUE VOS QUERÉS
+                            const orden = ["EMPRESA", "DESDE", "HASTA", "CANT", "AÑO", "LEGAJO", "TIPO"];
+
+                            // Índices actuales
+                            const idxMap = orden.map((h) =>
+                                data.header.indexOf(h),
+                            );
+
+                            // Reordenar headers
+                            data.header = orden;
+
+                            // Reordenar filas
+                            data.body = data.body.map((row) =>
+                                idxMap.map((i) => row[i]),
+                            );
+                        }
+                    },
+
                     customize: function (xlsx) {
                         var sheet = xlsx.xl.worksheets["sheet1.xml"];
-                        var row = $("row:first c", sheet);
+                        var row = $("row:first", sheet).find("c");
 
-                        let headers;
+                        let headers = esLicenciaAnual()
+                            ? [
+                                  "EMPRESA",
+                                  "FECHADESDE",
+                                  "FECHAHASTA",
+                                  "CANTIDADDIAS",
+                                  "AÑO",
+                                  "LEGAJO",
+                                  "TIPO",
+                              ]
+                            : [
+                                  "LEGAJO",
+                                  "CODIGO",
+                                  "CENTROCOSTO",
+                                  "VALOR1",
+                                  "VALOR2",
+                                  "FECHAAPLICACION",
+                                  "FECHADESDE",
+                                  "FECHAHASTA",
+                                  "DESCRIPCION",
+                              ];
 
-                        if (esLicenciaAnual()) {
-                            headers = [
-                                "EMPRESA",
-                                "FECHADESDE",
-                                "FECHAHASTA",
-                                "CANTIDADDIAS",
-                                "AÑO",
-                                "LEGAJO",
-                                "TIPO",
-                            ];
-                        } else {
-                            headers = [
-                                "LEGAJO",
-                                "CODIGO",
-                                "CENTROCOSTO",
-                                "VALOR1",
-                                "VALOR2",
-                                "FECHAAPLICACION",
-                                "FECHADESDE",
-                                "FECHAHASTA",
-                                "DESCRIPCION",
-                            ];
-                        }
-
-                        row.each(function (index) {
-                            if (headers[index]) {
-                                $("is t", this).text(headers[index]);
-                            }
+                        row.each(function (i) {
+                            $("is t", this).text(headers[i]);
                         });
                     },
                 },

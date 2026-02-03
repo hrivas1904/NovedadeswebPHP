@@ -47,19 +47,21 @@
                                 <th>AREA</th>
                                 <th>REGISTRANTE</th>
                                 <th>COLABORADOR</th>
-                                <th>LEGAJO</th>
+                                <th>LEGAJO</th>                                                                                          
                                 <th>CODIGO</th>
                                 <th>NOVEDAD</th>
-                                <th>DESDE</th>
-                                <th>HASTA</th>
-                                <th>FECHAAPLICACION</th>
+                                <th>CENTROCOSTO</th>
                                 <th>CANTIDAD</th>
                                 <th>VALOR2</th>
-                                <th>CENTROCOSTO</th>
-                                <th>DESCRIPCION</th>
+                                <th>FECHAAPLICACION</th>
                                 <th>EMPRESA</th>
+                                <th>DESDE</th>
+                                <th>HASTA</th>
+                                <th>CANT</th>                                
+                                <th>DESCRIPCION</th>
                                 <th>AÑO</th>
-                                <th>TIPO</th>
+                                <th>LEGAJO</th>
+                                <th>TIPO</th>                                
                                 <th></th>
                             </tr>
                         </thead>

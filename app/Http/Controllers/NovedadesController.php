@@ -95,8 +95,8 @@ class NovedadesController extends Controller
                     $request->cantidadFinal,
                     auth()->user()->name,
                     $request->descripcion ?? null,
-                    $request->tipoVacaciones ?? null,
                     $request->annio ?? null,
+                    $request->tipoVacaciones ?? null,                    
                 ]
             );
 
