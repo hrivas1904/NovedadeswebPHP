@@ -903,7 +903,7 @@
                         </div>
 
                         <div class="section-divider mb-3">
-                            <span>Información del empleado</span>
+                            <span>Información del colaborador</span>
                         </div>
 
                         <div class="empleado-box p-3 mb-4">
@@ -996,7 +996,7 @@
                                         onchange="calcularDuracion()" id="fechaHastaNovedad" required>
                                 </div>
 
-                                <div class="col-lg-1" id="divPeriodoDias">
+                                <div class="col-lg-1" id="divPeriodoDias" hidden>
                                     <label class="form-label">Período (días)</label>
                                     <input id="inputDias" name="duracionDias" type="text" class="form-control">
                                 </div>
@@ -1006,13 +1006,12 @@
                                     <input id="inputHoras" type="text" class="form-control">
                                 </div>
 
-                                <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>
-
-                                <div class="col-lg-4">
-                                    <label class="form-label">Descripción/Observaciones</label>
-                                    <input type="text" class="form-control" name="descripcion"
-                                        placeholder="Descripción de la novedad (opcional)">
+                                <div class="col-lg-1" id="divCantidadPesos" hidden>
+                                    <label class="form-label">Importe</label>
+                                    <input id="inputImporte" type="text" class="form-control text-end">
                                 </div>
+
+                                <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>                                
 
                                 <div class="col-lg-2 d-none" id="divSelectTipoVacaciones">
                                     <label class="form-label">Tipo de vacaciones</label>
@@ -1035,32 +1034,22 @@
                                         placeholder="Ingrese año (obligatorio)">
                                 </div>
 
-                                <div class="col-lg-2 d-none" id="divFechaAtencion">
-                                    <label class="form-label">Fecha de atención</label>
-                                    <input type="date" class="form-control" id="fechaAtencion" name="fechaAtencion">
-                                </div>
-
-                                <div class="col-lg-2 d-none" id="divNumeroAtencion">
+                                <div class="col-lg-1 d-none" id="divNumeroAtencion">
                                     <label class="form-label">N° de atención</label>
                                     <input type="number" class="form-control" id="numAtencion" name="numAtencion">
                                 </div>
 
                                 <div class="col-lg-2 d-none" id="divIngresarPacienteAtencion">
                                     <label class="form-label">Paciente</label>
-                                    <input type="text" class="form-control" id="paciente" name="paciente">
+                                    <input type="text" class="form-control" id="paciente" name="pacienteAtencion">
                                 </div>
 
-                                <div class="col-lg-2 d-none" id="divConceptoAtencion">
+                                <div class="col-lg-4 d-none" id="divConceptoAtencion">
                                     <label class="form-label">Concepto</label>
                                     <input type="text" class="form-control" id="conceptoAtencion" name="conceptoAtencion">
                                 </div>
 
-                                <div class="col-lg-2 d-none" id="divMontoAtencion">
-                                    <label class="form-label">Monto</label>
-                                    <input type="date" class="form-control" id="montoAtencion" name="montoAtencion">
-                                </div>
-
-                                <div class="col-lg-2 d-none" id="divCantidadCuotas">
+                                <div class="col-lg-1 d-none" id="divCantidadCuotas">
                                     <label class="form-label">Cuotas</label>
                                     <input type="number" class="form-control" id="cantidadCuotas" name="cantidadCuotas">
                                 </div>
@@ -1068,6 +1057,12 @@
                                 <div class="col-lg-4 d-none">
                                     <label class="form-label">Comprobante</label>
                                     <input type="file" class="form-control">
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <label class="form-label">Descripción/Observaciones</label>
+                                    <input type="text" class="form-control" name="descripcion"
+                                        placeholder="Descripción de la novedad (opcional)">
                                 </div>
                             </div>
                         </div>

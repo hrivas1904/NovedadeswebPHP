@@ -80,7 +80,7 @@ class NovedadesController extends Controller
 
             DB::statement(
                 "CALL SP_REGISTRAR_NOVEDAD(
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @mensaje
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, @mensaje
             )",
                 [
                     $request->legajo,
@@ -96,7 +96,11 @@ class NovedadesController extends Controller
                     auth()->user()->name,
                     $request->descripcion ?? null,
                     $request->annio ?? null,
-                    $request->tipoVacaciones ?? null,                    
+                    $request->tipoVacaciones ?? null,
+                    $request->numAtencion ?? null,
+                    $request->pacienteAtencion ?? null,
+                    $request->conceptoAtencion ?? null,
+                    $request->cantidadCuotas ?? null,                    
                 ]
             );
 

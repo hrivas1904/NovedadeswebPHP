@@ -519,7 +519,7 @@ function registrarNovedad(legajoColaborador) {
             $("#divSelectTipoVacaciones, #divSelectAnnioVacaciones").addClass(
                 "d-none",
             );
-        };
+        }
 
         if (nombreNovedad === "Atención médica") {
             $(
@@ -531,8 +531,7 @@ function registrarNovedad(legajoColaborador) {
             $(
                 "#divFechaAtencion, #divNumeroAtencion, #divIngresarPacienteAtencion, #divConceptoAtencion, #divMontoAtencion, #divCantidadCuotas",
             ).addClass("d-none");
-        };
-
+        }
     });
 }
 
@@ -1377,19 +1376,55 @@ function calcularDuracion() {
     duracionInput.value = diffDays;
 }
 
+function formatearPesos(valor) {
+    if (valor === null || valor === undefined || valor === "") return "";
+
+    return new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+        minimumFractionDigits: 2,
+    }).format(valor);
+}
+
+function parsearMonto(valor) {
+    if (!valor) return 0;
+    let limpio = valor.toString();
+    limpio = limpio.replace(/\$/g, "").trim();
+    limpio = limpio.replace(/\./g, "");
+    limpio = limpio.replace(/,/g, ".");
+
+    const resultado = parseFloat(limpio);
+    return isNaN(resultado) ? 0 : resultado;
+}
+
+$("#inputImporte").on("change", function () {
+    let monto = 0;
+    monto = $(this).val();
+    $(this).val(formatearPesos(monto));
+});
+
+$("#inputImporte").on("focus", function () {
+    $(this).val("");
+});
+
 $("#formCargaNovedad").on("submit", function (e) {
     e.preventDefault();
 
-    const dias = document.getElementById("inputDias").value;
-    const horas = document.getElementById("inputHoras").value;
+    const dias = document.getElementById("inputDias").value.trim();
+    const horas = document.getElementById("inputHoras").value.trim();
+    const pesosRaw = document.getElementById("inputImporte").value.trim();
 
-    if (dias && dias.trim() !== "") {
-        $("#cantidadFinal").val(dias);
-    } else if (horas && horas.trim() !== "") {
-        $("#cantidadFinal").val(horas);
-    } else {
-        $("#cantidadFinal").val(null);
+    let valorFinal = null;
+
+    if (pesosRaw !== "") {
+        valorFinal = parsearMonto(pesosRaw);
+    } else if (horas !== "") {
+        valorFinal = horas;
+    } else if (dias !== "") {
+        valorFinal = dias;
     }
+
+    $("#cantidadFinal").val(valorFinal);
 
     $.ajax({
         url: "/novedades/registrar",
@@ -1407,6 +1442,7 @@ $("#formCargaNovedad").on("submit", function (e) {
                 });
 
                 $("#formCargaNovedad")[0].reset();
+                $('#selectNovedad').val(null).trigger('change');
                 $("#modalRegNovedadColaborador").modal("hide");
 
                 // 🔑 refrescar historial SIN recrear
@@ -1429,37 +1465,12 @@ $("#formCargaNovedad").on("submit", function (e) {
     });
 });
 
-//duración de licencias
-
-let diasLicencias = {
-    "Licencia profiláctica": 14,
-    "Licencia por maternidad": 90,
-    "Licencia por paternidad": 3,
-    "Licencia por matrimonio": 14,
-    "Licencia por mudanza": 1,
-    "Licencia por estudio": 1,
-    "Licencia por familiar enfermo": 6,
-    "Licencia por fallecimiento cónyuge": 7,
-    "Licencia por fallecimiento padres, hijos y/o hermanos a cargo": 7,
-    "Licencia por fallecimiento abuelos, hermanos y/o nietos": 2,
-    "Licencia por fallecimiento tío, suegro, yerno, cuñado": 1,
-    "Licencia por casamiento hijos": 1,
-    "Licencia anual": 35,
-};
-
-let sinFechas = [
-    "Horas extras 50%",
-    "Horas extras 100%",
-    "Feriado",
-    "Adicional administrativo",
-];
-
 document.addEventListener("DOMContentLoaded", () => {
     const fechaInicio = document.getElementById("fechaDesdeNovedad");
     const fechaFin = document.getElementById("fechaHastaNovedad");
-
     let novedadSeleccionada = null;
 
+    // Escuchar Select2
     $("#selectNovedad").on("select2:select", function (e) {
         novedadSeleccionada = e.params.data;
         calcularFechaFin();
@@ -1468,18 +1479,26 @@ document.addEventListener("DOMContentLoaded", () => {
     fechaInicio.addEventListener("change", calcularFechaFin);
 
     function calcularFechaFin() {
-        if (!fechaInicio.value || !novedadSeleccionada) return;
+        if (
+            !fechaInicio.value ||
+            !novedadSeleccionada ||
+            isNaN(novedadSeleccionada.limite)
+        )
+            return;
 
-        const textoLicencia = novedadSeleccionada.text.trim();
+        const limiteLicencia = parseInt(novedadSeleccionada.limite);
 
-        const dias = diasLicencias[textoLicencia];
-
-        if (!dias) return;
+        if (isNaN(limiteLicencia)) {
+            console.log("La novedad no tiene límite definido (es NULL).");
+            fechaFin.value = "";
+            console.log(fechaFin);
+        }
 
         let fecha = new Date(fechaInicio.value);
 
-        fecha.setDate(fecha.getDate() + dias);
+        fecha.setDate(fecha.getDate() + limiteLicencia);
 
+        // Formatear manualmente para el input date (YYYY-MM-DD)
         const yyyy = fecha.getFullYear();
         const mm = String(fecha.getMonth() + 1).padStart(2, "0");
         const dd = String(fecha.getDate()).padStart(2, "0");
@@ -1490,10 +1509,11 @@ document.addEventListener("DOMContentLoaded", () => {
     fechaFin.addEventListener("change", () => {
         if (!fechaInicio.value || !fechaFin.value) return;
 
-        const inicio = new Date(fechaInicio.value);
-        const fin = new Date(fechaFin.value);
+        // Para comparar, también usamos el desglose manual para ser precisos
+        const d1 = new Date(fechaInicio.value.replace(/-/g, "\/"));
+        const d2 = new Date(fechaFin.value.replace(/-/g, "\/"));
 
-        if (fin < inicio) {
+        if (d2 < d1) {
             alert(
                 "La fecha de fin no puede ser anterior a la fecha de inicio.",
             );
@@ -1503,21 +1523,24 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const fechaInicio = document.getElementById("fechaDesdeNovedad");
-    const fechaFin = document.getElementById("fechaHastaNovedad");
-
     let novedadSeleccionada = null;
 
     $("#selectNovedad").on("select2:select", function (e) {
         novedadSeleccionada = e.params.data;
-        const textoLicencia = novedadSeleccionada.text.trim();
+        const valorNovedad = novedadSeleccionada.valor.trim();
 
-        if (sinFechas.includes(textoLicencia)) {
-            document.getElementById("divPeriodoDias").hidden = true;
-            document.getElementById("divCantidadHoras").hidden = false;
-        } else {
+        if (valorNovedad === "Días") {
             document.getElementById("divPeriodoDias").hidden = false;
             document.getElementById("divCantidadHoras").hidden = true;
+            document.getElementById("divCantidadPesos").hidden = true;
+        } else if (valorNovedad === "Horas") {
+            document.getElementById("divPeriodoDias").hidden = true;
+            document.getElementById("divCantidadHoras").hidden = false;
+            document.getElementById("divCantidadPesos").hidden = true;
+        } else if (valorNovedad === "Pesos") {
+            document.getElementById("divPeriodoDias").hidden = true;
+            document.getElementById("divCantidadHoras").hidden = true;
+            document.getElementById("divCantidadPesos").hidden = false;
         }
     });
 });

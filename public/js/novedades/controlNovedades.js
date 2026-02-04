@@ -94,6 +94,18 @@ function esLicenciaAnual() {
     return $("#idNovedad").val() == "3";
 }
 
+function cerrarModalLegajo(){
+    const modal=$("#modalDetalleNovedad");
+    modal.modal('hide');
+}
+
+function verDetalleNovedad(idRegistro){
+    console.log("Abriendo detalle del registro ", idRegistro)
+    const modal=$("#modalDetalleNovedad");
+    modal.modal('show');
+
+}
+
 //carga dt novedades
 $(document).ready(function () {
     tablaPersonal = $("#tb_control");
@@ -114,7 +126,7 @@ $(document).ready(function () {
             },
             columnDefs: [
                 {
-                    targets: [5,6,8,9,10,11,12,17,18,19],
+                    targets: [5,6,8,9,10,11,12,16,17,18,19],
                     visible: false,
                     searchable: false,
                 },
@@ -182,9 +194,15 @@ $(document).ready(function () {
                         // 'data' es el valor de la celda (REGISTRO)
                         // 'row' contiene todo el objeto del empleado/evento
                         return `
-                            <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
                                 <button type="button" 
-                                    class="btn btn-sm btn-alerta btn-editar-evento" 
+                                    class="btn-sm btn-secundario btn-VerDetalleNovedad" 
+                                    data-id="${row.id}" 
+                                    title="Detalle de novedad">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button type="button" 
+                                    class="btn-sm btn-alerta btn-editar-evento" 
                                     data-id="${row.id}" 
                                     title="Editar Registro">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -316,13 +334,12 @@ $(document).ready(function () {
             }
         }, 500);
 
-        $(document).on("click", ".btn-VerLegajo", function (event) {
+        $(document).on("click", ".btn-VerDetalleNovedad", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            const nombre = $(this).data("nombre");
-            console.log("Legajo recibido: " + legajoColaborador);
-            verLegajo(legajoColaborador, nombre);
+            const idRegistro = $(this).data("id");
+            console.log("Legajo recibido: " + idRegistro);
+            verDetalleNovedad(idRegistro);
         });
 
         $(document).on("click", ".btn-DarBaja", function (event) {
