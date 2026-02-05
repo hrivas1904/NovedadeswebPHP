@@ -11,7 +11,7 @@
         <div class="card" style="border-radius:15px;">
             <div class="card-header">
                 <div class="row d-flex">
-                    <div class="col-4 d-flex justify-content-start align-items-center gap-2">
+                    <div class="col-6 d-flex justify-content-start align-items-center gap-2">
                         <select id="area" name="area" class="form-select js-select-area" style="width: auto;"
                             {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
                         </select>
@@ -23,6 +23,16 @@
                             <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                         @endif
 
+                        <select id="paraFinnegans" name="paraFinnegans" class="form-select js-select-novedadFinnegans">
+                            <option value="" disabled selected>Seleccion tipo</option>
+                            <option value="">Todas</option>
+                            <option value="0">Informativas</option>
+                            <option value="1">Para Finnegans</option>
+                        </select>
+
+                        <button type="button" id="btnLimpiarFiltros" class="btn-secundario d-flex align-items-center gap-1">
+                            <i class="fa-solid fa-eraser"></i>Limpiar
+                        </button>
 
                         <script>
                             const USER_ROLE = "{{ Auth::user()->rol }}";
@@ -30,7 +40,7 @@
                         </script>
                     </div>
 
-                    <div class="col-8 text-end">
+                    <div class="col-6 text-end">
 
                     </div>
                 </div>
@@ -55,7 +65,7 @@
                                 <th>EMPRESA</th>
                                 <th>DESDE</th>
                                 <th>HASTA</th>
-                                <th>CANT</th>
+                                <th>VALOR</th>
                                 <th>DESCRIPCION</th>
                                 <th>AÑO</th>
                                 <th>LEGAJO</th>
@@ -75,7 +85,7 @@
         data-bs-backdrop="static">
 
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content p-2">
+            <div class="modal-content p-1">
 
                 <div class="modal-header">
                     <h5 class="modal-title" id="tituloLegajo">
@@ -120,7 +130,7 @@
                                             <label class="form-label">Legajo</label>
                                             <input type="text" id="inputLegajo" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-4">
                                             <label class="form-label">Colaborador</label>
                                             <input type="text" id="inputColaborador" class="form-control" readonly>
                                         </div>
@@ -128,7 +138,7 @@
                                             <label class="form-label">Estado</label>
                                             <input type="text" id="inputEstado" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label class="form-label">DNI</label>
                                             <input type="text" id="inputDni" class="form-control" readonly>
                                         </div>
@@ -175,8 +185,8 @@
                                             <input type="text" id="inputDescripcion" class="form-control" readonly>
                                         </div>
                                     </div>
-                                    <div class="row g-3 mt-2" id="divInfoVacaciones">
-                                        <div class="col-lg-2">
+                                    <div class="row g-3 mt-2 d-none" id="divInfoVacaciones">
+                                        <div class="col-lg-3">
                                             <label class="form-label">Tipo de Vacaciones</label>
                                             <input type="text" id="inputTipoVacaciones" class="form-control" readonly>
                                         </div>
@@ -185,7 +195,7 @@
                                             <input type="text" id="inputAnnioVacaciones" class="form-control" readonly>
                                         </div>
                                     </div>
-                                    <div class="row g-3 mt-2" id="divInfoAtencionMedica">
+                                    <div class="row g-3 mt-2 d-none" id="divInfoAtencionMedica">
                                         <div class="col-lg-2">
                                             <label class="form-label">N° Atención</label>
                                             <input type="text" id="inputNumAtencion" class="form-control" readonly>

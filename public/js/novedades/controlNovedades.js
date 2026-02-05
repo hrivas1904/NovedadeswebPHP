@@ -7,10 +7,27 @@ function formatearFechaArgentina(fecha) {
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
+function formatearPesos(valor) {
+    if (valor === null || valor === undefined || valor === "") return "";
+
+    return new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+        minimumFractionDigits: 2,
+    }).format(valor);
+}
+
 //sp para cargar selector areas
 $(document).ready(function () {
     cargarAreas();
     cargarFiltroNovedad();
+});
+
+$("#btnLimpiarFiltros").on("click", function () {
+    $(".js-select-area").val("");
+    $(".js-select-novedadFiltro").val("");
+    $(".js-select-novedadFinnegans").val("");
+    $("#tb_control").DataTable().ajax.reload();
 });
 
 function cargarAreas() {
@@ -101,16 +118,17 @@ function cerrarModalLegajo() {
 
 function verDetalleNovedad(idRegistro) {
     $.ajax({
-        url: `/novedades/verDetalleNovedad/${idRegistro}`,
+        url: `/novedades/verDetalleRegistroNovedad/${idRegistro}`,
         type: "GET",
         dataType: "json",
-        data: {idRegistro:idRegistro},
         success: function (response) {
             if (response.success) {
                 const d = response.data;
 
                 $("#inputRegistro").val(d.id_nxe);
-                $("#inputFechaReg").val(d.fecha_registro);
+                $("#inputFechaReg").val(
+                    formatearFechaArgentina(d.fecha_registro),
+                );
                 $("#inputRegistrante").val(d.registrante);
 
                 $("#inputLegajo").val(d.legajo);
@@ -119,14 +137,27 @@ function verDetalleNovedad(idRegistro) {
                 $("#inputDni").val(d.dni);
                 $("#inputArea").val(d.area);
 
-                $("#inputFechaAplicacion").val(d.FECHA_APLICACION);
-                $("#inputFechaDesde").val(d.FECHA_DESDE);
-                $("#inputFechaHasta").val(d.FECHA_HASTA);
+                $("#inputFechaAplicacion").val(
+                    formatearFechaArgentina(d.FECHA_APLICACION),
+                );
+                $("#inputFechaDesde").val(
+                    formatearFechaArgentina(d.FECHA_DESDE),
+                );
+                $("#inputFechaHasta").val(
+                    formatearFechaArgentina(d.FECHA_HASTA),
+                );
 
-                if (d.tipo_valor === "Pesos") {
-                    $("#inputValor").val(formatearPesos(d.DURACION));
+                let valor = d.DURACION;
+                let valorFormateado = 0;
+                let tipo_valor = d.tipo_valor;
+
+                if (tipo_valor === "Pesos") {
+                    valorFormateado = formatearPesos(valor);
+                    $("#inputValor").val(valorFormateado);
+                    $("#inputValor").addClass("text-end");
                 } else {
-                    $("#inputValor").val(d.DURACION);
+                    $("#inputValor").val(parseInt(valor));
+                    $("#inputValor").addClass("text-start");
                 }
 
                 $("#inputCodigo").val(d.codigo_novedad);
@@ -136,16 +167,32 @@ function verDetalleNovedad(idRegistro) {
                 $("#inputTipoVacaciones").val(d.TIPO);
                 $("#inputAnnioVacaciones").val(d.ANNIO);
 
+                if (d.novedad === "Licencia anual") {
+                    $("#divInfoVacaciones").removeClass("d-none");
+                } else {
+                    $("#divInfoVacaciones").addClass("d-none");
+                }
+
+                let importeCuotas = d.importeCuotas;
+                let importeCuotasFormateado = formatearPesos(importeCuotas);
+
                 $("#inputNumAtencion").val(d.NUM_ATENCION);
                 $("#inputPacienteAtencion").val(d.PACIENTE);
                 $("#inputConcepto").val(d.CONCEPTO);
                 $("#inputCuotas").val(d.CUOTAS);
-                $("#inputImporteCuotas").val(d.importeCuotas);
+                $("#inputImporteCuotas")
+                    .val(importeCuotasFormateado)
+                    .addClass("text-end");
+
+                if (d.novedad === "Atención médica") {
+                    $("#divInfoAtencionMedica").removeClass("d-none");
+                } else {
+                    $("#divInfoAtencionMedica").addClass("d-none");
+                }
 
                 console.log("Abriendo detalle del registro ", idRegistro);
                 const modal = $("#modalDetalleNovedad");
                 modal.modal("show");
-
             } else {
                 alert("Error: " + response.mensaje);
             }
@@ -160,7 +207,6 @@ function verDetalleNovedad(idRegistro) {
 //carga dt novedades
 $(document).ready(function () {
     tablaPersonal = $("#tb_control");
-
     if (tablaPersonal.length > 0) {
         let dt = new DataTable("#tb_control", {
             ajax: {
@@ -173,6 +219,7 @@ $(document).ready(function () {
                         d.area_id = $("#area").val();
                     }
                     d.idNovedad = $("#idNovedad").val();
+                    d.paraFinnegans = $("#paraFinnegans").val();
                 },
             },
             columnDefs: [
@@ -207,7 +254,19 @@ $(document).ready(function () {
                 },
                 { data: "NOVEDAD_NOMBRE" },
                 { data: "CENTRO_COSTO" },
-                { data: "DURACION" },
+                {
+                    data: "DURACION",
+                    render: function (data, type, row) {
+                        tipoValorNov = row.TIPO_VALOR;
+
+                        if (tipoValorNov === "Pesos") {
+                            return formatearPesos(data);
+                        } else {
+                            return parseInt(data);
+                        }
+                        return data;
+                    },
+                },
                 { data: "VALOR2" },
                 {
                     data: "FECHA_APLICACION",
@@ -228,7 +287,19 @@ $(document).ready(function () {
                         return formatearFechaArgentina(data);
                     },
                 },
-                { data: "DURACION" },
+                {
+                    data: "DURACION",
+                    render: function (data, type, row) {
+                        tipoValorNov = row.TIPO_VALOR;
+
+                        if (tipoValorNov === "Pesos") {
+                            return formatearPesos(data);
+                        } else {
+                            return parseInt(data);
+                        }
+                        return data;
+                    },
+                },
                 { data: "DESCRIPCION" },
                 { data: "ANNIO" },
                 {
@@ -239,7 +310,7 @@ $(document).ready(function () {
                 },
                 { data: "TIPO" },
                 {
-                    data: null,
+                    data: "REGISTRO",
                     orderable: false,
                     render: function (data, type, row) {
                         // 'data' es el valor de la celda (REGISTRO)
@@ -248,15 +319,9 @@ $(document).ready(function () {
                             <div class="d-flex align-items-center justify-content-center gap-2">
                                 <button type="button" 
                                     class="btn-sm btn-secundario btn-VerDetalleNovedad" 
-                                    data-id="${row.registro}" 
+                                    data-id="${data}" 
                                     title="Detalle de novedad">
                                     <i class="fa-solid fa-eye"></i>
-                                </button>
-                                <button type="button" 
-                                    class="btn-sm btn-alerta btn-editar-evento" 
-                                    data-id="${row.registro}" 
-                                    title="Editar Registro">
-                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
                             </div>
                         `;
@@ -309,7 +374,7 @@ $(document).ready(function () {
                                 "EMPRESA",
                                 "DESDE",
                                 "HASTA",
-                                "CANT",
+                                "VALOR",
                                 "AÑO",
                                 "LEGAJO",
                                 "TIPO",
@@ -387,6 +452,10 @@ $(document).ready(function () {
             dt.ajax.reload();
         });
 
+        $("#paraFinnegans").on("change", function () {
+            dt.ajax.reload();
+        });
+
         setTimeout(function () {
             if ($("#area").val() !== "" && $("#area").val() !== null) {
                 dt.ajax.reload();
@@ -397,16 +466,8 @@ $(document).ready(function () {
             event.preventDefault();
             event.stopPropagation();
             const idRegistro = $(this).data("id");
-            console.log("Legajo recibido: " + idRegistro);
+            console.log("Id registro recibido: " + idRegistro);
             verDetalleNovedad(idRegistro);
-        });
-
-        $(document).on("click", ".btn-DarBaja", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            console.log("Id recibido: " + legajoColaborador);
-            darDeBaja(legajoColaborador);
         });
     }
 });

@@ -100,7 +100,7 @@ class NovedadesController extends Controller
                     $request->numAtencion ?? null,
                     $request->pacienteAtencion ?? null,
                     $request->conceptoAtencion ?? null,
-                    $request->cantidadCuotas ?? null,                    
+                    $request->cantidadCuotas ?? null,
                 ]
             );
 
@@ -126,7 +126,16 @@ class NovedadesController extends Controller
             $areaId = ($request->area_id && $request->area_id !== "") ? (int)$request->area_id : null;
             $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? (int)$request->idNovedad : null;
 
-            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?)", [$areaId, $idNovedad]);
+            $paraFinnegans = $request->paraFinnegans;
+
+            if ($paraFinnegans === '' || $paraFinnegans === null) {
+                $paraFinnegans = null;
+            } else {
+                $paraFinnegans = (int) $paraFinnegans;
+            }
+
+
+            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?)", [$areaId, $idNovedad, $paraFinnegans]);
 
             return response()->json([
                 'data' => $ListaNovedades
