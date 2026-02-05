@@ -85,7 +85,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form id="formAltaColaborador">
+                    <form id="formDetalleNovedad">
                         @csrf
                         <div class="row g-4 mb-4">
                             <div class="col-lg-12">
@@ -116,13 +116,13 @@
                                 </div>
                                 <div class="empleado-box p-3">
                                     <div class="row g-3">
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-1">
                                             <label class="form-label">Legajo</label>
                                             <input type="text" id="inputLegajo" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-5">
+                                        <div class="col-lg-3">
                                             <label class="form-label">Colaborador</label>
-                                            <input type="text" id="inputNombre" class="form-control" readonly>
+                                            <input type="text" id="inputColaborador" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Estado</label>
@@ -131,6 +131,10 @@
                                         <div class="col-lg-3">
                                             <label class="form-label">DNI</label>
                                             <input type="text" id="inputDni" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Área</label>
+                                            <input type="text" id="inputArea" class="form-control" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -144,60 +148,63 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha aplicación</label>
-                                            <input type="text" id="inputTipoContrato" class="form-control" readonly>
+                                            <input type="text" id="inputFechaAplicacion" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha desde</label>
-                                            <input type="text" id="inputFechaIngreso" class="form-control" readonly>
+                                            <input type="text" id="inputFechaDesde" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha hasta</label>
-                                            <input type="text" id="inputFechaFinPrueba" class="form-control" readonly>
+                                            <input type="text" id="inputFechaHasta" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Valor</label>
+                                            <input type="text" id="inputValor" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-3">
                                             <label class="form-label">Código</label>
-                                            <input type="text" id="inputFechaEgreso" class="form-control" readonly>
+                                            <input type="text" id="inputCodigo" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-4">
                                             <label class="form-label">Novedad</label>
-                                            <input type="text" id="inputAntiguedad" class="form-control" readonly>
+                                            <input type="text" id="inputNovedad" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label class="form-label">Descripción</label>
+                                            <input type="text" id="inputDescripcion" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mt-2" id="divInfoVacaciones">
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Tipo de Vacaciones</label>
+                                            <input type="text" id="inputTipoVacaciones" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
-                                            <label class="form-label">Área</label>
-                                            <input type="text" id="inputArea" class="form-control" readonly>
+                                            <label class="form-label">Año</label>
+                                            <input type="text" id="inputAnnioVacaciones" class="form-control" readonly>
                                         </div>
+                                    </div>
+                                    <div class="row g-3 mt-2" id="divInfoAtencionMedica">
                                         <div class="col-lg-2">
-                                            <label class="form-label">Servicio</label>
-                                            <input type="text" id="inputServicio" class="form-control" readonly>
+                                            <label class="form-label">N° Atención</label>
+                                            <input type="text" id="inputNumAtencion" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Convenio</label>
-                                            <input type="text" id="inputConvenio" class="form-control" readonly>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Paciente</label>
+                                            <input type="text" id="inputPacienteAtencion" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Categoría</label>
-                                            <input type="text" id="inputCategoria" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Rol</label>
-                                            <input type="text" id="inputRol" class="form-control" readonly>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Concepto</label>
+                                            <input type="text" id="inputConcepto" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-1">
-                                            <label class="form-label">Régimen (hs)</label>
-                                            <input type="text" id="inputRegimen" class="form-control" readonly>
+                                            <label class="form-label">Cuotas</label>
+                                            <input type="text" id="inputCuotas" class="form-control" readonly required title="Horas Diarias">
                                         </div>
-                                        <div class="col-lg-1">
-                                            <label class="form-label">Horas diarias</label>
-                                            <input type="text" id="inputHorasDiarias" class="form-control" readonly
-                                                required title="Horas Diarias">
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <label class="form-label">Es coordinador</label>
-                                            <input type="text" id="inputCordinador" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <label class="form-label">Afiliado</label>
-                                            <input type="text" id="inputAfiliado" class="form-control" readonly>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Importe cuotas</label>
+                                            <input type="text" id="inputImporteCuotas" class="form-control" readonly required title="Horas Diarias">
                                         </div>
                                     </div>
                                 </div>

@@ -285,4 +285,29 @@ class NovedadesController extends Controller
             ], 500);
         }
     }
+
+    public function verDetalleRegistroNovedad($idRegistro)
+    {
+        try {
+            $data = DB::select("CALL SP_VER_DETALLE_NOVEDAD(?)", [$idRegistro]);
+
+            if (count($data) === 0) {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'No se encontró el detalle de la novedad'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $data[0]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al obtener el detalle de la novedad',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -94,16 +94,67 @@ function esLicenciaAnual() {
     return $("#idNovedad").val() == "3";
 }
 
-function cerrarModalLegajo(){
-    const modal=$("#modalDetalleNovedad");
-    modal.modal('hide');
+function cerrarModalLegajo() {
+    const modal = $("#modalDetalleNovedad");
+    modal.modal("hide");
 }
 
-function verDetalleNovedad(idRegistro){
-    console.log("Abriendo detalle del registro ", idRegistro)
-    const modal=$("#modalDetalleNovedad");
-    modal.modal('show');
+function verDetalleNovedad(idRegistro) {
+    $.ajax({
+        url: `/novedades/verDetalleNovedad/${idRegistro}`,
+        type: "GET",
+        dataType: "json",
+        data: {idRegistro:idRegistro},
+        success: function (response) {
+            if (response.success) {
+                const d = response.data;
 
+                $("#inputRegistro").val(d.id_nxe);
+                $("#inputFechaReg").val(d.fecha_registro);
+                $("#inputRegistrante").val(d.registrante);
+
+                $("#inputLegajo").val(d.legajo);
+                $("#inputColaborador").val(d.colaborador);
+                $("#inputEstado").val(d.estado);
+                $("#inputDni").val(d.dni);
+                $("#inputArea").val(d.area);
+
+                $("#inputFechaAplicacion").val(d.FECHA_APLICACION);
+                $("#inputFechaDesde").val(d.FECHA_DESDE);
+                $("#inputFechaHasta").val(d.FECHA_HASTA);
+
+                if (d.tipo_valor === "Pesos") {
+                    $("#inputValor").val(formatearPesos(d.DURACION));
+                } else {
+                    $("#inputValor").val(d.DURACION);
+                }
+
+                $("#inputCodigo").val(d.codigo_novedad);
+                $("#inputNovedad").val(d.novedad);
+                $("#inputDescripcion").val(d.DESCRIPCION);
+
+                $("#inputTipoVacaciones").val(d.TIPO);
+                $("#inputAnnioVacaciones").val(d.ANNIO);
+
+                $("#inputNumAtencion").val(d.NUM_ATENCION);
+                $("#inputPacienteAtencion").val(d.PACIENTE);
+                $("#inputConcepto").val(d.CONCEPTO);
+                $("#inputCuotas").val(d.CUOTAS);
+                $("#inputImporteCuotas").val(d.importeCuotas);
+
+                console.log("Abriendo detalle del registro ", idRegistro);
+                const modal = $("#modalDetalleNovedad");
+                modal.modal("show");
+
+            } else {
+                alert("Error: " + response.mensaje);
+            }
+        },
+        error: function (error) {
+            console.error("Error en la petición:", error);
+            alert("No se pudo conectar con el servidor");
+        },
+    });
 }
 
 //carga dt novedades
@@ -126,7 +177,7 @@ $(document).ready(function () {
             },
             columnDefs: [
                 {
-                    targets: [5,6,8,9,10,11,12,16,17,18,19],
+                    targets: [5, 6, 8, 9, 10, 11, 12, 16, 17, 18, 19],
                     visible: false,
                     searchable: false,
                 },
@@ -140,7 +191,7 @@ $(document).ready(function () {
                         return formatearFechaArgentina(data);
                     },
                 },
-                { data: "AREA", width:"%4" },
+                { data: "AREA", width: "%4" },
                 { data: "REGISTRANTE" },
                 { data: "COLABORADOR" },
                 {
@@ -188,8 +239,8 @@ $(document).ready(function () {
                 },
                 { data: "TIPO" },
                 {
-                    data: "REGISTRO",
-                    orderable: "false",
+                    data: null,
+                    orderable: false,
                     render: function (data, type, row) {
                         // 'data' es el valor de la celda (REGISTRO)
                         // 'row' contiene todo el objeto del empleado/evento
@@ -197,13 +248,13 @@ $(document).ready(function () {
                             <div class="d-flex align-items-center justify-content-center gap-2">
                                 <button type="button" 
                                     class="btn-sm btn-secundario btn-VerDetalleNovedad" 
-                                    data-id="${row.id}" 
+                                    data-id="${row.registro}" 
                                     title="Detalle de novedad">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                                 <button type="button" 
                                     class="btn-sm btn-alerta btn-editar-evento" 
-                                    data-id="${row.id}" 
+                                    data-id="${row.registro}" 
                                     title="Editar Registro">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
@@ -254,7 +305,15 @@ $(document).ready(function () {
                     customizeData: function (data) {
                         if (esLicenciaAnual()) {
                             // ORDEN QUE VOS QUERÉS
-                            const orden = ["EMPRESA", "DESDE", "HASTA", "CANT", "AÑO", "LEGAJO", "TIPO"];
+                            const orden = [
+                                "EMPRESA",
+                                "DESDE",
+                                "HASTA",
+                                "CANT",
+                                "AÑO",
+                                "LEGAJO",
+                                "TIPO",
+                            ];
 
                             // Índices actuales
                             const idxMap = orden.map((h) =>
