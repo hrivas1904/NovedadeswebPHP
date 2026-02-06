@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Espacio de Comunicados')
+@section('title', 'Calendario de Servicios')
 
 @section('content')
 
@@ -114,6 +114,7 @@
                                         <option value="Mañana">Mañana</option>
                                         <option value="Tarde">Tarde</option>
                                         <option value="Noche">Noche</option>
+                                        <option value="Refuerzo">Refuerzo</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-3 d-flex align-items-end gap-2">

@@ -167,7 +167,7 @@ function cargarEventosMes(year, month) {
 
                     if (evento.turno_sigla === "TM") selectorTurno = ".tm-row";
                     if (evento.turno_sigla === "TT") selectorTurno = ".tt-row";
-                    if (evento.turno_sigla === "TN") selectorTurno = ".tn-row";
+                    if (evento.turno_sigla === "TN"||evento.turno_sigla === "TR") selectorTurno = ".tn-row";
 
                     // Buscamos el contenedor específico de ese turno en ese día
                     const contenedorTurno = $(

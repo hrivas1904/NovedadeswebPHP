@@ -52,7 +52,7 @@
 }
 
 .tn-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1.5fr);
 }
 
 .event-item {
@@ -86,21 +86,28 @@
 
 .badge-TM {
     background: #dcfce7;
-    color: #14532d;
+    color: black;
 }
 
 /* TURNO TARDE (naranja pastel) */
 
 .badge-TT {
     background: #ffedd5;
-    color: #9a3412;
+    color: black;
 }
 
 /* TURNO NOCHE (azul/lila pastel) */
 
 .badge-TN {
     background: #e0e7ff;
-    color: #3730a3;
+    color: black;
+}
+
+/* TURNO REFUERZO (color secundario) */
+
+.badge-TR {
+    background: var(--color-default);
+    color: white;
 }
 
 /* CAJA */
