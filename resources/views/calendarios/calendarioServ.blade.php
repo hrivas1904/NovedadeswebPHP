@@ -67,10 +67,14 @@
                     </div>
                     <div class="modal-body">
                         <div class="section-divider mb-3">
-                            <span>Periodo del evento</span>
+                            <span>Registrante y Periodo del evento</span>
                         </div>
                         <div class="empleado-box p-3 mb-4">
                             <div class="row d-flex gap-3">
+                                <div class="col-lg-5">
+                                    <label for="fechaDesde" class="form-label">Registrante</label>
+                                    <input id="registrante" name="registrante" class="form-control" type="text" value="{{ Auth::user()->name }}" readonly required>
+                                </div>
                                 <div class="col-lg-3">
                                     <label for="fechaDesde" class="form-label">Desde</label>
                                     <input id="inputFechaDesde" name="fechaDesde" class="form-control" type="date"

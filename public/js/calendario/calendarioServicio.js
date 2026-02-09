@@ -70,18 +70,30 @@ $("#btnCerrarModalEvento").on("click", function () {
     $("#modalNuevaTarea").modal("hide");
 });
 
-function pintarEvento(contenedor, evento) {
+function pintarEvento(contenedor, evento, fechaString) {
     const apellido = evento.colaborador.split(" ")[0];
+
+    // Si tiene caja, mostramos la C (respetando tu UI)
     const badgeCaja = evento.caja_sigla
         ? `<span class="badge-caja">C</span>`
         : "";
 
+    const idEvento = evento.idEvento ?? evento.id;
+
     const html = `
-        <div class="event-item badge-${evento.turno_sigla}"
-             title="${evento.colaborador}">
+        <button
+            type="button"
+            class="event-item badge-${evento.turno_sigla}"
+            data-id-evento="${idEvento}"
+            data-fecha="${fechaString}"
+            title="Quitar este día (${evento.colaborador})">
+
             <span class="event-nombre">${apellido}</span>
-            <span class="event-info">${evento.turno_sigla}${badgeCaja}</span>
-        </div>
+            <span class="event-info">
+                ${evento.turno_sigla}
+                ${badgeCaja}
+            </span>
+        </button>
     `;
 
     contenedor.append(html);
@@ -140,6 +152,37 @@ $(document).ready(function () {
     });
 });
 
+function modificarEventoDirecto(idEvento, fechaInterrupcion) {
+    if (!confirm("¿Quitar este día del evento?")) return;
+
+    $.ajax({
+        url: "/eventos/modificar",
+        method: "POST",
+        data: {
+            idEvento: idEvento,
+            fechaInterrupcion: fechaInterrupcion
+        },
+        headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
+        success: function () {
+            alert("Evento modificado")
+        },
+        error: function () {
+            alert("Error al modificar el evento");
+        }
+    });
+}
+
+$(document).on("click", ".event-item", function () {
+    const idEvento = $(this).data("id-evento");
+    const fecha = $(this).data("fecha");
+    console.log("Evento: "+idEvento+", "+"fecha: "+fecha);
+    modificarEventoDirecto(idEvento, fecha);
+});
+
 function cargarEventosMes(year, month) {
     const idArea = $("#idArea").val();
 
@@ -182,13 +225,19 @@ function cargarEventosMes(year, month) {
                             : "";
 
                         const htmlEvento = `
-                            <div class="event-item badge-turno-${evento.turno_sigla}" title="${evento.colaborador}">
-                                <span>${apellido}</span>
-                                <small>${evento.turno_sigla}${badgeCaja}</small>
-                            </div>
+                            <button
+                                type="button"
+                                class="event-item badge-turno-${evento.turno_sigla}"
+                                data-id-evento="${evento.idEvento}"
+                                data-fecha="${fechaString}"
+                                <span class="event-text">
+                                    ${apellido}
+                                    <small>${evento.turno_sigla}${badgeCaja}</small>
+                                </span>
+                            </button>
                         `;
 
-                        pintarEvento(contenedorTurno, evento);
+                        pintarEvento(contenedorTurno, evento, fechaString);
                     }
                 }
             });

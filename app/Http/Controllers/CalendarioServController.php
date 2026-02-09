@@ -72,4 +72,43 @@ class CalendarioServController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function modificarEvento(Request $request)
+    {
+        $request->validate([
+            'idEvento' => 'required|integer',
+            'fechaInterrupcion' => 'required|date'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            DB::statement(
+                "CALL SP_MODIFICAR_EVENTO_CALENDARIO(?, ?, ?, @p_mensaje)",
+                [
+                    $request->idEvento,
+                    $request->fechaInterrupcion,
+                    auth()->user()->name
+                ]
+            );
+
+            $mensaje = DB::selectOne("SELECT @p_mensaje AS mensaje");
+
+            DB::commit();
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => $mensaje->mensaje
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error al modificar el evento',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

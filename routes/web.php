@@ -180,6 +180,7 @@ Route::post('/encuestas/importar', [CalidadController::class, 'importarExcel']);
 Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);
 Route::post('/calendario/guardar', [CalendarioServController::class, 'guardarEvento']);
 Route::get('/calendario/eventos/{idArea}', [CalendarioServController::class, 'obtenerEventos']);
+Route::post('/eventos/modificar', [CalendarioServController::class, 'modificarEvento']);
 
 //dashboard
 Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);
