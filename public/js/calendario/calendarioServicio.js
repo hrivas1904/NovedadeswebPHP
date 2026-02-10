@@ -126,7 +126,11 @@ $(document).ready(function () {
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert(response.message);
+                        swal.fire({
+                            icon: "success",
+                            title: "Evento registrado",
+                            text: response.message,
+                        });
                         formulario[0].reset();
                         $("#selectColab").val(null).trigger("change");
                         $("#modalNuevaTarea").modal("hide");
@@ -138,7 +142,11 @@ $(document).ready(function () {
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMsg = xhr.responseJSON.message;
                     }
-                    alert(errorMsg);
+                    swal.fire({
+                            icon: "success",
+                            title: "Evento registrado",
+                            text: errorMsg,
+                        });
                 },
                 complete: function () {
                     $("#btnGuardarEvento")
