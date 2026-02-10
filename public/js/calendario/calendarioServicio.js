@@ -51,12 +51,12 @@ $(document).ready(function () {
                 placeholder: "Seleccione un colaborador",
                 allowClear: true,
                 width: "100%",
-                dropdownParent: $("#modalNuevaTarea")
+                dropdownParent: $("#modalNuevaTarea"),
             });
         },
         error: function (err) {
             console.error("Error al cargar colaboradores:", err);
-        }
+        },
     });
 });
 
@@ -126,7 +126,7 @@ $(document).ready(function () {
                 },
                 success: function (response) {
                     if (response.success) {
-                        swal.fire({
+                        Swal.fire({
                             icon: "success",
                             title: "Evento registrado",
                             text: response.message,
@@ -142,11 +142,11 @@ $(document).ready(function () {
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMsg = xhr.responseJSON.message;
                     }
-                    swal.fire({
-                            icon: "success",
-                            title: "Evento registrado",
-                            text: errorMsg,
-                        });
+                    Swal.fire({
+                        icon: "success",
+                        title: "Evento registrado",
+                        text: errorMsg,
+                    });
                 },
                 complete: function () {
                     $("#btnGuardarEvento")
@@ -161,33 +161,54 @@ $(document).ready(function () {
 });
 
 function modificarEventoDirecto(idEvento, fechaInterrupcion) {
-    if (!confirm("¿Quitar este día del evento?")) return;
+    //if (!confirm("¿Quitar este día del evento?")) return;
 
-    $.ajax({
-        url: "/eventos/modificar",
-        method: "POST",
-        data: {
-            idEvento: idEvento,
-            fechaInterrupcion: fechaInterrupcion
-        },
-        headers: {
+    Swal.fire({
+        title: "¿Borrar evento?",
+        text: "El siguiente evento será borrado",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00b18d",
+        cancelButtonColor: "#004a7c",
+        confirmButtonText: "Borrar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/eventos/modificar",
+                method: "POST",
+                data: {
+                    idEvento: idEvento,
+                    fechaInterrupcion: fechaInterrupcion,
+                },
+                headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                         "content",
                     ),
                 },
-        success: function () {
-            alert("Evento modificado")
-        },
-        error: function () {
-            alert("Error al modificar el evento");
+                success: function () {
+                    Swal.fire({
+                            icon: "success",
+                            title: "Evento modificado",
+                            text: "El evento fue modificado correctamente"
+                        });
+                    generarCalendario(fechaActual);
+                },
+                error: function () {
+                    Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "No se pudo modificar el evento",
+                        });
+                },
+            });
         }
     });
-}
+};
 
 $(document).on("click", ".event-item", function () {
     const idEvento = $(this).data("id-evento");
     const fecha = $(this).data("fecha");
-    console.log("Evento: "+idEvento+", "+"fecha: "+fecha);
+    console.log("Evento: " + idEvento + ", " + "fecha: " + fecha);
     modificarEventoDirecto(idEvento, fecha);
 });
 
@@ -218,7 +239,11 @@ function cargarEventosMes(year, month) {
 
                     if (evento.turno_sigla === "TM") selectorTurno = ".tm-row";
                     if (evento.turno_sigla === "TT") selectorTurno = ".tt-row";
-                    if (evento.turno_sigla === "TN"||evento.turno_sigla === "TR") selectorTurno = ".tn-row";
+                    if (
+                        evento.turno_sigla === "TN" ||
+                        evento.turno_sigla === "TR"
+                    )
+                        selectorTurno = ".tn-row";
 
                     // Buscamos el contenedor específico de ese turno en ese día
                     const contenedorTurno = $(
