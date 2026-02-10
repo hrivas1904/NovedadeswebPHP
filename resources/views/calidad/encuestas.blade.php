@@ -9,7 +9,7 @@
             <h3 class="pill-heading tituloVista">ENCUESTAS DE CALIDAD</h3>
         </div>
 
-        <div class="row d-flex align-item-end justify-content-start">
+        <div class="row d-flex align-item-center justify-content-start">
             <div class="col-auto">
                 <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" class="btn-primario">
                 <button id="btnImportar" class="btn-primario">

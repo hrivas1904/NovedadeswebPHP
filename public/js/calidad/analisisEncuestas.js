@@ -59,7 +59,11 @@ $("#btnImportar").click(function () {
     let file = $("#excelFile")[0].files[0];
 
     if (!file) {
-        alert("Seleccione un Excel");
+        Swal.fire({
+                icon: "warning",
+                title: "Atención",
+                text: "Debe seleccionar un archivo"
+            });
         return;
     }
 
@@ -78,11 +82,19 @@ $("#btnImportar").click(function () {
 
             console.log("EXCEL IMPORTADO:", res);
             renderExcelPreview(res.headers, res.rows);
-            alert("Excel leído correctamente");
+            Swal.fire({
+                icon: "success",
+                title: "Archivo importado",
+                text: "El archivo fue leído correctamente"
+            });
         },
         error: function (err) {
             console.error(err);
-            alert("Error leyendo excel");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Error leyendo archivo"
+            });
         }
     });
 

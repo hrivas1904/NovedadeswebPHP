@@ -9,8 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" type="stylesheet">
-
     <style>
         :root {
             --color-default: #004a7c;
@@ -48,7 +46,7 @@
         .login-logo {
             display: block;
             margin: 0 auto 1.5rem;
-            max-width: 120px;
+            max-width: 180px;
         }
 
         .login-header {
@@ -118,10 +116,53 @@
             margin-bottom: 1.5rem;
             border: 1px solid #fee2e2;
         }
+
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .logo-spinner {
+            width: 200px;
+            max-width: 70vw;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: .6;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: .6;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <div id="loader" class="loader-overlay d-none">
+        <div class="loader-content">
+            <img src="{{ asset('img/logo_2.png') }}" class="logo-spinner" alt="Cargando...">
+        </div>
+    </div>
 
     <div class="login-card">
         <div class="login-header">
@@ -138,7 +179,7 @@
             </div>
         @endif
 
-        <form action="{{ route('login.post') }}" method="POST">
+        <form action="{{ route('login.post') }}" method="POST" onsubmit="showLoader()">
             @csrf
             <div class="mb-3">
                 <label class="form-label">USUARIO</label>
@@ -148,16 +189,19 @@
                 <label class="form-label">CONTRASEÑA</label>
                 <input id="inputPassword" type="password" name="password" class="form-control" required>
                 <div class="row-cols d-flex justify-content-end mt-2">
-                    <button type="button" id="btn-verPassword" style="color: #0b3c6d; background-color: transparent; border: none" onclick="mostrarPassword()">
+                    <button type="button" id="btn-verPassword"
+                        style="color: #0b3c6d; background-color: transparent; border: none" onclick="mostrarPassword()">
                         Mostrar contraseña
                     </button>
                 </div>
             </div>
             <button type="submit" class="btn-login">INGRESAR</button>
         </form>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <script>
         function mostrarPassword() {
@@ -171,6 +215,14 @@
                 inputPass.type = 'password';
                 btn.textContent = 'Mostrar contraseña';
             }
+        }
+
+        function showLoader() {
+            $("#loader").removeClass("d-none");
+        }
+
+        function hideLoader() {
+            $("#loader").addClass("d-none");
         }
     </script>
 
