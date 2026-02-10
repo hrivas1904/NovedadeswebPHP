@@ -168,9 +168,10 @@ function modificarEventoDirecto(idEvento, fechaInterrupcion) {
         text: "El siguiente evento será borrado",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#00b18d",
         cancelButtonColor: "#004a7c",
+        confirmButtonColor: "#00b18d",        
         confirmButtonText: "Borrar",
+        cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
@@ -337,55 +338,52 @@ $("#btnNextMes").click(() => {
 
 generarCalendario(fechaActual);
 
-document
-    .getElementById("btnExportarImagen")
-    .addEventListener("click", function () {
-        const calendario = document.querySelector(".calendar-grid");
+document.getElementById("btnExportarImagen").addEventListener("click", function () {
+    const calendario = document.querySelector(".calendar-grid");
 
-        const width = calendario.scrollWidth;
-        const height = calendario.scrollHeight;
+    const width = calendario.scrollWidth;
+    const height = calendario.scrollHeight;
 
-        html2canvas(calendario, {
-            scale: 4, // Ultra HD
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: "#ffffff",
-            width: width,
-            height: height,
-            windowWidth: width,
-            windowHeight: height,
+    html2canvas(calendario, {
+        scale: 4, 
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: "#ffffff",
+        width: width,
+        height: height,
+        windowWidth: width,
+        windowHeight: height,
 
-            onclone: function (clonedDoc) {
-                const clonedCalendar =
-                    clonedDoc.querySelector(".calendar-grid");
+        onclone: function (clonedDoc) {
+            const clonedCalendar = clonedDoc.querySelector(".calendar-grid");
 
-                // ===== FIX layout =====
-                clonedCalendar.style.width = width + "px";
-                clonedCalendar.style.maxWidth = "none";
+            clonedCalendar.style.backgroundColor = "#ffffff";
+            clonedCalendar.style.width = width + "px";
+            clonedCalendar.style.maxWidth = "none";
 
-                // ===== FIX eventos (texto + color) =====
-                clonedDoc.querySelectorAll(".event-item").forEach((el) => {
-                    const style = window.getComputedStyle(el);
+            const originalEvents = document.querySelectorAll(".event-item");
+            const clonedEvents = clonedDoc.querySelectorAll(".event-item");
 
-                    // Forzar estilos inline (html2canvas ama esto)
-                    el.style.backgroundColor = style.backgroundColor;
-                    el.style.color = style.color;
-                    el.style.borderRadius = style.borderRadius;
-                    el.style.fontWeight = "600";
-                    el.style.opacity = "1";
-                });
+            clonedEvents.forEach((el, index) => {
+                const originalStyle = window.getComputedStyle(originalEvents[index]);
+                
+                el.style.backgroundColor = originalStyle.backgroundColor;
+                el.style.color = originalStyle.color;
+                el.style.borderColor = originalStyle.borderColor;
+                el.style.borderStyle = "solid";
+                el.style.borderRadius = originalStyle.borderRadius;
+                el.style.fontWeight = "600";
+                el.style.display = "block";
+                el.style.opacity = "1";
+            });
 
-                // ===== FIX tipografías =====
-                clonedDoc.body.style.fontFamily = window.getComputedStyle(
-                    document.body,
-                ).fontFamily;
-            },
-        }).then((canvas) => {
-            const link = document.createElement("a");
-            const fecha = new Date().toISOString().slice(0, 10);
-
-            link.download = `calendario_turnos_${fecha}_ULTRA.png`;
-            link.href = canvas.toDataURL("image/png", 1.0);
-            link.click();
-        });
+            clonedDoc.body.style.fontFamily = window.getComputedStyle(document.body).fontFamily;
+        }
+    }).then((canvas) => {
+        const link = document.createElement("a");
+        const fecha = new Date().toISOString().slice(0, 10);
+        link.download = `calendario_turnos_${fecha}_ULTRA.png`;
+        link.href = canvas.toDataURL("image/png", 1.0);
+        link.click();
     });
+});

@@ -34,11 +34,11 @@
                             </button>
                         </div>
 
-                        <div class="col-xl-auto col-lg-auto col-md-4 col-3">
+                        <!--<div class="col-xl-auto col-lg-auto col-md-4 col-3">
                             <button type="button" id="btnExportarPdf" class="btn btn-peligro w-100">
                                 <i class="fa-solid fa-file-pdf"></i>
                             </button>
-                        </div>
+                        </div>-->
 
                         <div class="col-xl-auto col-lg-auto col-md-4 col-3">
                             <button type="button" id="btnExportarImagen" class="btn btn-terciario w-100">
