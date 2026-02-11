@@ -69,44 +69,122 @@ class CalidadController extends Controller
         $sheet = IOFactory::load($file)->getActiveSheet();
         $rows = $sheet->toArray();
 
-        $headers = $rows[0];
+        if (count($rows) < 2) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'El archivo no contiene datos suficientes'
+            ]);
+        }
 
-        $resultados = [];
+        // Normalizar headers
+        $headers = array_map(function ($h) {
+            return trim(mb_strtoupper($h, 'UTF-8'));
+        }, $rows[0]);
 
-        foreach ($headers as $col => $pregunta) {
+        // Mapeo de columnas por nombre
+        $map = [
+            'numero_atencion' => array_search('Nº ATENCIÓN', $headers),
+            'fecha_atencion' => array_search('FECHA ATENCIÓN', $headers),
+            'fecha_encuesta' => array_search('FECHA ENCUESTA', $headers),
+            'paciente' => array_search('PACIENTE', $headers),
+            'obra_social' => array_search('OBRA SOCIAL', $headers),
+            'plan' => array_search('PLAN', $headers),
+            'area' => array_search('AREA', $headers),
+            'cama' => array_search('CAMA', $headers),
+            'tipo_internacion' => array_search('TIPO INTERNACIÓN', $headers),
+        ];
 
-            // limpiar encabezado
-            $pregunta = trim($pregunta);
+        $columnasContexto = array_filter($map, fn($v) => $v !== false);
 
-            if ($pregunta == "") continue;
+        sort($columnasContexto);
 
-            $positivas = 0;
-            $negativas = 0;
-            $sinResp = 0;
+        $ultimoIndiceContexto = max($columnasContexto);
 
-            for ($i = 1; $i < count($rows); $i++) {
+        $indicesPreguntas = [];
 
-                $valor = strtoupper(trim($rows[$i][$col]));
+        for ($i = $ultimoIndiceContexto + 1; $i < count($headers); $i++) {
+            $indicesPreguntas[] = $i;
+        }
 
-                if ($valor == "SI") {
-                    $positivas++;
-                } else if ($valor == "NO") {
-                    $negativas++;
-                } else {
-                    $sinResp++;
-                }
+        $indicesPreguntas = [];
+        foreach ($headers as $i => $h) {
+            if (!in_array($i, $columnasContexto)) {
+                $indicesPreguntas[] = $i;
             }
+        }
 
-            $resultados[] = [
-                'pregunta' => $pregunta,
-                'positivas' => $positivas,
-                'negativas' => $negativas,
-                'sinResp' => $sinResp
+        $idTipoEncuesta = (int) $request->input('idTipoEncuesta');
+
+        $preguntasDB = DB::table('preguntas_encuestas')
+            ->where('idTipoEncuesta', $idTipoEncuesta)
+            ->orderBy('orden')
+            ->get();
+
+        if ($preguntasDB->count() === 0) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'No hay preguntas configuradas para este tipo de encuesta'
+            ], 422);
+        }
+
+        if (count($indicesPreguntas) !== $preguntasDB->count()) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Cantidad de preguntas del Excel (' . count($indicesPreguntas) . ') no coincide con la configuración (' . $preguntasDB->count() . ').'
+            ], 422);
+        }
+
+        $registros = [];
+
+        for ($i = 1; $i < count($rows); $i++) {
+
+            $fila = $rows[$i];
+            if (empty(array_filter($fila))) continue;
+
+            // contexto
+            $contexto = [
+                'numeroAtencion' => $fila[$map['numero_atencion']] ?? null,
+                'fechaAtencion' => $fila[$map['fecha_atencion']] ?? null,
+                'fechaEncuesta' => $fila[$map['fecha_encuesta']] ?? null,
+                'paciente' => $fila[$map['paciente']] ?? null,
+                'obraSocial' => $fila[$map['obra_social']] ?? null,
+                'plan' => $fila[$map['plan']] ?? null,
+                'area' => $map['area'] !== false ? ($fila[$map['area']] ?? null) : null,
+                'cama' => $map['cama'] !== false ? ($fila[$map['cama']] ?? null) : null,
+                'tipoInternacion' => $map['tipo_internacion'] !== false ? ($fila[$map['tipo_internacion']] ?? null) : null,
             ];
+
+            // respuestas (1 registro por pregunta)
+            foreach ($indicesPreguntas as $idx => $colIndex) {
+
+                $preg = $preguntasDB[$idx]; // mismo orden
+
+                $valorRaw = trim((string)($fila[$colIndex] ?? ''));
+
+                $registros[] = [
+                    'idPregunta' => $preg->idPregunta,
+                    'numeroAtencion' => $contexto['numeroAtencion'],
+                    'fechaAtencion' => $contexto['fechaAtencion'],
+                    'fechaEncuesta' => $contexto['fechaEncuesta'],
+                    'paciente' => $contexto['paciente'],
+                    'obraSocial' => $contexto['obraSocial'],
+                    'plan' => $contexto['plan'],
+                    'area' => $contexto['area'],
+                    'cama' => $contexto['cama'],
+                    'tipoInternacion' => $contexto['tipoInternacion'],
+                    'valorNumerico' => $preg->tipoRespuesta === 'NUMERICA' && is_numeric($valorRaw) ? (int)$valorRaw : null,
+                    'valorTexto' => $preg->tipoRespuesta === 'TEXTO' ? $valorRaw : null,
+                ];
+            }
         }
 
         return response()->json([
-            'data' => $resultados
+            'ok' => true,
+            'idTipoEncuesta' => $idTipoEncuesta,
+            'filasExcel' => count($rows) - 1,
+            'preguntasDetectadas' => count($indicesPreguntas),
+            'registrosGenerados' => count($registros),
+            'muestra' => array_slice($registros, 0, 5),
         ]);
     }
 }

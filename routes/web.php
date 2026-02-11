@@ -174,6 +174,8 @@ Route::get('/encuestas/tipos', [CalidadController::class, 'listarTiposEncuestas'
     ->name('encuestas.tipos');
 
 Route::post('/encuestas/importar', [CalidadController::class, 'importarExcel']);
+Route::post('/encuestas/procesar', [CalidadController::class, 'procesarExcel']);
+
 
 
 //cronograma

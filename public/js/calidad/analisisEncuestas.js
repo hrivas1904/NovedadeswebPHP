@@ -25,25 +25,86 @@ function cargarTipoEncuestas() {
     });
 }
 
-function renderExcelPreview(headers, rows){
+$("#btnImportar").click(function () {
+
+    let file = $("#excelFile")[0].files[0];
+    let tipo = $("#selectTipoEncuesta").val();
+
+    if (!file) {
+        Swal.fire({
+            icon: "warning",
+            title: "Atención",
+            text: "Debe seleccionar un archivo"
+        });
+        return;
+    }
+
+    if (!tipo) {
+        Swal.fire({
+            icon: "warning",
+            title: "Atención",
+            text: "Debe seleccionar un tipo de encuesta"
+        });
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("excel", file);
+    formData.append("idTipoEncuesta", tipo);
+    formData.append("_token", $('meta[name="csrf-token"]').attr("content"));
+
+    console.log("Enviando tipo:", tipo);
+
+    $.ajax({
+        url: "/encuestas/procesar",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+
+            console.log("PREPROCESAMIENTO OK:", res);
+
+            renderExcelPreview(res.headers, res.rows);
+
+            Swal.fire({
+                icon: "success",
+                title: "Archivo procesado",
+                text: "Preprocesamiento correcto"
+            });
+        },
+        error: function (err) {
+
+            console.log("STATUS:", err.status);
+            console.log("RESPONSE:", err.responseJSON);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: err.responseJSON?.mensaje ?? "Error procesando archivo"
+            });
+        }
+    });
+
+});
+
+function renderExcelPreview(headers, rows) {
 
     let table = $("#tablaExcel");
     table.empty();
 
-    // HEAD
     let thead = "<thead><tr>";
-    headers.forEach(h=>{
+    headers.forEach((h) => {
         thead += `<th>${h}</th>`;
     });
     thead += "</tr></thead>";
 
-    // BODY
     let tbody = "<tbody>";
 
-    rows.forEach(r=>{
+    rows.forEach((r) => {
         tbody += "<tr>";
-        r.forEach(c=>{
-            tbody += `<td>${c ?? ''}</td>`;
+        r.forEach((c) => {
+            tbody += `<td>${c ?? ""}</td>`;
         });
         tbody += "</tr>";
     });
@@ -52,52 +113,3 @@ function renderExcelPreview(headers, rows){
 
     table.append(thead + tbody);
 }
-
-//importar excel
-$("#btnImportar").click(function () {
-
-    let file = $("#excelFile")[0].files[0];
-
-    if (!file) {
-        Swal.fire({
-                icon: "warning",
-                title: "Atención",
-                text: "Debe seleccionar un archivo"
-            });
-        return;
-    }
-
-    let formData = new FormData();
-    formData.append("excel", file);
-    formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
-
-
-    $.ajax({
-        url: "/encuestas/importar",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (res) {
-
-            console.log("EXCEL IMPORTADO:", res);
-            renderExcelPreview(res.headers, res.rows);
-            Swal.fire({
-                icon: "success",
-                title: "Archivo importado",
-                text: "El archivo fue leído correctamente"
-            });
-        },
-        error: function (err) {
-            console.error(err);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Error leyendo archivo"
-            });
-        }
-    });
-
-});
-
-

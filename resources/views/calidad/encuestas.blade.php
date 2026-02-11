@@ -15,6 +15,10 @@
                 <button id="btnImportar" class="btn-primario">
                     Importar Excel
                 </button>
+                <button id="btnProcesar" class="btn btn-primary">
+                    Procesar estructura
+                </button>
+
             </div>
             <div class="col-auto">
                 <select id="selectTipoEncuesta" class="form-control"></select>
@@ -27,31 +31,14 @@
         </div>
 
         <div class="container-fluid my-3 empleado-box p-3">
-            <h5 class="fw-bold mb-3">Resultados del Análisis</h5>
+            <h5 class="fw-bold mb-3">Previsualización del archivo</h5>
             <form id="formGuardarResultados">
-                <div class="row d-flex gap-3">
-                    <div class="col-lg-2">
-                        <label class="label-control">Tipo de encuesta</label>
-                        <input id="inputTipoEncuesta" class="form-control" type="text"></input>
-                    </div>
-                    <div class="col-lg-2">
-                        <label class="label-control">Desde</label>
-                        <input id="inputFechaDesde" class="form-control" type="date"></input>
-                    </div>
-                    <div class="col-lg-2">
-                        <label class="label-control">Hasta</label>
-                        <input id="inputFechaHasta" class="form-control" type="date"></input>
-                    </div>
-                </div>
-
                 <div class="row d-flex gap-3 mx-auto my-4">
                     <table id="tablaExcel" class="table table-striped table-bordered table-hover align-middle nowrap">
                         <thead>
-                            <th>Pregunta</th>
-                            <th>Rtas Positivas</th>
-                            <th>Rtas Negativas</th>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                        </tbody>
                     </table>
                 </div>
             </form>
