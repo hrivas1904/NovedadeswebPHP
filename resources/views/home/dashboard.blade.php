@@ -38,7 +38,7 @@
                                 <i class="fa-solid fa-file-pdf"></i> Exportar PDF
                             </button>
                         </div>
-                        <div class="col-md-auto d-flex">
+                        <div class="col-md-auto d-flex d-none">
                             <button id="btnImprimirDashboard" class=btn-terciario flex-grow-1">
                                 <i class="fa-solid fa-print"></i> Imprimir
                             </button>
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div class="col-xl-auto col-lg-auto col-md-4 col-6">
+        <div class="col-xl-2 col-lg-auto col-md-4 col-6">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Colaboradores de baja</div>
@@ -78,7 +78,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+        <div class="col-xl-2 col-lg-3 col-md-4 col-6">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Total novedades</div>
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <div class="col-xl-auto col-lg-auto col-md-4 col-6">
+        <div class="col-xl-2 col-lg-auto col-md-4 col-6">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Más frecuente</div>

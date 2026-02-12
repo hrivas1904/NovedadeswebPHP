@@ -39,13 +39,13 @@
             border-radius: 20px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             width: 100%;
-            max-width: 420px;
+            max-width: 550px;
             border: 1px solid rgba(226, 232, 240, 0.8);
         }
 
         .login-logo {
             display: block;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 1.6rem;
             max-width: 180px;
         }
 
@@ -68,7 +68,7 @@
 
         /* Estilos modernos para los inputs */
         .form-label {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: #475569;
             margin-bottom: 0.5rem;
@@ -78,7 +78,7 @@
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             padding: 0.75rem 1rem;
-            font-size: 0.95rem;
+            font-size: 1rem;
             transition: all 0.2s;
         }
 
@@ -166,9 +166,9 @@
 
     <div class="login-card">
         <div class="login-header">
-            <img src="{{ asset('img/logo1.png') }}" alt="Empresa Logo" class="login-logo">
-            <h2>Bienvenido</h2>
-            <p>Por favor, ingresa usuario y contraseña</p>
+            <img src="{{ asset('img/logo_2.png') }}" alt="Empresa Logo" class="login-logo">
+            <!--<h2>Bienvenido</h2>
+            <p>Por favor, ingresa usuario y contraseña</p>-->
         </div>
 
         @if ($errors->any())
