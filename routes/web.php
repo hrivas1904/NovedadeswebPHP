@@ -151,14 +151,9 @@ Route::get('/novedades/lista', [NovedadesController::class, 'listar']);
 Route::get('/novedades/verDetalleRegistroNovedad/{idRegistro}', [NovedadesController::class, 'verDetalleRegistroNovedad']);
 
 //mensajes
-Route::post('/notificaciones/publicar', 
-[NotificacionController::class, 'registrarNovedad'])
-->middleware('auth');
-
-Route::get('/notificaciones/lista',
-[NotificacionController::class, 'listarNotificaciones'])
-->middleware('auth')
-->name('notificaciones.lista');
+Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');
+Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->middleware('auth')->name('notificaciones.lista');
+Route::post('/notificaciones/borrar', [NotificacionController::class, 'eliminarNotificacion']);
 
 //calidad
 Route::get('/encuestasCalidad', [CalidadController::class, 'encuestasCalidad'])

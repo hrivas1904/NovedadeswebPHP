@@ -68,4 +68,38 @@ class NotificacionController extends Controller
             ], 500);
         }
     }
+
+    public function eliminarNotificacion(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'idNotificacion' => 'required|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'El ID de notificación es obligatorio'
+            ], 422);
+        }
+
+        try {
+            DB::statement(
+                "CALL SP_ELIMINAR_NOTIFICACION(?, @p_mensaje)",
+                [$request->idNotificacion]
+            );
+
+            $resultado = DB::select("SELECT @p_mensaje AS mensaje");
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => $resultado[0]->mensaje
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al eliminar la notificación',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

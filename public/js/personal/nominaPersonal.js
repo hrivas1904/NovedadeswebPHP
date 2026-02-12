@@ -790,7 +790,6 @@ $(document).ready(function () {
                     d.categ_id = $("#filtroCategoria").val() || null;
                     d.p_regimen = $("#filtroRegimen").val() || null;
                     d.p_convenio = $("#filtroConvenio").val() || null;
-                    d.p_estado = $("#filtroEstado").val() || null;
                 },
             },
             autoWidth: true,

@@ -23,9 +23,7 @@
 
                         <select id="filtroCategoria" class="form-select js-select-categFiltro" style="width:auto;"></select>
                         <select id="filtroRegimen" class="form-select js-select-regFiltro" style="width:auto;"></select>
-                        <select id="filtroConvenio" class="form-select js-select-convenioFiltro"
-                            style="width:auto;"></select>
-                        <select id="filtroEstado" class="form-select js-select-estadoFiltro" style="width:auto;"></select>
+                        <select id="filtroConvenio" class="form-select js-select-convenioFiltro" style="width:auto;"></select>
 
                         <button type="button" id="btn-limpiar-filtros" class="btn-secundario">
                             <i class="fa-solid fa-eraser"></i> Limpiar

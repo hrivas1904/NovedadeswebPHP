@@ -228,13 +228,12 @@ class PersonalController extends Controller
         try {
             $areaId    = $request->area_id ?: null;
             $categId   = $request->categ_id ?: null;
-            $estado    = $request->p_estado ?: null;
             $convenio  = $request->p_convenio ?: null;
             $regimen   = $request->p_regimen ?: null;
 
             $empleados = DB::select(
-                "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?)",
-                [$areaId, $categId, $estado, $convenio, $regimen]
+                "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?)",
+                [$areaId, $categId, $convenio, $regimen]
             );
 
             return response()->json([

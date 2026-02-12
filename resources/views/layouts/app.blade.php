@@ -56,13 +56,13 @@
                     <i class="bx bx-chevron-down arrow"></i>
                 </label>
                 <ul class="sub-menu">
-                    <li><a href="{{ route('nominaPersonal') }}">Nómina de Personal</a></li>
-                    @if (Auth::user()->rol === 'Administrador/a')
-                    <!--<li><a href="{{ route('registroAsistencia') }}">Registro de Asistencia</a></li>-->
-                    <!--<li><a href="{{ route('controlAsistencia') }}">Control de Asistencia</a></li>-->
-                    <!--<li><a href="{{ route('cronogramaPersonal') }}">Cronograma del Personal</a></li>-->                    
+                    <li><a href="{{ route('nominaPersonal') }}">Personal activo</a></li>
+                    <li><a href="#">Personal de baja</a></li>
+                    @if (Auth::user()->rol === 'Administrador/a')                 
                     @endif
-                    <li><a href="{{ route('calendarioServicios') }}"">Calendario de Servicios</a></li>
+                    <li><a href="{{ route('calendarioServicios') }}">Calendario de Servicios</a></li>
+                    <li><a href="#">Encuestas de Clima Laboral</a></li>
+                    <li><a href="#">Evaluaciones de Desempeño</a></li>
                 </ul>
                 <span class="tooltip">Personal</span>
             </li>
