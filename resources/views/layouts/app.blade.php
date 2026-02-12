@@ -14,145 +14,88 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+        integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.css">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <!--<link rel="stylesheet" href="{{ asset('css/style.css') }}">-->
     <link rel="stylesheet" href="{{ asset('css/styleDt.css') }}">
     <link rel="stylesheet" href="{{ asset('css/botones.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modales.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cronograma.css') }}">
     <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
 
 </head>
 
 <body>
-    <div class="sidebar">
-        <div class="logo_details">
-            <a href="{{ route('index') }}" class="logo-link">
-                <img src="{{ asset('img/logo_2.png') }}" alt="Logo" class="logo-img">
-            </a>
-            <i class="bx bx-menu" id="btn"></i>
-        </div>
-
-        <ul class="nav-list">
-            @if (Auth::user()->rol === 'Administrador/a')
-            <li>
-                <a href="{{ route('dashboard') }}">
-                    <i class="bx bx-grid-alt"></i>
-                    <span class="link_name">Dashboard</span>
+    <nav class="navbar-top">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="{{ route('index') }}">
+                    <img src="{{ asset('img/logo_2.png') }}" alt="Logo">
                 </a>
-                <span class="tooltip">Dashboard</span>
-            </li>
-            @endif
-
-            <li class="submenu">
-                <input type="checkbox" id="menu-personal">
-                <label for="menu-personal">
-                    <i class="bx bx-user"></i>
-                    <span class="link_name">Gestión del personal</span>
-                    <i class="bx bx-chevron-down arrow"></i>
-                </label>
-                <ul class="sub-menu">
-                    <li><a href="{{ route('nominaPersonal') }}">Personal activo</a></li>
-                    <li><a href="#">Personal de baja</a></li>
-                    @if (Auth::user()->rol === 'Administrador/a')                 
-                    @endif
-                    <li><a href="{{ route('calendarioServicios') }}">Calendario de Servicios</a></li>
-                    <li><a href="#">Encuestas de Clima Laboral</a></li>
-                    <li><a href="#">Evaluaciones de Desempeño</a></li>
-                </ul>
-                <span class="tooltip">Personal</span>
-            </li>
-
-
-            <li class="submenu">
-                <input type="checkbox" id="menu-novedades">
-                <label for="menu-novedades">
-                    <i class="bx bx-folder"></i>
-                    <span class="link_name">Novedades</span>
-                    <i class="bx bx-chevron-down arrow"></i>
-                </label>
-                <ul class="sub-menu">
-                    <li><a href="{{ route('controlNovedades') }}">Control de Novedades</a></li>
-                    @if (Auth::user()->rol === 'Administrador/a')
-                    <li><a href="{{ route('configNovedades') }}">Configuración de Novedades</a></li>
-                    @endif
-                </ul>
-                <span class="tooltip">Novedades</span>
-            </li>
-
-            <li class="submenu">
-                <input type="checkbox" id="menu-calidad">
-                <label for="menu-calidad">
-                    <i class='bx  bx-badge-check'></i>
-                    <span class="link_name">Gestión de calidad</span>
-                    <i class="bx bx-chevron-down arrow"></i>
-                </label>
-                <ul class="sub-menu">
-                    <li><a href="{{ route('dashboardCalidad') }}">Dashboard de SGC</a></li>
-                    <li><a href="{{ route('cmiCalidad') }}">CMI - BSC</a></li>                    
-                    <li><a href="{{ route('encuestasCalidad') }}">Análisis de encuestas</a></li>
-                </ul>
-                <span class="tooltip">Calidad</span>
-            </li>
-
-            @if (Auth::user()->rol === 'Administrador/a')
-            <li class="submenu">
-                <input type="checkbox" id="menu-config">
-                <label for="menu-config">
-                    <i class="bx bx-cog"></i>
-                    <span class="link_name">Configuraciones</span>
-                    <i class="bx bx-chevron-down arrow"></i>
-                </label>
-                <ul class="sub-menu">
-                    <li><a href="{{ route('ajustes') }}">Configuraciones</a></li>
-                    <li><a href="#">Usuarios y Permisos</a></li>
-                </ul>
-                <span class="tooltip">Configuraciones</span>
-            </li>
-            @endif
-
-            <li>
-                <a href="{{ route('ayuda') }}">
-                    <i class='bx  bx-help-circle'></i>
-                    <span class="link_name">Ayuda</span>
-                </a>
-                <span class="tooltip">Ayuda</span>
-            </li>
-
-            <div class="branding-footer">
-                <div class="branding-profile-box">
-                    <div class="branding-user-details">
-                        <span class="branding-user-name">{{ Auth::user()->name }}</span>
-
-                        <span class="branding-user-role">
-                            {{ Auth::user()->rol }}
-                        </span>
-
-                        <span class="branding-user-role">
-                            @if (Auth::user()->area)
-                            {{ Auth::user()->area->NOMBRE }}
-                            @else
-                            @endif
-                        </span>
-                    </div>
-
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-
-                    <button type="button" class="branding-logout-trigger"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class='bx bx-log-out'></i>
-                    </button>
-                </div>
             </div>
-        </ul>
-    </div>
-    <section class="home-section px-2 py-3">
+
+            <ul class="nav-links">
+                @if (Auth::user()->rol === 'Administrador/a')
+                    <li>
+                        <a href="{{ route('dashboard') }}"><i class="bx bx-grid-alt"></i> Dashboard</a>
+                    </li>
+                @endif
+
+                <li class="nav-dropdown">
+                    <a href="javascript:void(0)" class="dropbtn"><i class="bx bx-user"></i> Personal <i
+                            class="bx bx-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="{{ route('nominaPersonal') }}">Personal activo</a>
+                        <a href="#">Personal de baja</a>
+                        <a href="{{ route('calendarioServicios') }}">Calendario</a>
+                    </div>
+                </li>
+
+                <li class="nav-dropdown">
+                    <a href="javascript:void(0)" class="dropbtn"><i class="bx bx-folder"></i> Novedades <i
+                            class="bx bx-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="{{ route('controlNovedades') }}">Control</a>
+                        @if (Auth::user()->rol === 'Administrador/a')
+                            <a href="{{ route('configNovedades') }}">Configuración</a>
+                        @endif
+                    </div>
+                </li>
+
+                <li class="nav-dropdown">
+                    <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
+                            class="bx bx-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="{{ route('dashboardCalidad') }}">Dashboard SGC</a>
+                        <a href="{{ route('cmiCalidad') }}">CMI - BSC</a>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="nav-profile">
+                <div class="user-info">
+                    <span class="user-name">{{ Auth::user()->name }}</span>
+                    <span class="user-role">{{ Auth::user()->rol }}</span>
+                </div>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    class="logout-btn">
+                    <i class='bx bx-log-out'></i>
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf
+                </form>
+            </div>
+
+            <i class='bx bx-menu mobile-menu-btn' id="mobile-btn"></i>
+        </div>
+    </nav>
+
+    <section class="home-section 2 py-3">
         @yield('content')
     </section>
 
@@ -161,14 +104,16 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="{{ asset('js/navbar.js') }}"></script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.bootstrap5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
