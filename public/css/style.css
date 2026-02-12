@@ -66,7 +66,7 @@ html, body {
     font-family: "Poppins", sans-serif;
 }
 
-.sidebar {
+/*.sidebar {
     min-height: 100vh;
     width: 78px;
     padding: 6px 14px;
@@ -352,7 +352,7 @@ html, body {
 .sidebar.open ~ .home-section {
     left: 250px;
     width: calc(100% - 250px);
-}
+}*/
 
 /* ====== BOOTSTRAP RESET PARA SIDEBAR ====== */
 

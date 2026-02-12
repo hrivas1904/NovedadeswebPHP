@@ -20,7 +20,6 @@
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.css">
-    <!--<link rel="stylesheet" href="{{ asset('css/style.css') }}">-->
     <link rel="stylesheet" href="{{ asset('css/styleDt.css') }}">
     <link rel="stylesheet" href="{{ asset('css/botones.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modales.css') }}">
@@ -82,6 +81,13 @@
                 <div class="user-info">
                     <span class="user-name">{{ Auth::user()->name }}</span>
                     <span class="user-role">{{ Auth::user()->rol }}</span>
+                    <span class="branding-user-role user-area">
+                        @if (Auth::user()->area)
+                            {{ Auth::user()->area->NOMBRE }}
+                        @else
+                        @endif
+
+                        </span>
                 </div>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     class="logout-btn">
@@ -95,7 +101,7 @@
         </div>
     </nav>
 
-    <section class="home-section 2 py-3">
+    <section class="home-section py-3" style="padding: 90px 30px 30px 30px;">
         @yield('content')
     </section>
 

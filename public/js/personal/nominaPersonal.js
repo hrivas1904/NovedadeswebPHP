@@ -796,7 +796,7 @@ $(document).ready(function () {
             scrollX: false,
             paging: false,
             scrollCollapse: true,
-            scrollY: "65vh",
+            scrollY: "60vh",
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
             },
@@ -824,6 +824,7 @@ $(document).ready(function () {
                 {
                     data: "ESTADO",
                     width: "3%",
+                    orderable: false,
                     className: "text-center",
                     render: function (data) {
                         let clase =
@@ -891,7 +892,7 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom: "<'d-top d-flex align-items-center gap-2 mt-1'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-start'i>",
+            dom: "<'d-top d-flex align-items-center gap-2 mt-1'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-center'i>",
             buttons: [
                 {
                     extend: "excelHtml5",
