@@ -34,6 +34,11 @@ class PersonalController extends Controller
         return view('personal.configuraciones');
     }
 
+    public function nominaPersonalBaja()
+    {
+        return view('personal.personalBaja');
+    }
+
     public function listarAreas()
     {
         try {
@@ -148,7 +153,7 @@ class PersonalController extends Controller
             CALL SP_INSERTAR_EMPLEADO(
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, 
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, ?, ?, ?, @mensaje
+                ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?, @mensaje
             )
         ", [
                 // 01
@@ -204,7 +209,14 @@ class PersonalController extends Controller
                 // 26
                 $request->estado,
                 // 27
-                $request->tipo_contrato
+                $request->tipo_contrato,
+
+                $request->persona_emerg1,
+                $request->contacto_emerg1,
+                $request->parentesco_emerg1,
+                $request->persona_emerg2,
+                $request->contacto_emerg2,
+                $request->parentesco_emerg2
             ]);
 
             $resultado = DB::select("SELECT @mensaje AS mensaje");
@@ -213,6 +225,29 @@ class PersonalController extends Controller
                 'success' => true,
                 'mensaje' => $resultado[0]->mensaje
             ]);
+
+            if ($resultado === 'Colaborador registrado correctamente') {
+
+                $legajo = DB::table('EMPLEADOS')->where('DNI', $request->p_DNI)->value('legajo');
+
+                if ($request->has('hijo_nombre')) {
+                    foreach ($request->hijo_nombre as $index => $nombreHijo) {
+                        if (!empty($nombreHijo)) {
+                            DB::table('familiaresxcolaborador')->insert([
+                                'legajo'     => $legajo,
+                                'nombre'     => $nombreHijo,
+                                'parentesco' => 'Hijo/a' // O puedes pasarlo desde el front
+                            ]);
+                        }
+                    }
+                }
+
+                DB::commit();
+                return response()->json(['success' => true, 'mensaje' => $mensajeSP]);
+            } else {
+                DB::rollBack();
+                return response()->json(['success' => false, 'mensaje' => $mensajeSP]);
+            }
         } catch (\Exception $e) {
 
             return response()->json([
@@ -233,6 +268,30 @@ class PersonalController extends Controller
 
             $empleados = DB::select(
                 "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?)",
+                [$areaId, $categId, $convenio, $regimen]
+            );
+
+            return response()->json([
+                'data' => $empleados
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function listarPersonalBaja(Request $request)
+    {
+        try {
+            $areaId    = $request->area_id ?: null;
+            $categId   = $request->categ_id ?: null;
+            $convenio  = $request->p_convenio ?: null;
+            $regimen   = $request->p_regimen ?: null;
+
+            $empleados = DB::select(
+                "CALL SP_LISTA_EMPLEADOS_BAJA(?, ?, ?, ?)",
                 [$areaId, $categId, $convenio, $regimen]
             );
 

@@ -51,7 +51,7 @@
                             class="bx bx-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <a href="{{ route('nominaPersonal') }}">Personal activo</a>
-                        <a href="#">Personal de baja</a>
+                        <a href="{{ route('nominaPersonalBaja') }}"">Personal de baja</a>
                         <a href="{{ route('calendarioServicios') }}">Calendario</a>
                     </div>
                 </li>

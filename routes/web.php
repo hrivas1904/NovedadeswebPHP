@@ -19,6 +19,9 @@ Route::get('/dashboard', [HomeController::class, 'dashboard'])
 Route::get('/nomina', [PersonalController::class, 'nominaPersonal'])
     ->name('nominaPersonal');
 
+Route::get('/nominaPersonalBaja', [PersonalController::class, 'nominaPersonalBaja'])
+    ->name('nominaPersonalBaja');
+
 Route::get('/cronograma', [PersonalController::class, 'cronogramaPersonal'])
     ->name('cronogramaPersonal');
 
@@ -29,7 +32,7 @@ Route::get('/controlAsistencia', [PersonalController::class, 'controlAsistencia'
     ->name('controlAsistencia');
 
 Route::get('/configuraciones', [PersonalController::class, 'configuraciones'])
-->name('configuraciones');
+    ->name('configuraciones');
 
 
 Route::get('/registroNovedades', [NovedadesController::class, 'registroNovedades'])
@@ -68,13 +71,13 @@ Route::get('/categorias-empleados/lista', [PersonalController::class, 'listarCat
     ->name('categorias.lista');
 
 Route::get('/convenios/lista', [PersonalController::class, 'listarTipoConvenio'])
-->name('convenios.lista');
+    ->name('convenios.lista');
 
 Route::get('/regimenes/lista', [PersonalController::class, 'listarRegimenes'])
-->name('regimenes.lista');
+    ->name('regimenes.lista');
 
 Route::get('/estados/lista', [PersonalController::class, 'listarEstados'])
-->name('estados.lista');
+    ->name('estados.lista');
 
 Route::get('/roles-empleados/por-categoria/{id}', [PersonalController::class, 'listarRolesXCategoria'])
     ->name('roles.lista');
@@ -87,6 +90,9 @@ Route::post('/personal/guardar', [PersonalController::class, 'store'])
 
 Route::get('/personal/listar', [PersonalController::class, 'listar'])
     ->name('personal.listar');
+
+Route::get('/personal/listarPersonalBaja', [PersonalController::class, 'listarPersonalBaja'])
+    ->name('personal.listarPersonalBaja');
 
 Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLegajo']);
 
@@ -113,7 +119,7 @@ Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])
 Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
     ->name('novedades.data');
 
-Route::post('/novedades/registrar',[NovedadesController::class, 'registrarNovedad'])->name('novedades.store');
+Route::post('/novedades/registrar', [NovedadesController::class, 'registrarNovedad'])->name('novedades.store');
 
 
 Route::get('/novedades/listarNovedadesPorArea', [NovedadesController::class, 'listarNovedadesPorArea'])
@@ -125,12 +131,13 @@ Route::get(
 )->name('personal.info');
 
 Route::get('/novedades/{codigo}', [NovedadesController::class, 'verNovedad'])
-     ->whereNumber('codigo');
+    ->whereNumber('codigo');
 
 
 Route::post('/novedades/alta-novedad', [NovedadesController::class, 'altaNuevaNovedad']);
 
-Route::post('/novedades/subir-comprobante', 
+Route::post(
+    '/novedades/subir-comprobante',
     [NovedadesController::class, 'subirComprobante']
 )->name('novedades.subirComprobante');
 
@@ -194,4 +201,3 @@ Route::get('/dashboard/novedades-por-mes', [DashboardController::class, 'novedad
 Route::get('/dashboard/top-empleados-novedades', [DashboardController::class, 'topEmpleadosNovedades']);
 Route::get('/dashboard/historico-colaboradores', [DashboardController::class, 'historicoColaboradores']);
 Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotacional']);
-

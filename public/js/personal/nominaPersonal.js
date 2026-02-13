@@ -588,14 +588,14 @@ function editEmpleados(legajoColaborador, nombre) {
                 );
                 $("#inputEditFechaEgreso").val(d.FECHA_EGRESO);
                 $("#areaEdit").val(d.ID_AREA);
-                $("#inputServicio").val(d.SERVICIO);
-                $("#inputConvenio").val(d.CONVENIO);
-                $("#inputCategoria").val(d.CATEGORIA);
-                $("#inputRol").val(d.ROL);
-                $("#inputRegimen").val(d.REGIMEN);
-                $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
-                $("#inputCordinador").val(d.COORDINADOR);
-                $("#inputAfiliado").val(d.AFILIADO);
+                $("#inputEditServicio").val(d.SERVICIO);
+                $("#inputEditConvenio").val(d.CONVENIO);
+                $("#inputEditCategoria").val(d.CATEGORIA);
+                $("#inputEditRol").val(d.ROL);
+                $("#inputEditRegimen").val(d.REGIMEN);
+                $("#inputEditHorasDiarias").val(d.HORAS_DIARIAS);
+                $("#inputEditCordinador").val(d.COORDINADOR);
+                $("#inputEditAfiliado").val(d.AFILIADO);
 
                 $("#modalEditColaborador").modal("show");
             } else {
@@ -1583,17 +1583,14 @@ $("#btnAgregarHijo").on("click", function () {
     $("#divHijos").removeAttr("hidden");
 
     const html = `
-        <div class="row d-flex">
-            <div class="col-lg-6">
+        <div class="row d-flex mb-2 fila-hijo"> <div class="col-lg-3">
                 <label class="form-label">Nombre y Apellido</label>
-                <input type="text" name="hijo_nombre[]" 
-                    class="form-control">
+                <input type="text" name="hijos[][nombre]" class="form-control" required>
             </div>
 
             <div class="col-lg-2">
                 <label class="form-label">DNI</label>
-                <input type="text" name="hijo_dni[]" 
-                    class="form-control">
+                <input type="text" name="hijos[][dni]" class="form-control" required>
             </div>
 
             <div class="col-lg-2 d-flex align-items-end">
@@ -1607,8 +1604,12 @@ $("#btnAgregarHijo").on("click", function () {
     $("#divHijos").append(html);
 });
 
+// Lógica de borrado mucho más limpia
 $(document).on("click", ".btnQuitarHijo", function () {
-    $(this).closest(".col-lg-2").prev().prev().remove();
-    $(this).closest(".col-lg-2").prev().remove();
-    $(this).closest(".col-lg-2").remove();
+    $(this).closest(".fila-hijo").remove();
+    
+    // Opcional: si no quedan hijos, ocultar el contenedor
+    if ($(".fila-hijo").length === 0) {
+        $("#divHijos").attr("hidden", true);
+    }
 });

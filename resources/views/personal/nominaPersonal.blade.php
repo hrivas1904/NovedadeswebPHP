@@ -163,32 +163,32 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia1" name="personaEmergencia1"
+                                            <input id="personaEmergencia1" name="persona_emerg1"
                                                 class="form-control"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia1" name="contactoEmergencia1"
+                                            <input id="contactoEmergencia1" name="contacto_emerg1"
                                                 class="form-control" type="number"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
-                                            <input id="parentescoEmergencia1" name="parentescoEmergencia1"
+                                            <input id="parentescoEmergencia1" name="parentesco_emerg1"
                                                 class="form-control"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia2" name="personaEmergencia2"
+                                            <input id="personaEmergencia2" name="persona_emerg2"
                                                 class="form-control"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia2" name="contactoEmergencia2"
+                                            <input id="contactoEmergencia2" name="contacto_emerg2"
                                                 class="form-control" type="number"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
-                                            <input id="parentescoEmergencia2" name="parentescoEmergencia2"
+                                            <input id="parentescoEmergencia2" name="parentesco_emerg2"
                                                 class="form-control"></input>
                                         </div>
                                     </div>
@@ -812,36 +812,36 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Servicio</label>
-                                            <input type="text" id="inputServicio" class="form-control" readonly>
+                                            <input type="text" id="inputEditServicio" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Convenio</label>
-                                            <input type="text" id="inputConvenio" class="form-control" readonly>
+                                            <input type="text" id="inputEditConvenio" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Categoría</label>
-                                            <input type="text" id="inputCategoria" class="form-control" readonly>
+                                            <input type="text" id="inputEditCategoria" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Rol</label>
-                                            <input type="text" id="inputRol" class="form-control" readonly>
+                                            <input type="text" id="inputEditRol" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Régimen (hs)</label>
-                                            <input type="text" id="inputRegimen" class="form-control" readonly>
+                                            <input type="text" id="inputEditRegimen" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Horas diarias</label>
-                                            <input type="text" id="inputHorasDiarias" class="form-control" readonly
+                                            <input type="text" id="inputEditHorasDiarias" class="form-control" readonly
                                                 required title="Horas Diarias">
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Es coordinador</label>
-                                            <input type="text" id="inputCordinador" class="form-control" readonly>
+                                            <input type="text" id="inputEditCordinador" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Afiliado</label>
-                                            <input type="text" id="inputAfiliado" class="form-control" readonly>
+                                            <input type="text" id="inputEditAfiliado" class="form-control" readonly>
                                         </div>
                                     </div>
                                 </div>
