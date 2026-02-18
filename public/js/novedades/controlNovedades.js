@@ -331,7 +331,7 @@ $(document).ready(function () {
             scrollX: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: "65vh",
+            scrollY: "60vh",
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
                 lengthMenu: "_MENU_",
