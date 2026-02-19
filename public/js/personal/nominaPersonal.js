@@ -456,7 +456,7 @@ function darDeBaja(legajoColaborador, nombre) {
                 },
                 success: function (res) {
                     if (res.success) {
-                        Swal.fire("OK", res.mensaje, "success");
+                        Swal.fire("Operación exitosa", res.mensaje, "success");
                         tablaPersonal.ajax.reload(null, false);
                     } else {
                         Swal.fire("Atención", resp.mensaje, "warning");
@@ -863,7 +863,7 @@ $(document).ready(function () {
                             </button>
                             
                             <button 
-                                class="btn-alerta btn-Editar"
+                                class="btn-alerta btn-Editar d-none"
                                 title='Editar'
                                 data-id="${data.LEGAJO}"
                                 data-nombre="${data.COLABORADOR}">
