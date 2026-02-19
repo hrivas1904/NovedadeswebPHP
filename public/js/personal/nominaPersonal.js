@@ -509,7 +509,7 @@ function registrarNovedad(legajoColaborador) {
         const codigoVacaciones = e.params.data.codigo;
         const nombreNovedad = e.params.data.text;
         console.log("Código directo:", codigoVacaciones);
-        if (codigoVacaciones === "N/D2") {
+        if (nombreNovedad === "Licencia anual") {
             $(
                 "#divSelectTipoVacaciones, #divSelectAnnioVacaciones",
             ).removeClass("d-none");
@@ -521,7 +521,7 @@ function registrarNovedad(legajoColaborador) {
             );
         }
 
-        if (nombreNovedad === "Atención médica") {
+        if (nombreNovedad === "Atención sanatorial") {
             $(
                 "#divFechaAtencion, #divNumeroAtencion, #divIngresarPacienteAtencion, #divConceptoAtencion, #divMontoAtencion, #divCantidadCuotas",
             ).removeClass("d-none");

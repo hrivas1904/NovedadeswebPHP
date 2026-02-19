@@ -1028,8 +1028,7 @@
 
                                 <div class="col-lg-1 d-none" id="divSelectAnnioVacaciones">
                                     <label class="form-label">Año</label>
-                                    <input type="number" class="form-control" name="annio"
-                                        placeholder="Ingrese año (obligatorio)">
+                                    <input type="number" class="form-control" name="annio">
                                 </div>
 
                                 <div class="col-lg-1 d-none" id="divNumeroAtencion">
