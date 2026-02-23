@@ -53,8 +53,6 @@
                         <a href="{{ route('nominaPersonal') }}">Personal activo</a>
                         <a href="{{ route('nominaPersonalBaja') }}"">Personal de baja</a>
                         <a href="{{ route('calendarioServicios') }}">Calendario servicios</a>
-                        <a href="#">Evaluaciones de desempeño</a>
-                        <a href="#">Encuestas clima laboral</a>
                     </div>
                 </li>
 
@@ -76,6 +74,22 @@
                         <a href="{{ route('dashboardCalidad') }}">Dashboard SGC</a>
                         <a href="{{ route('cmiCalidad') }}">CMI - BSC</a>
                         <a href="{{ route('encuestasCalidad') }}">Encuestas</a>
+                    </div>
+                </li>
+
+                <li class="nav-dropdown">
+                    <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-task'></i> Desempeño <i
+                            class="bx bx-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        
+                    </div>
+                </li>
+
+                <li class="nav-dropdown">
+                    <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-heart-circle'></i> Clima Laboral <i
+                            class="bx bx-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        
                     </div>
                 </li>
             </ul>

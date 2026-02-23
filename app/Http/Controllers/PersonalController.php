@@ -143,8 +143,11 @@ class PersonalController extends Controller
 
     public function store(Request $request)
     {
-        try {
+        // Iniciamos la transacción para asegurar que si fallan los hijos, 
+        // no se cree el empleado a medias.
+        DB::beginTransaction();
 
+        try {
             // Normalización de opcionales
             $fechaFinPrueba = $request->fecha_fin_prueba ?: null;
             $idOS           = $request->obra_social_id ?: null;
@@ -153,103 +156,79 @@ class PersonalController extends Controller
             CALL SP_INSERTAR_EMPLEADO(
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, 
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?, @mensaje
+                ?, ?, ?, ?, ?, ?, ?, ?, 
+                ?, ?, ?, ?, ?, ?, ?, ?,
+                @legajo, @mensaje
             )
         ", [
-                // 01
                 $request->cuil,
-                // 02
                 $request->dni,
-                // 03
                 $request->nombre_completo,
-                // 04
                 $request->domicilio,
-                // 05
                 $request->localidad,
-                // 06
                 $request->estado_civil,
-                // 07
                 $request->genero,
-                // 08
                 $request->fecha_nacimiento,
-                // 09
                 $request->fecha_ingreso,
-                // 10
                 $fechaFinPrueba,
-                // 11
                 $request->posee_convenio,
-                // 12
                 $request->area_id,
-                // 13
                 $request->servicio_id,
-                // 14
                 $request->categoria_id,
-                // 15
                 $request->rol_interno_id,
-                // 16
                 $request->es_coordinador,
-                // 17
                 $request->regimen_horas,
-                // 18
                 $request->horas_diarias,
-                // 19
                 $idOS,
-                // 20
                 $request->posee_titulo,
-                // 21
-                $request->titulo_descripcion,
-                // 22
+                $request->titulo,
                 $request->matricula_profesional,
-                // 23
                 $request->email,
-                // 24
                 $request->telefono,
-                // 25
                 $request->es_afiliado,
-                // 26
                 $request->estado,
-                // 27
                 $request->tipo_contrato,
-
                 $request->persona_emerg1,
                 $request->contacto_emerg1,
                 $request->parentesco_emerg1,
                 $request->persona_emerg2,
                 $request->contacto_emerg2,
-                $request->parentesco_emerg2
+                $request->parentesco_emerg2,
+                $request->padreColaborador,
+                $request->madreColaborador
             ]);
 
-            $resultado = DB::select("SELECT @mensaje AS mensaje");
+            // ... después del CALL ...
+            $res = DB::select("SELECT @legajo AS legajo, @mensaje AS mensaje");
+            $nuevoLegajo = $res[0]->legajo;
+            $mensajeSP = $res[0]->mensaje;
 
-            return response()->json([
-                'success' => true,
-                'mensaje' => $resultado[0]->mensaje
-            ]);
-
-            if ($resultado === 'Colaborador registrado correctamente') {
-
-                $legajo = DB::table('EMPLEADOS')->where('DNI', $request->p_DNI)->value('legajo');
-
-                if ($request->has('hijo_nombre')) {
-                    foreach ($request->hijo_nombre as $index => $nombreHijo) {
-                        if (!empty($nombreHijo)) {
-                            DB::table('familiaresxcolaborador')->insert([
-                                'legajo'     => $legajo,
-                                'nombre'     => $nombreHijo,
-                                'parentesco' => 'Hijo/a' // O puedes pasarlo desde el front
-                            ]);
-                        }
+            if ($mensajeSP === 'Colaborador registrado correctamente') {
+                // AQUÍ es donde insertas los hijos usando $nuevoLegajo
+                if ($request->has('hijos')) {
+                    foreach ($request->hijos as $hijo) {
+                        DB::statement("CALL SP_INSERTAR_FAMILIAR(?, ?, ?)", [
+                            $nuevoLegajo,
+                            $hijo['nombre'],
+                            'Hijo/a'
+                        ]);
                     }
                 }
 
                 DB::commit();
-                return response()->json(['success' => true, 'mensaje' => $mensajeSP]);
+                return response()->json([
+                    'success' => true,
+                    'mensaje' => "Empleado registrado con Legajo: " . $nuevoLegajo
+                ]);
             } else {
                 DB::rollBack();
-                return response()->json(['success' => false, 'mensaje' => $mensajeSP]);
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => $mensajeSP // Aquí saldría "El colaborador ya existe" o similar
+                ]);
             }
         } catch (\Exception $e) {
-
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'mensaje' => 'Error al registrar el colaborador',

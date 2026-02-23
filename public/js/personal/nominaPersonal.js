@@ -147,23 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//selector de titulo
-$(document).ready(function () {
-    // Escuchar el evento 'change' del selector de título
-    $("#select-titulo").on("change", function () {
-        const valor = $(this).val();
-        const inputs = $("#input-descripcion, #input-mp");
-
-        if (valor === "SI") {
-            // Habilitar inputs y limpiar si es necesario
-            inputs.prop("disabled", false);
-        } else {
-            // Deshabilitar y limpiar el contenido si eligen "No" o vacío
-            inputs.prop("disabled", true).val("");
-        }
-    });
-});
-
 //subir comprobante
 $(document).on("click", ".btn-subir-archivo", function (e) {
     e.preventDefault();
@@ -466,6 +449,18 @@ function darDeBaja(legajoColaborador, nombre) {
         }
     });
 }
+
+$('#select-titulo').on('change',function(){
+    const modal=$('#divTitulo');
+    const modal2=$('#divMatricula');
+    if ($(this).val()==="SI"){
+        modal.removeClass('d-none');
+        modal2.removeClass('d-none');
+    } else {
+        modal.addClass('d-none');
+        modal2.addClass('d-none');
+    }
+});
 
 //carga novedad
 function registrarNovedad(legajoColaborador) {
@@ -1579,37 +1574,32 @@ $(document).on("click", ".btnQuitarTitulo", function () {
     $(this).closest(".col-lg-2").remove();
 });
 
-$("#btnAgregarHijo").on("click", function () {
+$("#btnAgregarHijo").on("click", function (e) {
+    e.preventDefault();
     $("#divHijos").removeAttr("hidden");
 
+    // Es importante usar el nombre hijos[] para que Laravel lo reciba como un array
     const html = `
-        <div class="row d-flex mb-2 fila-hijo"> <div class="col-lg-3">
+        <div class="row d-flex mb-2 fila-hijo"> 
+            <div class="col-lg-4">
                 <label class="form-label">Nombre y Apellido</label>
-                <input type="text" name="hijos[][nombre]" class="form-control" required>
+                <input type="text" name="hijos[0][nombre]" class="form-control" required>
             </div>
-
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <label class="form-label">DNI</label>
-                <input type="text" name="hijos[][dni]" class="form-control" required>
+                <input type="text" name="hijos[0][dni]" class="form-control">
             </div>
-
             <div class="col-lg-2 d-flex align-items-end">
-                <button type="button" class="btnQuitarHijo btn-peligro">
-                    <i class="fa-solid fa-x"></i>
+                <button type="button" class="btn btn-danger btnQuitarHijo">
+                    <i class="fa-solid fa-trash"></i>
                 </button>
             </div>
         </div>
     `;
-
     $("#divHijos").append(html);
 });
 
-// Lógica de borrado mucho más limpia
-$(document).on("click", ".btnQuitarHijo", function () {
+//  eliminar la fila agregada
+$(document).on("click", ".btnQuitarHijo", function() {
     $(this).closest(".fila-hijo").remove();
-    
-    // Opcional: si no quedan hijos, ocultar el contenedor
-    if ($(".fila-hijo").length === 0) {
-        $("#divHijos").attr("hidden", true);
-    }
 });
