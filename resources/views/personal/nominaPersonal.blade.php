@@ -23,7 +23,8 @@
 
                         <select id="filtroCategoria" class="form-select js-select-categFiltro" style="width:auto;"></select>
                         <select id="filtroRegimen" class="form-select js-select-regFiltro" style="width:auto;"></select>
-                        <select id="filtroConvenio" class="form-select js-select-convenioFiltro" style="width:auto;"></select>
+                        <select id="filtroConvenio" class="form-select js-select-convenioFiltro"
+                            style="width:auto;"></select>
 
                         <button type="button" id="btn-limpiar-filtros" class="btn-secundario">
                             <i class="fa-solid fa-eraser"></i> Limpiar
@@ -168,8 +169,8 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia1" name="contacto_emerg1"
-                                                class="form-control" type="number"></input>
+                                            <input id="contactoEmergencia1" name="contacto_emerg1" class="form-control"
+                                                type="number"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
@@ -183,8 +184,8 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia2" name="contacto_emerg2"
-                                                class="form-control" type="number"></input>
+                                            <input id="contactoEmergencia2" name="contacto_emerg2" class="form-control"
+                                                type="number"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
@@ -210,8 +211,8 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Madre</label>
-                                            <input id="madreColaborador" name="madreColaborador"
-                                                class="form-control" type="text"></input>
+                                            <input id="madreColaborador" name="madreColaborador" class="form-control"
+                                                type="text"></input>
                                         </div>
                                         <div class="col-lg-2 d-flex flex-column">
                                             <label class="form-label">Agregar hijo/a</label>
@@ -276,19 +277,19 @@
                                         </div>
                                         <div class="col-lg-3 d-none" id="divTitulo">
                                             <label class="form-label">Descripción de título</label>
-                                            <input name="titulo" class="form-control" type="text"/>
+                                            <input name="titulo" class="form-control" type="text" />
                                         </div>
 
                                         <div class="col-lg-1 d-none" id="divMatricula">
                                             <label class="form-label">M.P.</label>
-                                            <input name="matricula_profesional" class="form-control" type="text"/>
+                                            <input name="matricula_profesional" class="form-control" type="text" />
                                         </div>
                                         <!--<div class="col-lg-2 d-flex flex-column">
-                                            <label class="form-label">Agregar título</label>
-                                            <button id="btnAgregarTitulo" class="btn-primario">
-                                                <i class="fa-solid fa-plus"></i> Título
-                                            </button>
-                                        </div>-->
+                                                <label class="form-label">Agregar título</label>
+                                                <button id="btnAgregarTitulo" class="btn-primario">
+                                                    <i class="fa-solid fa-plus"></i> Título
+                                                </button>
+                                            </div>-->
 
 
                                         <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
@@ -494,7 +495,7 @@
                             </div>
                         </div>
 
-                         <div class="row mb-4">
+                        <div class="row mb-4">
                             <div class="col-12">
                                 <div class="section-divider mb-3">
                                     <span>Contactos de emergencia</span>
@@ -503,33 +504,29 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia1" name="persona_emerg1"
-                                                class="form-control" readonly></input>
+                                            <input id="personaEmergencia1Edit" class="form-control" readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia1" name="contacto_emerg1"
-                                                class="form-control" type="number" readonly></input>
+                                            <input id="contactoEmergencia1Edit" class="form-control" type="number"
+                                                readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
-                                            <input id="parentescoEmergencia1" name="parentesco_emerg1"
-                                                class="form-control" readonly></input>
+                                            <input id="parentescoEmergencia1Edit" class="form-control" readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia2" name="persona_emerg2"
-                                                class="form-control" readonly></input>
+                                            <input id="personaEmergencia2Edit" class="form-control" readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia2" name="contacto_emerg2"
-                                                class="form-control" type="number" readonly></input>
+                                            <input id="contactoEmergencia2Edit" class="form-control" type="number"
+                                                readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
-                                            <input id="parentescoEmergencia2" name="parentesco_emerg2"
-                                                class="form-control" readonly></input>
+                                            <input id="parentescoEmergencia2Edit" class="form-control" readonly></input>
                                         </div>
                                     </div>
                                 </div>
@@ -545,18 +542,20 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Padre</label>
-                                            <input id="padreColaborador" name="padreColaborador"
-                                                class="form-control" readonly></input>
+                                            <input id="padreColaboradorEdit" class="form-control" readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Madre</label>
-                                            <input id="madreColaborador" name="madreColaborador"
-                                                class="form-control" type="text" readonly></input>
+                                            <input id="madreColaboradorEdit" class="form-control" type="text"
+                                                readonly></input>
                                         </div>
 
-                                        <div id="divHijos" class="col-lg-12 empleado-box p-3" hidden>
-
+                                        <div class="section-divider mb-3">
+                                            <span>Hijos</span>
                                         </div>
+                                        <div id="contenedorHijosVisualizacion" class="row g-2">
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -908,8 +907,8 @@
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Horas diarias</label>
-                                            <input type="text" id="inputEditHorasDiarias" class="form-control" readonly
-                                                required title="Horas Diarias">
+                                            <input type="text" id="inputEditHorasDiarias" class="form-control"
+                                                readonly required title="Horas Diarias">
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Es coordinador</label>
@@ -1085,7 +1084,7 @@
                                     <input id="inputImporte" type="text" class="form-control text-end">
                                 </div>
 
-                                <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>                                
+                                <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>
 
                                 <div class="col-lg-2 d-none" id="divSelectTipoVacaciones">
                                     <label class="form-label">Tipo de vacaciones</label>
@@ -1119,12 +1118,14 @@
 
                                 <div class="col-lg-4 d-none" id="divConceptoAtencion">
                                     <label class="form-label">Concepto</label>
-                                    <input type="text" class="form-control" id="conceptoAtencion" name="conceptoAtencion">
+                                    <input type="text" class="form-control" id="conceptoAtencion"
+                                        name="conceptoAtencion">
                                 </div>
 
                                 <div class="col-lg-1 d-none" id="divCantidadCuotas">
                                     <label class="form-label">Cuotas</label>
-                                    <input type="number" class="form-control" id="cantidadCuotas" name="cantidadCuotas">
+                                    <input type="number" class="form-control" id="cantidadCuotas"
+                                        name="cantidadCuotas">
                                 </div>
 
                                 <div class="col-lg-4 d-none">
@@ -1143,7 +1144,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundario" onclick="cerrarModalNovedad()">Cancelar</button>
-                    <button type="submit" class="btn btn-primario" form="formCargaNovedad" id="btnRegistrarNovedad">
+                    <button type="submit" class="btn btn-primario" form="formCargaNovedad"
+                        id="btnRegistrarNovedad">
                         <i class="fa-solid fa-floppy-disk me-1"></i>
                         Registrar novedad
                     </button>

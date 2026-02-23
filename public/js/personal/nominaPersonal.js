@@ -400,6 +400,38 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#inputCordinador").val(d.COORDINADOR);
                 $("#inputAfiliado").val(d.AFILIADO);
 
+                $("#personaEmergencia1Edit").val(d.PERSONA_EMERG1);
+                $("#contactoEmergencia1Edit").val(d.CONTACTO_EMERG1);
+                $("#parentescoEmergencia1Edit").val(d.PARENTESCO_EMERG1);
+                $("#personaEmergencia2Edit").val(d.PERSONA_EMERG2);
+                $("#contactoEmergencia2Edit").val(d.CONTACTO_EMERG2);
+                $("#parentescoEmergencia2Edit").val(d.PARENTESCO_EMERG2);
+                $("#padreColaboradorEdit").val(d.PADRE);
+                $("#madreColaboradorEdit").val(d.MADRE);
+
+                const familiares = response.familiares;
+
+                // Limpiamos el contenedor por si había datos de otro legajo
+                $("#contenedorHijosVisualizacion").empty();
+
+                if (familiares && familiares.length > 0) {
+                    familiares.forEach((f) => {
+                        const htmlFamiliar = `
+                            <div class="col-lg-6">
+                                <div class="p-2 border rounded bg-light d-flex justify-content-between">
+                                    <span><strong>${f.nombre}</strong></span>
+                                    <span class="badge bg-primary">${f.parentesco}</span>
+                                </div>
+                            </div>
+                        `;
+                        $("#contenedorHijosVisualizacion").append(htmlFamiliar);
+                    });
+                } else {
+                    $("#contenedorHijosVisualizacion").append(
+                        '<div class="col-12 text-muted ps-3">No tiene hijos registrados.</div>',
+                    );
+                }
+
                 $("#modalLegajoColaborador").modal("show");
 
                 // 🔑 inicializar / refrescar historial CUANDO el modal ya está visible
@@ -450,15 +482,15 @@ function darDeBaja(legajoColaborador, nombre) {
     });
 }
 
-$('#select-titulo').on('change',function(){
-    const modal=$('#divTitulo');
-    const modal2=$('#divMatricula');
-    if ($(this).val()==="SI"){
-        modal.removeClass('d-none');
-        modal2.removeClass('d-none');
+$("#select-titulo").on("change", function () {
+    const modal = $("#divTitulo");
+    const modal2 = $("#divMatricula");
+    if ($(this).val() === "SI") {
+        modal.removeClass("d-none");
+        modal2.removeClass("d-none");
     } else {
-        modal.addClass('d-none');
-        modal2.addClass('d-none');
+        modal.addClass("d-none");
+        modal2.addClass("d-none");
     }
 });
 
@@ -1437,7 +1469,7 @@ $("#formCargaNovedad").on("submit", function (e) {
                 });
 
                 $("#formCargaNovedad")[0].reset();
-                $('#selectNovedad').val(null).trigger('change');
+                $("#selectNovedad").val(null).trigger("change");
                 $("#modalRegNovedadColaborador").modal("hide");
 
                 // 🔑 refrescar historial SIN recrear
@@ -1600,6 +1632,6 @@ $("#btnAgregarHijo").on("click", function (e) {
 });
 
 //  eliminar la fila agregada
-$(document).on("click", ".btnQuitarHijo", function() {
+$(document).on("click", ".btnQuitarHijo", function () {
     $(this).closest(".fila-hijo").remove();
 });

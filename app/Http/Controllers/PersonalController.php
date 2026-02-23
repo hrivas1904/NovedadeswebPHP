@@ -375,13 +375,27 @@ class PersonalController extends Controller
     }
 
     public function show($legajo)
-    {
-        $empleado = DB::table('empleados')
-            ->where('LEGAJO', $legajo)
-            ->first();
+{
+    try {
+        // Datos del empleado
+        $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
+        
+        // Datos de los familiares
+        $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
 
-        return response()->json($empleado);
+        if (!empty($empleadoData)) {
+            return response()->json([
+                'success' => true,
+                'data' => $empleadoData[0],
+                'familiares' => $familiares // Enviamos el array de hijos aquí
+            ]);
+        }
+
+        return response()->json(['success' => false, 'mensaje' => 'No se encontró el legajo']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'mensaje' => $e->getMessage()], 500);
     }
+}
 
     public function update(Request $request, $legajo)
     {
