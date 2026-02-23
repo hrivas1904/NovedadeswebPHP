@@ -126,16 +126,21 @@ class NovedadesController extends Controller
             $areaId = ($request->area_id && $request->area_id !== "") ? (int)$request->area_id : null;
             $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? (int)$request->idNovedad : null;
 
-            $paraFinnegans = $request->paraFinnegans;
+            // Normalización para Finnegans
+            $paraFinnegans = ($request->paraFinnegans === '' || $request->paraFinnegans === null) ? null : (int)$request->paraFinnegans;
 
-            if ($paraFinnegans === '' || $paraFinnegans === null) {
-                $paraFinnegans = null;
-            } else {
-                $paraFinnegans = (int) $paraFinnegans;
-            }
+            // Nuevos parámetros de fecha
+            $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
+            $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
 
-
-            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?)", [$areaId, $idNovedad, $paraFinnegans]);
+            // IMPORTANTE: Ahora pasamos 5 signos de pregunta (?)
+            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?)", [
+                $areaId,
+                $idNovedad,
+                $paraFinnegans,
+                $desde,
+                $hasta
+            ]);
 
             return response()->json([
                 'data' => $ListaNovedades

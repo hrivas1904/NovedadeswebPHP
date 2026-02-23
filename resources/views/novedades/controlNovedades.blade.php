@@ -11,19 +11,30 @@
         <div class="card" style="border-radius:15px;">
             <div class="card-header">
                 <div class="row d-flex">
-                    <div class="col-6 d-flex justify-content-start align-items-center gap-2">
+                    <div class="col-6 d-flex justify-content-start align-items-end gap-2">
+
+                        <div class="col-md-2">
+                            <label class="form-label">Desde</label>
+                            <input type="date" id="filtroDesde" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Hasta</label>
+                            <input type="date" id="filtroHasta" class="form-control" />
+                        </div>
+
                         <select id="area" name="area" class="form-select js-select-area" style="width: auto;"
                             {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
                         </select>
 
-                        <select id="idNovedad" name="idNovedad" class="form-select js-select-novedadFiltro">
+                        <select id="idNovedad" name="idNovedad" class="form-select js-select-novedadFiltro" style="width: 300px;">
                         </select>
 
                         @if (Auth::user()->rol !== 'Administrador/a')
                             <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                         @endif
 
-                        <select id="paraFinnegans" name="paraFinnegans" class="form-select js-select-novedadFinnegans">
+                        <select id="paraFinnegans" name="paraFinnegans" class="form-select js-select-novedadFinnegans" style="width: auto;">
                             <option value="" disabled selected>Seleccion tipo</option>
                             <option value="">Todas</option>
                             <option value="0">Informativas</option>

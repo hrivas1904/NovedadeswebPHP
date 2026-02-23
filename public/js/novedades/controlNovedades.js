@@ -204,6 +204,10 @@ function verDetalleNovedad(idRegistro) {
     });
 }
 
+$('#btnAplicarFiltros').on('clic', function(){
+    
+})
+
 //carga dt novedades
 $(document).ready(function () {
     tablaPersonal = $("#tb_control");
@@ -213,13 +217,20 @@ $(document).ready(function () {
                 url: "/novedades/listarNovedadesPorArea",
                 type: "GET",
                 data: function (d) {
+                    // Lógica de área según rol
                     if (USER_ROLE !== "Administrador/a") {
                         d.area_id = USER_AREA_ID;
                     } else {
                         d.area_id = $("#area").val();
                     }
+
+                    // Filtros adicionales
                     d.idNovedad = $("#idNovedad").val();
                     d.paraFinnegans = $("#paraFinnegans").val();
+
+                    // Enviamos las fechas al controlador
+                    d.desde = $("#fechaDesde").val();
+                    d.hasta = $("#fechaHasta").val();
                 },
             },
             columnDefs: [
@@ -331,7 +342,7 @@ $(document).ready(function () {
             scrollX: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: "60vh",
+            scrollY: "58vh",
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
                 lengthMenu: "_MENU_",
