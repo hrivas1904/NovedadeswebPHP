@@ -108,7 +108,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">DNI</label>
-                                            <input type="text" name="dni" id="dni" class="form-control"
+                                            <input type="number" name="dni" id="dni" class="form-control"
                                                 inputmode="numeric" maxlength="8" required>
                                         </div>
                                         <div class="col-lg-4">
@@ -125,8 +125,6 @@
                                 </div>
                             </div>
 
-
-
                             <div class="col-lg-6">
                                 <div class="section-divider mb-3">
                                     <span>Datos de Contacto</span>
@@ -140,7 +138,7 @@
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Teléfono</label>
-                                            <input type="tel" name="telefono" id="telefono" class="form-control">
+                                            <input type="number" name="telefono" id="telefono" class="form-control">
                                         </div>
                                         <div class="col-lg-7">
                                             <label class="form-label">Domicilio</label>
@@ -148,7 +146,11 @@
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Localidad</label>
-                                            <input type="text" name="localidad" id="localidad" class="form-control">
+
+                                            <select id="selectLocalidad" name="localidad" class="form-select"
+                                                style="width:100%" required>
+                                                <option value="">Seleccionar localidad</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +241,7 @@
                                         <div class="col-lg-3">
                                             <label class="form-label">Estado civil</label>
                                             <select name="estado_civil" id="estado_civil" class="form-select" required>
-                                                <option selected value="">Seleccione estado civil</option>
+                                                <option selected disabled ="">Seleccione estado civil</option>
                                                 <option value="SOLTERO/A">SOLTERO/A</option>
                                                 <option value="CASADO/A">CASADO/A</option>
                                                 <option value="DIVORCIADO/A">DIVORCIADO/A</option>
@@ -249,18 +251,22 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Género</label>
-                                            <select name="genero" id="genero" class="form-select" required>
+                                            <select name="genero" id="genero" disabled class="form-select" required>
                                                 <option selected value="">Seleccione género</option>
                                                 <option value="MASCULINO">MASCULINO</option>
                                                 <option value="FEMENINO">FEMENINO</option>
                                                 <option value="NO BINARIO">NO BINARIO</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-6 input-group">
                                             <label class="form-label">Obra social</label>
-                                            <select name="obra_social_id" id="obraSocial" class="form-select">
-                                                <option value="">Seleccione obra social</option>
-                                            </select>
+                                            <div class="input-group">
+                                                <select name="obra_social_id" id="obraSocial" class="form-select">
+                                                    <option value="">Seleccione obra social</option>
+                                                </select>
+                                                <button class="btn btn-primario" id="btnAbrirModalOs">
+                                                    <i class="fa-regular fa-square-plus"></i></button>
+                                            </div>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Código OS</label>
@@ -285,16 +291,16 @@
                                             <input name="matricula_profesional" class="form-control" type="text" />
                                         </div>
                                         <!--<div class="col-lg-2 d-flex flex-column">
-                                                <label class="form-label">Agregar título</label>
-                                                <button id="btnAgregarTitulo" class="btn-primario">
-                                                    <i class="fa-solid fa-plus"></i> Título
-                                                </button>
-                                            </div>-->
+                                                        <label class="form-label">Agregar título</label>
+                                                        <button id="btnAgregarTitulo" class="btn-primario">
+                                                            <i class="fa-solid fa-plus"></i> Título
+                                                        </button>
+                                                    </div>
 
 
-                                        <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
+                                                <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
 
-                                        </div>
+                                                </div>-->
 
                                     </div>
                                 </div>
@@ -326,7 +332,7 @@
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha fin prueba</label>
                                             <input type="date" name="fecha_fin_prueba" id="fechaFin"
-                                                class="form-control">
+                                                class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Área</label>
@@ -361,7 +367,7 @@
                                         <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Régimen (hs)</label>
                                             <select name="regimen_horas" id="selectRegimen" class="form-select">
-                                                <option selected value="">Seleccione régimen</option>
+                                                <option selected disabled value="">Seleccione régimen</option>
                                                 <option value="44">44</option>
                                                 <option value="40">40</option>
                                                 <option value="35">35</option>
@@ -380,15 +386,15 @@
                                         <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Es coordinador</label>
                                             <select name="es_coordinador" id="es_coordinador" class="form-select">
-                                                <option selected value="">Seleccione opción</option>
+                                                <option selected disabled value="">Seleccione opción</option>
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-2 col-sm-2">
-                                            <label class="form-label">Afiliado</label>
+                                            <label class="form-label">Afiliado al sindicato</label>
                                             <select name="es_afiliado" id="es_afiliado" class="form-select">
-                                                <option selected value="">Seleccione opción</option>
+                                                <option selected disabled value="">Seleccione opción</option>
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
                                             </select>
@@ -1195,6 +1201,26 @@
                     <h5 class="modal-title">
                         <i class="fa-solid fa-paperclip me-2"></i>
                         Comprobantes de la novedad
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body" id="contenedorComprobantes">
+                    <!-- visor dinámico -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalNuevaOs" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-paperclip me-2"></i>
+                        Registrar nueva obra social
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>

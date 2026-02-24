@@ -53,6 +53,7 @@
                         <a href="{{ route('nominaPersonal') }}">Personal activo</a>
                         <a href="{{ route('nominaPersonalBaja') }}"">Personal de baja</a>
                         <a href="{{ route('calendarioServicios') }}">Calendario servicios</a>
+                        <a href="{{ route('personal.solicitudes') }}">Solicitudes</a>
                     </div>
                 </li>
 
@@ -61,6 +62,7 @@
                             class="bx bx-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <a href="{{ route('controlNovedades') }}">Control</a>
+                        <a href="{{ route('controlNovedades') }}">Registrar</a>
                         @if (Auth::user()->rol === 'Administrador/a')
                             <a href="{{ route('configNovedades') }}">Configuración</a>
                         @endif
@@ -94,6 +96,11 @@
                 <li class="nav-dropdown">
                     <a href="https://capacitacion.hp3c.com.ar/" class="dropbtn" target="_blank" rel="noopener noreferrer">
                         <i class='bx bx-book'></i> Capacitaciones </a>
+                    <div class="dropdown-content">                        
+                    </div>
+                </li>
+                <li class="nav-dropdown">
+                    <a href="javascript:void(0)" class="dropbtn"><i class="fa-regular fa-circle-question"></i> Ayuda </a>
                     <div class="dropdown-content">                        
                     </div>
                 </li>

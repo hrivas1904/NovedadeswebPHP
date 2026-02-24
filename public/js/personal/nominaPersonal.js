@@ -1238,7 +1238,7 @@ $("#formAltaColaborador").on("submit", function (e) {
 
                 $("#formAltaColaborador")[0].reset();
                 $("#modalAltaColaborador").modal("hide");
-                tablaPersonal.ajax.reload();
+                tablaPersonal.ajax.reload(null, false);
             } else {
                 Swal.fire({
                     icon: "warning",
@@ -1634,4 +1634,39 @@ $("#btnAgregarHijo").on("click", function (e) {
 //  eliminar la fila agregada
 $(document).on("click", ".btnQuitarHijo", function () {
     $(this).closest(".fila-hijo").remove();
+});
+
+$(function () {
+
+    $('#selectLocalidad').select2({
+        placeholder: "Buscar localidad...",
+        minimumInputLength: 2,
+        width: '100%',
+        dropdownParent: $('#modalAltaColaborador'),
+
+        ajax: {
+            url: '/geo/localidades',
+            dataType: 'json',
+            delay: 350,
+            data: function (params) {
+                return { q: params.term };
+            },
+            processResults: function (data) {
+
+                return {
+                    results: (data.localidades || []).map(l => ({
+                        id: l.id,
+                        text: l.nombre + ' (' + l.provincia.nombre + ')'
+                    }))
+                };
+
+            }
+        }
+    });
+
+});
+
+$('#btnAbrirModalOs').on('click', function(){
+    const modal=$('#modalNuevaOs');
+    modal.modal("show");
 });

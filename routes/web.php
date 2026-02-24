@@ -9,6 +9,7 @@ use App\Http\Controllers\CalidadController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GeoController;
 
 Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
@@ -33,6 +34,9 @@ Route::get('/controlAsistencia', [PersonalController::class, 'controlAsistencia'
 
 Route::get('/configuraciones', [PersonalController::class, 'configuraciones'])
     ->name('configuraciones');
+
+Route::get('/solicitudes', [PersonalController::class, 'solicitudes'])
+    ->name('personal.solicitudes');
 
 
 Route::get('/registroNovedades', [NovedadesController::class, 'registroNovedades'])
@@ -201,3 +205,6 @@ Route::get('/dashboard/novedades-por-mes', [DashboardController::class, 'novedad
 Route::get('/dashboard/top-empleados-novedades', [DashboardController::class, 'topEmpleadosNovedades']);
 Route::get('/dashboard/historico-colaboradores', [DashboardController::class, 'historicoColaboradores']);
 Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotacional']);
+
+//API GEO
+Route::get('/geo/localidades', [GeoController::class, 'buscarLocalidades']);

@@ -39,6 +39,10 @@ class PersonalController extends Controller
         return view('personal.personalBaja');
     }
 
+    public function solicitudes(){
+        return view('personal.solicitudes');
+    }
+
     public function listarAreas()
     {
         try {

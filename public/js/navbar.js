@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+/*document.addEventListener("DOMContentLoaded", function() {
     const mobileBtn = document.getElementById("mobile-btn");
     const navLinks = document.querySelector(".nav-links");
 
@@ -20,5 +20,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         }
+    });
+});*/
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("mobile-btn");
+    const menu = document.querySelector(".nav-links");
+
+    btn.addEventListener("click", () => {
+        menu.classList.toggle("active");
     });
 });

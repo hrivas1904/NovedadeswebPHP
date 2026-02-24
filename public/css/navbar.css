@@ -169,7 +169,7 @@ html, body {
 /* RESPONSIVE NAVBAR */
 /* ============================= */
 
-@media (max-width: 992px) {
+@media (max-width: 1300px) {
 
     .mobile-menu-btn {
         display: block;
@@ -218,4 +218,5 @@ html, body {
     .nav-profile {
         display: none;
     }
+    
 }
