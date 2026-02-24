@@ -12,28 +12,28 @@
             <div class="container-md g-3 card filter-card">
                 <div class="card-body">
                     <div class="row g-3 d-flex align-items-end justify-content-around align-item-center">
-                        <div class="col-md-2">
+                        <div class="col-lg-2 col-md-6">
                             <label class="form-label">Desde</label>
                             <input type="date" id="filtroDesde" class="form-control" />
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-lg-2 col-md-6">
                             <label class="form-label">Hasta</label>
                             <input type="date" id="filtroHasta" class="form-control" />
                         </div>
 
-                        <div class="col-md-auto d-flex">
+                        <div class="col-auto d-flex">
                             <button id="btnAplicarFiltros" class="btn-primario flex-grow-1">
                                 <i class="fa-solid fa-circle-check"></i> Aplicar filtros
                             </button>
                         </div>
 
-                        <div class="col-md-auto d-flex">
+                        <div class="col-auto d-flex">
                             <button id="btnLimpiarFiltros" class="btn-secundario flex-grow-1">
                                 <i class="fa-solid fa-eraser"></i> Limpiar filtros
                             </button>
                         </div>
-                        <div class="col-md-auto d-flex">
+                        <div class="col-auto d-flex">
                             <button id="btnAplicarFiltros" class=btn-peligro flex-grow-1">
                                 <i class="fa-solid fa-file-pdf"></i> Exportar PDF
                             </button>

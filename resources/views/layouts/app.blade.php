@@ -88,8 +88,13 @@
                 <li class="nav-dropdown">
                     <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-heart-circle'></i> Clima Laboral <i
                             class="bx bx-chevron-down"></i></a>
-                    <div class="dropdown-content">
-                        
+                    <div class="dropdown-content">                        
+                    </div>
+                </li>
+                <li class="nav-dropdown">
+                    <a href="https://capacitacion.hp3c.com.ar/" class="dropbtn" target="_blank" rel="noopener noreferrer">
+                        <i class='bx bx-book'></i> Capacitaciones </a>
+                    <div class="dropdown-content">                        
                     </div>
                 </li>
             </ul>

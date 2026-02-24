@@ -164,3 +164,58 @@ html, body {
     padding: 20px;
     position: relative;
 }
+
+/* ============================= */
+/* RESPONSIVE NAVBAR */
+/* ============================= */
+
+@media (max-width: 992px) {
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 260px;
+        height: calc(100vh - 70px);
+        background: var(--nav-bg);
+        flex-direction: column;
+        padding: 20px 10px;
+        gap: 10px;
+        transition: 0.35s ease;
+        z-index: 999;
+        overflow-y: auto;
+    }
+
+    .nav-links.active {
+        left: 0;
+    }
+
+    .nav-links li {
+        padding: 10px 15px;
+    }
+
+    .nav-dropdown:hover .dropdown-content {
+        display: none; /* evita hover en mobile */
+    }
+
+    .dropdown-content {
+        position: static;
+        background: rgba(255,255,255,0.08);
+        box-shadow: none;
+        border-radius: 6px;
+        margin-top: 6px;
+    }
+
+    .dropdown-content a {
+        color: white !important;
+        padding-left: 20px;
+    }
+
+    .nav-profile {
+        display: none;
+    }
+}
