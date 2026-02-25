@@ -69,6 +69,7 @@
                     </div>
                 </li>
 
+                @if (Auth::user()->rol === 'Administrador/a')
                 <li class="nav-dropdown">
                     <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
                             class="bx bx-chevron-down"></i></a>
@@ -93,6 +94,7 @@
                     <div class="dropdown-content">                        
                     </div>
                 </li>
+                @endif
                 <li class="nav-dropdown">
                     <a href="https://capacitacion.hp3c.com.ar/login/index.php" class="dropbtn" target="_blank" rel="noopener noreferrer">
                         <i class='bx bx-book'></i> Capacitaciones </a>
