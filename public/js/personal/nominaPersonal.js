@@ -1637,35 +1637,59 @@ $(document).on("click", ".btnQuitarHijo", function () {
 });
 
 $(function () {
-    $('#selectLocalidad').select2({
+    $("#selectLocalidad").select2({
         placeholder: "Buscar localidad...",
         minimumInputLength: 3, // Subí a 3 para evitar resultados demasiado genéricos
-        width: '100%',
-        dropdownParent: $('#modalAltaColaborador'),
+        width: "100%",
+        dropdownParent: $("#modalAltaColaborador"),
         ajax: {
-            url: '/geo/localidades',
-            dataType: 'json',
+            url: "/geo/localidades",
+            dataType: "json",
             delay: 400, // Un poco más de delay ayuda a no disparar tantas peticiones
             data: function (params) {
                 return { q: params.term };
             },
             processResults: function (data) {
-                // Georef devuelve un objeto con la propiedad "localidades"
                 return {
-                    results: (data.localidades || []).map(function(l) {
+                    results: (data.localidades || []).map(function (l) {
+                        let nombreCompleto =
+                            l.nombre + " - " + l.provincia.nombre;
                         return {
-                            id: l.id,
-                            text: l.nombre + ' (' + l.provincia.nombre + ')'
+                            id: nombreCompleto,
+                            text: nombreCompleto,
                         };
-                    })
+                    }),
                 };
             },
-            cache: true
-        }
+            cache: true,
+        },
     });
 });
 
-$('#btnAbrirModalOs').on('click', function(){
-    const modal=$('#modalNuevaOs');
+$("#btnAbrirModalOs").on("click", function () {
+    const modal = $("#modalNuevaOs");
     modal.modal("show");
+});
+
+function armarCuil() {
+    const cuilStart = $("#firstPartCuil").val();
+    const cuilMiddle = $("#middlePartCuil").val();
+    const cuilEnd = $("#lastPartCuil").val();
+
+    if (cuilStart && cuilMiddle && cuilEnd) {
+        const cuilCompleto = cuilStart + "-" + cuilMiddle + "-" + cuilEnd;
+        $("#cuil").val(cuilCompleto);
+    } else {
+        $("#cuil").val("");
+    }
+}
+
+$("#dni").on("input", function () {
+    const dni = $(this).val();
+    $("#middlePartCuil").val(dni);
+    armarCuil();
+});
+
+$("#firstPartCuil, #lastPartCuil").on("input", function () {
+    armarCuil();
 });
