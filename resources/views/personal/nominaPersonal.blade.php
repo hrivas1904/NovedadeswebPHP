@@ -146,7 +146,6 @@
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Localidad</label>
-
                                             <select id="selectLocalidad" name="localidad" class="form-select"
                                                 style="width:100%" required>
                                                 <option value="">Seleccionar localidad</option>
@@ -251,8 +250,8 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Género</label>
-                                            <select name="genero" id="genero" disabled class="form-select" required>
-                                                <option selected value="">Seleccione género</option>
+                                            <select name="genero" id="genero" class="form-select" required>
+                                                <option selected disabled value="">Seleccione género</option>
                                                 <option value="MASCULINO">MASCULINO</option>
                                                 <option value="FEMENINO">FEMENINO</option>
                                                 <option value="NO BINARIO">NO BINARIO</option>
@@ -273,10 +272,10 @@
                                             <input type="text" name="codigo_os" id="codigoOS" class="form-control"
                                                 readonly>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Título</label>
                                             <select name="posee_titulo" id="select-titulo" class="form-select">
-                                                <option selected value="" disabled>Seleccione...</option>
+                                                <option selected disabled value="" disabled>Seleccione opción</option>
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
                                             </select>
@@ -291,17 +290,13 @@
                                             <input name="matricula_profesional" class="form-control" type="text" />
                                         </div>
                                         <!--<div class="col-lg-2 d-flex flex-column">
-                                                        <label class="form-label">Agregar título</label>
-                                                        <button id="btnAgregarTitulo" class="btn-primario">
-                                                            <i class="fa-solid fa-plus"></i> Título
-                                                        </button>
-                                                    </div>
-
-
-                                                <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
-
-                                                </div>-->
-
+                                                <label class="form-label">Agregar título</label>
+                                                <button id="btnAgregarTitulo" class="btn-primario">
+                                                    <i class="fa-solid fa-plus"></i> Título
+                                                </button>
+                                            </div>
+                                            <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
+                                            </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -342,7 +337,8 @@
                                         <div class="col-lg-2">
                                             <label class="form-label">Servicio</label>
                                             <select name="servicio_id" id="servicio"
-                                                class="form-select js-select-servicio" disable>
+                                                class="form-select js-select-servicio" disabled>
+                                                <option selected value="">Seleccione servicio</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-2 col-sm-2">
@@ -356,16 +352,18 @@
                                             <label class="form-label">Categoría</label>
                                             <select name="categoria_id" id="categoria"
                                                 class="form-select js-select-categoria">
+                                                <option selected value="">Seleccione categoría</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-2 col-sm-2">
                                             <label class="form-label">Rol</label>
                                             <select name="rol_interno_id" id="rol_interno"
                                                 class="form-select js-select-rol">
+                                                <option selected value="">Seleccione rol</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-2 col-sm-2">
-                                            <label class="form-label">Régimen (hs)</label>
+                                            <label class="form-label">Régimen horario</label>
                                             <select name="regimen_horas" id="selectRegimen" class="form-select">
                                                 <option selected disabled value="">Seleccione régimen</option>
                                                 <option value="44">44</option>

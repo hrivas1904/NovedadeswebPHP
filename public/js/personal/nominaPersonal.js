@@ -1637,33 +1637,32 @@ $(document).on("click", ".btnQuitarHijo", function () {
 });
 
 $(function () {
-
     $('#selectLocalidad').select2({
         placeholder: "Buscar localidad...",
-        minimumInputLength: 2,
+        minimumInputLength: 3, // Subí a 3 para evitar resultados demasiado genéricos
         width: '100%',
         dropdownParent: $('#modalAltaColaborador'),
-
         ajax: {
             url: '/geo/localidades',
             dataType: 'json',
-            delay: 350,
+            delay: 400, // Un poco más de delay ayuda a no disparar tantas peticiones
             data: function (params) {
                 return { q: params.term };
             },
             processResults: function (data) {
-
+                // Georef devuelve un objeto con la propiedad "localidades"
                 return {
-                    results: (data.localidades || []).map(l => ({
-                        id: l.id,
-                        text: l.nombre + ' (' + l.provincia.nombre + ')'
-                    }))
+                    results: (data.localidades || []).map(function(l) {
+                        return {
+                            id: l.id,
+                            text: l.nombre + ' (' + l.provincia.nombre + ')'
+                        };
+                    })
                 };
-
-            }
+            },
+            cache: true
         }
     });
-
 });
 
 $('#btnAbrirModalOs').on('click', function(){
