@@ -53,7 +53,7 @@
                         <a href="{{ route('nominaPersonal') }}">Personal activo</a>
                         <a href="{{ route('nominaPersonalBaja') }}"">Personal de baja</a>
                         <a href="{{ route('calendarioServicios') }}">Calendario servicios</a>
-                        <a href="{{ route('personal.solicitudes') }}">Solicitudes</a>
+                        <a href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a>
                     </div>
                 </li>
 
@@ -94,7 +94,7 @@
                     </div>
                 </li>
                 <li class="nav-dropdown">
-                    <a href="https://capacitacion.hp3c.com.ar/" class="dropbtn" target="_blank" rel="noopener noreferrer">
+                    <a href="https://capacitacion.hp3c.com.ar/login/index.php" class="dropbtn" target="_blank" rel="noopener noreferrer">
                         <i class='bx bx-book'></i> Capacitaciones </a>
                     <div class="dropdown-content">                        
                     </div>
