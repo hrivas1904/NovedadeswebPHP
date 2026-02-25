@@ -120,7 +120,7 @@
                                             <span class="input-group-text">-</span>
                                             <input type="number" id="lastPartCuil" class="form-control text-center" min="0" max="9" style="max-width: 60px;" maxlength="1" required>
                                         </div>
-                                        <input name="cuil" id="cuil">
+                                        <input name="cuil" id="cuil" hidden>
                                     </div>
                                     <div class="col-lg-4">
                                         <label class="form-label">Fecha nacimiento</label>
@@ -254,7 +254,7 @@
                                             <option value="N/D">N/D</option>
                                         </select>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <label class="form-label">Género</label>
                                         <select name="genero" id="genero" class="form-select" required>
                                             <option selected disabled value="">Seleccione género</option>
@@ -263,14 +263,17 @@
                                             <option value="NO BINARIO">NO BINARIO</option>
                                         </select>
                                     </div>
-                                    <div class="col-lg-6 input-group">
-                                        <label class="form-label">Obra social</label>
-                                        <div class="input-group">
+                                    <div class="col-lg-7">
+                                        <label class="form-label fw-bold">Obra social</label>
+                                        <div class="input-group flex-nowrap">
                                             <select name="obra_social_id" id="obraSocial" class="form-select">
                                                 <option value="">Seleccione obra social</option>
                                             </select>
-                                            <button class="btn btn-primario" id="btnAbrirModalOs">
-                                                <i class="fa-regular fa-square-plus"></i></button>
+                                            <button type="button"
+                                                class="btn btn-success"
+                                                id="btnAbrirModalOs">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="col-lg-2">
@@ -296,13 +299,13 @@
                                         <input name="matricula_profesional" class="form-control" type="text" />
                                     </div>
                                     <!--<div class="col-lg-2 d-flex flex-column">
-                                                <label class="form-label">Agregar título</label>
-                                                <button id="btnAgregarTitulo" class="btn-primario">
-                                                    <i class="fa-solid fa-plus"></i> Título
-                                                </button>
-                                            </div>
-                                            <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
-                                            </div>-->
+                                        <label class="form-label">Agregar título</label>
+                                        <button id="btnAgregarTitulo" class="btn-primario">
+                                            <i class="fa-solid fa-plus"></i> Título
+                                        </button>
+                                    </div>
+                                    <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -1217,25 +1220,46 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalNuevaOs" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+<div class="modal fade" id="modalNuevaOs" tabindex="-1" aria-labelledby="staticBackdropLabel"
+    aria-hidden="true" data-bs-backdrop="static">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fa-solid fa-paperclip me-2"></i>
-                    Registrar nueva obra social
+                <h5 class="modal-title" id="tituloRegNovedad">
+                    <i class="fa-solid fa-plus me-2"></i> Registrar nueva OS
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" onclick="cerrarModalOs()"></button>
             </div>
 
-            <div class="modal-body" id="contenedorComprobantes">
-                <!-- visor dinámico -->
+            <div class="modal-body">
+                <form id="formNuevaOs" action="{{ route('novedades.store') }}" method="POST">
+                    @csrf <div class="row">
+                        <div class="col-6 mb-2">
+                            <label class="form-label fw-bold">Código de la Obra Social</label>
+                            <input type="text" class="form-control" name="codigoOs" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Nombre de la Obra Social</label>
+                            <input type="text" class="form-control" name="nombreOs" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cerrarModalOs()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" form="formCargaNovedad" id="btnRegistrarOs">
+                    <i class="fa-solid fa-floppy-disk me-1"></i>
+                    Registrar OS
+                </button>
             </div>
 
         </div>
     </div>
 </div>
+
 @endpush
 
 @push('scripts')

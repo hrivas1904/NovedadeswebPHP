@@ -132,17 +132,17 @@ class PersonalController extends Controller
 
     public function listarObraSocial()
     {
-        try {
-            $obras = DB::select('CALL SP_LISTA_OBRA_SOCIAL()');
+        $obras = DB::select('CALL SP_LISTA_OBRA_SOCIAL()');
 
-            return response()->json($obras);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => true,
-                'mensaje' => 'Error al obtener obras sociales',
-                'detalle' => $e->getMessage()
-            ], 500);
-        }
+        $data = collect($obras)->map(function ($o) {
+            return [
+                'id' => $o->id,
+                'text' => $o->nombre,
+                'codigo' => $o->codigo
+            ];
+        });
+
+        return response()->json($data);
     }
 
     public function store(Request $request)

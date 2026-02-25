@@ -1111,39 +1111,38 @@ $(document).on("change", ".js-select-area", function () {
 });
 
 //selectores de os y codigo
-document.addEventListener("DOMContentLoaded", () => {
-    cargarObrasSociales();
+$(document).ready(function () {
+    const $select = $("#obraSocial");
 
-    const select = document.getElementById("obraSocial");
-    const inputCodigo = document.getElementById("codigoOS");
+    $.ajax({
+        url: "/obra-social/lista",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
 
-    select.addEventListener("change", function () {
-        const selected = this.options[this.selectedIndex];
-        const codigo = selected.getAttribute("data-codigo");
+            $select.select2({
+                data: data,
+                placeholder: "Buscar obra social...",
+                allowClear: true,
+                width: "100%",
+                dropdownParent: $("#modalAltaColaborador")
+            });
 
-        inputCodigo.value = codigo ? codigo : "";
+        },
+        error: function (err) {
+            console.error("Error cargando obras sociales:", err);
+        }
     });
 });
 
-function cargarObrasSociales() {
-    fetch("/obra-social/lista")
-        .then((response) => response.json())
-        .then((data) => {
-            const select = document.getElementById("obraSocial");
+$("#obraSocial").on("select2:select", function (e) {
+    const data = e.params.data;
+    $("#codigoOS").val(data.codigo ?? "");
+});
 
-            data.forEach((item) => {
-                const option = document.createElement("option");
-                option.value = item.id;
-                option.textContent = item.nombre;
-                option.setAttribute("data-codigo", item.codigo);
-
-                select.appendChild(option);
-            });
-        })
-        .catch((error) => {
-            console.error("Error cargando obras sociales:", error);
-        });
-}
+$("#obraSocial").on("select2:clear", function () {
+    $("#codigoOS").val("");
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     cargarObrasSocialesEdit();
@@ -1212,6 +1211,7 @@ function abrirModal() {
 }
 
 function cerrarModal() {
+    $("#selectLocalidad").val(null).trigger("change");
     $("#formAltaColaborador")[0].reset();
     $("#modalAltaColaborador").modal("hide");
 }
@@ -1638,6 +1638,20 @@ $(document).on("click", ".btnQuitarHijo", function () {
 
 $(function () {
     $("#selectLocalidad").select2({
+        language: {
+            inputTooShort: function () {
+                return "Por favor, ingresá 3 o más caracteres";
+            },
+            searching: function () {
+                return "Buscando en Georef...";
+            },
+            noResults: function () {
+                return "No se encontraron localidades";
+            },
+            errorLoading: function () {
+                return "La carga falló. Verificá tu conexión.";
+            },
+        },
         placeholder: "Buscar localidad...",
         minimumInputLength: 3, // Subí a 3 para evitar resultados demasiado genéricos
         width: "100%",
@@ -1693,3 +1707,19 @@ $("#dni").on("input", function () {
 $("#firstPartCuil, #lastPartCuil").on("input", function () {
     armarCuil();
 });
+
+$(document).on("show.bs.modal", ".modal", function () {
+    const zIndex = 1040 + 10 * $(".modal:visible").length;
+    $(this).css("z-index", zIndex);
+    setTimeout(() => {
+        $(".modal-backdrop")
+            .not(".modal-stack")
+            .css("z-index", zIndex - 1)
+            .addClass("modal-stack");
+    }, 0);
+});
+
+function cerrarModalOs() {
+    $("#formNuevaOs")[0].reset();
+    $("#modalNuevaOs").modal("hide");
+}
