@@ -165,13 +165,36 @@ html, body {
     position: relative;
 }
 
+/* Overlay base (oculto) */
+.nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Color oscuro traslúcido */
+    z-index: 998; /* Justo debajo de la sidebar (999) */
+    display: none;
+    backdrop-filter: blur(2px); /* Opcional: un toque elegante de desenfoque */
+}
+
+@media (max-width: 1300px) {
+    /* Se muestra solo cuando el menú tiene la clase active */
+    .nav-links.active ~ .nav-overlay {
+        display: block;
+    }
+}
+
 /* ============================= */
 /* RESPONSIVE NAVBAR */
 /* ============================= */
 
 @media (max-width: 1300px) {
-
     .mobile-menu-btn {
+        display: block;
+    }
+
+    .nav-links.active ~ .nav-overlay {
         display: block;
     }
 
@@ -179,7 +202,7 @@ html, body {
         position: fixed;
         top: 70px;
         left: -100%;
-        width: 260px;
+        width: 280px; /* Un poco más ancho para que quepa bien el nombre */
         height: calc(100vh - 70px);
         background: var(--nav-bg);
         flex-direction: column;
@@ -188,35 +211,47 @@ html, body {
         transition: 0.35s ease;
         z-index: 999;
         overflow-y: auto;
+        display: flex;
+        justify-content: flex-start;
     }
 
     .nav-links.active {
         left: 0;
     }
 
-    .nav-links li {
-        padding: 10px 15px;
-    }
-
+    /* Submenús en móvil */
     .nav-dropdown:hover .dropdown-content {
-        display: none; /* evita hover en mobile */
+        display: none; /* Desactivar hover */
     }
 
-    .dropdown-content {
+    .nav-dropdown.open .dropdown-content {
+        display: block !important;
         position: static;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         box-shadow: none;
+        margin-top: 10px;
         border-radius: 6px;
-        margin-top: 6px;
     }
 
     .dropdown-content a {
         color: white !important;
-        padding-left: 20px;
+        padding-left: 30px; /* Más indentación para notar que es submenú */
     }
 
-    .nav-profile {
-        display: none;
+    .nav-dropdown.open .bx-chevron-down {
+        transform: rotate(180deg);
     }
-    
+
+    /* Perfil y Logout dentro de la sidebar */
+    .nav-profile {
+        display: flex !important;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+        margin-top: 30px; /* Espacio después del último link */
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
 }

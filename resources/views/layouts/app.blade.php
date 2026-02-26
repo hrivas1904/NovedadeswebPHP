@@ -31,6 +31,7 @@
 </head>
 
 <body>
+    <div id="nav-overlay" class="nav-overlay"></div>
     <nav class="navbar-top">
         <div class="nav-container">
             <div class="nav-logo">
@@ -70,40 +71,42 @@
                 </li>
 
                 @if (Auth::user()->rol === 'Administrador/a')
-                <li class="nav-dropdown">
-                    <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
-                            class="bx bx-chevron-down"></i></a>
-                    <div class="dropdown-content">
-                        <a href="{{ route('dashboardCalidad') }}">Dashboard SGC</a>
-                        <a href="{{ route('cmiCalidad') }}">CMI - BSC</a>
-                        <a href="{{ route('encuestasCalidad') }}">Encuestas</a>
-                    </div>
-                </li>
+                    <li class="nav-dropdown">
+                        <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
+                                class="bx bx-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="{{ route('dashboardCalidad') }}">Dashboard SGC</a>
+                            <a href="{{ route('cmiCalidad') }}">CMI - BSC</a>
+                            <a href="{{ route('encuestasCalidad') }}">Encuestas</a>
+                        </div>
+                    </li>
 
-                <li class="nav-dropdown">
-                    <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-task'></i> Desempeño <i
-                            class="bx bx-chevron-down"></i></a>
-                    <div class="dropdown-content">
-                        
-                    </div>
-                </li>
+                    <li class="nav-dropdown">
+                        <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-task'></i> Desempeño <i
+                                class="bx bx-chevron-down"></i></a>
+                        <div class="dropdown-content">
 
-                <li class="nav-dropdown">
-                    <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-heart-circle'></i> Clima Laboral <i
-                            class="bx bx-chevron-down"></i></a>
-                    <div class="dropdown-content">                        
-                    </div>
-                </li>
+                        </div>
+                    </li>
+
+                    <li class="nav-dropdown">
+                        <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-heart-circle'></i> Clima Laboral <i
+                                class="bx bx-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                        </div>
+                    </li>
                 @endif
                 <li class="nav-dropdown">
-                    <a href="https://capacitacion.hp3c.com.ar/login/index.php" class="dropbtn" target="_blank" rel="noopener noreferrer">
+                    <a href="https://capacitacion.hp3c.com.ar/login/index.php" class="dropbtn" target="_blank"
+                        rel="noopener noreferrer">
                         <i class='bx bx-book'></i> Capacitaciones </a>
-                    <div class="dropdown-content">                        
+                    <div class="dropdown-content">
                     </div>
                 </li>
                 <li class="nav-dropdown">
-                    <a href="javascript:void(0)" class="dropbtn"><i class="fa-regular fa-circle-question"></i> Ayuda </a>
-                    <div class="dropdown-content">                        
+                    <a href="javascript:void(0)" class="dropbtn"><i class="fa-regular fa-circle-question"></i> Ayuda
+                    </a>
+                    <div class="dropdown-content">
                     </div>
                 </li>
             </ul>
@@ -118,7 +121,7 @@
                         @else
                         @endif
 
-                        </span>
+                    </span>
                 </div>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     class="logout-btn">

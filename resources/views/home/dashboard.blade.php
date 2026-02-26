@@ -12,34 +12,34 @@
             <div class="container-md g-3 card filter-card">
                 <div class="card-body">
                     <div class="row g-3 d-flex align-items-end justify-content-around align-item-center">
-                        <div class="col-lg-2 col-md-6">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                             <label class="form-label">Desde</label>
                             <input type="date" id="filtroDesde" class="form-control" />
                         </div>
 
-                        <div class="col-lg-2 col-md-6">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
                             <label class="form-label">Hasta</label>
                             <input type="date" id="filtroHasta" class="form-control" />
                         </div>
 
-                        <div class="col-auto d-flex">
-                            <button id="btnAplicarFiltros" class="btn-primario flex-grow-1">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                            <button id="btnAplicarFiltros" class="btn-primario w-100">
                                 <i class="fa-solid fa-circle-check"></i> Aplicar filtros
                             </button>
                         </div>
 
-                        <div class="col-auto d-flex">
-                            <button id="btnLimpiarFiltros" class="btn-secundario flex-grow-1">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                            <button id="btnLimpiarFiltros" class="btn-secundario w-100">
                                 <i class="fa-solid fa-eraser"></i> Limpiar filtros
                             </button>
                         </div>
-                        <div class="col-auto d-flex">
-                            <button id="btnAplicarFiltros" class=btn-peligro flex-grow-1">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                            <button id="btnAplicarFiltros" class="btn-peligro w-100">
                                 <i class="fa-solid fa-file-pdf"></i> Exportar PDF
                             </button>
                         </div>
-                        <div class="col-md-auto d-flex d-none">
-                            <button id="btnImprimirDashboard" class=btn-terciario flex-grow-1">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
+                            <button id="btnImprimirDashboard" class="btn-terciario w-100">
                                 <i class="fa-solid fa-print"></i> Imprimir
                             </button>
                         </div>
@@ -51,7 +51,7 @@
 
     <div class="row g-3 mb-3">
 
-        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Total histórico colaboradores</div>
@@ -60,7 +60,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Colaboradores activos</div>
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-auto col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Colaboradores de baja</div>
@@ -78,7 +78,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Total novedades</div>
@@ -87,7 +87,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Novedades mes actual</div>
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-auto col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Más frecuente</div>
@@ -106,7 +106,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Menos frecuente</div>
@@ -116,7 +116,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Área con más novedades</div>
@@ -126,7 +126,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Área con menos novedades</div>
@@ -136,7 +136,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
             <div class="card kpi-card">
                 <div class="card-body">
                     <div class="kpi-label">Índice de Rotación de Personal</div>

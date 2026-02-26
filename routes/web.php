@@ -208,3 +208,10 @@ Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotac
 
 //API GEO
 Route::get('/geo/localidades', [GeoController::class, 'buscarLocalidades']);
+
+//solicitudes
+Route::post('/solicitudes/registrar', [PersonalController::class,'registrarSolicitud'])
+    ->name('solicitudes.registrar');
+    
+Route::get('/personal/listarSolicitudes', [PersonalController::class, 'listarSolicitudes'])
+    ->name('personal.listarSolicitudes');

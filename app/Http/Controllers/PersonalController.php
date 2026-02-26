@@ -39,7 +39,8 @@ class PersonalController extends Controller
         return view('personal.personalBaja');
     }
 
-    public function solicitudes(){
+    public function solicitudes()
+    {
         return view('personal.solicitudes');
     }
 
@@ -379,27 +380,27 @@ class PersonalController extends Controller
     }
 
     public function show($legajo)
-{
-    try {
-        // Datos del empleado
-        $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
-        
-        // Datos de los familiares
-        $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
+    {
+        try {
+            // Datos del empleado
+            $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
 
-        if (!empty($empleadoData)) {
-            return response()->json([
-                'success' => true,
-                'data' => $empleadoData[0],
-                'familiares' => $familiares // Enviamos el array de hijos aquí
-            ]);
+            // Datos de los familiares
+            $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
+
+            if (!empty($empleadoData)) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $empleadoData[0],
+                    'familiares' => $familiares // Enviamos el array de hijos aquí
+                ]);
+            }
+
+            return response()->json(['success' => false, 'mensaje' => 'No se encontró el legajo']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'mensaje' => $e->getMessage()], 500);
         }
-
-        return response()->json(['success' => false, 'mensaje' => 'No se encontró el legajo']);
-    } catch (\Exception $e) {
-        return response()->json(['success' => false, 'mensaje' => $e->getMessage()], 500);
     }
-}
 
     public function update(Request $request, $legajo)
     {
@@ -410,5 +411,60 @@ class PersonalController extends Controller
             );
 
         return response()->json(['success' => true]);
+    }
+
+    public function registrarSolicitud(Request $request)
+    {
+        try {
+
+            DB::statement(
+                "CALL SP_REGISTRAR_SOLICITUD(?, ?, ?, ?, ?, @p_mensaje)",
+                [
+                    $request->tipoSolicitud,
+                    $request->legajo,
+                    $request->registrante,
+                    $request->observ,
+                    $request->monto
+                ]
+            );
+
+            $mensaje = DB::selectOne("SELECT @p_mensaje as mensaje");
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => $mensaje->mensaje
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error al registrar solicitud',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function listarSolicitudes(Request $request)
+    {
+        try {
+            $fechaDesde    = $request->fechaDesde ?: null;
+            $fechaHasta    = $request->fechaHasta ?: null;
+            $areaId    = $request->area_id ?: null;
+            $estado   = $request->estado ?: null;
+
+            $solicitudes = DB::select(
+                "CALL SP_LISTA_SOLICITUDES(?, ?, ?, ?)",
+                [$fechaDesde, $fechaHasta, $estado, $areaId]
+            );
+
+            return response()->json([
+                'data' => $solicitudes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -16,7 +16,7 @@
             </div>
             @if (Auth::user()->rol === 'Administrador/a')
                 <div class="table-responsive px-2">
-                    <table id="tb_personal" class="table table-striped table-bordered table-hover align-middle nowrap">
+                    <table id="tb_solicitudes" class="table table-striped table-bordered table-hover align-middle nowrap">
                         <thead class="thead-dark">
                             <tr>
                                 <th>N°</th>
@@ -24,7 +24,8 @@
                                 <th>LEGAJO</th>
                                 <th>COLABORADOR</th>
                                 <th>ÁREA</th>
-                                <th>TIPO</th>
+                                <th>MONTO</th>
+                                <th>OBSERVACIONES</th>
                                 <th>ESTADO</th>
                                 <th>ACCIONES</th>
                             </tr>
@@ -86,19 +87,19 @@
 
                         <div class="empleado-box p-3 mb-4">
                             <div class="row g-3">
-                                <div class="col-lg-3 col-md-4 col-sm-12">
+                                <div class="col-lg-2 col-md-3 col-sm-12">
                                     <label class="form-label">Legajo</label>
                                     <input type="number" class="form-control" name="legajo" id="inputLegajo" required
                                         value="{{ auth()->user()->legajo }}" readonly>
                                 </div>
 
-                                <div class="col-lg-5 col-md-8 col-sm-12">
+                                <div class="col-lg-6 col-md-9 col-sm-12">
                                     <label class="form-label">Colaborador</label>
                                     <input type="text" class="form-control" name="colaborador" id="inputColaborador"
                                         required readonly>
                                 </div>
 
-                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="col-lg-4 col-md-7 col-sm-12">
                                     <label class="form-label">Servicio</label>
                                     <input type="text" class="form-control" name="servicio" readonly>
                                 </div>
@@ -113,13 +114,12 @@
                             <div class="row g-3">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="form-label">Tipo de solicitud</label>
-                                    <select class="form-control" name="tipoSolicitud" disabled>
-                                        <option selected value="adelanto">Adelanto</option>
-                                    </select>
+                                    <input class="form-control" name="tipoSolicitud" readonly value="Adelanto de Sueldo"></input>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="form-label">Monto</label>
                                     <input class="form-control" id="inputMonto" style="text-align: end;"></input>
+                                    <input class="form-control" id="inputMontoEnviar" name="monto" hidden></input>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <label class="form-label">Observaciones</label>
@@ -131,7 +131,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundario" onclick="cerrarModalSolicitud()">Cancelar</button>
-                    <button type="submit" class="btn btn-primario" form="formCargaNovedad" id="btnRegistrarNovedad">
+                    <button type="submit" class="btn btn-primario" form="formCargaSolicitud" id="btnRegistrarNovedad">
                         <i class="fa-solid fa-floppy-disk me-1"></i>
                         Registrar novedad
                     </button>
@@ -145,5 +145,6 @@
     <script src="{{ asset('js/personal/solicitudes.js') }}"></script>
     <script>
         const USER_LEGAJO = {{ auth()->user()->legajo ?? 'null' }};
+        const USER_ROLE = {{ auth()->user()->rol ?? 'null' }};
     </script>
 @endpush
