@@ -210,8 +210,17 @@ Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotac
 Route::get('/geo/localidades', [GeoController::class, 'buscarLocalidades']);
 
 //solicitudes
-Route::post('/solicitudes/registrar', [PersonalController::class,'registrarSolicitud'])
+Route::post('/solicitudes/registrar', [PersonalController::class, 'registrarSolicitud'])
     ->name('solicitudes.registrar');
-    
+
 Route::get('/personal/listarSolicitudes', [PersonalController::class, 'listarSolicitudes'])
     ->name('personal.listarSolicitudes');
+
+Route::post('/personal/aprobarSolicitud', [PersonalController::class, 'aprobarSolicitud'])
+    ->name('personal.aprobarSolicitud');
+
+Route::post('/personal/rechazarSolicitud', [PersonalController::class, 'rechazarSolicitud'])
+    ->name('personal.rechazarSolicitud');
+
+Route::post('/personal/anularSolicitud', [PersonalController::class, 'anularSolicitud'])
+    ->name('personal.anularSolicitud');

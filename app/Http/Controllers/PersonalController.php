@@ -452,8 +452,8 @@ class PersonalController extends Controller
             $fechaHasta    = $request->fechaHasta ?: null;
             $areaId    = $request->area_id ?: null;
             $estado   = $request->estado ?: null;
-            $legajo   = Auth::user()->legajo?: null;
-            $rol   = Auth::user()->rol?: null;
+            $legajo   = Auth::user()->legajo ?: null;
+            $rol   = Auth::user()->rol ?: null;
 
             $solicitudes = DB::select(
                 "CALL SP_LISTA_SOLICITUDES(?, ?, ?, ?, ?, ?)",
@@ -467,6 +467,83 @@ class PersonalController extends Controller
             return response()->json([
                 'error' => true,
                 'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function aprobarSolicitud(Request $request)
+    {
+        try {
+            $request->validate([
+                'idSolicitud' => 'required|integer'
+            ]);
+
+            $idSolicitud = $request->idSolicitud;
+
+            DB::statement("CALL SP_APROBAR_SOLICITUD(?, @p_msj)", [$idSolicitud]);
+            $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => $mensaje->mensaje
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error al aprobar solicitud',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function rechazarSolicitud(Request $request)
+    {
+        try {
+            $request->validate([
+                'idSolicitud' => 'required|integer'
+            ]);
+
+            $idSolicitud = $request->idSolicitud;
+
+            DB::statement("CALL SP_RECHAZAR_SOLICITUD(?, @p_msj)", [$idSolicitud]);
+
+            $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => $mensaje->mensaje
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error al rechazar solicitud',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function anularSolicitud(Request $request)
+    {
+        try {
+            $request->validate([
+                'idSolicitud' => 'required|integer'
+            ]);
+
+            $idSolicitud = $request->idSolicitud;
+
+            DB::statement("CALL SP_ANULAR_SOLICITUD(?, @p_msj)", [$idSolicitud]);
+
+            $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => $mensaje->mensaje
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error al anular solicitud',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

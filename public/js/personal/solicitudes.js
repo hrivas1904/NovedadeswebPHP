@@ -95,7 +95,7 @@ $("#formCargaSolicitud").on("submit", function (e) {
 
                 cerrarModalSolicitud();
                 $("#formCargaSolicitud")[0].reset();
-                tablaSolicitudes.ajax.reload(null,false);
+                tablaSolicitudes.ajax.reload(null, false);
             } else {
                 Swal.fire("Error", resp.mensaje, "error");
             }
@@ -106,6 +106,114 @@ $("#formCargaSolicitud").on("submit", function (e) {
     });
 });
 
+function aprobarSolicitud(idSolicitud, nombre, e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: `¿Aprobar la solicitud N° ${idSolicitud}?`,
+        text: `Colaborador: ${nombre}`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Aprobar",
+        cancelButtonText: "Rechazar",
+        confirmButtonColor: "#00b18d",
+        cancelButtonColor: "#004a7c",
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/personal/aprobarSolicitud",
+                method: "POST",
+                data: { idSolicitud: idSolicitud },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
+                success: function (resp) {
+                    if (resp.ok) {
+                        Swal.fire("Aprobado", resp.mensaje, "success");
+                        tablaSolicitudes.ajax.reload(null, false);
+                    } else {
+                        Swal.fire("Error", resp.mensaje, "error");
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    Swal.fire("Error", "Error servidor", "error");
+                },
+            });
+        }
+
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            $.ajax({
+                url: "/personal/rechazarSolicitud",
+                method: "POST",
+                data: { idSolicitud: idSolicitud },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
+                success: function (resp) {
+                    if (resp.ok) {
+                        Swal.fire("Rechazada", resp.mensaje, "success");
+                        tablaSolicitudes.ajax.reload(null, false);
+                    } else {
+                        Swal.fire("Error", resp.mensaje, "error");
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    Swal.fire("Error", "Error servidor", "error");
+                },
+            });
+        }
+    });
+}
+
+function anularSolicitud(idSolicitud, nombre, e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    Swal.fire({
+        title: `¿Anular la solicitud N° ${idSolicitud}?`,
+        text: `Colaborador: ${nombre}`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Anular",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#00b18d",
+        cancelButtonColor: "#004a7c",
+        reverseButtons: true,
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: "/personal/anularSolicitud",
+            method: "POST",
+            data: { idSolicitud: idSolicitud },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (resp) {
+                if (resp.ok) {
+                    Swal.fire("Listo", resp.mensaje, "success");
+                    tablaSolicitudes.ajax.reload(null, false);
+                } else {
+                    Swal.fire("Error", resp.mensaje, "error");
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+                Swal.fire("Error", "Error servidor", "error");
+            },
+        });
+    });
+}
+
 $(document).ready(function () {
     if ($("#tb_solicitudes").length > 0) {
         tablaSolicitudes = $("#tb_solicitudes").DataTable({
@@ -114,10 +222,9 @@ $(document).ready(function () {
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
-                    d.area_id = $("#filtroArea").val() || null;
-                    d.categ_id = $("#filtroCategoria").val() || null;
-                    d.p_regimen = $("#filtroRegimen").val() || null;
-                    d.p_convenio = $("#filtroConvenio").val() || null;
+                    d.estado = $("#selectEstado").val() || null;
+                    d.fechaDesde = $("#fechaDesde").val() || null;
+                    d.fechaHasta = $("#fechaHasta").val() || null;
                 },
             },
             autoWidth: true,
@@ -125,25 +232,30 @@ $(document).ready(function () {
             paging: false,
             scrollCollapse: true,
             scrollY: "60vh",
+            order: [[0, "desc"]],
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
             },
             columns: [
-                { data: "id", width: "3%", className: "text-start", orderable: "desc" },
+                {
+                    data: "id",
+                    width: "3%",
+                    className: "text-start",
+                    orderable: true,
+                },
                 { data: "fecha", width: "6%", className: "text-start" },
                 {
                     data: "legajo",
                     width: "4%",
                     className: "text-start",
-                    render: function (data, type, row) {
+                    render: function (data) {
                         return data.toString().padStart(5, "0");
                     },
                 },
                 {
                     data: "colaborador",
-                    width: "auto",
-                    className: "text-start",
                     width: "25%",
+                    className: "text-start",
                 },
                 { data: "area", width: "10%", className: "text-start" },
                 {
@@ -166,33 +278,48 @@ $(document).ready(function () {
                     className: "text-center",
                     render: function (data) {
                         let clase = "bg-secondary";
-
                         if (data === "PENDIENTE DE AUTORIZACIÓN")
                             clase = "bg-warning";
-                        if (data === "APROBADO") clase = "bg-success";
-                        if (data === "RECHAZADO") clase = "bg-danger";
-                        return `<span style="font-size: 0.80rem;" class="badge ${clase}">${data}</span>`;
+                        if (data === "APROBADA") clase = "bg-success";
+                        if (data === "RECHAZADA") clase = "bg-danger";
+                        return `<span style="font-size:.80rem" class="badge ${clase}">${data}</span>`;
                     },
                 },
                 {
                     data: null,
                     className: "text-center",
                     orderable: false,
-                    render: function (data) {
-                        return `
-                            <button 
-                                class="btn-primario btn-AprobarSolicitud"
-                                data-id="${data.id}"
-                                title="Aprobar solicitud">
-                                <i class="fa-solid fa-square-check"></i>  
-                            </button>
-                            <button 
-                                class="btn-secundario btn-RechazarSolicitud"
-                                data-id="${data.id}"
-                                title="Rechazar solicitud">
-                                <i class="fa-solid fa-square-xmark fs-5"></i>
-                            </button>
-                        `;
+                    render: function (row) {
+                        if (USER_ROLE !== "Administrador/a") return "";
+
+                        let botones = "";
+
+                        if (row.estado === "PENDIENTE DE AUTORIZACIÓN") {
+                            botones += `
+                                <button
+                                    type="button"
+                                    class="btn-primario btn-AprobarSolicitud"
+                                    data-id="${row.id}"
+                                    data-nombre="${row.colaborador}"
+                                    title="Aprobar solicitud">
+                                    <i class="fa-solid fa-square-check"></i>
+                                </button>
+                            `;
+                        }
+
+                        if (row.estado === "APROBADA") {
+                            botones += `
+                                <button
+                                    type="button"
+                                    class="btn-secundario btn-RechazarSolicitud"
+                                    data-id="${row.id}"
+                                    data-nombre="${row.colaborador}"
+                                    title="Anular solicitud">
+                                    <i class="fa-solid fa-square-xmark fs-5"></i>
+                                </button>
+                            `;
+                        }
+                        return botones;
                     },
                 },
             ],
@@ -220,4 +347,40 @@ $(document).ready(function () {
             ],
         });
     }
+
+    $(
+            "#selectEstado",
+        ).on("change", function () {
+            tablaSolicitudes.ajax.reload();
+        });
+
+    $(document).on("click", ".btn-AprobarSolicitud", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const idSolicitud = $(this).data("id");
+        const nombre = $(this).data("nombre");
+        aprobarSolicitud(idSolicitud, nombre, event);
+    });
+
+    $(document).on("click", ".btn-RechazarSolicitud", function (event) {
+        const idSolicitud = $(this).data("id");
+        const nombre = $(this).data("nombre");
+        anularSolicitud(idSolicitud, nombre, event);
+    });
+});
+
+$("#btnAplicarFiltros").on("click", function (e) {
+    e.preventDefault();
+    tablaSolicitudes.ajax.reload(null, false);
+});
+
+$("#btnLimpiarFiltros").on("click", function (e) {
+    e.preventDefault();
+
+    $("#selectEstado").val("");
+    $("#fechaDesde").val("");
+    $("#fechaHasta").val("");
+
+    tablaSolicitudes.search("").draw(); // opcional: limpia búsqueda global
+    tablaSolicitudes.ajax.reload(null, false);
 });

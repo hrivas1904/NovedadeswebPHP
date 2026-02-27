@@ -9,29 +9,62 @@
             <h3 class="pill-heading tituloVista">SOLICITUD DE ADELANTO DE SUELDO</h3>
         </div>
 
-        <button type="button" id="btnAbrirModalSolicitud" class="btn-primario mb-3"> Nueva solicitud </button>
+        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+
+            <button type="button" id="btnAbrirModalSolicitud" class="btn-primario">
+                Nueva solicitud
+            </button>
+
+            <div style="width: 200px;">
+                <select id="selectEstado" class="form-select">
+                    <option value="">TODAS</option>
+                    <option value="PENDIENTE DE AUTORIZACIÓN">PENDIENTES</option>
+                    <option value="APROBADA">APROBADAS</option>
+                    <option value="RECHAZADA">RECHAZADAS</option>
+                </select>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <label class="small text-muted">Desde</label>
+                <input type="date" id="fechaDesde" class="form-control" style="width:150px;">
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <label class="small text-muted">Hasta</label>
+                <input type="date" id="fechaHasta" class="form-control" style="width:150px;">
+            </div>
+
+            <button id="btnAplicarFiltros" class="btn-primario">
+                <i class="fa fa-filter"></i> Aplicar
+            </button>
+
+            <button id="btnLimpiarFiltros" class="btn-secundario">
+                <i class="fa fa-eraser"></i> Limpiar
+            </button>
+
+        </div>
 
         <div class="card" style="border-radius:15px;">
             <div class="my-2">
             </div>
 
-                <div class="table-responsive px-2">
-                    <table id="tb_solicitudes" class="table table-striped table-bordered table-hover align-middle nowrap">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>N°</th>
-                                <th>FECHA</th>
-                                <th>LEGAJO</th>
-                                <th>COLABORADOR</th>
-                                <th>ÁREA</th>
-                                <th>MONTO</th>
-                                <th>OBSERVACIONES</th>
-                                <th>ESTADO</th>
-                                <th>ACCIONES</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+            <div class="table-responsive px-2">
+                <table id="tb_solicitudes" class="table table-striped table-bordered table-hover align-middle nowrap">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>N°</th>
+                            <th>FECHA</th>
+                            <th>LEGAJO</th>
+                            <th>COLABORADOR</th>
+                            <th>ÁREA</th>
+                            <th>MONTO</th>
+                            <th>OBSERVACIONES</th>
+                            <th>ESTADO</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
 
         </div>
 
@@ -114,12 +147,15 @@
                             <div class="row g-3">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="form-label">Tipo de solicitud</label>
-                                    <input class="form-control" name="tipoSolicitud" readonly value="Adelanto de Sueldo"></input>
+                                    <input class="form-control" name="tipoSolicitud" required readonly
+                                        value="Adelanto de Sueldo"></input>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="form-label">Monto</label>
-                                    <input class="form-control" id="inputMonto" style="text-align: end;"></input>
-                                    <input class="form-control" id="inputMontoEnviar" name="monto" hidden></input>
+                                    <input class="form-control" id="inputMonto" style="text-align: end;"
+                                        required></input>
+                                    <input class="form-control" id="inputMontoEnviar" name="monto" hidden
+                                        required></input>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <label class="form-label">Observaciones</label>
@@ -133,7 +169,7 @@
                     <button type="button" class="btn btn-secundario" onclick="cerrarModalSolicitud()">Cancelar</button>
                     <button type="submit" class="btn btn-primario" form="formCargaSolicitud" id="btnRegistrarNovedad">
                         <i class="fa-solid fa-floppy-disk me-1"></i>
-                        Registrar novedad
+                        Registrar solicitud
                     </button>
                 </div>
             </div>
@@ -145,6 +181,6 @@
     <script src="{{ asset('js/personal/solicitudes.js') }}"></script>
     <script>
         const USER_LEGAJO = {{ auth()->user()->legajo ?? 'null' }};
-        const USER_ROLE = {{ auth()->user()->rol ?? 'null' }};
+        const USER_ROLE = "{{ auth()->user()->rol ?? 'null' }}";
     </script>
 @endpush
