@@ -95,6 +95,7 @@ $("#formCargaSolicitud").on("submit", function (e) {
 
                 cerrarModalSolicitud();
                 $("#formCargaSolicitud")[0].reset();
+                tablaSolicitudes.ajax.reload(null,false);
             } else {
                 Swal.fire("Error", resp.mensaje, "error");
             }
@@ -128,7 +129,7 @@ $(document).ready(function () {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
             },
             columns: [
-                { data: "id", width: "3%", className: "text-start" },
+                { data: "id", width: "3%", className: "text-start", orderable: "desc" },
                 { data: "fecha", width: "6%", className: "text-start" },
                 {
                     data: "legajo",

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class PersonalController extends Controller
@@ -451,10 +452,12 @@ class PersonalController extends Controller
             $fechaHasta    = $request->fechaHasta ?: null;
             $areaId    = $request->area_id ?: null;
             $estado   = $request->estado ?: null;
+            $legajo   = Auth::user()->legajo?: null;
+            $rol   = Auth::user()->rol?: null;
 
             $solicitudes = DB::select(
-                "CALL SP_LISTA_SOLICITUDES(?, ?, ?, ?)",
-                [$fechaDesde, $fechaHasta, $estado, $areaId]
+                "CALL SP_LISTA_SOLICITUDES(?, ?, ?, ?, ?, ?)",
+                [$fechaDesde, $fechaHasta, $estado, $areaId, $legajo, $rol]
             );
 
             return response()->json([

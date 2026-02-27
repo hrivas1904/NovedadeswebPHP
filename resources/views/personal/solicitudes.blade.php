@@ -14,7 +14,7 @@
         <div class="card" style="border-radius:15px;">
             <div class="my-2">
             </div>
-            @if (Auth::user()->rol === 'Administrador/a')
+
                 <div class="table-responsive px-2">
                     <table id="tb_solicitudes" class="table table-striped table-bordered table-hover align-middle nowrap">
                         <thead class="thead-dark">
@@ -32,7 +32,7 @@
                         </thead>
                     </table>
                 </div>
-            @endif
+
         </div>
 
     </div>
