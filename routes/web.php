@@ -205,8 +205,6 @@ Route::get('/dashboard/novedades-por-mes', [DashboardController::class, 'novedad
 Route::get('/dashboard/top-empleados-novedades', [DashboardController::class, 'topEmpleadosNovedades']);
 Route::get('/dashboard/historico-colaboradores', [DashboardController::class, 'historicoColaboradores']);
 Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotacional']);
-Route::get('/dashboard/exportar-pdf', [DashboardController::class, 'exportarPDF'])
-    ->name('dashboard.exportar.pdf');
 
 //API GEO
 Route::get('/geo/localidades', [GeoController::class, 'buscarLocalidades']);
