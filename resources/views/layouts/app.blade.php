@@ -63,7 +63,7 @@
                             class="bx bx-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <a href="{{ route('controlNovedades') }}">Control</a>
-                        <a href="{{ route('controlNovedades') }}">Registrar</a>
+                        <!--<a href="{{ route('controlNovedades') }}">Registrar</a>-->
                         @if (Auth::user()->rol === 'Administrador/a')
                             <a href="{{ route('configNovedades') }}">Configuración</a>
                         @endif
@@ -71,7 +71,7 @@
                 </li>
 
                 <!--@if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-dropdown">
+<li class="nav-dropdown">
                         <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
                                 class="bx bx-chevron-down"></i></a>
                         <div class="dropdown-content">
@@ -96,12 +96,11 @@
                         </div>
                     </li>-->
                 @endif
-                <li class="nav-dropdown">
-                    <a href="https://capacitacion.hp3c.com.ar/login/index.php" class="dropbtn" target="_blank"
+                <li>
+                    <a href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank"
                         rel="noopener noreferrer">
-                        <i class='bx bx-book'></i> Capacitaciones </a>
-                    <div class="dropdown-content">
-                    </div>
+                        <i class='bx bx-book'></i> Capacitaciones
+                    </a>
                 </li>
                 <li class="nav-dropdown">
                     <a href="javascript:void(0)" class="dropbtn"><i class="fa-regular fa-circle-question"></i> Ayuda
@@ -163,6 +162,7 @@
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 
 

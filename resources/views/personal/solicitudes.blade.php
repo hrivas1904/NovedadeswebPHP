@@ -9,14 +9,16 @@
             <h3 class="pill-heading tituloVista">SOLICITUD DE ADELANTO DE SUELDO</h3>
         </div>
 
-        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+        <div class="row align-items-end g-3 mb-3">
 
-            <button type="button" id="btnAbrirModalSolicitud" class="btn-primario">
-                Nueva solicitud
-            </button>
+            <div class="col-sm-6 col-lg-4 col-xl-2">
+                <button type="button" id="btnAbrirModalSolicitud" class="btn-primario w-100">
+                    Nueva solicitud
+                </button>
+            </div>
 
-            <div style="width: 200px;">
-                <select id="selectEstado" class="form-select">
+            <div class="col-sm-6 col-lg-4 col-xl-2">
+                <select id="selectEstado" class="form-select w-100">
                     <option value="">TODAS</option>
                     <option value="PENDIENTE DE AUTORIZACIÓN">PENDIENTES</option>
                     <option value="APROBADA">APROBADAS</option>
@@ -24,23 +26,27 @@
                 </select>
             </div>
 
-            <div class="d-flex align-items-center gap-2">
+            <div class="col-sm-6 col-lg-4 col-xl-2">
                 <label class="small text-muted">Desde</label>
-                <input type="date" id="fechaDesde" class="form-control" style="width:150px;">
+                <input type="date" id="fechaDesde" class="form-control w-100">
             </div>
 
-            <div class="d-flex align-items-center gap-2">
+            <div class="col-sm-6 col-lg-4 col-xl-2">
                 <label class="small text-muted">Hasta</label>
-                <input type="date" id="fechaHasta" class="form-control" style="width:150px;">
+                <input type="date" id="fechaHasta" class="form-control w-100">
             </div>
 
-            <button id="btnAplicarFiltros" class="btn-primario">
-                <i class="fa fa-filter"></i> Aplicar
-            </button>
+            <div class="col-sm-6 col-lg-4 col-xl-2">
+                <button id="btnAplicarFiltros" class="btn-primario w-100">
+                    <i class="fa fa-filter"></i> Aplicar
+                </button>
+            </div>
 
-            <button id="btnLimpiarFiltros" class="btn-secundario">
-                <i class="fa fa-eraser"></i> Limpiar
-            </button>
+            <div class="col-sm-6 col-lg-4 col-xl-2">
+                <button id="btnLimpiarFiltros" class="btn-secundario w-100">
+                    <i class="fa fa-eraser"></i> Limpiar
+                </button>
+            </div>
 
         </div>
 

@@ -12,30 +12,37 @@
         <div class="card" style="border-radius:15px;">
             <div class="card-header">
                 <div class="row d-flex align-item-center">
-                    <div class="col-10 d-flex justify-content-start align-items-center gap-3">
-                        <select id="filtroArea" class="form-select js-select-area" style="width:auto;"
-                            {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
-                        </select>
-
-                        @if (Auth::user()->rol !== 'Administrador/a')
-                            <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
-                        @endif
-
-                        <select id="filtroCategoria" class="form-select js-select-categFiltro" style="width:auto;"></select>
-                        <select id="filtroRegimen" class="form-select js-select-regFiltro" style="width:auto;"></select>
-                        <select id="filtroConvenio" class="form-select js-select-convenioFiltro" style="width:auto;"></select>
-
-                        <button type="button" id="btn-limpiar-filtros" class="btn-secundario">
-                            <i class="fa-solid fa-eraser"></i> Limpiar
-                        </button>
+                    <div class="col-12 d-flex justify-content-start align-items-center gap-3">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                                <select id="filtroArea" class="form-select js-select-area w-100"
+                                    {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
+                                </select>
+                                @if (Auth::user()->rol !== 'Administrador/a')
+                                    <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
+                                @endif
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                                <select id="filtroCategoria" class="form-select js-select-categFiltro w-100"></select>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                                <select id="filtroRegimen" class="form-select js-select-regFiltro w-100"></select>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                                <select id="filtroConvenio" class="form-select js-select-convenioFiltro w-100"></select>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                                <button type="button" id="btn-limpiar-filtros" class="btn-secundario w-100">
+                                    <i class="fa-solid fa-eraser"></i> Limpiar
+                                </button>
+                            </div>
+                        </div>
 
                         <script>
                             const USER_ROLE = "{{ Auth::user()->rol }}";
                             const USER_AREA_ID = "{{ Auth::user()->area_id }}";
                         </script>
 
-                    </div>
-                    <div class="col-2 text-end">
                     </div>
                 </div>
             </div>
@@ -111,8 +118,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Fecha nacimiento</label>
-                                            <input type="text" id="inputFechaNacimiento" class="form-control"
-                                                readonly>
+                                            <input type="text" id="inputFechaNacimiento" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Edad</label>

@@ -10,50 +10,51 @@
 
         <div class="card" style="border-radius:15px;">
             <div class="card-header">
-                <div class="row d-flex">
-                    <div class="col-6 d-flex justify-content-start align-items-end gap-2">
+                <div class="row align-items-center g-3">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-flex">
+                        <label class="form-label">Desde</label>
+                        <input type="date" id="filtroDesde" class="form-control mx-1" />
+                    </div>
 
-                        <div class="col-md-2">
-                            <label class="form-label">Desde</label>
-                            <input type="date" id="filtroDesde" class="form-control" />
-                        </div>
-
-                        <div class="col-md-2">
-                            <label class="form-label">Hasta</label>
-                            <input type="date" id="filtroHasta" class="form-control" />
-                        </div>
-
-                        <select id="area" name="area" class="form-select js-select-area" style="width: auto;"
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-flex">
+                        <label class="form-label">Hasta</label>
+                        <input type="date" id="filtroHasta" class="form-control mx-1" />
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <select id="area" name="area" class="form-select js-select-area w-100"
                             {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
                         </select>
+                    </div>
 
-                        <select id="idNovedad" name="idNovedad" class="form-select js-select-novedadFiltro" style="width: 300px;">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <select id="idNovedad" name="idNovedad" class="form-select js-select-novedadFiltro w-100">
                         </select>
+                    </div>
 
-                        @if (Auth::user()->rol !== 'Administrador/a')
-                            <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
-                        @endif
-
-                        <select id="paraFinnegans" name="paraFinnegans" class="form-select js-select-novedadFinnegans" style="width: auto;">
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <select id="paraFinnegans" name="paraFinnegans" class="form-select js-select-novedadFinnegans w-100">
                             <option value="" disabled selected>Seleccion tipo</option>
                             <option value="">Todas</option>
                             <option value="0">Informativas</option>
                             <option value="1">Para Finnegans</option>
                         </select>
+                    </div>
 
-                        <button type="button" id="btnLimpiarFiltros" class="btn-secundario d-flex align-items-center gap-1">
+                    @if (Auth::user()->rol !== 'Administrador/a')
+                        <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
+                    @endif
+
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <button type="button" id="btnLimpiarFiltros" class="btn-secundario w-100">
                             <i class="fa-solid fa-eraser"></i>Limpiar
                         </button>
+                    </div>                   
 
-                        <script>
-                            const USER_ROLE = "{{ Auth::user()->rol }}";
-                            const USER_AREA_ID = "{{ Auth::user()->area_id }}";
-                        </script>
-                    </div>
-
-                    <div class="col-6 text-end">
-
-                    </div>
+                    <script>
+                        const USER_ROLE = "{{ Auth::user()->rol }}";
+                        const USER_AREA_ID = "{{ Auth::user()->area_id }}";
+                    </script>
                 </div>
             </div>
             <div class="table-responsive">
@@ -169,7 +170,8 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha aplicación</label>
-                                            <input type="text" id="inputFechaAplicacion" class="form-control" readonly>
+                                            <input type="text" id="inputFechaAplicacion" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha desde</label>
@@ -203,7 +205,8 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Año</label>
-                                            <input type="text" id="inputAnnioVacaciones" class="form-control" readonly>
+                                            <input type="text" id="inputAnnioVacaciones" class="form-control"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="row g-3 mt-2 d-none" id="divInfoAtencionMedica">
@@ -213,7 +216,8 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Paciente</label>
-                                            <input type="text" id="inputPacienteAtencion" class="form-control" readonly>
+                                            <input type="text" id="inputPacienteAtencion" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-4">
                                             <label class="form-label">Concepto</label>
@@ -221,11 +225,13 @@
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Cuotas</label>
-                                            <input type="text" id="inputCuotas" class="form-control" readonly required title="Horas Diarias">
+                                            <input type="text" id="inputCuotas" class="form-control" readonly required
+                                                title="Horas Diarias">
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Importe cuotas</label>
-                                            <input type="text" id="inputImporteCuotas" class="form-control" readonly required title="Horas Diarias">
+                                            <input type="text" id="inputImporteCuotas" class="form-control" readonly
+                                                required title="Horas Diarias">
                                         </div>
                                     </div>
                                 </div>

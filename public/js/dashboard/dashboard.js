@@ -10,6 +10,51 @@ let filtrosDashboard = {
     hasta: null,
 };
 
+document
+    .getElementById("btnExportarPDF")
+    .addEventListener("click", function () {
+        const elemento = document.querySelector(".dashboard-container");
+
+        Swal.fire({
+            title: "Generando reporte...",
+            html: "Por favor espere unos segundos",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+        });
+
+        setTimeout(() => {
+            document.querySelectorAll('input[type="date"]').forEach((input) => {
+                input.setAttribute("value", input.value);
+            });
+
+            const opt = {
+                margin: 0.5,
+                filename: "dashboard-reporte.pdf",
+                image: { type: "jpeg", quality: 0.98 },
+                html2canvas: { scale: 3 },
+                jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
+            };
+
+            html2pdf()
+                .set(opt)
+                .from(elemento)
+                .save()
+                .then(() => {
+                    Swal.close();
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Reporte generado",
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                });
+        }, 300); // pequeño delay para que renderice el spinner
+    });
+
 $("#btnImprimirDashboard").on("click", function () {
     window.print();
 });

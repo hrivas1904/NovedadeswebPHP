@@ -73,7 +73,13 @@ $(document).ready(function () {
                     searchable: false,
                 },
             ],
-            dom: "<'d-top d-flex align-items-center gap-2'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-between'>",
+            dom:
+                "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
+                    <'d-flex flex-column flex-sm-row gap-2'B> \
+                    <'ms-md-auto mt-2 mt-md-0'f> \
+                > \
+                <'my-2'rt> \
+                <'d-bottom d-flex justify-content-center'i>",
             buttons: [
                 {
                     extend: "excelHtml5",

@@ -315,7 +315,13 @@ function inicializarORefrescarHistorial() {
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
         },
-        dom: "<'d-top d-flex align-items-center gap-2 mt-2 mx-2'B<'d-flex ms-auto'f>><'m-2'rt><'d-bottom d-flex align-items-center justify-content-between mx-2 mb-2'>",
+        dom:
+                "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
+                    <'d-flex flex-column flex-sm-row gap-2'B> \
+                    <'ms-md-auto mt-2 mt-md-0'f> \
+                > \
+                <'my-2'rt> \
+                <'d-bottom d-flex justify-content-center'i>",
         buttons: [
             {
                 extend: "excelHtml5",
@@ -919,7 +925,13 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom: "<'d-top d-flex align-items-center gap-2 mt-1'B<'d-flex ms-auto'f>><'my-2'rt><'d-bottom d-flex align-items-center justify-content-center'i>",
+            dom:
+                "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1' \
+                    <'d-flex flex-column flex-sm-row gap-2'B> \
+                    <'ms-md-auto mt-2 mt-md-0'f> \
+                > \
+                <'my-2'rt> \
+                <'d-bottom d-flex justify-content-center'i>",
             buttons: [
                 {
                     extend: "excelHtml5",
@@ -1722,4 +1734,33 @@ $(document).on("show.bs.modal", ".modal", function () {
 function cerrarModalOs() {
     $("#formNuevaOs")[0].reset();
     $("#modalNuevaOs").modal("hide");
+}
+
+const desdeInput = document.getElementById('fechaDesdeNovedad');
+const hastaInput = document.getElementById('fechaHastaNovedad');
+
+desdeInput.addEventListener('change', validarFechas);
+hastaInput.addEventListener('change', validarFechas);
+
+function validarFechas() {
+
+    const desde = desdeInput.valueAsDate;
+    const hasta = hastaInput.valueAsDate;
+
+    // 👇 Si alguna fecha no está completamente ingresada, no validar
+    if (!desde || !hasta) return;
+
+    if (hasta < desde) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Fecha inválida',
+            text: 'La fecha hasta no puede ser menor que la fecha desde'
+        });
+
+        hastaInput.value = '';
+        return;
+    }
+
+    calcularDuracion();
 }
