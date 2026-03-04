@@ -11,6 +11,7 @@ use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeoController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\AlertasController;
 
 Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
@@ -235,3 +236,7 @@ Route::get('/tickets/lista', [TicketController::class, 'listar'])
 
 Route::post('/tickets/resolver', [TicketController::class, 'resolver'])
     ->name('tickets.resolver');
+
+//alertas
+Route::get('/alertas/listar', [AlertasController::class, 'listar']);
+Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);

@@ -71,7 +71,7 @@
                 </li>
 
                 <!--@if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-dropdown">
+<li class="nav-dropdown">
                         <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
                                 class="bx bx-chevron-down"></i></a>
                         <div class="dropdown-content">
@@ -95,7 +95,7 @@
                         <div class="dropdown-content">
                         </div>
                     </li>
-                @endif-->
+@endif-->
                 <li>
                     <a href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank"
                         rel="noopener noreferrer">
@@ -121,6 +121,23 @@
                         @endif
 
                     </span>
+                </div>
+                <div class="nav-alertas dropdown">
+
+                    <button class="btn-alertas" id="btnAlertas">
+                        <i class="fa-solid fa-bell"></i>
+                        <span id="contadorAlertas" class="badge-alertas">0</span>
+                    </button>
+
+                    <div class="dropdown-alertas" id="dropdownAlertas">
+                        <div class="alertas-header">
+                            Notificaciones
+                        </div>
+
+                        <ul id="listaAlertas"></ul>
+
+                    </div>
+
                 </div>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     class="logout-btn">
@@ -164,7 +181,7 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-
+    <script src="{{ asset('js/home/alertas.js') }}"></script>
 
     @stack('modals')
     @stack('scripts')

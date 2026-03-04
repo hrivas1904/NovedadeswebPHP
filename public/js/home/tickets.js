@@ -2,7 +2,7 @@ let tablaTickets = null;
 
 $("#btnEmitirTicket").on("click", function () {
     let tipo = $("#selectorTipoTicket").val();
-    let descripcion = $("input[name='descripcion']").val();
+    let descripcion = $("input[name='descripcion']").val(); 
 
     if (!tipo) {
         Swal.fire("Atención", "Debe seleccionar un tipo de ticket", "warning");
@@ -25,22 +25,25 @@ $("#btnEmitirTicket").on("click", function () {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (resp) {
-            if (resp.ok) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Ticket enviado",
-                    text: resp.mensaje,
-                });
+            const icono = resp.ok ? "success" : "error";
+            const titulo = resp.ok ? "Operación Exitosa" : "Error";
 
+            Swal.fire({
+                icon: icono,
+                title: titulo,
+                text: resp.mensaje,
+            });
+
+            if (resp.ok) {
                 $("#selectorTipoTicket").val("");
                 $("input[name='descripcion']").val("");
-                tablaTickets.ajax.reload(null, false);
-            } else {
-                Swal.fire("Error", resp.mensaje, "error");
+                if (typeof tablaTickets !== 'undefined') {
+                    tablaTickets.ajax.reload(null, false);
+                }
             }
         },
         error: function () {
-            Swal.fire("Error", "No se pudo registrar el ticket", "error");
+            Swal.fire("Error", "No se pudo conectar con el servidor", "error");
         },
     });
 });
@@ -158,7 +161,7 @@ $(document).ready(function () {
         scrollX: true,
         paging: false,
         scrollCollapse: true,
-        scrollY: "58vh",
+        scrollY: "32vh",
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
             lengthMenu: "_MENU_",

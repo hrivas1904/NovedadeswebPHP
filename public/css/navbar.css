@@ -255,3 +255,62 @@ html, body {
         width: 100%;
     }
 }
+
+.nav-alertas {
+    position: relative;
+}
+
+.btn-alertas {
+    background: none;
+    border: none;
+    font-size: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.badge-alertas {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.dropdown-alertas {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width: 300px;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 999;
+}
+
+.alertas-header {
+    padding: 10px;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+}
+
+#listaAlertas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#listaAlertas li {
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+}
+
+#listaAlertas li:hover {
+    background: #f8f8f8;
+}
