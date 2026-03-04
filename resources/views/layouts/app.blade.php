@@ -71,7 +71,7 @@
                 </li>
 
                 <!--@if (Auth::user()->rol === 'Administrador/a')
-<li class="nav-dropdown">
+                    <li class="nav-dropdown">
                         <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
                                 class="bx bx-chevron-down"></i></a>
                         <div class="dropdown-content">
@@ -94,8 +94,8 @@
                                 class="bx bx-chevron-down"></i></a>
                         <div class="dropdown-content">
                         </div>
-                    </li>-->
-                @endif
+                    </li>
+                @endif-->
                 <li>
                     <a href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank"
                         rel="noopener noreferrer">
@@ -103,7 +103,7 @@
                     </a>
                 </li>
                 <li class="nav-dropdown">
-                    <a href="javascript:void(0)" class="dropbtn"><i class="fa-regular fa-circle-question"></i> Ayuda
+                    <a href="{{ route('ayuda') }}" class="dropbtn"><i class="fa-regular fa-circle-question"></i> Ayuda
                     </a>
                     <div class="dropdown-content">
                     </div>

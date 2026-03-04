@@ -184,7 +184,7 @@ function verDetalleNovedad(idRegistro) {
                     .val(importeCuotasFormateado)
                     .addClass("text-end");
 
-                if (d.novedad === "Atención médica") {
+                if (d.novedad === "Atención sanatorial") {
                     $("#divInfoAtencionMedica").removeClass("d-none");
                 } else {
                     $("#divInfoAtencionMedica").addClass("d-none");
