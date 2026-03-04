@@ -70,3 +70,12 @@
     font-size: 0.85rem;
     cursor: pointer;
 }
+
+.descripcion-ticket {
+    max-height: 80px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-break: break-word;
+    padding-right: 6px;
+}

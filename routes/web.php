@@ -10,6 +10,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeoController;
+use App\Http\Controllers\TicketController;
 
 Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
@@ -224,3 +225,13 @@ Route::post('/personal/rechazarSolicitud', [PersonalController::class, 'rechazar
 
 Route::post('/personal/anularSolicitud', [PersonalController::class, 'anularSolicitud'])
     ->name('personal.anularSolicitud');
+
+//tickets
+Route::post('/tickets/registrar', [TicketController::class, 'registrar'])
+    ->name('tickets.registrar');
+
+Route::get('/tickets/lista', [TicketController::class, 'listar'])
+    ->name('tickets.lista');
+
+Route::post('/tickets/resolver', [TicketController::class, 'resolver'])
+    ->name('tickets.resolver');
