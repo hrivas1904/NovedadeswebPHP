@@ -314,3 +314,7 @@ html, body {
 #listaAlertas li:hover {
     background: #f8f8f8;
 }
+
+#btnAlertas i {
+    color: white;
+}

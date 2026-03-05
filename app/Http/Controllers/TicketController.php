@@ -67,14 +67,25 @@ class TicketController extends Controller
     {
         try {
 
+            if (!$request->idTicket) {
+                return response()->json([
+                    'ok' => false,
+                    'mensaje' => 'Ticket inválido'
+                ]);
+            }
+
             $idTicket = $request->idTicket;
             $quienResuelve = Auth::user()->name;
+            $legajo = Auth::user()->legajo;
+            $idUser = Auth::user()->id;
 
             DB::statement(
-                "CALL SP_RESOLVER_TICKET(?, ?, @p_msj)",
+                "CALL SP_RESOLVER_TICKET(?, ?, ?, ?, @p_msj)",
                 [
                     $idTicket,
-                    $quienResuelve
+                    $quienResuelve,
+                    $legajo,
+                    $idUser
                 ]
             );
 
