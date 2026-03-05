@@ -315,8 +315,7 @@ function inicializarORefrescarHistorial() {
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
         },
-        dom:
-                "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
+        dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
                     <'d-flex flex-column flex-sm-row gap-2'B> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
                 > \
@@ -925,8 +924,7 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom:
-                "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1' \
+            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1' \
                     <'d-flex flex-column flex-sm-row gap-2'B> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
                 > \
@@ -1131,19 +1129,17 @@ $(document).ready(function () {
         type: "GET",
         dataType: "json",
         success: function (data) {
-
             $select.select2({
                 data: data,
                 placeholder: "Buscar obra social...",
                 allowClear: true,
                 width: "100%",
-                dropdownParent: $("#modalAltaColaborador")
+                dropdownParent: $("#modalAltaColaborador"),
             });
-
         },
         error: function (err) {
             console.error("Error cargando obras sociales:", err);
-        }
+        },
     });
 });
 
@@ -1449,17 +1445,17 @@ $("#inputImporte").on("focus", function () {
 $("#formCargaNovedad").on("submit", function (e) {
     e.preventDefault();
 
-    const dias = document.getElementById("inputDias").value.trim();
-    const horas = document.getElementById("inputHoras").value.trim();
+    const dias = parseFloat(document.getElementById("inputDias").value) || 0;
+    const horas = parseFloat(document.getElementById("inputHoras").value) || 0;
     const pesosRaw = document.getElementById("inputImporte").value.trim();
 
     let valorFinal = null;
 
     if (pesosRaw !== "") {
         valorFinal = parsearMonto(pesosRaw);
-    } else if (horas !== "") {
+    } else if (horas > 0) {
         valorFinal = horas;
-    } else if (dias !== "") {
+    } else if (dias > 0) {
         valorFinal = dias;
     }
 
@@ -1736,14 +1732,13 @@ function cerrarModalOs() {
     $("#modalNuevaOs").modal("hide");
 }
 
-const desdeInput = document.getElementById('fechaDesdeNovedad');
-const hastaInput = document.getElementById('fechaHastaNovedad');
+const desdeInput = document.getElementById("fechaDesdeNovedad");
+const hastaInput = document.getElementById("fechaHastaNovedad");
 
-desdeInput.addEventListener('change', validarFechas);
-hastaInput.addEventListener('change', validarFechas);
+desdeInput.addEventListener("change", validarFechas);
+hastaInput.addEventListener("change", validarFechas);
 
 function validarFechas() {
-
     const desde = desdeInput.valueAsDate;
     const hasta = hastaInput.valueAsDate;
 
@@ -1751,16 +1746,59 @@ function validarFechas() {
     if (!desde || !hasta) return;
 
     if (hasta < desde) {
-
         Swal.fire({
-            icon: 'warning',
-            title: 'Fecha inválida',
-            text: 'La fecha hasta no puede ser menor que la fecha desde'
+            icon: "warning",
+            title: "Fecha inválida",
+            text: "La fecha hasta no puede ser menor que la fecha desde",
         });
 
-        hastaInput.value = '';
+        hastaInput.value = "";
         return;
     }
 
     calcularDuracion();
 }
+
+function calcularHorasHabiles() {
+    const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
+    const fechaHasta = document.getElementById("fechaHastaNovedad").value;
+
+    if (!fechaDesde || !fechaHasta) return;
+
+    const [y1, m1, d1] = fechaDesde.split("-");
+    const [y2, m2, d2] = fechaHasta.split("-");
+
+    let inicio = new Date(y1, m1 - 1, d1);
+    let fin = new Date(y2, m2 - 1, d2);
+
+    let diasTotales = 0;
+    let sabados = 0;
+    let domingos = 0;
+
+    let fecha = new Date(inicio);
+
+    while (fecha <= fin) {
+        diasTotales++;
+
+        let dia = fecha.getDay();
+        // 0 domingo - 6 sábado
+
+        if (dia === 0) domingos++;
+        if (dia === 6) sabados++;
+
+        fecha.setDate(fecha.getDate() + 1);
+    }
+
+    let diasHabiles = diasTotales - domingos - sabados / 2;
+    let horas = diasHabiles * 8;
+
+    document.getElementById("inputHoras").value = parseFloat(horas);
+}
+
+document
+    .getElementById("fechaDesdeNovedad")
+    .addEventListener("change", calcularHorasHabiles);
+
+document
+    .getElementById("fechaHastaNovedad")
+    .addEventListener("change", calcularHorasHabiles);

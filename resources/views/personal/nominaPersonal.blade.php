@@ -1100,7 +1100,7 @@
 
                                 <div class="col-lg-1" id="divCantidadHoras" hidden>
                                     <label class="form-label">Horas</label>
-                                    <input id="inputHoras" type="text" class="form-control">
+                                    <input id="inputHoras" name="horas" type="text" class="form-control">
                                 </div>
 
                                 <div class="col-lg-1" id="divCantidadPesos" hidden>
