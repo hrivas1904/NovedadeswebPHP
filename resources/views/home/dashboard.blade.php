@@ -137,6 +137,24 @@
             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                 <div class="card kpi-card">
                     <div class="card-body">
+                        <div class="kpi-label">Total Solicitudes Adelanto</div>
+                        <div id="kpiTotalSolicitudes" class="kpi-value">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="kpi-label">Monto Solicitudes Adelanto</div>
+                        <div id="kpiMontoAdelantos" class="kpi-value">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card kpi-card">
+                    <div class="card-body">
                         <div class="kpi-label">Índice de Rotación de Personal</div>
                         <div id="kpiTasaRotacional" class="kpi-value">0</div>
                     </div>
@@ -147,8 +165,57 @@
 
         <div class="row g-4">
 
-            <div class="col-lg-4">
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <span class="chart-title">Novedades por mes</span>
+                    </div>
+                    <div class="card-body d-flex flex-column" style="height:300px">
+                        <div class="flex-grow-1">
+                            <canvas id="chartNovedadesMes"></canvas>
+                        </div>
+                        <div class="pt-2 small text-muted text-center">
+                            Mes con más novedades: <span id="lblMesMaxNovedades">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <span class="chart-title">Colaboradores con más novedades</span>
+                    </div>
+                    <div class="card-body d-flex flex-column" style="height:300px">
+                        <div class="flex-grow-1">
+                            <canvas id="chartTopEmpleados"></canvas>
+                        </div>
+
+                        <div class="pt-2 small text-muted text-center">
+                            Colaborador con más novedades:
+                            <span id="lblEmpleadoTop">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <span class="chart-title">Adelantos por mes</span>
+                    </div>
+                    <div class="card-body d-flex flex-column" style="height:300px">
+                        <div class="flex-grow-1">
+                            <canvas id="chartAdelantosMes"></canvas>
+                        </div>
+                        <div class="pt-2 small text-muted text-center">
+                            Mes con más adelantos: <span id="lblMesMaxAdelantos">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                 <div class="card chart-card mb-4">
                     <div class="card-header">
                         <span class="chart-title">Novedades por tipo</span>
@@ -157,7 +224,29 @@
                         <canvas id="chartNovedadesTipo"></canvas>
                     </div>
                 </div>
+            </div>
 
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                <div class="card table-card">
+                    <div class="card-header">
+                        <span class="chart-title">Detalle por tipo</span>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table id="tblNovedadesTipo" class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Cantidad</th>
+                                    <th>%</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                 <div class="card chart-card mb-4">
                     <div class="card-header">
                         <span class="chart-title">Novedades por área</span>
@@ -166,96 +255,28 @@
                         <canvas id="chartNovedadesAreas"></canvas>
                     </div>
                 </div>
-
             </div>
 
-            <div class="col-lg-8">
-                <div class="row g-4 mb-2">
-                    <div class="col-md-6">
-                        <div class="card chart-card">
-                            <div class="card-header">
-                                <span class="chart-title">Novedades por mes</span>
-                            </div>
-                            <div class="card-body d-flex flex-column" style="height:300px">
-                                <div class="flex-grow-1">
-                                    <canvas id="chartNovedadesMes"></canvas>
-                                </div>
-                                <div class="pt-2 small text-muted text-center">
-                                    Mes con más novedades: <span id="lblMesMaxNovedades">—</span>
-                                </div>
-                            </div>
-                        </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                <div class="card table-card">
+                    <div class="card-header">
+                        <span class="chart-title">Detalle por área</span>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="card chart-card">
-                            <div class="card-header">
-                                <span class="chart-title">Empleados con más novedades</span>
-                            </div>
-                            <div class="card-body d-flex flex-column" style="height:300px">
-                                <div class="flex-grow-1">
-                                    <canvas id="chartTopEmpleados"></canvas>
-                                </div>
-
-                                <div class="pt-2 small text-muted text-center">
-                                    Colaborador con más novedades:
-                                    <span id="lblEmpleadoTop">—</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card table-card">
-                            <div class="card-header">
-                                <span class="chart-title">Detalle por tipo</span>
-                            </div>
-                            <div class="card-body table-responsive">
-                                <table id="tblNovedadesTipo" class="table table-sm align-middle mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Tipo</th>
-                                            <th>Cantidad</th>
-                                            <th>%</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="card-body table-responsive">
+                        <table id="tblNovedadesArea" class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Área</th>
+                                    <th>Cantidad</th>
+                                    <th>%</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card table-card">
-                            <div class="card-header">
-                                <span class="chart-title">Detalle por área</span>
-                            </div>
-                            <div class="card-body table-responsive">
-                                <table id="tblNovedadesArea" class="table table-sm align-middle mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Área</th>
-                                            <th>Cantidad</th>
-                                            <th>%</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-
         </div>
-
-
     </div>
 
 @endsection

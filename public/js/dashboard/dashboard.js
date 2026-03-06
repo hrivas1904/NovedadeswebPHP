@@ -4,11 +4,22 @@ let chartTopEmpleados = null;
 let tablaNovedadesTipo = null;
 let tablaNovedadesArea = null;
 let chartNovedadesMes = null;
+let chartAdelantosMes = null;
 
 let filtrosDashboard = {
     desde: null,
     hasta: null,
 };
+
+function formatearPesos(valor) {
+    if (valor === null || valor === undefined || valor === "") return "";
+
+    return new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+        minimumFractionDigits: 2,
+    }).format(valor);
+}
 
 document
     .getElementById("btnExportarPDF")
@@ -744,6 +755,143 @@ function cargarTablaNovedadesArea() {
     });
 }
 
+function cargarTotalesAdelantos() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
+    $.ajax({
+        url: "/dashboard/totalAdelantosSueldos",
+        type: "GET",
+        dataType: "json",
+
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta,
+        },
+
+        success: function (data) {
+            $("#kpiTotalSolicitudes").text(data.cantidadTotal);
+        },
+
+        error: function (xhr) {
+            console.error("Error total solicitudes:", xhr.responseText);
+            $("#kpiTotalSolicitudes").text("—");
+        },
+    });
+}
+
+function cargarMontoAdelantos() {
+    const filtros = obtenerFiltrosFechas();
+    console.log("Llamando AJAX con:", filtros);
+    $.ajax({
+        url: "/dashboard/totalAdelantosSueldos",
+        type: "GET",
+        dataType: "json",
+
+        data: {
+            desde: filtros.desde,
+            hasta: filtros.hasta,
+        },
+
+        success: function (data) {
+            $("#kpiMontoAdelantos").text(formatearPesos(data.montoTotal));
+        },
+
+        error: function (xhr) {
+            console.error("Error monto solicitudes:", xhr.responseText);
+            $("#kpiMontoAdelantos").text("—");
+        },
+    });
+}
+
+function cargarChartAdelantosMes() {
+    const filtros = obtenerFiltrosFechas();
+
+    console.log("Llamando AJAX adelantos por mes con:", filtros);
+
+    $.ajax({
+        url: "/dashboard/adelantosPorMes",
+        type: "GET",
+        dataType: "json",
+
+        success: function (data) {
+            const labels = [];
+            const values = [];
+
+            let maxCantidad = 0;
+            let mesMax = "—";
+
+            data.forEach((item) => {
+                labels.push(item.mes);
+                values.push(item.monto);
+
+                if (item.cantidad > maxCantidad) {
+                    maxCantidad = item.cantidad;
+                    mesMax = item.mes;
+                }
+            });
+
+            $("#lblMesMaxAdelantos").text(mesMax);
+
+            const ctx = document
+                .getElementById("chartAdelantosMes")
+                .getContext("2d");
+
+            if (chartAdelantosMes) {
+                chartAdelantosMes.destroy();
+            }
+
+            chartAdelantosMes = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Monto de adelantos",
+                            data: values,
+                            tension: 0.3,
+                            fill: false,
+                            borderWidth: 2,
+                            pointRadius: 4,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return "$ " + Number(value).toLocaleString("es-AR");
+                                },
+                            },
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            mode: "index",
+                            intersect: false,
+                            callbacks: {
+                                label: function (context) {
+                                    return "Monto: $ " + Number(context.raw).toLocaleString("es-AR");
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+        },
+
+        error: function (xhr) {
+            console.error("Error cargando adelantos por mes:", xhr.responseText);
+        },
+    });
+}
+
 function recargarDashboard() {
     obtenerFiltrosFechas();
     cargarHistoricoColab();
@@ -755,6 +903,8 @@ function recargarDashboard() {
     cargarNovedadesMenosFrecuente();
     cargarAreaMasNovedades();
     cargarAreaMenosNovedades();
+    cargarTotalesAdelantos();
+    cargarMontoAdelantos();
     cargarIndiceRotacional();
     cargarChartNovedadesPorTipo();
     cargarChartNovedadesPorArea();
@@ -762,6 +912,7 @@ function recargarDashboard() {
     cargarTopEmpleadosNovedades();
     cargarTablaNovedadesTipo();
     cargarTablaNovedadesArea();
+    
 }
 
 $("#btnAplicarFiltros").on("click", function () {
@@ -791,11 +942,14 @@ $(document).ready(function () {
     cargarNovedadesMenosFrecuente();
     cargarAreaMasNovedades();
     cargarAreaMenosNovedades();
+    cargarTotalesAdelantos();
+    cargarMontoAdelantos();
     cargarIndiceRotacional();
     cargarChartNovedadesPorTipo();
     cargarChartNovedadesPorArea();
     cargarTablaNovedadesTipo();
     cargarTablaNovedadesArea();
     cargarChartNovedadesMes();
+    cargarChartAdelantosMes();
     cargarTopEmpleadosNovedades();
 });

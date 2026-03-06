@@ -155,4 +155,19 @@ class DashboardController extends Controller
 
         return response()->json($rows);
     }
+
+    public function totalAdelantosSueldos(Request $request)
+    {
+        $desde = $request->query('desde') ?: null;
+        $hasta = $request->query('hasta') ?: null;
+        $result = DB::select('CALL SP_MONTO_ADELANTOS(?, ?)', [$desde, $hasta]);
+        return response()->json($result[0]);
+    }
+
+    public function adelantosPorMes()
+    {
+        $rows = DB::select('CALL SP_ADELANTOS_MENSUAL()');
+
+        return response()->json($rows);
+    }
 }
