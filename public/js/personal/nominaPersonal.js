@@ -1732,33 +1732,6 @@ function cerrarModalOs() {
     $("#modalNuevaOs").modal("hide");
 }
 
-const desdeInput = document.getElementById("fechaDesdeNovedad");
-const hastaInput = document.getElementById("fechaHastaNovedad");
-
-desdeInput.addEventListener("change", validarFechas);
-hastaInput.addEventListener("change", validarFechas);
-
-function validarFechas() {
-    const desde = desdeInput.valueAsDate;
-    const hasta = hastaInput.valueAsDate;
-
-    // 👇 Si alguna fecha no está completamente ingresada, no validar
-    if (!desde || !hasta) return;
-
-    if (hasta < desde) {
-        Swal.fire({
-            icon: "warning",
-            title: "Fecha inválida",
-            text: "La fecha hasta no puede ser menor que la fecha desde",
-        });
-
-        hastaInput.value = "";
-        return;
-    }
-
-    calcularDuracion();
-}
-
 function calcularHorasHabiles() {
     const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
     const fechaHasta = document.getElementById("fechaHastaNovedad").value;

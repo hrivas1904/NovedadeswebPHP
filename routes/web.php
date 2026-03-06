@@ -13,8 +13,6 @@ use App\Http\Controllers\GeoController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AlertasController;
 
-Route::middleware(['auth'])->group(function () {
-
 Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
 
@@ -244,5 +242,3 @@ Route::post('/tickets/resolver', [TicketController::class, 'resolver'])
 //alertas
 Route::get('/alertas/listar', [AlertasController::class, 'listar']);
 Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
-
-});
