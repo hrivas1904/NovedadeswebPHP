@@ -1,3 +1,5 @@
+let tablaPersonal = null;
+
 function formatearFechaArgentina(fecha) {
     if (!fecha) return "";
 
@@ -16,6 +18,7 @@ function formatearPesos(valor) {
         minimumFractionDigits: 2,
     }).format(valor);
 }
+
 
 //sp para cargar selector areas
 $(document).ready(function () {
@@ -204,15 +207,24 @@ function verDetalleNovedad(idRegistro) {
     });
 }
 
-$('#btnAplicarFiltros').on('clic', function(){
-    
-})
+$("#btnLimpiarFiltros").on("click", function () {
+    $("#filtroDesde").val(null);
+    $("#filtroHasta").val(null);
+    $("#paraFinnegans").val(null);
+    $("#idNovedad").val(null);
+    $("#area").val(null);
+    tablaPersonal.ajax.reload();
+});
+
+$("#btnAplicarFiltros").on("click", function () {
+    tablaPersonal.ajax.reload();
+});
 
 //carga dt novedades
 $(document).ready(function () {
     tablaPersonal = $("#tb_control");
     if (tablaPersonal.length > 0) {
-        let dt = new DataTable("#tb_control", {
+        tablaPersonal = new DataTable("#tb_control", {
             ajax: {
                 url: "/novedades/listarNovedadesPorArea",
                 type: "GET",
@@ -229,8 +241,8 @@ $(document).ready(function () {
                     d.paraFinnegans = $("#paraFinnegans").val();
 
                     // Enviamos las fechas al controlador
-                    d.desde = $("#fechaDesde").val();
-                    d.hasta = $("#fechaHasta").val();
+                    d.desde = $("#filtroDesde").val();
+                    d.hasta = $("#filtroHasta").val();
                 },
             },
             columnDefs: [
@@ -323,6 +335,7 @@ $(document).ready(function () {
                 {
                     data: "REGISTRO",
                     orderable: false,
+                    width: "10%",
                     render: function (data, type, row) {
                         // 'data' es el valor de la celda (REGISTRO)
                         // 'row' contiene todo el objeto del empleado/evento
@@ -333,6 +346,18 @@ $(document).ready(function () {
                                     data-id="${data}" 
                                     title="Detalle de novedad">
                                     <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button type="button" 
+                                    class="btn-sm btn-alerta btn-EditarNovedad" 
+                                    data-id="${data}" 
+                                    title="Detalle de novedad">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" 
+                                    class="btn-sm btn-peligro btn-AnularNovedad" 
+                                    data-id="${data}" 
+                                    title="Detalle de novedad">
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         `;

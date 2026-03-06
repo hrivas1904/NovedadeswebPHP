@@ -46,8 +46,14 @@
                     @endif
 
                     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <button type="button" id="btnAplicarFiltros" class="btn-primario w-100">
+                            <i class="fa-solid fa-filter"></i> Aplicar
+                        </button>
+                    </div> 
+
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                         <button type="button" id="btnLimpiarFiltros" class="btn-secundario w-100">
-                            <i class="fa-solid fa-eraser"></i>Limpiar
+                            <i class="fa-solid fa-eraser"></i> Limpiar
                         </button>
                     </div>                   
 
@@ -82,7 +88,7 @@
                                 <th>AÑO</th>
                                 <th>LEGAJO</th>
                                 <th>TIPO</th>
-                                <th></th>
+                                <th>ACCIONES</th>
                             </tr>
                         </thead>
                     </table>

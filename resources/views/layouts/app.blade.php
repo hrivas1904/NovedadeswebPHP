@@ -62,7 +62,7 @@
                     <a href="javascript:void(0)" class="dropbtn"><i class="bx bx-folder"></i> Novedades <i
                             class="bx bx-chevron-down"></i></a>
                     <div class="dropdown-content">
-                        <a href="{{ route('controlNovedades') }}">Control</a>
+                        <a href="{{ route('controlNovedades') }}">Mis novedades</a>
                         <!--<a href="{{ route('controlNovedades') }}">Registrar</a>-->
                         @if (Auth::user()->rol === 'Administrador/a')
                             <a href="{{ route('configNovedades') }}">Configuración</a>
@@ -71,7 +71,7 @@
                 </li>
 
                 <!--@if (Auth::user()->rol === 'Administrador/a')
-<li class="nav-dropdown">
+                    <li class="nav-dropdown">
                         <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
                                 class="bx bx-chevron-down"></i></a>
                         <div class="dropdown-content">
@@ -95,7 +95,7 @@
                         <div class="dropdown-content">
                         </div>
                     </li>
-@endif-->
+                @endif-->
                 <li>
                     <a href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank"
                         rel="noopener noreferrer">
