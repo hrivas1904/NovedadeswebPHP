@@ -481,8 +481,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Fecha nacimiento</label>
-                                            <input type="text" id="inputFechaNacimiento" class="form-control"
-                                                readonly>
+                                            <input type="text" id="inputFechaNacimiento" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Edad</label>
@@ -500,19 +499,19 @@
                                     <div class="row g-3">
                                         <div class="col-lg-7">
                                             <label class="form-label">Correo electrónico</label>
-                                            <input type="text" id="inputEmail" class="form-control" readonly>
+                                            <input type="text" id="inputEmail" class="form-control">
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Teléfono</label>
-                                            <input type="tel" id="inputTelefono" class="form-control" readonly>
+                                            <input type="tel" id="inputTelefono" class="form-control">
                                         </div>
                                         <div class="col-lg-7">
                                             <label class="form-label">Domicilio</label>
-                                            <input type="text" id="inputDomicilio" class="form-control" readonly>
+                                            <input type="text" id="inputDomicilio" class="form-control">
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Localidad</label>
-                                            <input type="text" id="inputLocalidad" class="form-control" readonly>
+                                            <input type="text" id="inputLocalidad" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -528,29 +527,27 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia1Edit" class="form-control" readonly></input>
+                                            <input id="personaEmergencia1Edit" class="form-control"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia1Edit" class="form-control" type="number"
-                                                readonly></input>
+                                            <input id="contactoEmergencia1Edit" class="form-control" type="number"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
-                                            <input id="parentescoEmergencia1Edit" class="form-control" readonly></input>
+                                            <input id="parentescoEmergencia1Edit" class="form-control"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia2Edit" class="form-control" readonly></input>
+                                            <input id="personaEmergencia2Edit" class="form-control"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia2Edit" class="form-control" type="number"
-                                                readonly></input>
+                                            <input id="contactoEmergencia2Edit" class="form-control" type="number"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
-                                            <input id="parentescoEmergencia2Edit" class="form-control" readonly></input>
+                                            <input id="parentescoEmergencia2Edit" class="form-control"></input>
                                         </div>
                                     </div>
                                 </div>
@@ -566,18 +563,21 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Padre</label>
-                                            <input id="padreColaboradorEdit" class="form-control" readonly></input>
+                                            <input id="padreColaboradorEdit" class="form-control"></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Madre</label>
-                                            <input id="madreColaboradorEdit" class="form-control" type="text"
-                                                readonly></input>
+                                            <input id="madreColaboradorEdit" class="form-control" type="text"></input>
                                         </div>
 
-                                        <div class="section-divider mb-3">
-                                            <span>Hijos</span>
+                                        <div class="col-lg-2 d-flex flex-column">
+                                            <label class="form-label">Agregar hijo/a</label>
+                                            <button id="btnAgregarHijoEdit" class="btn-primario">
+                                                <i class="fa-solid fa-plus"></i> Hijo/a
+                                            </button>
                                         </div>
-                                        <div id="contenedorHijosVisualizacion" class="row g-2">
+
+                                        <div id="divHijosEdit" class="col-lg-12 empleado-box p-3" hidden>
                                         </div>
 
                                     </div>
@@ -594,11 +594,23 @@
                                     <div class="row g-3">
                                         <div class="col-lg-3">
                                             <label class="form-label">Estado civil</label>
-                                            <input type="text" id="inputEstadoCivil" class="form-control" readonly>
+                                            <select name="estado_civil" id="inputEstadoCivil" class="form-select" required>
+                                                <option selected disabled="">Seleccione estado civil</option>
+                                                <option value="SOLTERO/A">SOLTERO/A</option>
+                                                <option value="CASADO/A">CASADO/A</option>
+                                                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
+                                                <option value="VIUDO/A">VIUDO/A</option>
+                                                <option value="N/D">N/D</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Género</label>
-                                            <input type="text" id="inputGenero" class="form-control" readonly>
+                                            <select name="genero" id="inputGenero" class="form-select" required>
+                                                <option selected disabled value="">Seleccione género</option>
+                                                <option value="MASCULINO">MASCULINO</option>
+                                                <option value="FEMENINO">FEMENINO</option>
+                                                <option value="NO BINARIO">NO BINARIO</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label">Obra social</label>
@@ -686,7 +698,7 @@
                                             <input type="text" id="inputCordinador" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-1">
-                                            <label class="form-label">Afiliado</label>
+                                            <label class="form-label">Afiliado al sindicato</label>
                                             <input type="text" id="inputAfiliado" class="form-control" readonly>
                                         </div>
                                     </div>
@@ -723,8 +735,11 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="cerrarModalLegajo()">
+                    <button class="btn-secundario" onclick="cerrarModalLegajo()">
                         Atrás
+                    </button>
+                    <button class="btn-primario" onclick="">
+                        Actualizar
                     </button>
                 </div>
             </div>

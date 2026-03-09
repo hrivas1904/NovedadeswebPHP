@@ -876,7 +876,7 @@ $(document).ready(function () {
                                 data-id="${data.LEGAJO}"
                                 title='Ver legajo'
                                 data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-eye"></i>
+                                <i class="fa-solid fa-user-pen"></i>
                             </button>
                         `;
 
@@ -886,22 +886,22 @@ $(document).ready(function () {
                             data.ESTADO === "ACTIVO"
                         ) {
                             botones += `
-                            <button 
-                                class="btn-peligro btn-DarBaja"
-                                data-id="${data.LEGAJO}"
-                                title='Dar de baja'
-                                data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-x"></i>
-                            </button>
-                            
-                            <button 
-                                class="btn-alerta btn-Editar d-none"
-                                title='Editar'
-                                data-id="${data.LEGAJO}"
-                                data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                        `;
+                                <button 
+                                    class="btn-peligro btn-DarBaja"
+                                    data-id="${data.LEGAJO}"
+                                    title='Dar de baja'
+                                    data-nombre="${data.COLABORADOR}">
+                                    <i class="fa-solid fa-x"></i>
+                                </button>
+                                
+                                <button 
+                                    class="btn-alerta btn-Editar d-none"
+                                    title='Editar'
+                                    data-id="${data.LEGAJO}"
+                                    data-nombre="${data.COLABORADOR}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                            `;
                         }
 
                         // ADMIN + COORDINADOR
@@ -1637,6 +1637,31 @@ $("#btnAgregarHijo").on("click", function (e) {
         </div>
     `;
     $("#divHijos").append(html);
+});
+
+$("#btnAgregarHijoEdit").on("click", function (e) {
+    e.preventDefault();
+    $("#divHijosEdit").removeAttr("hidden");
+
+    // Es importante usar el nombre hijos[] para que Laravel lo reciba como un array
+    const html = `
+        <div class="row d-flex mb-2 fila-hijo"> 
+            <div class="col-lg-4">
+                <label class="form-label">Nombre y Apellido</label>
+                <input type="text" name="hijosEdit[0][nombre]" class="form-control" required>
+            </div>
+            <div class="col-lg-3">
+                <label class="form-label">DNI</label>
+                <input type="text" name="hijosEdit[0][dni]" class="form-control">
+            </div>
+            <div class="col-lg-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btnQuitarHijo">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    $("#divHijosEdit").append(html);
 });
 
 //  eliminar la fila agregada
