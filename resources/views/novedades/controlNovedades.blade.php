@@ -58,6 +58,12 @@
                         </button>
                     </div>
 
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <button type="button" id="btnCargaMasiva" class="btn-primario w-100">
+                            <i class="fa-solid fa-database"></i> Carga masiva
+                        </button>
+                    </div>
+
                     <script>
                         const USER_ROLE = "{{ Auth::user()->rol }}";
                         const USER_AREA_ID = "{{ Auth::user()->area_id }}";
@@ -115,6 +121,161 @@
 
                 <div class="modal-body">
                     <form id="formDetalleNovedad">
+                        @csrf
+                        <div class="row g-4 mb-4">
+                            <div class="col-lg-12">
+                                <div class="section-divider mb-3">
+                                    <span>Información general</span>
+                                </div>
+                                <div class="empleado-box p-3">
+                                    <div class="row g-3">
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Registro N°</label>
+                                            <input type="text" id="inputRegistro" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Fecha de registro</label>
+                                            <input type="text" id="inputFechaReg" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <label class="form-label">Registrante</label>
+                                            <input type="text" id="inputRegistrante" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="section-divider mb-3">
+                                    <span>Datos Personales</span>
+                                </div>
+                                <div class="empleado-box p-3">
+                                    <div class="row g-3">
+                                        <div class="col-lg-1">
+                                            <label class="form-label">Legajo</label>
+                                            <input type="text" id="inputLegajo" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Colaborador</label>
+                                            <input type="text" id="inputColaborador" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Estado</label>
+                                            <input type="text" id="inputEstado" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">DNI</label>
+                                            <input type="text" id="inputDni" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Área</label>
+                                            <input type="text" id="inputArea" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="section-divider mb-3">
+                                    <span>Información de la novedad</span>
+                                </div>
+                                <div class="empleado-box p-3">
+                                    <div class="row g-3">
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Fecha aplicación</label>
+                                            <input type="text" id="inputFechaAplicacion" class="form-control"
+                                                readonly>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Fecha desde</label>
+                                            <input type="text" id="inputFechaDesde" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Fecha hasta</label>
+                                            <input type="text" id="inputFechaHasta" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Valor</label>
+                                            <input type="text" id="inputValor" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Código</label>
+                                            <input type="text" id="inputCodigo" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Novedad</label>
+                                            <input type="text" id="inputNovedad" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label class="form-label">Descripción</label>
+                                            <input type="text" id="inputDescripcion" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mt-2 d-none" id="divInfoVacaciones">
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Tipo de Vacaciones</label>
+                                            <input type="text" id="inputTipoVacaciones" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Año</label>
+                                            <input type="text" id="inputAnnioVacaciones" class="form-control"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mt-2 d-none" id="divInfoAtencionMedica">
+                                        <div class="col-lg-2">
+                                            <label class="form-label">N° Atención</label>
+                                            <input type="text" id="inputNumAtencion" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Paciente</label>
+                                            <input type="text" id="inputPacienteAtencion" class="form-control"
+                                                readonly>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Concepto</label>
+                                            <input type="text" id="inputConcepto" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <label class="form-label">Cuotas</label>
+                                            <input type="text" id="inputCuotas" class="form-control" readonly required
+                                                title="Horas Diarias">
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Importe cuotas</label>
+                                            <input type="text" id="inputImporteCuotas" class="form-control" readonly
+                                                required title="Horas Diarias">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="cerrarModalLegajo()">
+                        Atrás
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCargaMasivaNovedad" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true" data-bs-backdrop="static">
+
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content p-1">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-id-card me-2"></i> Formulario de carga masiva
+                    </h5>
+                    <button type="button" class="btn-close" onclick="cerrarModalLegajo()"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="formCargaMasiva">
                         @csrf
                         <div class="row g-4 mb-4">
                             <div class="col-lg-12">

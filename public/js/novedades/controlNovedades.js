@@ -524,3 +524,8 @@ $(document).ready(function () {
         });
     }
 });
+
+$("#btnCargaMasiva").on("clic",function(){
+    const modal=$("#modalCargaMasivaNovedad");
+    modal.modal('show');
+})
