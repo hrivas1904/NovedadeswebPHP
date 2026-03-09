@@ -12,14 +12,15 @@
         <div class="card" style="border-radius:15px;">
             <div class="card-header">
                 <div class="row d-flex align-item-center">
-                    <div class="col-12 d-flex justify-content-start align-items-center gap-3">                                             
+                    <div class="col-12 d-flex justify-content-start align-items-center gap-3">
                         <div class="row g-2 align-items-end">
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                                 <select id="filtroArea" class="form-select js-select-area w-100"
-                                    {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
-                                </select> 
-                                @if (Auth::user()->rol !== 'Administrador/a')
-                                <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
+                                    {{ !in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a L2']) ? 'disabled' : '' }}>
+                                </select>
+
+                                @if (!in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a L2']))
+                                    <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                                 @endif
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
@@ -43,14 +44,14 @@
                                     </button>
                                 @endif
                             </div>
-                        </div>                     
+                        </div>
 
                         <script>
                             const USER_ROLE = "{{ Auth::user()->rol }}";
                             const USER_AREA_ID = "{{ Auth::user()->area_id }}";
                         </script>
 
-                    </div>                    
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -310,13 +311,13 @@
                                             <input name="matricula_profesional" class="form-control" type="text" />
                                         </div>
                                         <!--<div class="col-lg-2 d-flex flex-column">
-                                            <label class="form-label">Agregar título</label>
-                                            <button id="btnAgregarTitulo" class="btn-primario">
-                                                <i class="fa-solid fa-plus"></i> Título
-                                            </button>
-                                        </div>
-                                        <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
-                                        </div>-->
+                                                <label class="form-label">Agregar título</label>
+                                                <button id="btnAgregarTitulo" class="btn-primario">
+                                                    <i class="fa-solid fa-plus"></i> Título
+                                                </button>
+                                            </div>
+                                            <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
+                                            </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -481,7 +482,8 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Fecha nacimiento</label>
-                                            <input type="text" id="inputFechaNacimiento" class="form-control" readonly>
+                                            <input type="text" id="inputFechaNacimiento" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Edad</label>
@@ -499,19 +501,19 @@
                                     <div class="row g-3">
                                         <div class="col-lg-7">
                                             <label class="form-label">Correo electrónico</label>
-                                            <input type="text" id="inputEmail" class="form-control">
+                                            <input type="text" id="inputEmail" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Teléfono</label>
-                                            <input type="tel" id="inputTelefono" class="form-control">
+                                            <input type="tel" id="inputTelefono" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-7">
                                             <label class="form-label">Domicilio</label>
-                                            <input type="text" id="inputDomicilio" class="form-control">
+                                            <input type="text" id="inputDomicilio" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Localidad</label>
-                                            <input type="text" id="inputLocalidad" class="form-control">
+                                            <input type="text" id="inputLocalidad" class="form-control" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -527,27 +529,29 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia1Edit" class="form-control"></input>
+                                            <input id="personaEmergencia1Edit" class="form-control" readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia1Edit" class="form-control" type="number"></input>
+                                            <input id="contactoEmergencia1Edit" class="form-control" type="number"
+                                                readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
-                                            <input id="parentescoEmergencia1Edit" class="form-control"></input>
+                                            <input id="parentescoEmergencia1Edit" class="form-control" readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia2Edit" class="form-control"></input>
+                                            <input id="personaEmergencia2Edit" class="form-control" readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia2Edit" class="form-control" type="number"></input>
+                                            <input id="contactoEmergencia2Edit" class="form-control" type="number"
+                                                readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
-                                            <input id="parentescoEmergencia2Edit" class="form-control"></input>
+                                            <input id="parentescoEmergencia2Edit" class="form-control" readonly></input>
                                         </div>
                                     </div>
                                 </div>
@@ -563,18 +567,12 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Padre</label>
-                                            <input id="padreColaboradorEdit" class="form-control"></input>
+                                            <input id="padreColaboradorEdit" class="form-control" readonly></input>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Madre</label>
-                                            <input id="madreColaboradorEdit" class="form-control" type="text"></input>
-                                        </div>
-
-                                        <div class="col-lg-2 d-flex flex-column">
-                                            <label class="form-label">Agregar hijo/a</label>
-                                            <button id="btnAgregarHijoEdit" class="btn-primario">
-                                                <i class="fa-solid fa-plus"></i> Hijo/a
-                                            </button>
+                                            <input id="madreColaboradorEdit" class="form-control" type="text"
+                                                readonly></input>
                                         </div>
 
                                         <div id="divHijosEdit" class="col-lg-12 empleado-box p-3" hidden>
@@ -594,23 +592,12 @@
                                     <div class="row g-3">
                                         <div class="col-lg-3">
                                             <label class="form-label">Estado civil</label>
-                                            <select name="estado_civil" id="inputEstadoCivil" class="form-select" required>
-                                                <option selected disabled="">Seleccione estado civil</option>
-                                                <option value="SOLTERO/A">SOLTERO/A</option>
-                                                <option value="CASADO/A">CASADO/A</option>
-                                                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
-                                                <option value="VIUDO/A">VIUDO/A</option>
-                                                <option value="N/D">N/D</option>
-                                            </select>
+                                            <input id="inputEstadoCivil" class="form-control" type="text"
+                                                readonly></input>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Género</label>
-                                            <select name="genero" id="inputGenero" class="form-select" required>
-                                                <option selected disabled value="">Seleccione género</option>
-                                                <option value="MASCULINO">MASCULINO</option>
-                                                <option value="FEMENINO">FEMENINO</option>
-                                                <option value="NO BINARIO">NO BINARIO</option>
-                                            </select>
+                                            <input id="inputGenero" class="form-control" type="text" readonly></input>
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label">Obra social</label>
@@ -1098,14 +1085,14 @@
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha desde</label>
-                                    <input type="date" class="form-control" name="fechaDesde"
-                                        id="fechaDesdeNovedad" required>
+                                    <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad"
+                                        required>
                                 </div>
 
                                 <div class="col-lg-2">
                                     <label class="form-label">Fecha hasta</label>
-                                    <input type="date" class="form-control" name="fechaHasta"
-                                        id="fechaHastaNovedad" required>
+                                    <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad"
+                                        required>
                                 </div>
 
                                 <div class="col-lg-1" id="divPeriodoDias" hidden>

@@ -105,6 +105,14 @@ Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLega
 Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado'])
     ->name('personal.baja');
 
+Route::get('/personal/miLegajo', [PersonalController::class, 'miLegajo'])
+    ->name('miLegajo');
+
+Route::get('/verMiLegajo', [PersonalController::class, 'verMiLegajo'])->middleware('auth');
+
+Route::post('/actualizarMiLegajo', [PersonalController::class,'actualizarMiLegajo'])
+    ->middleware('auth');
+
 Route::get(
     '/novedades/historial/{legajo}',
     [PersonalController::class, 'historialNovedades']

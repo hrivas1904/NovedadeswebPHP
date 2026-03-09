@@ -45,6 +45,11 @@ class PersonalController extends Controller
         return view('personal.solicitudes');
     }
 
+    public function miLegajo()
+    {
+        return view('personal.miLegajo');
+    }
+
     public function listarAreas()
     {
         try {
@@ -383,10 +388,7 @@ class PersonalController extends Controller
     public function show($legajo)
     {
         try {
-            // Datos del empleado
             $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
-
-            // Datos de los familiares
             $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
 
             if (!empty($empleadoData)) {
@@ -544,6 +546,94 @@ class PersonalController extends Controller
                 'ok' => false,
                 'mensaje' => 'Error al anular solicitud',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function verMiLegajo()
+    {
+        try {
+            $legajo = Auth::user()->legajo;
+
+            if (!$legajo) {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'El usuario no tiene un legajo asignado'
+                ], 400);
+            }
+
+            $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
+            DB::statement("SET @dummy = 1");
+
+            $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
+            DB::statement("SET @dummy2 = 1");
+
+            if (empty($empleadoData)) {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'No se encontró el legajo'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $empleadoData[0],
+                'familiares' => $familiares
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al obtener el legajo',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function actualizarMiLegajo(Request $request)
+    {
+        try {
+
+            $legajo = Auth::user()->legajo;
+
+            DB::statement("CALL SP_ACTUALIZAR_MI_LEGAJO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
+                $legajo,
+                $request->correo,
+                $request->telefono,
+                $request->domicilio,
+                $request->localidad,
+                $request->estadoCivil,
+                $request->genero,
+                $request->personaEmerg1,
+                $request->telefEmerg1,
+                $request->parentesco1,
+                $request->personaEmerg2,
+                $request->telefEmerg2,
+                $request->parentesco2,
+                $request->padre,
+                $request->madre
+            ]);
+
+            if ($request->hijosEdit) {
+
+                foreach ($request->hijosEdit as $hijo) {
+
+                    DB::statement("CALL SP_INSERTAR_FAMILIAR(?,?,?)", [
+                        $legajo,
+                        $hijo['nombre'],
+                        'HIJO/A'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Legajo actualizado correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
             ], 500);
         }
     }

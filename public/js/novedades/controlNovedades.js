@@ -19,7 +19,6 @@ function formatearPesos(valor) {
     }).format(valor);
 }
 
-
 //sp para cargar selector areas
 $(document).ready(function () {
     cargarAreas();
@@ -337,30 +336,43 @@ $(document).ready(function () {
                     orderable: false,
                     width: "10%",
                     render: function (data, type, row) {
-                        // 'data' es el valor de la celda (REGISTRO)
-                        // 'row' contiene todo el objeto del empleado/evento
-                        return `
-                            <div class="d-flex align-items-center justify-content-center gap-2">
-                                <button type="button" 
-                                    class="btn-sm btn-secundario btn-VerDetalleNovedad" 
-                                    data-id="${data}" 
-                                    title="Detalle de novedad">
-                                    <i class="fa-solid fa-eye"></i>
-                                </button>
-                                <button type="button" 
-                                    class="btn-sm btn-alerta btn-EditarNovedad" 
-                                    data-id="${data}" 
-                                    title="Detalle de novedad">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button type="button" 
-                                    class="btn-sm btn-peligro btn-AnularNovedad" 
-                                    data-id="${data}" 
-                                    title="Detalle de novedad">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        `;
+                        if (USER_ROLE === "Colaborador/a") {
+                            return `
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <button type="button" 
+                                        class="btn-sm btn-secundario btn-VerDetalleNovedad" 
+                                        data-id="${data}" 
+                                        title="Detalle de novedad">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            `;
+                        } else {
+                            return `
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <button type="button" 
+                                        class="btn-sm btn-secundario btn-VerDetalleNovedad" 
+                                        data-id="${data}" 
+                                        title="Detalle de novedad">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+
+                                    <button type="button" 
+                                        class="btn-sm btn-alerta btn-EditarNovedad" 
+                                        data-id="${data}" 
+                                        title="Editar novedad">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+
+                                    <button type="button" 
+                                        class="btn-sm btn-peligro btn-AnularNovedad" 
+                                        data-id="${data}" 
+                                        title="Anular novedad">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
                     },
                 },
             ],
@@ -379,8 +391,7 @@ $(document).ready(function () {
                 },
             },
             autoWidth: false,
-            dom:
-                "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
+            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
                     <'d-flex flex-column flex-sm-row gap-2'B> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
                 > \

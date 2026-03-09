@@ -813,7 +813,10 @@ $(document).ready(function () {
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
-                    if (USER_ROLE !== "Administrador/a") {
+                    if (
+                        USER_ROLE !== "Administrador/a" &&
+                        USER_ROLE !== "Coordinador/a L2"
+                    ) {
                         d.area_id = USER_AREA_ID;
                     } else {
                         d.area_id = $("#filtroArea").val() || null;
@@ -876,7 +879,7 @@ $(document).ready(function () {
                                 data-id="${data.LEGAJO}"
                                 title='Ver legajo'
                                 data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-user-pen"></i>
+                                <i class="fa-solid fa-address-card"></i>
                             </button>
                         `;
 
@@ -895,7 +898,7 @@ $(document).ready(function () {
                                 </button>
                                 
                                 <button 
-                                    class="btn-alerta btn-Editar d-none"
+                                    class="btn-alerta btn-Editar"
                                     title='Editar'
                                     data-id="${data.LEGAJO}"
                                     data-nombre="${data.COLABORADOR}">
@@ -907,7 +910,7 @@ $(document).ready(function () {
                         // ADMIN + COORDINADOR
                         if (
                             (USER_ROLE === "Administrador/a" ||
-                                USER_ROLE === "Coordinador/a") &&
+                                USER_ROLE === "Coordinador/a" || USER_ROLE === "Coordinador/a L2") &&
                             data.ESTADO === "ACTIVO"
                         ) {
                             botones += `

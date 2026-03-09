@@ -20,7 +20,7 @@
                         <label class="form-label">Hasta</label>
                         <input type="date" id="filtroHasta" class="form-control mx-1" />
                     </div>
-                    
+
                     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                         <select id="area" name="area" class="form-select js-select-area w-100"
                             {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
@@ -33,7 +33,8 @@
                     </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                        <select id="paraFinnegans" name="paraFinnegans" class="form-select js-select-novedadFinnegans w-100">
+                        <select id="paraFinnegans" name="paraFinnegans"
+                            class="form-select js-select-novedadFinnegans w-100">
                             <option value="" disabled selected>Seleccion tipo</option>
                             <option value="">Todas</option>
                             <option value="0">Informativas</option>
@@ -49,13 +50,13 @@
                         <button type="button" id="btnAplicarFiltros" class="btn-primario w-100">
                             <i class="fa-solid fa-filter"></i> Aplicar
                         </button>
-                    </div> 
+                    </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                         <button type="button" id="btnLimpiarFiltros" class="btn-secundario w-100">
                             <i class="fa-solid fa-eraser"></i> Limpiar
                         </button>
-                    </div>                   
+                    </div>
 
                     <script>
                         const USER_ROLE = "{{ Auth::user()->rol }}";
@@ -257,4 +258,8 @@
 
 @push('scripts')
     <script src="{{ asset('js/novedades/controlNovedades.js') }}"></script>
+    <script>
+        const USER_ROLE = "{{ Auth::user()->rol }}";
+        const USER_AREA_ID = "{{ Auth::user()->area_id }}";
+    </script>
 @endpush

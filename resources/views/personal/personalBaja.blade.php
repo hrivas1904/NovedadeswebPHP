@@ -16,9 +16,10 @@
                         <div class="row g-2 align-items-end">
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                                 <select id="filtroArea" class="form-select js-select-area w-100"
-                                    {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
+                                    {{ !in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a L2']) ? 'disabled' : '' }}>
                                 </select>
-                                @if (Auth::user()->rol !== 'Administrador/a')
+
+                                @if (!in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a L2']))
                                     <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                                 @endif
                             </div>

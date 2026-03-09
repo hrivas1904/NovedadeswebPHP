@@ -121,7 +121,9 @@ function verLegajo(legajoColaborador, nombre) {
                 );
 
                 $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
-                $("#inputFechaEgreso").val(formatearFechaArgentina(d.FECHA_EGRESO));
+                $("#inputFechaEgreso").val(
+                    formatearFechaArgentina(d.FECHA_EGRESO),
+                );
                 $("#inputArea").val(d.AREA);
                 $("#inputServicio").val(d.SERVICIO);
                 $("#inputConvenio").val(d.CONVENIO);
@@ -271,7 +273,10 @@ $(document).ready(function () {
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
-                    if (USER_ROLE !== "Administrador/a") {
+                    if (
+                        USER_ROLE !== "Administrador/a" &&
+                        USER_ROLE !== "Coordinador/a L2"
+                    ) {
                         d.area_id = USER_AREA_ID;
                     } else {
                         d.area_id = $("#filtroArea").val() || null;
@@ -324,9 +329,9 @@ $(document).ready(function () {
                 },
                 {
                     data: "FECHA_EGRESO",
-                    render: function(data){
-                        return (formatearFechaArgentina(data));
-                    }
+                    render: function (data) {
+                        return formatearFechaArgentina(data);
+                    },
                 },
                 {
                     data: null,
@@ -340,15 +345,14 @@ $(document).ready(function () {
                                 data-id="${data.LEGAJO}"
                                 title='Ver legajo'
                                 data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-eye"></i>
+                                <i class="fa-solid fa-address-card"></i>
                             </button>
                         `;
                         return botones;
                     },
                 },
             ],
-            dom:
-                "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
+            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
                     <'d-flex flex-column flex-sm-row gap-2'B> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
                 > \
@@ -435,4 +439,3 @@ $(document).ready(function () {
         });
     }
 });
-

@@ -46,14 +46,19 @@
                         <a href="{{ route('dashboard') }}"><i class="bx bx-grid-alt"></i> Dashboard</a>
                     </li>
                 @endif
-
+                
                 <li class="nav-dropdown">
                     <a href="javascript:void(0)" class="dropbtn"><i class="bx bx-user"></i> Personal <i
                             class="bx bx-chevron-down"></i></a>
                     <div class="dropdown-content">
+                        <a href="{{ route('miLegajo') }}">Mi legajo</a>
+                        @if (Auth::user()->rol === 'Coordinador/a L2'||Auth::user()->rol==='Administrador/a'||Auth::user()->rol === 'Coordinador/a')
                         <a href="{{ route('nominaPersonal') }}">Personal activo</a>
                         <a href="{{ route('nominaPersonalBaja') }}"">Personal de baja</a>
+                        @endif
+                        @if (Auth::user()->rol === 'Coordinador/a L2'||Auth::user()->rol==='Administrador/a')
                         <a href="{{ route('calendarioServicios') }}">Calendario servicios</a>
+                        @endif
                         <a href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a>
                     </div>
                 </li>
