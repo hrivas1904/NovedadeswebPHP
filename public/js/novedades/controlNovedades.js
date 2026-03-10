@@ -19,6 +19,20 @@ function formatearPesos(valor) {
     }).format(valor);
 }
 
+function setFechaAplicacionUltimoDiaMes() {
+    const hoy = new Date();
+
+    // Último día del mes actual
+    const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+
+    // Formato YYYY-MM-DD
+    const fechaFormateada = ultimoDia.toISOString().split("T")[0];
+
+    // Setear en el input
+    document.querySelector('input[name="fechaAplicacion"]').value =
+        fechaFormateada;
+}
+
 //sp para cargar selector areas
 $(document).ready(function () {
     cargarAreas();
@@ -525,7 +539,199 @@ $(document).ready(function () {
     }
 });
 
-$("#btnCargaMasiva").on("clic",function(){
-    const modal=$("#modalCargaMasivaNovedad");
+$(document).ready(function () {
+    const $select = $("#selectNovedad");
+
+    $.ajax({
+        url: "/novedades/selector",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            // Inicializar Select2 con los datos directamente
+            $select.select2({
+                data: data,
+                placeholder: "Seleccione una novedad",
+                allowClear: true,
+                width: "100%",
+                dropdownParent: $("#modalCargaMasivaNovedad"),
+            });
+        },
+        error: function (err) {
+            console.error("Error al cargar novedades:", err);
+        },
+    });
+
+    // Event handler para capturar el código
+    $select.on("select2:select", function (e) {
+        const data = e.params.data;
+        console.log("Seleccionado:", data);
+
+        // Buscar el código en los datos originales
+        const novedad = data;
+        $("#codigoFinnegans").val(novedad.codigo || "");
+        $("#idNovedad").val(data.id);
+    });
+});
+
+function resetearNovedades() {
+    $("#selectNovedad")
+        .empty()
+        .append('<option value="">Seleccionar novedad</option>')
+        .prop("disabled", true);
+
+    $("#codigoFinnegans").val("");
+    $("#idNovedad").val("");
+}
+
+function formatearPesos(valor) {
+    if (valor === null || valor === undefined || valor === "") return "";
+
+    return new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+        minimumFractionDigits: 2,
+    }).format(valor);
+}
+
+function parsearMonto(valor) {
+    if (!valor) return 0;
+    let limpio = valor.toString();
+    limpio = limpio.replace(/\$/g, "").trim();
+    limpio = limpio.replace(/\./g, "");
+    limpio = limpio.replace(/,/g, ".");
+
+    const resultado = parseFloat(limpio);
+    return isNaN(resultado) ? 0 : resultado;
+}
+
+$("#inputImporte").on("change", function () {
+    let monto = 0;
+    monto = $(this).val();
+    $(this).val(formatearPesos(monto));
+});
+
+$("#inputImporte").on("focus", function () {
+    $(this).val("");
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const fechaDesdeInput = document.querySelector('[name="fechaDesde"]');
+    const fechaHastaInput = document.querySelector('[name="fechaHasta"]');
+
+    fechaDesdeInput.addEventListener("blur", calcularDuracion);
+    fechaHastaInput.addEventListener("blur", calcularDuracion);
+});
+
+function calcularDuracion() {
+    const fechaDesdeInput = document.querySelector('[name="fechaDesde"]');
+    const fechaHastaInput = document.querySelector('[name="fechaHasta"]');
+    const duracionInput = document.querySelector('[name="duracion"]');
+
+    const desdeVal = fechaDesdeInput.value;
+    const hastaVal = fechaHastaInput.value;
+
+    // No validar si aún no están completas
+    if (desdeVal.length !== 10 || hastaVal.length !== 10) {
+        duracionInput.value = "";
+        return;
+    }
+
+    const fechaDesde = new Date(desdeVal + "T00:00:00");
+    const fechaHasta = new Date(hastaVal + "T00:00:00");
+
+    if (isNaN(fechaDesde) || isNaN(fechaHasta)) {
+        duracionInput.value = "";
+        return;
+    }
+
+    if (fechaHasta < fechaDesde) {
+        alert("La fecha hasta no puede ser anterior a la fecha desde");
+        fechaHastaInput.value = "";
+        duracionInput.value = "";
+        return;
+    }
+
+    const diffTime = fechaHasta - fechaDesde;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    duracionInput.value = diffDays;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    let novedadSeleccionada = null;
+
+    $("#selectNovedad").on("select2:select", function (e) {
+        novedadSeleccionada = e.params.data;
+        const valorNovedad = novedadSeleccionada.valor.trim();
+
+        if (valorNovedad === "Días") {
+            document.getElementById("divPeriodoDias").hidden = false;
+            document.getElementById("divCantidadHoras").hidden = true;
+            document.getElementById("divCantidadPesos").hidden = true;
+        } else if (valorNovedad === "Horas") {
+            document.getElementById("divPeriodoDias").hidden = true;
+            document.getElementById("divCantidadHoras").hidden = false;
+            document.getElementById("divCantidadPesos").hidden = true;
+        } else if (valorNovedad === "Pesos") {
+            document.getElementById("divPeriodoDias").hidden = true;
+            document.getElementById("divCantidadHoras").hidden = true;
+            document.getElementById("divCantidadPesos").hidden = false;
+        }
+    });
+});
+
+function calcularHorasHabiles() {
+    const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
+    const fechaHasta = document.getElementById("fechaHastaNovedad").value;
+
+    if (!fechaDesde || !fechaHasta) return;
+
+    const [y1, m1, d1] = fechaDesde.split("-");
+    const [y2, m2, d2] = fechaHasta.split("-");
+
+    let inicio = new Date(y1, m1 - 1, d1);
+    let fin = new Date(y2, m2 - 1, d2);
+
+    let diasTotales = 0;
+    let sabados = 0;
+    let domingos = 0;
+
+    let fecha = new Date(inicio);
+
+    while (fecha <= fin) {
+        diasTotales++;
+
+        let dia = fecha.getDay();
+        // 0 domingo - 6 sábado
+
+        if (dia === 0) domingos++;
+        if (dia === 6) sabados++;
+
+        fecha.setDate(fecha.getDate() + 1);
+    }
+
+    let diasHabiles = diasTotales - domingos - sabados / 2;
+    let horas = diasHabiles * 8;
+
+    document.getElementById("inputHoras").value = parseFloat(horas);
+}
+
+document
+    .getElementById("fechaDesdeNovedad")
+    .addEventListener("change", calcularHorasHabiles);
+
+document
+    .getElementById("fechaHastaNovedad")
+    .addEventListener("change", calcularHorasHabiles);
+
+function cerrarModalCargaMasiva(){
+    const modal = $("#modalCargaMasivaNovedad");
+    $("#selectLocalidad").val(null).trigger("change");
+    $("#formCargaMasiva")[0].reset();
+    modal.modal('hide');
+}
+
+$("#btnCargaMasiva").on("click",function(){
+    const modal = $("#modalCargaMasivaNovedad");
     modal.modal('show');
 })
