@@ -169,6 +169,8 @@ Route::get('/novedades/selector', [NovedadesController::class, 'listarNovedadesS
 
 Route::get('/novedades/lista', [NovedadesController::class, 'listar']);
 
+Route::post('/novedades/registrar-masivo', [NovedadesController::class, 'registrarNovedadMasiva']);
+
 Route::get('/novedades/verDetalleRegistroNovedad/{idRegistro}', [NovedadesController::class, 'verDetalleRegistroNovedad']);
 
 //mensajes

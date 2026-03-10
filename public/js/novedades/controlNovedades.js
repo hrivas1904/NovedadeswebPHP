@@ -1,4 +1,5 @@
-let tablaPersonal = null;
+let tablaControl;
+let tablaDetalle;
 
 function formatearFechaArgentina(fecha) {
     if (!fecha) return "";
@@ -21,14 +22,8 @@ function formatearPesos(valor) {
 
 function setFechaAplicacionUltimoDiaMes() {
     const hoy = new Date();
-
-    // Último día del mes actual
     const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
-
-    // Formato YYYY-MM-DD
     const fechaFormateada = ultimoDia.toISOString().split("T")[0];
-
-    // Setear en el input
     document.querySelector('input[name="fechaAplicacion"]').value =
         fechaFormateada;
 }
@@ -37,6 +32,7 @@ function setFechaAplicacionUltimoDiaMes() {
 $(document).ready(function () {
     cargarAreas();
     cargarFiltroNovedad();
+    setFechaAplicacionUltimoDiaMes();
 });
 
 $("#btnLimpiarFiltros").on("click", function () {
@@ -123,6 +119,7 @@ function cargarFiltroNovedad() {
         },
     });
 }
+
 function esLicenciaAnual() {
     return $("#idNovedad").val() == "3";
 }
@@ -235,9 +232,9 @@ $("#btnAplicarFiltros").on("click", function () {
 
 //carga dt novedades
 $(document).ready(function () {
-    tablaPersonal = $("#tb_control");
-    if (tablaPersonal.length > 0) {
-        tablaPersonal = new DataTable("#tb_control", {
+    tablaControl = $("#tb_control");
+    if (tablaControl.length > 0) {
+        tablaControl = new DataTable("#tb_control", {
             ajax: {
                 url: "/novedades/listarNovedadesPorArea",
                 type: "GET",
@@ -512,20 +509,20 @@ $(document).ready(function () {
         });
 
         $("#area").on("change", function () {
-            dt.ajax.reload();
+            tablaPersonal.ajax.reload();
         });
 
         $("#idNovedad").on("change", function () {
-            dt.ajax.reload();
+            tablaPersonal.ajax.reload();
         });
 
         $("#paraFinnegans").on("change", function () {
-            dt.ajax.reload();
+            tablaPersonal.ajax.reload();
         });
 
         setTimeout(function () {
             if ($("#area").val() !== "" && $("#area").val() !== null) {
-                dt.ajax.reload();
+                tablaPersonal.ajax.reload();
             }
         }, 500);
 
@@ -539,6 +536,7 @@ $(document).ready(function () {
     }
 });
 
+//selector novedad
 $(document).ready(function () {
     const $select = $("#selectNovedad");
 
@@ -583,16 +581,6 @@ function resetearNovedades() {
     $("#idNovedad").val("");
 }
 
-function formatearPesos(valor) {
-    if (valor === null || valor === undefined || valor === "") return "";
-
-    return new Intl.NumberFormat("es-AR", {
-        style: "currency",
-        currency: "ARS",
-        minimumFractionDigits: 2,
-    }).format(valor);
-}
-
 function parsearMonto(valor) {
     if (!valor) return 0;
     let limpio = valor.toString();
@@ -612,6 +600,64 @@ $("#inputImporte").on("change", function () {
 
 $("#inputImporte").on("focus", function () {
     $(this).val("");
+});
+
+//calcular duración
+document.addEventListener("DOMContentLoaded", () => {
+    const fechaInicio = document.getElementById("fechaDesdeNovedad");
+    const fechaFin = document.getElementById("fechaHastaNovedad");
+    let novedadSeleccionada = null;
+
+    // Escuchar Select2
+    $("#selectNovedad").on("select2:select", function (e) {
+        novedadSeleccionada = e.params.data;
+        calcularFechaFin();
+    });
+
+    fechaInicio.addEventListener("change", calcularFechaFin);
+
+    function calcularFechaFin() {
+        if (
+            !fechaInicio.value ||
+            !novedadSeleccionada ||
+            isNaN(novedadSeleccionada.limite)
+        )
+            return;
+
+        const limiteLicencia = parseInt(novedadSeleccionada.limite);
+
+        if (isNaN(limiteLicencia)) {
+            console.log("La novedad no tiene límite definido (es NULL).");
+            fechaFin.value = "";
+            console.log(fechaFin);
+        }
+
+        let fecha = new Date(fechaInicio.value);
+
+        fecha.setDate(fecha.getDate() + limiteLicencia);
+
+        // Formatear manualmente para el input date (YYYY-MM-DD)
+        const yyyy = fecha.getFullYear();
+        const mm = String(fecha.getMonth() + 1).padStart(2, "0");
+        const dd = String(fecha.getDate()).padStart(2, "0");
+
+        fechaFin.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    fechaFin.addEventListener("change", () => {
+        if (!fechaInicio.value || !fechaFin.value) return;
+
+        // Para comparar, también usamos el desglose manual para ser precisos
+        const d1 = new Date(fechaInicio.value.replace(/-/g, "\/"));
+        const d2 = new Date(fechaFin.value.replace(/-/g, "\/"));
+
+        if (d2 < d1) {
+            alert(
+                "La fecha de fin no puede ser anterior a la fecha de inicio.",
+            );
+            fechaFin.value = "";
+        }
+    });
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -724,14 +770,266 @@ document
     .getElementById("fechaHastaNovedad")
     .addEventListener("change", calcularHorasHabiles);
 
-function cerrarModalCargaMasiva(){
-    const modal = $("#modalCargaMasivaNovedad");
-    $("#selectLocalidad").val(null).trigger("change");
-    $("#formCargaMasiva")[0].reset();
-    modal.modal('hide');
+$(document).ready(function () {
+    if ($("#tbSeleccionColabs").length > 0) {
+        tablaPersonal = $("#tbSeleccionColabs").DataTable({
+            ajax: {
+                url: "/personal/listar",
+                type: "GET",
+                dataSrc: "data",
+                data: function (d) {
+                    if (
+                        USER_ROLE !== "Administrador/a" &&
+                        USER_ROLE !== "Coordinador/a L2"
+                    ) {
+                        d.area_id = USER_AREA_ID;
+                    } else {
+                        d.area_id = $("#filtroArea").val() || null;
+                    }
+
+                    d.categ_id = $("#filtroCategoria").val() || null;
+                    d.p_regimen = $("#filtroRegimen").val() || null;
+                    d.p_convenio = $("#filtroConvenio").val() || null;
+                },
+            },
+            autoWidth: true,
+            scrollX: false,
+            paging: false,
+            scrollCollapse: true,
+            scrollY: "60vh",
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+            },
+            columns: [
+                {
+                    data: "LEGAJO",
+                    width: "4%",
+                    className: "text-start",
+                    render: function (data, type, row) {
+                        return data.toString().padStart(5, "0");
+                    },
+                },
+                { data: "COLABORADOR", width: "auto", className: "text-start" },
+                { data: "DNI", width: "5%", className: "text-start" },
+                { data: "AREA", width: "6%", className: "text-start" },
+                {
+                    data: null,
+                    className: "text-center",
+                    width: "auto",
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return `
+                            <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input chk-colaborador"
+                                    type="checkbox"
+                                    value="${row.LEGAJO}">
+                            </div>
+                        `;
+                    },
+                },
+            ],
+            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1' \
+                    <'d-flex flex-column flex-sm-row gap-2'> \
+                    <'ms-md-auto mt-2 mt-md-0'f> \
+                > \
+                <'my-2'rt> \
+                <'d-bottom d-flex justify-content-center'i>",
+        });
+
+        $(
+            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado",
+        ).on("change", function () {
+            tablaPersonal.ajax.reload();
+        });
+
+        $("#btn-limpiar-filtros").on("click", function () {
+            $("#filtroArea").val(null);
+            $("#filtroCategoria").val(null);
+            $("#filtroRegimen").val(null);
+            $("#filtroConvenio").val(null);
+            $("#filtroEstado").val(null);
+            tablaPersonal.search("").draw();
+            tablaPersonal.ajax.reload();
+        });
+
+        setTimeout(function () {
+            if ($("#area").val() !== "" && $("#area").val() !== null) {
+                tablaPersonal.ajax.reload();
+            }
+        }, 500);
+    }
+});
+
+$(document).ready(function () {
+    tablaDetalle = $("#tbDetalleNovedadMasiva").DataTable({
+        paging: false,
+        searching: false,
+        info: false,
+        scrollY: "40vh",
+        scrollCollapse: true,
+        ordering: false,
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+        },
+    });
+});
+
+$("#btnSeleccionarColab").on("click", function () {
+    let seleccionados = [];
+    $(".chk-colaborador:checked").each(function () {
+        let fila = $(this).closest("tr");
+        let data = tablaPersonal.row(fila).data();
+        seleccionados.push(data);
+    });
+
+    seleccionados.forEach(function (colab) {
+        tablaDetalle.row
+            .add([
+                colab.LEGAJO.toString().padStart(5, "0"),
+                colab.COLABORADOR,
+                colab.DNI,
+                colab.AREA,
+                `<button class="btn btn-sm btn-danger btnQuitar">
+                    <i class="fa-solid fa-trash"></i>
+                </button>`,
+            ])
+            .draw(false);
+    });
+    $(".chk-colaborador").prop("checked", false);
+    $("#modalSeleccionColab").modal("hide");
+    $("#modalCargaMasivaNovedad").modal("show");
+});
+
+$(document).on("click", ".btnQuitar", function () {
+    tablaDetalle.row($(this).parents("tr")).remove().draw();
+});
+
+function existeLegajo(legajo) {
+    let existe = false;
+    tablaDetalle.rows().every(function () {
+        let data = this.data();
+        if (data[0] == legajo.toString().padStart(5, "0")) {
+            existe = true;
+        }
+    });
+    return existe;
 }
 
-$("#btnCargaMasiva").on("click",function(){
+function obtenerLegajosSeleccionados() {
+    let legajos = [];
+
+    tablaDetalle.rows().every(function () {
+        let data = this.data();
+
+        legajos.push(data[0]); // columna LEGAJO
+    });
+
+    return legajos;
+}
+
+$("#btnRegistrarMasivo").on("click", function () {
+    // 1. Obtener valores de duración
+    const dias = parseFloat($("#inputDias").val()) || 0;
+    const horas = parseFloat($("#inputHoras").val()) || 0;
+    const pesosRaw = $("#inputImporte").val().trim();
+
+    let valorFinal = 0;
+    if (pesosRaw !== "") {
+        valorFinal = parsearMonto(pesosRaw);
+    } else if (horas > 0) {
+        valorFinal = horas;
+    } else if (dias > 0) {
+        valorFinal = dias;
+    }
+
+    // 2. Obtener legajos de la tabla
+    let legajos = [];
+    tablaDetalle.rows().every(function () {
+        let data = this.data();
+        legajos.push(parseInt(data[0], 10));
+    });
+
+    if (legajos.length === 0) {
+        Swal.fire(
+            "Atención",
+            "Debe seleccionar al menos un colaborador",
+            "warning",
+        );
+        return;
+    }
+
+    // 3. Confirmación y Envío
+    Swal.fire({
+        title: "¿Registrar novedades?",
+        text: `Se aplicará a ${legajos.length} colaboradores`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, registrar",
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        // Construimos el objeto de datos manualmente para asegurar legajos[]
+        let data = {
+            _token: $('input[name="_token"]').val(),
+            idNovedad: $("#selectNovedad").val(),
+            fechaDesde: $("#fechaDesdeNovedad").val(),
+            fechaHasta: $("#fechaHastaNovedad").val(),
+            fechaAplicacion: $("input[name='fechaAplicacion']").val(),
+            cantidadFinal: valorFinal,
+            descripcion: $("input[name='descripcion']").val(),
+            annio: $("input[name='annio']").val(),
+            tipoVacaciones: $("#selectTipoVacaciones").val(),
+            numAtencion: $("#numAtencion").val(),
+            pacienteAtencion: $("#paciente").val(),
+            conceptoAtencion: $("#conceptoAtencion").val(),
+            cantidadCuotas: $("#cantidadCuotas").val(),
+            legajos: legajos, // Array directo
+        };
+
+        $.ajax({
+            url: "/novedades/registrar-masivo",
+            type: "POST",
+            data: data,
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire("Correcto", response.mensaje, "success");
+                    cerrarModalCargaMasiva();
+                    tablaControl.ajax.reload();
+                } else {
+                    Swal.fire("Atención", response.mensaje, "warning");
+                }
+            },
+            error: function () {
+                Swal.fire(
+                    "Error",
+                    "No se pudo conectar con el servidor",
+                    "error",
+                );
+            },
+        });
+    });
+});
+
+function cerrarModalCargaMasiva() {
     const modal = $("#modalCargaMasivaNovedad");
-    modal.modal('show');
-})
+    $("#formCargaMasiva")[0].reset();
+    tablaDetalle.clear().draw();
+    $("#selectNovedad").val(null).trigger("change");
+    modal.modal("hide");
+}
+
+$("#btnCargaMasiva").on("click", function () {
+    const modal = $("#modalCargaMasivaNovedad");
+    modal.modal("show");
+    setFechaAplicacionUltimoDiaMes();
+});
+
+function cerrarModalSeleccionColab() {
+    $("#modalSeleccionColab").modal("hide");
+    $("#modalCargaMasivaNovedad").modal("show");
+}
+
+$("#btnAbrirSeleccionColabs").on("click", function () {
+    $("#modalCargaMasivaNovedad").modal("hide");
+    $("#modalSeleccionColab").modal("show");
+});

@@ -120,6 +120,66 @@ class NovedadesController extends Controller
         }
     }
 
+    public function registrarNovedadMasiva(Request $request)
+    {
+        $legajos = $request->legajos; // Viene como array desde el JS
+
+        if (empty($legajos)) {
+            return response()->json(['success' => false, 'mensaje' => 'No hay colaboradores seleccionados']);
+        }
+
+        $errores = [];
+        $procesados = 0;
+
+        foreach ($legajos as $legajo) {
+            try {
+                // Ejecutamos el SP y capturamos el OUT p_mensaje
+                DB::statement("CALL SP_REGISTRAR_NOVEDAD(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @msj)", [
+                    (int)$legajo,
+                    $request->idNovedad,
+                    now()->format('Y-m-d'),
+                    $request->fechaDesde,
+                    $request->fechaHasta,
+                    $request->fechaAplicacion,
+                    $request->valor1 ?? 0,
+                    $request->valor2 ?? 0,
+                    $request->centroCosto ?? null,
+                    $request->cantidadFinal,
+                    auth()->user()->name,
+                    $request->descripcion ?? null,
+                    $request->annio ?? null,
+                    $request->tipoVacaciones ?? null,
+                    $request->numAtencion ?? null,
+                    $request->pacienteAtencion ?? null,
+                    $request->conceptoAtencion ?? null,
+                    $request->cantidadCuotas ?? null
+                ]);
+
+                $resultado = DB::select("SELECT @msj as mensaje")[0]->mensaje;
+
+                if ($resultado === 'OK') {
+                    $procesados++;
+                } else {
+                    $errores[] = "Legajo $legajo: $resultado";
+                }
+            } catch (\Exception $e) {
+                $errores[] = "Legajo $legajo: Error crítico del sistema";
+            }
+        }
+
+        if (count($errores) > 0) {
+            return response()->json([
+                'success' => count($errores) < count($legajos), // True si al menos uno grabó
+                'mensaje' => "Se procesaron $procesados novedades. Errores: " . implode(", ", $errores)
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => "Se registraron las novedades para los $procesados colaboradores correctamente."
+        ]);
+    }
+
     public function listarNovedadesPorArea(Request $request)
     {
         try {

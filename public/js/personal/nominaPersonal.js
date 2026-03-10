@@ -1378,42 +1378,6 @@ function resetearNovedades() {
     $("#idNovedad").val("");
 }
 
-function calcularDuracion() {
-    const fechaDesdeInput = document.getElementById("fechaDesdeNovedad");
-    const fechaHastaInput = document.getElementById("fechaHastaNovedad");
-    const duracionInput = document.getElementById("inputDias");
-
-    if (!fechaDesdeInput || !fechaHastaInput || !duracionInput) {
-        console.error("No se encontraron los inputs de fechas o duración");
-        return;
-    }
-
-    if (!fechaDesdeInput.value || !fechaHastaInput.value) {
-        duracionInput.value = "";
-        return;
-    }
-
-    const fechaDesde = new Date(fechaDesdeInput.value);
-    const fechaHasta = new Date(fechaHastaInput.value);
-
-    if (fechaHasta < fechaDesde) {
-        Swal.fire({
-            icon: "warning",
-            title: "Fecha incorrecta",
-            text: "La fecha hasta no puede ser anterior a la fecha desde.",
-        });
-
-        fechaHastaInput.value = "";
-        duracionInput.value = "";
-        return;
-    }
-
-    const diffTime = fechaHasta - fechaDesde;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-    duracionInput.value = diffDays;
-}
-
 function formatearPesos(valor) {
     if (valor === null || valor === undefined || valor === "") return "";
 
