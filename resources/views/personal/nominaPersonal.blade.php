@@ -1071,7 +1071,7 @@
                                 </div>
 
                                 <div class="col-lg-2">
-                                    <label class="form-label">Código Finnegans</label>
+                                    <label class="form-label">Código Novedad</label>
                                     <input type="text" class="form-control" id="codigoFinnegans" readonly>
                                 </div>
 

@@ -8,7 +8,7 @@ let legajoActivo = null;
 let registroSeleccionado = null;
 
 $("#inputDias").on("change", function () {
-    let fechaDesdeStr = $("#fechaDesdeNovedad").val();
+    let fechaDesdeStr = $("#fechaDesdeNovedad").val(); 
     let dias = parseInt($(this).val());
 
     if (!fechaDesdeStr || isNaN(dias)) return;
@@ -1447,12 +1447,10 @@ $("#formCargaNovedad").on("submit", function (e) {
                 $("#selectNovedad").val(null).trigger("change");
                 $("#modalRegNovedadColaborador").modal("hide");
 
-                // 🔑 refrescar historial SIN recrear
                 if (tablaHistorialNovedades) {
                     tablaHistorialNovedades.ajax.reload(null, false);
                 }
 
-                // refrescar tabla principal si existe
                 if (typeof tablaPersonal !== "undefined") {
                     tablaPersonal.ajax.reload(null, false);
                 }
