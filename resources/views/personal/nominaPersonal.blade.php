@@ -1276,5 +1276,6 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
+    <script src="{{ asset('js/novedades/registroNovedades.js') }}"></script>
+    <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>    
 @endpush
