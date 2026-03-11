@@ -122,18 +122,12 @@ class NovedadesController extends Controller
 
     public function registrarNovedadMasiva(Request $request)
     {
-        $legajos = $request->legajos; // Viene como array desde el JS
-
-        if (empty($legajos)) {
-            return response()->json(['success' => false, 'mensaje' => 'No hay colaboradores seleccionados']);
-        }
-
+        $legajos = $request->legajos;
         $errores = [];
         $procesados = 0;
 
         foreach ($legajos as $legajo) {
             try {
-                // Ejecutamos el SP y capturamos el OUT p_mensaje
                 DB::statement("CALL SP_REGISTRAR_NOVEDAD(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @msj)", [
                     (int)$legajo,
                     $request->idNovedad,
@@ -157,26 +151,23 @@ class NovedadesController extends Controller
 
                 $resultado = DB::select("SELECT @msj as mensaje")[0]->mensaje;
 
-                if ($resultado === 'OK') {
+                if (str_contains($resultado, 'correctamente') || $resultado === 'OK') {
                     $procesados++;
                 } else {
                     $errores[] = "Legajo $legajo: $resultado";
                 }
             } catch (\Exception $e) {
-                $errores[] = "Legajo $legajo: Error crítico del sistema";
+                $errores[] = "Legajo $legajo: Error de conexión";
             }
         }
 
-        if (count($errores) > 0) {
-            return response()->json([
-                'success' => count($errores) < count($legajos), // True si al menos uno grabó
-                'mensaje' => "Se procesaron $procesados novedades. Errores: " . implode(", ", $errores)
-            ]);
-        }
-
         return response()->json([
-            'success' => true,
-            'mensaje' => "Se registraron las novedades para los $procesados colaboradores correctamente."
+            'success' => ($procesados > 0),
+            'procesados' => $procesados,
+            'total' => count($legajos),
+            'mensaje' => count($errores) > 0
+                ? "Se grabaron $procesados de " . count($legajos) . ". Errores: " . implode(", ", $errores)
+                : "Novedades registradas correctamente."
         ]);
     }
 

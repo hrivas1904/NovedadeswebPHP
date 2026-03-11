@@ -58,8 +58,7 @@
                         @endif
                         @if (Auth::user()->rol === 'Coordinador/a L2'||Auth::user()->rol==='Administrador/a')
                         <a href="{{ route('calendarioServicios') }}">Calendario servicios</a>
-                        @endif
-                        <a href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a>
+                        @endif                        
                     </div>
                 </li>
 
@@ -68,6 +67,7 @@
                             class="bx bx-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <a href="{{ route('controlNovedades') }}">Mis novedades</a>
+                        <a href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a>
                         <!--<a href="{{ route('controlNovedades') }}">Registrar</a>-->
                         @if (Auth::user()->rol === 'Administrador/a')
                             <a href="{{ route('configNovedades') }}">Configuración</a>

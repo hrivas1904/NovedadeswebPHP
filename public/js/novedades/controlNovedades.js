@@ -968,7 +968,6 @@ $("#btnRegistrarMasivo").on("click", function () {
     }).then((result) => {
         if (!result.isConfirmed) return;
 
-        // Construimos el objeto de datos manualmente para asegurar legajos[]
         let data = {
             _token: $('input[name="_token"]').val(),
             idNovedad: $("#selectNovedad").val(),
@@ -992,11 +991,31 @@ $("#btnRegistrarMasivo").on("click", function () {
             data: data,
             success: function (response) {
                 if (response.success) {
-                    Swal.fire("Correcto", response.mensaje, "success");
-                    cerrarModalCargaMasiva();
-                    tablaControl.ajax.reload();
+                    let icono =
+                        response.procesados < response.total
+                            ? "warning"
+                            : "success";
+
+                    Swal.fire({
+                        icon: icono,
+                        title:
+                            icono === "success"
+                                ? "Operación exitosa"
+                                : "Proceso con observaciones",
+                        text: response.mensaje,
+                        confirmButtonText: "OK",
+                    }).then(() => {
+                        tablaDetalle.clear().draw();
+                        $("#formCargaMasiva")[0].reset();
+                        $("#modalCargaMasivaNovedad").modal("hide");
+                        tablaControl.ajax.reload();
+
+                        if (typeof tablaControl !== "undefined") {
+                            tablaControl.ajax.reload(null, false);
+                        }
+                    });
                 } else {
-                    Swal.fire("Atención", response.mensaje, "warning");
+                    Swal.fire("Error total", response.mensaje, "error");
                 }
             },
             error: function () {
