@@ -154,10 +154,10 @@ function verDetalleNovedad(idRegistro) {
                     formatearFechaArgentina(d.FECHA_APLICACION),
                 );
                 $("#inputFechaDesde").val(
-                    formatearFechaArgentina(d.FECHA_DESDE),
+                    d.FECHA_DESDE,
                 );
                 $("#inputFechaHasta").val(
-                    formatearFechaArgentina(d.FECHA_HASTA),
+                    d.FECHA_HASTA,
                 );
 
                 let valor = d.DURACION;
@@ -227,69 +227,8 @@ $("#btnLimpiarFiltros").on("click", function () {
 });
 
 $("#btnAplicarFiltros").on("click", function () {
-    tablaPersonal.ajax.reload();
+    tablaControl.ajax.reload();
 });
-
-function anularNovedad(idRegistro) {
-
-    Swal.fire({
-        title: "¿Anular novedad?",
-        text: "La novedad quedará desactivada",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, anular",
-        cancelButtonText: "Cancelar"
-    }).then((result) => {
-
-        if (result.isConfirmed) {
-
-            $.ajax({
-                url: "/novedades/anular",
-                type: "POST",
-                data: {
-                    idRegistro: idRegistro
-                },
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                },
-
-                success: function (response) {
-
-                    if (response.success) {
-
-                        Swal.fire({
-                            icon: "success",
-                            title: "Correcto",
-                            text: response.mensaje
-                        });
-
-                        if (tablaControl) {
-                            tablaControl.ajax.reload(null, false);
-                        }
-
-                    } else {
-
-                        Swal.fire("Atención", response.mensaje, "warning");
-
-                    }
-                },
-
-                error: function (xhr) {
-
-                    console.error(xhr.responseText);
-
-                    Swal.fire(
-                        "Error",
-                        "No se pudo anular la novedad",
-                        "error"
-                    );
-                }
-            });
-
-        }
-
-    });
-}
 
 //carga dt novedades
 $(document).ready(function () {
@@ -430,13 +369,6 @@ $(document).ready(function () {
                                     </button>
 
                                     <button type="button" 
-                                        class="btn-sm btn-alerta btn-EditarNovedad" 
-                                        data-id="${data}" 
-                                        title="Editar novedad">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-
-                                    <button type="button" 
                                         class="btn-sm btn-peligro btn-AnularNovedad" 
                                         data-id="${data}" 
                                         title="Anular novedad">
@@ -570,20 +502,20 @@ $(document).ready(function () {
         });
 
         $("#area").on("change", function () {
-            tablaPersonal.ajax.reload();
+            tablaControl.ajax.reload();
         });
 
         $("#idNovedad").on("change", function () {
-            tablaPersonal.ajax.reload();
+            tablaControl.ajax.reload();
         });
 
         $("#paraFinnegans").on("change", function () {
-            tablaPersonal.ajax.reload();
+            tablaControl.ajax.reload();
         });
 
         setTimeout(function () {
             if ($("#area").val() !== "" && $("#area").val() !== null) {
-                tablaPersonal.ajax.reload();
+                tablaControl.ajax.reload();
             }
         }, 500);
 
@@ -593,6 +525,14 @@ $(document).ready(function () {
             const idRegistro = $(this).data("id");
             console.log("Id registro recibido: " + idRegistro);
             verDetalleNovedad(idRegistro);
+        });
+
+        $(document).on("click", ".btn-EditarNovedad", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const idRegistro = $(this).data("id");
+            console.log("Id registro recibido: " + idRegistro);
+            editarNovedad(idRegistro);
         });
 
         $(document).on("click", ".btn-AnularNovedad", function (event) {
@@ -795,329 +735,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function calcularHorasHabiles() {
-    const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
-    const fechaHasta = document.getElementById("fechaHastaNovedad").value;
-
-    if (!fechaDesde || !fechaHasta) return;
-
-    const [y1, m1, d1] = fechaDesde.split("-");
-    const [y2, m2, d2] = fechaHasta.split("-");
-
-    let inicio = new Date(y1, m1 - 1, d1);
-    let fin = new Date(y2, m2 - 1, d2);
-
-    let diasTotales = 0;
-    let sabados = 0;
-    let domingos = 0;
-
-    let fecha = new Date(inicio);
-
-    while (fecha <= fin) {
-        diasTotales++;
-
-        let dia = fecha.getDay();
-        // 0 domingo - 6 sábado
-
-        if (dia === 0) domingos++;
-        if (dia === 6) sabados++;
-
-        fecha.setDate(fecha.getDate() + 1);
-    }
-
-    let diasHabiles = diasTotales - domingos - sabados / 2;
-    let horas = diasHabiles * 8;
-
-    document.getElementById("inputHoras").value = parseFloat(horas);
+function cerrarModalDetalleNovedad(){
+    $("#formDetalleNovedad")[0].reset();
+    $("#btnGuardarCambios").addClass('d-none');
+    $("#btnHabilitarEdicion").removeClass('d-none');
+    $("#modalDetalleNovedad").modal("hide");
 }
-
-document
-    .getElementById("fechaDesdeNovedad")
-    .addEventListener("change", calcularHorasHabiles);
-
-document
-    .getElementById("fechaHastaNovedad")
-    .addEventListener("change", calcularHorasHabiles);
-
-$(document).ready(function () {
-    if ($("#tbSeleccionColabs").length > 0) {
-        tablaPersonal = $("#tbSeleccionColabs").DataTable({
-            ajax: {
-                url: "/personal/listar",
-                type: "GET",
-                dataSrc: "data",
-                data: function (d) {
-                    if (
-                        USER_ROLE !== "Administrador/a" &&
-                        USER_ROLE !== "Coordinador/a L2"
-                    ) {
-                        d.area_id = USER_AREA_ID;
-                    } else {
-                        d.area_id = $("#filtroArea").val() || null;
-                    }
-
-                    d.categ_id = $("#filtroCategoria").val() || null;
-                    d.p_regimen = $("#filtroRegimen").val() || null;
-                    d.p_convenio = $("#filtroConvenio").val() || null;
-                },
-            },
-            autoWidth: true,
-            scrollX: false,
-            paging: false,
-            scrollCollapse: true,
-            scrollY: "60vh",
-            language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
-            },
-            columns: [
-                {
-                    data: "LEGAJO",
-                    width: "4%",
-                    className: "text-start",
-                    render: function (data, type, row) {
-                        return data.toString().padStart(5, "0");
-                    },
-                },
-                { data: "COLABORADOR", width: "auto", className: "text-start" },
-                { data: "DNI", width: "5%", className: "text-start" },
-                { data: "AREA", width: "6%", className: "text-start" },
-                {
-                    data: null,
-                    className: "text-center",
-                    width: "auto",
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return `
-                            <div class="form-check d-flex justify-content-center">
-                                <input class="form-check-input chk-colaborador"
-                                    type="checkbox"
-                                    value="${row.LEGAJO}">
-                            </div>
-                        `;
-                    },
-                },
-            ],
-            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1' \
-                    <'d-flex flex-column flex-sm-row gap-2'> \
-                    <'ms-md-auto mt-2 mt-md-0'f> \
-                > \
-                <'my-2'rt> \
-                <'d-bottom d-flex justify-content-center'i>",
-        });
-
-        $(
-            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado",
-        ).on("change", function () {
-            tablaPersonal.ajax.reload();
-        });
-
-        $("#btn-limpiar-filtros").on("click", function () {
-            $("#filtroArea").val(null);
-            $("#filtroCategoria").val(null);
-            $("#filtroRegimen").val(null);
-            $("#filtroConvenio").val(null);
-            $("#filtroEstado").val(null);
-            tablaPersonal.search("").draw();
-            tablaPersonal.ajax.reload();
-        });
-
-        setTimeout(function () {
-            if ($("#area").val() !== "" && $("#area").val() !== null) {
-                tablaPersonal.ajax.reload();
-            }
-        }, 500);
-    }
-});
-
-$(document).ready(function () {
-    tablaDetalle = $("#tbDetalleNovedadMasiva").DataTable({
-        paging: false,
-        searching: false,
-        info: false,
-        scrollY: "40vh",
-        scrollCollapse: true,
-        ordering: false,
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
-        },
-    });
-});
-
-$("#btnSeleccionarColab").on("click", function () {
-    let seleccionados = [];
-    $(".chk-colaborador:checked").each(function () {
-        let fila = $(this).closest("tr");
-        let data = tablaPersonal.row(fila).data();
-        seleccionados.push(data);
-    });
-
-    seleccionados.forEach(function (colab) {
-        tablaDetalle.row
-            .add([
-                colab.LEGAJO.toString().padStart(5, "0"),
-                colab.COLABORADOR,
-                colab.DNI,
-                colab.AREA,
-                `<button class="btn btn-sm btn-danger btnQuitar">
-                    <i class="fa-solid fa-trash"></i>
-                </button>`,
-            ])
-            .draw(false);
-    });
-    $(".chk-colaborador").prop("checked", false);
-    $("#modalSeleccionColab").modal("hide");
-    $("#modalCargaMasivaNovedad").modal("show");
-});
-
-$(document).on("click", ".btnQuitar", function () {
-    tablaDetalle.row($(this).parents("tr")).remove().draw();
-});
-
-function existeLegajo(legajo) {
-    let existe = false;
-    tablaDetalle.rows().every(function () {
-        let data = this.data();
-        if (data[0] == legajo.toString().padStart(5, "0")) {
-            existe = true;
-        }
-    });
-    return existe;
-}
-
-function obtenerLegajosSeleccionados() {
-    let legajos = [];
-
-    tablaDetalle.rows().every(function () {
-        let data = this.data();
-
-        legajos.push(data[0]); // columna LEGAJO
-    });
-
-    return legajos;
-}
-
-$("#btnRegistrarMasivo").on("click", function () {
-    // 1. Obtener valores de duración
-    const dias = parseFloat($("#inputDias").val()) || 0;
-    const horas = parseFloat($("#inputHoras").val()) || 0;
-    const pesosRaw = $("#inputImporte").val().trim();
-
-    let valorFinal = 0;
-    if (pesosRaw !== "") {
-        valorFinal = parsearMonto(pesosRaw);
-    } else if (horas > 0) {
-        valorFinal = horas;
-    } else if (dias > 0) {
-        valorFinal = dias;
-    }
-
-    // 2. Obtener legajos de la tabla
-    let legajos = [];
-    tablaDetalle.rows().every(function () {
-        let data = this.data();
-        legajos.push(parseInt(data[0], 10));
-    });
-
-    if (legajos.length === 0) {
-        Swal.fire(
-            "Atención",
-            "Debe seleccionar al menos un colaborador",
-            "warning",
-        );
-        return;
-    }
-
-    // 3. Confirmación y Envío
-    Swal.fire({
-        title: "¿Registrar novedades?",
-        text: `Se aplicará a ${legajos.length} colaboradores`,
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "Sí, registrar",
-    }).then((result) => {
-        if (!result.isConfirmed) return;
-
-        let data = {
-            _token: $('input[name="_token"]').val(),
-            idNovedad: $("#selectNovedad").val(),
-            fechaDesde: $("#fechaDesdeNovedad").val(),
-            fechaHasta: $("#fechaHastaNovedad").val(),
-            fechaAplicacion: $("input[name='fechaAplicacion']").val(),
-            cantidadFinal: valorFinal,
-            descripcion: $("input[name='descripcion']").val(),
-            annio: $("input[name='annio']").val(),
-            tipoVacaciones: $("#selectTipoVacaciones").val(),
-            numAtencion: $("#numAtencion").val(),
-            pacienteAtencion: $("#paciente").val(),
-            conceptoAtencion: $("#conceptoAtencion").val(),
-            cantidadCuotas: $("#cantidadCuotas").val(),
-            legajos: legajos, // Array directo
-        };
-
-        $.ajax({
-            url: "/novedades/registrar-masivo",
-            type: "POST",
-            data: data,
-            success: function (response) {
-                if (response.success) {
-                    let icono =
-                        response.procesados < response.total
-                            ? "warning"
-                            : "success";
-
-                    Swal.fire({
-                        icon: icono,
-                        title:
-                            icono === "success"
-                                ? "Operación exitosa"
-                                : "Proceso con observaciones",
-                        text: response.mensaje,
-                        confirmButtonText: "OK",
-                    }).then(() => {
-                        tablaDetalle.clear().draw();
-                        $("#formCargaMasiva")[0].reset();
-                        $("#modalCargaMasivaNovedad").modal("hide");
-                        tablaControl.ajax.reload();
-
-                        if (typeof tablaControl !== "undefined") {
-                            tablaControl.ajax.reload(null, false);
-                        }
-                    });
-                } else {
-                    Swal.fire("Error total", response.mensaje, "error");
-                }
-            },
-            error: function () {
-                Swal.fire(
-                    "Error",
-                    "No se pudo conectar con el servidor",
-                    "error",
-                );
-            },
-        });
-    });
-});
-
-function cerrarModalCargaMasiva() {
-    const modal = $("#modalCargaMasivaNovedad");
-    $("#formCargaMasiva")[0].reset();
-    tablaDetalle.clear().draw();
-    $("#selectNovedad").val(null).trigger("change");
-    modal.modal("hide");
-}
-
-$("#btnCargaMasiva").on("click", function () {
-    const modal = $("#modalCargaMasivaNovedad");
-    modal.modal("show");
-    setFechaAplicacionUltimoDiaMes();
-});
-
-function cerrarModalSeleccionColab() {
-    $("#modalSeleccionColab").modal("hide");
-    $("#modalCargaMasivaNovedad").modal("show");
-}
-
-$("#btnAbrirSeleccionColabs").on("click", function () {
-    $("#modalCargaMasivaNovedad").modal("hide");
-    $("#modalSeleccionColab").modal("show");
-});

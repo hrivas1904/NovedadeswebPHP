@@ -110,7 +110,7 @@ Route::get('/personal/miLegajo', [PersonalController::class, 'miLegajo'])
 
 Route::get('/verMiLegajo', [PersonalController::class, 'verMiLegajo'])->middleware('auth');
 
-Route::post('/actualizarMiLegajo', [PersonalController::class,'actualizarMiLegajo'])
+Route::post('/actualizarMiLegajo', [PersonalController::class, 'actualizarMiLegajo'])
     ->middleware('auth');
 
 Route::get(
@@ -175,6 +175,9 @@ Route::get('/novedades/verDetalleRegistroNovedad/{idRegistro}', [NovedadesContro
 
 Route::post('/novedades/anular', [NovedadesController::class, 'anular'])
     ->name('novedades.anular');
+
+Route::post('/novedades/actualizar', [NovedadesController::class, 'actualizar'])
+    ->name('novedades.actualizar');
 
 //mensajes
 Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');

@@ -282,7 +282,7 @@
                                                 <select name="obra_social_id" id="obraSocial" class="form-select">
                                                     <option value="">Seleccione obra social</option>
                                                 </select>
-                                                <button type="button" class="btn btn-success" id="btnAbrirModalOs">
+                                                <button type="button" class="btn btn-sm btn-primario" id="btnAbrirModalOs">
                                                     <i class="fa-solid fa-plus"></i>
                                                 </button>
                                             </div>
@@ -1276,6 +1276,6 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/novedades/registroNovedades.js') }}"></script>
+    <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
     <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>    
 @endpush

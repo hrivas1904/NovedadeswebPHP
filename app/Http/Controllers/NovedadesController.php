@@ -402,4 +402,51 @@ class NovedadesController extends Controller
             ]);
         }
     }
+
+    public function actualizar(Request $request)
+    {
+        try {
+
+            $idRegistro = $request->idRegistro;
+            $fechaDesde = $request->fechaDesde;
+            $fechaHasta = $request->fechaHasta;
+            $duracion = $request->duracion;
+            $descripcion = $request->descripcion;
+            $nAtencion = $request->nAtencion;
+            $paciente = $request->paciente;
+            $concepto = $request->concepto;
+            $cuotas = $request->cuotas;
+            $annio = $request->annio;
+
+            DB::statement(
+                "CALL SP_ACTUALIZAR_NOVEDAD(?,?,?,?,?,?,?,?,?,?,@p_mensaje)",
+                [
+                    $idRegistro,
+                    $fechaDesde,
+                    $fechaHasta,
+                    $duracion,
+                    $descripcion,
+                    $nAtencion,
+                    $paciente,
+                    $concepto,
+                    $cuotas,
+                    $annio
+                ]
+            );
+
+            $mensaje = DB::selectOne("SELECT @p_mensaje as mensaje");
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => $mensaje->mensaje
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al actualizar la novedad',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
 }

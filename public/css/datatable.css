@@ -48,12 +48,12 @@
 
 /* Excel */
 .btn-export-excel {
-    background-color: #28a745 !important;
+    background-color: #00b18d !important;
     color: #fff !important;
 }
 
     .btn-export-excel:hover {
-        background-color: #218838 !important;
+        background-color: #00b18d !important;
         box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
     }
 
@@ -70,7 +70,7 @@
 
 /* Imprimir */
 .btn-printer {
-    background-color: #6c757d !important;
+    background-color: #004a7c !important;
     color: #fff !important;
 }
 

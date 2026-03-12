@@ -45,7 +45,7 @@
 
 /* Botón Peligro (baja, eliminar) */
 .btn-peligro {
-    background-color: #dc3545;
+    background-color: var(--color-accent-red);
     border: none;
     padding: 0.5rem 0.82rem;
     font-weight: 500;

@@ -111,7 +111,7 @@
                     <h5 class="modal-title" id="tituloLegajo">
                         <i class="fa-solid fa-id-card me-2"></i> Detalle de Novedad
                     </h5>
-                    <button type="button" class="btn-close" onclick="cerrarModalCargaMasiva()"></button>
+                    <button type="button" class="btn-close" onclick="cerrarModalDetalleNovedad()"></button>
                 </div>
 
                 <div class="modal-body">
@@ -126,7 +126,8 @@
                                     <div class="row g-3">
                                         <div class="col-lg-3">
                                             <label class="form-label">Registro N°</label>
-                                            <input type="text" id="inputRegistro" class="form-control" readonly>
+                                            <input type="text" id="inputRegistro" name="idRegistro" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-4">
                                             <label class="form-label">Fecha de registro</label>
@@ -183,15 +184,18 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha desde</label>
-                                            <input type="text" id="inputFechaDesde" class="form-control" readonly>
+                                            <input type="date" id="inputFechaDesde" name="fechaDesde"
+                                                class="form-control editable" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha hasta</label>
-                                            <input type="text" id="inputFechaHasta" class="form-control" readonly>
+                                            <input type="date" id="inputFechaHasta" name="fechaHasta"
+                                                class="form-control editable" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Valor</label>
-                                            <input type="text" id="inputValor" class="form-control" readonly>
+                                            <input type="text" id="inputValor" name="duracion"
+                                                class="form-control editable" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Código</label>
@@ -203,7 +207,8 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label">Descripción</label>
-                                            <input type="text" id="inputDescripcion" class="form-control" readonly>
+                                            <input type="text" id="inputDescripcion" name="descripcion"
+                                                class="form-control editable" readonly>
                                         </div>
                                     </div>
                                     <div class="row g-3 mt-2 d-none" id="divInfoVacaciones">
@@ -213,28 +218,30 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Año</label>
-                                            <input type="text" id="inputAnnioVacaciones" class="form-control"
-                                                readonly>
+                                            <input type="text" id="inputAnnioVacaciones" name="annio"
+                                                class="form-control editable" readonly>
                                         </div>
                                     </div>
                                     <div class="row g-3 mt-2 d-none" id="divInfoAtencionMedica">
                                         <div class="col-lg-2">
                                             <label class="form-label">N° Atención</label>
-                                            <input type="text" id="inputNumAtencion" class="form-control" readonly>
+                                            <input type="text" id="inputNumAtencion" name='nAtencion'
+                                                class="form-control editable" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Paciente</label>
-                                            <input type="text" id="inputPacienteAtencion" class="form-control"
-                                                readonly>
+                                            <input type="text" id="inputPacienteAtencion" name="paciente"
+                                                class="form-control editable" readonly>
                                         </div>
                                         <div class="col-lg-4">
                                             <label class="form-label">Concepto</label>
-                                            <input type="text" id="inputConcepto" class="form-control" readonly>
+                                            <input type="text" id="inputConcepto" name="concepto"
+                                                class="form-control editable" readonly>
                                         </div>
                                         <div class="col-lg-1">
                                             <label class="form-label">Cuotas</label>
-                                            <input type="text" id="inputCuotas" class="form-control" readonly required
-                                                title="Horas Diarias">
+                                            <input type="text" id="inputCuotas" name="cuotas"
+                                                class="form-control editable" readonly required title="Horas Diarias">
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Importe cuotas</label>
@@ -248,7 +255,15 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="cerrarModalCargaMasiva()">
+                    @if (Auth::user()->rol !== 'Colaborador/a')
+                        <button class="btn-secundario" id="btnHabilitarEdicion">
+                            Editar
+                        </button>
+                    @endif
+                    <button class="btn-primario d-none" id="btnGuardarCambios">
+                        Actualizar
+                    </button>
+                    <button class="btn-primario" onclick="cerrarModalDetalleNovedad()">
                         Atrás
                     </button>
                 </div>
@@ -446,13 +461,34 @@
                 <div class="modal-body">
                     <table id="tbSeleccionColabs"
                         class="table table-striped table-bordered table-hover align-middle nowrap">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+                                <select id="filtroArea" class="form-select js-select-area w-100"
+                                    {{ !in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a L2']) ? 'disabled' : '' }}>
+                                </select>
+
+                                @if (!in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a L2']))
+                                    <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
+                                @endif
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+                                <label for="selectUti" class="form-label text-sm text-muted">Personal de UTI</label>
+                                <select id="selectUti" class="form-select w-100">
+                                    <option value="" selected>TODOS</option>
+                                    <option value="1">SI</option>
+                                    <option value="0">NO</option>
+                                </select>
+                            </div>
+                        </div>
                         <thead>
                             <tr>
                                 <th>LEGAJO</th>
                                 <th>COLABORADOR</th>
                                 <th>DNI</th>
                                 <th>ÁREA</th>
-                                <th></th>
+                                <th class="text-center">
+                                    <input type="checkbox" id="chkTodos">
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -474,6 +510,7 @@
 @endpush
 
 @push('scripts')
+    <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
     <script src="{{ asset('js/novedades/controlNovedades.js') }}"></script>
     <script>
         const USER_ROLE = "{{ Auth::user()->rol }}";

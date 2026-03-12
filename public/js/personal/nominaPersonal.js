@@ -798,14 +798,6 @@ $(document).ready(function () {
                                     data-nombre="${data.COLABORADOR}">
                                     <i class="fa-solid fa-x"></i>
                                 </button>
-                                
-                                <button 
-                                    class="btn-alerta btn-Editar"
-                                    title='Editar'
-                                    data-id="${data.LEGAJO}"
-                                    data-nombre="${data.COLABORADOR}">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
                             `;
                         }
 
