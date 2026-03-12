@@ -34,32 +34,48 @@ function calcularHorasHabiles() {
 
     if (!fechaDesde || !fechaHasta) return;
 
-    const [y1, m1, d1] = fechaDesde.split("-");
-    const [y2, m2, d2] = fechaHasta.split("-");
+    const inicio = new Date(fechaDesde + "T00:00:00");
+    const fin = new Date(fechaHasta + "T00:00:00");
 
-    let inicio = new Date(y1, m1 - 1, d1);
-    let fin = new Date(y2, m2 - 1, d2);
+    if (fin < inicio) {
+        document.getElementById("inputHoras").value = "";
+        return;
+    }
 
-    let diasTotales = 0;
-    let sabados = 0;
-    let domingos = 0;
-
+    let diasHabiles = 0;
     let fecha = new Date(inicio);
 
     while (fecha <= fin) {
-        diasTotales++;
+        const diaSemana = fecha.getDay();
 
-        let dia = fecha.getDay();
-        if (dia === 0) domingos++;
-        if (dia === 6) sabados++;
+        // Cuenta lunes a viernes como día hábil
+        if (diaSemana !== 0 && diaSemana !== 6) {
+            diasHabiles++;
+        }
 
         fecha.setDate(fecha.getDate() + 1);
     }
 
-    let diasHabiles = diasTotales - domingos - sabados / 2;
-    let horas = diasHabiles * 8;
+    const horas = diasHabiles * 8;
+    document.getElementById("inputHoras").value = horas;
+}
 
-    document.getElementById("inputHoras").value = parseFloat(horas);
+function calcularDias() {
+    const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
+    const fechaHasta = document.getElementById("fechaHastaNovedad").value;
+
+    if (!fechaDesde || !fechaHasta) return;
+
+    const inicio = new Date(fechaDesde + "T00:00:00");
+    const fin = new Date(fechaHasta + "T00:00:00");
+
+    const diff = fin - inicio;
+
+    if (diff < 0) return;
+
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
+
+    document.getElementById("inputDias").value = dias;
 }
 
 //calcular fecha hasta
@@ -87,6 +103,16 @@ function setFechaAplicacionUltimoDiaMes() {
     document.querySelector('input[name="fechaAplicacion"]').value =
         fechaFormateada;
 }
+
+document.getElementById("fechaDesdeNovedad").addEventListener("change", function () {
+    calcularDias();
+    calcularHorasHabiles();
+});
+
+document.getElementById("fechaHastaNovedad").addEventListener("change", function () {
+    calcularDias();
+    calcularHorasHabiles();
+});
 
 //abrir modal con datos del colaborador para cargar novedad
 function registrarNovedad(legajoColaborador) {
@@ -210,7 +236,6 @@ $("#inputImporte").on("change", function () {
 $("#inputImporte").on("focus", function () {
     $(this).val("");
 });
-
 
 document.addEventListener("DOMContentLoaded", () => {
     const fechaInicio = document.getElementById("fechaDesdeNovedad");

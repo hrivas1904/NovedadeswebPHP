@@ -230,6 +230,67 @@ $("#btnAplicarFiltros").on("click", function () {
     tablaPersonal.ajax.reload();
 });
 
+function anularNovedad(idRegistro) {
+
+    Swal.fire({
+        title: "¿Anular novedad?",
+        text: "La novedad quedará desactivada",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, anular",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            $.ajax({
+                url: "/novedades/anular",
+                type: "POST",
+                data: {
+                    idRegistro: idRegistro
+                },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+
+                success: function (response) {
+
+                    if (response.success) {
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Correcto",
+                            text: response.mensaje
+                        });
+
+                        if (tablaControl) {
+                            tablaControl.ajax.reload(null, false);
+                        }
+
+                    } else {
+
+                        Swal.fire("Atención", response.mensaje, "warning");
+
+                    }
+                },
+
+                error: function (xhr) {
+
+                    console.error(xhr.responseText);
+
+                    Swal.fire(
+                        "Error",
+                        "No se pudo anular la novedad",
+                        "error"
+                    );
+                }
+            });
+
+        }
+
+    });
+}
+
 //carga dt novedades
 $(document).ready(function () {
     tablaControl = $("#tb_control");
@@ -532,6 +593,14 @@ $(document).ready(function () {
             const idRegistro = $(this).data("id");
             console.log("Id registro recibido: " + idRegistro);
             verDetalleNovedad(idRegistro);
+        });
+
+        $(document).on("click", ".btn-AnularNovedad", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const idRegistro = $(this).data("id");
+            console.log("Id registro recibido: " + idRegistro);
+            anularNovedad(idRegistro);
         });
     }
 });

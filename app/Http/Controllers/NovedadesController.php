@@ -375,4 +375,31 @@ class NovedadesController extends Controller
             ], 500);
         }
     }
+
+    public function anular(Request $request)
+    {
+        try {
+
+            $idRegistro = $request->idRegistro;
+
+            DB::statement(
+                "CALL SP_ELIMINAR_NOVEDAD_EMPLEADO(?, @p_mensaje)",
+                [$idRegistro]
+            );
+
+            $mensaje = DB::selectOne("SELECT @p_mensaje AS mensaje");
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => $mensaje->mensaje
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al anular la novedad',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
 }

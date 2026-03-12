@@ -173,6 +173,9 @@ Route::post('/novedades/registrar-masivo', [NovedadesController::class, 'registr
 
 Route::get('/novedades/verDetalleRegistroNovedad/{idRegistro}', [NovedadesController::class, 'verDetalleRegistroNovedad']);
 
+Route::post('/novedades/anular', [NovedadesController::class, 'anular'])
+    ->name('novedades.anular');
+
 //mensajes
 Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');
 Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->middleware('auth')->name('notificaciones.lista');
