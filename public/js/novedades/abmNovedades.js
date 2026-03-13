@@ -78,6 +78,31 @@ function calcularDias() {
     document.getElementById("inputDias").value = dias;
 }
 
+document.getElementById("fechaHastaNovedad").addEventListener("change", function () {
+
+    const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
+    const fechaHasta = this.value;
+
+    if (!fechaDesde || !fechaHasta) return;
+
+    const inicio = new Date(fechaDesde + "T00:00:00");
+    const fin = new Date(fechaHasta + "T00:00:00");
+
+    if (fin < inicio) {
+        Swal.fire(
+            "Fecha inválida",
+            "La fecha hasta no puede ser anterior a la fecha desde",
+            "warning"
+        );
+
+        this.value = "";
+        document.getElementById("inputDias").value = "";
+        return;
+    }
+
+    calcularDias();
+});
+
 //calcular fecha hasta
 $("#inputDias").on("change", function () {
     let fechaDesdeStr = $("#fechaDesdeNovedad").val();
