@@ -28,7 +28,7 @@ function parsearMonto(valor) {
     return isNaN(resultado) ? 0 : resultado;
 }
 
-function calcularHorasHabiles() {
+function calcularHorasHabilesMasiva() {
     const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
     const fechaHasta = document.getElementById("fechaHastaNovedad").value;
 
@@ -108,14 +108,14 @@ document
     .getElementById("fechaDesdeNovedad")
     .addEventListener("change", function () {
         calcularDias();
-        calcularHorasHabiles();
+        calcularHorasHabilesMasiva();
     });
 
 document
     .getElementById("fechaHastaNovedad")
     .addEventListener("change", function () {
         calcularDias();
-        calcularHorasHabiles();
+        calcularHorasHabilesMasiva();
     });
 
 $("#inputImporte").on("change", function () {

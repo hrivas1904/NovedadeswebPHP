@@ -13,12 +13,12 @@
 
 /* Excel */
 .btn-export-excel {
-    background-color: #22c55e !important;
+    background-color: #00b18d !important;
     color: #fff !important;
 }
 
     .btn-export-excel:hover {
-        background-color: #218838 !important;
+        background-color: #009c7c !important;
         box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
     }
 
@@ -29,18 +29,18 @@
 }
 
     .btn-export-pdf:hover {
-        background-color: #b02a37 !important;
+        background-color: #d64545 !important;
         box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3);
     }
 
 /* Imprimir */
 .btn-printer {
-    background-color: #6c7a89 !important;
+    background-color: #004a7c !important;
     color: #fff !important;
 }
 
     .btn-printer:hover {
-        background-color: #5a6268 !important;
+        background-color: #0b3c6d !important;
         box-shadow: 0 3px 8px rgba(108, 117, 125, 0.3);
     }
 

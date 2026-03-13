@@ -355,3 +355,13 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.badge-activo{
+    background-color: #00b18d;
+    color: #fff;
+}
+
+.badge-baja{
+    background-color: #d64545;
+    color: #fff;
+}

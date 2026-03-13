@@ -432,7 +432,9 @@ function darDeBaja(legajoColaborador, nombre) {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, dar de baja",
+        confirmButtonColor: "#00b18d",
         cancelButtonText: "Cancelar",
+        cancelButtonColor: "#004a7c",
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
@@ -765,8 +767,9 @@ $(document).ready(function () {
                     className: "text-center",
                     render: function (data) {
                         let clase =
-                            data === "ACTIVO" ? "bg-success" : "bg-danger";
-                        return `<span style="font-size: 0.80rem;" class="badge ${clase}">${data}</span>`;
+                            data === "ACTIVO" ? "badge-activo" : "badge-baja";
+
+                        return `<span style="font-size:0.80rem;" class="badge ${clase}">${data}</span>`;
                     },
                 },
                 {
@@ -804,7 +807,8 @@ $(document).ready(function () {
                         // ADMIN + COORDINADOR
                         if (
                             (USER_ROLE === "Administrador/a" ||
-                                USER_ROLE === "Coordinador/a" || USER_ROLE === "Coordinador/a L2") &&
+                                USER_ROLE === "Coordinador/a" ||
+                                USER_ROLE === "Coordinador/a L2") &&
                             data.ESTADO === "ACTIVO"
                         ) {
                             botones += `
