@@ -78,30 +78,31 @@ function calcularDias() {
     document.getElementById("inputDias").value = dias;
 }
 
-document.getElementById("fechaHastaNovedad").addEventListener("change", function () {
+document
+    .getElementById("fechaHastaNovedad")
+    .addEventListener("change", function () {
+        const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
+        const fechaHasta = this.value;
 
-    const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
-    const fechaHasta = this.value;
+        if (!fechaDesde || !fechaHasta) return;
 
-    if (!fechaDesde || !fechaHasta) return;
+        const inicio = new Date(fechaDesde + "T00:00:00");
+        const fin = new Date(fechaHasta + "T00:00:00");
 
-    const inicio = new Date(fechaDesde + "T00:00:00");
-    const fin = new Date(fechaHasta + "T00:00:00");
+        if (fin < inicio) {
+            Swal.fire(
+                "Fecha inválida",
+                "La fecha hasta no puede ser anterior a la fecha desde",
+                "warning",
+            );
 
-    if (fin < inicio) {
-        Swal.fire(
-            "Fecha inválida",
-            "La fecha hasta no puede ser anterior a la fecha desde",
-            "warning"
-        );
+            this.value = "";
+            document.getElementById("inputDias").value = "";
+            return;
+        }
 
-        this.value = "";
-        document.getElementById("inputDias").value = "";
-        return;
-    }
-
-    calcularDias();
-});
+        calcularDias();
+    });
 
 //calcular fecha hasta
 $("#inputDias").on("change", function () {
@@ -808,3 +809,98 @@ $("#btnGuardarCambios").on("click", function () {
         },
     });
 });
+
+let tablaDetalleNovedades;
+
+let listaNovedades = [];
+
+$(document).ready(function () {
+
+    $.ajax({
+        url: "/novedades/selector",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            listaNovedades = data;
+        },
+        error: function (err) {
+            console.error("Error al cargar novedades:", err);
+        },
+    });
+
+});
+
+$(document).ready(function () {
+    tablaDetalleNovedades = $("#tbDetalleRegistroNovedadesColab").DataTable({
+        paging: false,
+        searching: false,
+        info: false,
+        ordering: false,
+        autoWidth: false,
+    });
+
+    agregarFilaDetalle(); // 👈 primera fila obligatoria
+});
+
+function agregarFilaDetalle() {
+
+    let rowNode = tablaDetalleNovedades.row
+        .add([
+            `<input class="form-control codigo-novedad" readonly>`,
+
+            `<select class="form-select select-novedad"></select>`,
+
+            `<input type="date" class="form-control fecha-desde">`,
+
+            `<input type="date" class="form-control fecha-hasta">`,
+
+            `<input type="text" class="form-control valor text-end">`,
+
+            `<input type="text" class="form-control observaciones">`,
+
+            `<button class="btn btn-danger btn-sm btnEliminarFila">
+                <i class="fa fa-trash"></i>
+            </button>`
+        ])
+        .draw(false)
+        .node();
+
+    const select = $(rowNode).find(".select-novedad");
+
+    select.select2({
+        data: listaNovedades,
+        placeholder: "Seleccione una novedad",
+        allowClear: true,
+        width: "100%",
+        dropdownParent: $("#modalRegNovedadColaborador")
+    });
+
+}
+
+$("#tbDetalleRegistroNovedadesColab").on(
+    "select2:select",
+    ".select-novedad",
+    function (e) {
+
+        const row = $(this).closest("tr");
+
+        const data = e.params.data;
+
+        console.log("Seleccionado:", data);
+
+        row.find(".codigo-novedad").val(data.codigo || "");
+
+    }
+);
+
+$("#btnAgregarFila").on("click", function () {
+    agregarFilaDetalle();
+});
+
+$("#tbDetalleRegistroNovedadesColab").on(
+    "click",
+    ".btnEliminarFila",
+    function () {
+        tablaDetalleNovedades.row($(this).closest("tr")).remove().draw();
+    },
+);

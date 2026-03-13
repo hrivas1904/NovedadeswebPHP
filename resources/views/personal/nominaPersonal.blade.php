@@ -282,7 +282,8 @@
                                                 <select name="obra_social_id" id="obraSocial" class="form-select">
                                                     <option value="">Seleccione obra social</option>
                                                 </select>
-                                                <button type="button" class="btn btn-sm btn-primario" id="btnAbrirModalOs">
+                                                <button type="button" class="btn btn-sm btn-primario"
+                                                    id="btnAbrirModalOs">
                                                     <i class="fa-solid fa-plus"></i>
                                                 </button>
                                             </div>
@@ -311,13 +312,13 @@
                                             <input name="matricula_profesional" class="form-control" type="text" />
                                         </div>
                                         <!--<div class="col-lg-2 d-flex flex-column">
-                                                <label class="form-label">Agregar título</label>
-                                                <button id="btnAgregarTitulo" class="btn-primario">
-                                                    <i class="fa-solid fa-plus"></i> Título
-                                                </button>
-                                            </div>
-                                            <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
-                                            </div>-->
+                                                    <label class="form-label">Agregar título</label>
+                                                    <button id="btnAgregarTitulo" class="btn-primario">
+                                                        <i class="fa-solid fa-plus"></i> Título
+                                                    </button>
+                                                </div>
+                                                <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
+                                                </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -1061,6 +1062,27 @@
                         </div>
 
                         <div class="empleado-box p-3">
+
+                            <table id="tbDetalleRegistroNovedadesColab"
+                                class="table table-striped table-bordered align-middle">
+                                <thead>
+                                    <tr>
+                                        <th style="width:120px">CÓDIGO</th>
+                                        <th style="width:220px">NOVEDAD</th>
+                                        <th style="width:140px">DESDE</th>
+                                        <th style="width:140px">HASTA</th>
+                                        <th style="width:120px">VALOR</th>
+                                        <th>OBSERVACIONES</th>
+                                        <th style="width:70px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+
+                            <button id="btnAgregarFila" class="btn-primario btn-sm">
+                                <i class="fa fa-plus"></i> Agregar novedad
+                            </button>
+
                             <div class="row g-3">
 
                                 <div class="col-lg-3">
@@ -1277,5 +1299,5 @@
 
 @push('scripts')
     <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
-    <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>    
+    <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
 @endpush
