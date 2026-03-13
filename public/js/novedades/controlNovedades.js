@@ -28,6 +28,38 @@ function setFechaAplicacionUltimoDiaMes() {
         fechaFormateada;
 }
 
+function calcularHorasHabiles() {
+    const fechaDesde = document.getElementById("inputFechaDesde").value;
+    const fechaHasta = document.getElementById("inputFechaHasta").value;
+
+    if (!fechaDesde || !fechaHasta) return;
+
+    const inicio = new Date(fechaDesde + "T00:00:00");
+    const fin = new Date(fechaHasta + "T00:00:00");
+
+    if (fin < inicio) {
+        document.getElementById("inputHoras").value = "";
+        return;
+    }
+
+    let diasHabiles = 0;
+    let fecha = new Date(inicio);
+
+    while (fecha <= fin) {
+        const diaSemana = fecha.getDay();
+
+        // Cuenta lunes a viernes como día hábil
+        if (diaSemana !== 0 && diaSemana !== 6) {
+            diasHabiles++;
+        }
+
+        fecha.setDate(fecha.getDate() + 1);
+    }
+
+    const horas = diasHabiles * 8;
+    document.getElementById("inputValor").value = horas;
+}
+
 //sp para cargar selector areas
 $(document).ready(function () {
     cargarAreas();
@@ -153,16 +185,13 @@ function verDetalleNovedad(idRegistro) {
                 $("#inputFechaAplicacion").val(
                     formatearFechaArgentina(d.FECHA_APLICACION),
                 );
-                $("#inputFechaDesde").val(
-                    d.FECHA_DESDE,
-                );
-                $("#inputFechaHasta").val(
-                    d.FECHA_HASTA,
-                );
+                $("#inputFechaDesde").val(d.FECHA_DESDE);
+                $("#inputFechaHasta").val(d.FECHA_HASTA);
 
                 let valor = d.DURACION;
                 let valorFormateado = 0;
                 let tipo_valor = d.tipo_valor;
+                $("#tipoValor").val(tipo_valor);
 
                 if (tipo_valor === "Pesos") {
                     valorFormateado = formatearPesos(valor);
@@ -171,6 +200,10 @@ function verDetalleNovedad(idRegistro) {
                 } else {
                     $("#inputValor").val(parseInt(valor));
                     $("#inputValor").addClass("text-start");
+                }
+
+                if (tipo_valor === "Horas") {
+                    calcularHorasHabiles();
                 }
 
                 $("#inputCodigo").val(d.codigo_novedad);
@@ -216,6 +249,12 @@ function verDetalleNovedad(idRegistro) {
         },
     });
 }
+
+/*$("#inputFechaDesde, #inputFechaHasta").on("change",function(){
+    if ($("#tipoValor").val()==='Horas'){
+        calcularHorasHabiles();
+    }
+})*/
 
 $("#btnLimpiarFiltros").on("click", function () {
     $("#filtroDesde").val(null);
@@ -685,7 +724,6 @@ function calcularDuracion() {
     const desdeVal = fechaDesdeInput.value;
     const hastaVal = fechaHastaInput.value;
 
-    // No validar si aún no están completas
     if (desdeVal.length !== 10 || hastaVal.length !== 10) {
         duracionInput.value = "";
         return;
@@ -735,9 +773,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function cerrarModalDetalleNovedad(){
+function cerrarModalDetalleNovedad() {
     $("#formDetalleNovedad")[0].reset();
-    $("#btnGuardarCambios").addClass('d-none');
-    $("#btnHabilitarEdicion").removeClass('d-none');
+    $("#btnGuardarCambios").addClass("d-none");
+    $("#btnHabilitarEdicion").removeClass("d-none");
     $("#modalDetalleNovedad").modal("hide");
 }

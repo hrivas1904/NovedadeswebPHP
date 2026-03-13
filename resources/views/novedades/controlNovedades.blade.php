@@ -194,6 +194,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Valor</label>
+                                            <input type="text" class="d-none" id="tipoValor"></input>
                                             <input type="text" id="inputValor" name="duracion"
                                                 class="form-control editable" readonly>
                                         </div>
