@@ -78,31 +78,34 @@ class NovedadesController extends Controller
     {
         try {
 
-            DB::statement(
-                "CALL SP_REGISTRAR_NOVEDAD(
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, @mensaje
-            )",
-                [
-                    $request->legajo,
-                    $request->idNovedad,
-                    now(), // fecha registro
-                    $request->fechaDesde,
-                    $request->fechaHasta,
-                    $request->fechaAplicacion,
-                    $request->valor1 ?? null,
-                    $request->valor2 ?? null,
-                    $request->centroCosto ?? null,
-                    $request->cantidadFinal,
-                    auth()->user()->name,
-                    $request->descripcion ?? null,
-                    $request->annio ?? null,
-                    $request->tipoVacaciones ?? null,
-                    $request->numAtencion ?? null,
-                    $request->pacienteAtencion ?? null,
-                    $request->conceptoAtencion ?? null,
-                    $request->cantidadCuotas ?? null,
-                ]
-            );
+            foreach ($request->idNovedad as $index => $idNovedad) {
+
+                DB::statement(
+                    "CALL SP_REGISTRAR_NOVEDAD(
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @mensaje
+                )",
+                    [
+                        $request->legajo,                         // p_legajo
+                        $idNovedad,                               // p_id_novedad
+                        now(),                                    // p_fecha_registro
+                        $request->fechaDesde[$index] ?? null,     // p_fecha_desde
+                        $request->fechaHasta[$index] ?? null,     // p_fecha_hasta
+                        $request->fechaAplicacion ?? null,        // p_fecha_aplicacion
+                        $request->valor[$index] ?? null,          // p_valor1
+                        null,                                     // p_valor2
+                        null,                                     // p_centro_costo
+                        $request->valor[$index] ?? null,          // p_duracion
+                        auth()->user()->name,                     // p_registrante
+                        $request->descripcion[$index] ?? null,    // p_descripcion
+                        null,                                     // p_annio
+                        null,                                     // p_tipo
+                        null,                                     // p_numAtencion
+                        null,                                     // p_paciente
+                        null,                                     // p_concepto
+                        null                                      // p_cuotas
+                    ]
+                );
+            }
 
             $resultado = DB::select("SELECT @mensaje AS mensaje");
 

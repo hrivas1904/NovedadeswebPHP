@@ -1,3 +1,6 @@
+let novedades = [];
+let novedadesSelect = [];
+
 function formatearFechaArgentina(fecha) {
     if (!fecha) return "";
 
@@ -78,30 +81,32 @@ function calcularDias() {
     document.getElementById("inputDias").value = dias;
 }
 
-document.getElementById("fechaHastaNovedad").addEventListener("change", function () {
+/*
+document
+    .getElementById("fechaHastaNovedad")
+    .addEventListener("change", function () {
+        const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
+        const fechaHasta = this.value;
 
-    const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
-    const fechaHasta = this.value;
+        if (!fechaDesde || !fechaHasta) return;
 
-    if (!fechaDesde || !fechaHasta) return;
+        const inicio = new Date(fechaDesde + "T00:00:00");
+        const fin = new Date(fechaHasta + "T00:00:00");
 
-    const inicio = new Date(fechaDesde + "T00:00:00");
-    const fin = new Date(fechaHasta + "T00:00:00");
+        if (fin < inicio) {
+            Swal.fire(
+                "Fecha inválida",
+                "La fecha hasta no puede ser anterior a la fecha desde",
+                "warning",
+            );
 
-    if (fin < inicio) {
-        Swal.fire(
-            "Fecha inválida",
-            "La fecha hasta no puede ser anterior a la fecha desde",
-            "warning"
-        );
+            this.value = "";
+            document.getElementById("inputDias").value = "";
+            return;
+        }
 
-        this.value = "";
-        document.getElementById("inputDias").value = "";
-        return;
-    }
-
-    calcularDias();
-});
+        calcularDias();
+    });*/
 
 //calcular fecha hasta
 $("#inputDias").on("change", function () {
@@ -129,7 +134,7 @@ function setFechaAplicacionUltimoDiaMes() {
         fechaFormateada;
 }
 
-document
+/*document
     .getElementById("fechaDesdeNovedad")
     .addEventListener("change", function () {
         calcularDias();
@@ -141,7 +146,7 @@ document
     .addEventListener("change", function () {
         calcularDias();
         calcularHorasHabilesMasiva();
-    });
+    });*/
 
 $("#inputImporte").on("change", function () {
     let monto = 0;
@@ -355,7 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-$("#formCargaNovedad").on("submit", function (e) {
+/*$("#formCargaNovedad").on("submit", function (e) {
     e.preventDefault();
 
     const dias = parseFloat(document.getElementById("inputDias").value) || 0;
@@ -406,6 +411,51 @@ $("#formCargaNovedad").on("submit", function (e) {
         },
         error: function (xhr) {
             console.error(xhr.responseText);
+            Swal.fire("Error", "No se pudo registrar la novedad", "error");
+        },
+    });
+});*/
+
+$("#formCargaNovedad").on("submit", function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: "/novedades/registrar",
+        type: "POST",
+        data: $(this).serialize(),
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Correcto",
+                    text: response.mensaje,
+                });
+
+                $("#formCargaNovedad")[0].reset();
+
+                $("#tablaNovedades tbody").empty();
+
+                $("#modalRegNovedadColaborador").modal("hide");
+
+                if (tablaHistorialNovedades) {
+                    tablaHistorialNovedades.ajax.reload(null, false);
+                }
+
+                if (typeof tablaPersonal !== "undefined") {
+                    tablaPersonal.ajax.reload(null, false);
+                }
+            } else {
+                Swal.fire("Atención", response.mensaje, "warning");
+            }
+        },
+
+        error: function (xhr) {
+            console.error(xhr.responseText);
+
             Swal.fire("Error", "No se pudo registrar la novedad", "error");
         },
     });
@@ -488,6 +538,7 @@ $(document).ready(function () {
                         d.area_id = $("#filtroArea").val() || null;
                     }
                     d.p_uti = $("#selectUti").val() || null;
+                    d.p_noche = $("#selectNoche").val() || null;
                 },
             },
             autoWidth: true,
@@ -535,7 +586,7 @@ $(document).ready(function () {
         });
 
         $(
-            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado, #selectUti",
+            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado, #selectUti, #selectNoche",
         ).on("change", function () {
             tablaPersonal.ajax.reload();
         });
@@ -807,4 +858,106 @@ $("#btnGuardarCambios").on("click", function () {
             Swal.fire("Error", "No se pudo actualizar la novedad", "error");
         },
     });
+});
+
+$(document).ready(function () {
+    $.ajax({
+        url: "/novedades/selector",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            novedadesSelect = data;
+        },
+        error: function (err) {
+            console.error("Error al cargar novedades:", err);
+        },
+    });
+});
+
+function inicializarSelect2Fila() {
+    let select = $("#tablaNovedades tbody tr:last .selectNovedadRow");
+
+    select.select2({
+        data: novedadesSelect,
+        placeholder: "Seleccione una novedad",
+        allowClear: true,
+        width: "100%",
+        dropdownParent: $("#modalRegNovedadColaborador"),
+    });
+}
+
+$(document).on("click", "#btnAgregarNovedad", function () {
+    let fila = `
+    <tr>
+        <td>
+            <select class="form-select selectNovedadRow" name="idNovedad[]">
+                <option value="">Seleccionar</option>
+            </select>
+        </td>
+        <td>
+            <input type="text" class="form-control codigoFinnegans" readonly>
+        </td>
+        <td>
+            <input type="date" class="form-control" name="fechaDesde[]">
+        </td>
+        <td>
+            <input type="date" class="form-control" name="fechaHasta[]">
+        </td>
+        <td>
+            <input type="text" class="form-control" name="valor[]">
+        </td>
+        <td>
+            <input type="text" class="form-control" name="descripcion[]">
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btnEliminarRow">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </td>
+
+    </tr>
+    `;
+
+    $("#tablaNovedades tbody").append(fila);
+
+    inicializarSelect2Fila();
+});
+
+$(document).on("select2:select", ".selectNovedadRow", function (e) {
+    const row = $(this).closest("tr");
+
+    const codigo = e.params.data.codigo;
+    const nombre = e.params.data.text;
+
+    row.find(".codigoFinnegans").val(codigo);
+
+    let extras = "";
+
+    if (nombre === "Licencia anual") {
+        extras = `
+        <select class="form-control tipoVacaciones">
+            <option value="2">Gozadas</option>
+            <option value="3">Gozadas pagadas</option>
+            <option value="4">Pagadas</option>
+            <option value="5">Vencidas</option>
+        </select>
+
+        <input type="number" class="form-control annioVacaciones">
+        `;
+    }
+
+    if (nombre === "Atención sanatorial") {
+        extras = `
+        <input type="number" class="form-control numAtencion" placeholder="N° atención">
+        <input type="text" class="form-control paciente" placeholder="Paciente">
+        <input type="text" class="form-control concepto">
+        <input type="number" class="form-control cuotas">
+        `;
+    }
+
+    row.find(".extras").html(extras);
+});
+
+$(document).on("click", ".btnEliminarRow", function () {
+    $(this).closest("tr").remove();
 });
