@@ -383,6 +383,9 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#padreColaboradorEdit").val(d.PADRE);
                 $("#madreColaboradorEdit").val(d.MADRE);
 
+                $("#inputNoche").val(d.NOCHE);
+                $("#inputUti").val(d.UTI);
+
                 const familiares = response.familiares;
 
                 // Limpiamos el contenedor por si había datos de otro legajo

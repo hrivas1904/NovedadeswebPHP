@@ -635,15 +635,15 @@
                                         <label class="form-label">Tipo de contrato</label>
                                         <input type="text" id="inputTipoContrato" class="form-control" readonly>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <label class="form-label">Fecha ingreso</label>
                                         <input type="text" id="inputFechaIngreso" class="form-control" readonly>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <label class="form-label">Fecha fin prueba</label>
                                         <input type="text" id="inputFechaFinPrueba" class="form-control" readonly>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <label class="form-label">Fecha egreso</label>
                                         <input type="text" id="inputFechaEgreso" class="form-control" readonly>
                                     </div>
@@ -688,6 +688,22 @@
                                         <label class="form-label">Afiliado al sindicato</label>
                                         <input type="text" id="inputAfiliado" class="form-control" readonly>
                                     </div>
+                                    <div class="col-lg-1">
+                                        <label class="form-label">Noche</label>
+                                        <select id="inputNoche" class="form-select">
+                                            <option value="1">SI</option>
+                                            <option value="0">NO</option>
+                                        </select>
+                                        <!--<input type="text" id="inputNoche" class="form-control" readonly>-->
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <label class="form-label">UTI</label>
+                                        <select id="inputUti" class="form-select">
+                                            <option value="1">SI</option>
+                                            <option value="0">NO</option>
+                                        </select>
+                                        <!--<input type="text" id="inputUti" class="form-control" readonly>-->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -724,9 +740,6 @@
             <div class="modal-footer">
                 <button class="btn-secundario" onclick="cerrarModalLegajo()">
                     Atrás
-                </button>
-                <button class="btn-primario" onclick="">
-                    Actualizar
                 </button>
             </div>
         </div>
