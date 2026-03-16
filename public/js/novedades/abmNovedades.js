@@ -51,7 +51,6 @@ function calcularHorasHabilesMasiva() {
     while (fecha <= fin) {
         const diaSemana = fecha.getDay();
 
-        // Cuenta lunes a viernes como día hábil
         if (diaSemana !== 0 && diaSemana !== 6) {
             diasHabiles++;
         }
@@ -921,6 +920,74 @@ $(document).on("click", "#btnAgregarNovedad", function () {
     $("#tablaNovedades tbody").append(fila);
 
     inicializarSelect2Fila();
+});
+
+$(document).on("select2:select", ".selectNovedadRow", function (e) {
+    const row = $(this).closest("tr");
+    const data = e.params.data;
+
+    row.find(".codigoFinnegans").val(data.codigo || "");
+
+    // guardar tipo de valor en la fila
+    row.data("tipo_valor", data.tipo_valor);
+});
+
+$(document).on(
+    "change",
+    "input[name='fechaDesde[]'], input[name='fechaHasta[]']",
+    function () {
+        const row = $(this).closest("tr");
+        calcularValorFila(row);
+    },
+);
+
+function calcularValorFila(row) {
+    const tipo = row.data("tipo_valor");
+
+    const fechaDesde = row.find("input[name='fechaDesde[]']").val();
+    const fechaHasta = row.find("input[name='fechaHasta[]']").val();
+
+    if (!fechaDesde || !fechaHasta) return;
+
+    const inicio = new Date(fechaDesde + "T00:00:00");
+    const fin = new Date(fechaHasta + "T00:00:00");
+
+    if (fin < inicio) return;
+
+    const inputValor = row.find("input[name='valor[]']");
+
+    if (tipo === "HORAS") {
+        let diasHabiles = 0;
+        let fecha = new Date(inicio);
+
+        while (fecha <= fin) {
+            const diaSemana = fecha.getDay();
+
+            if (diaSemana !== 0 && diaSemana !== 6) {
+                diasHabiles++;
+            }
+
+            fecha.setDate(fecha.getDate() + 1);
+        }
+
+        inputValor.val(diasHabiles * 8);
+    } else if (tipo === "DIAS") {
+        const diff = fin - inicio;
+        const dias = Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
+
+        inputValor.val(dias);
+    }
+}
+
+$(document).on("blur", "input[name='valor[]']", function () {
+    const row = $(this).closest("tr");
+    const tipo = row.data("tipo_valor");
+
+    if (tipo === "PESOS") {
+        let valor = parsearMonto($(this).val());
+
+        $(this).val(formatearPesos(valor));
+    }
 });
 
 $(document).on("select2:select", ".selectNovedadRow", function (e) {
