@@ -1051,12 +1051,7 @@
                             <div class="col-lg-1">
                                 <label class="form-label">Régimen</label>
                                 <input type="text" class="form-control" name="regimen" readonly>
-                            </div>
-
-                            <div class="col-lg-1">
-                                <label class="form-label">Hs diarias</label>
-                                <input type="text" class="form-control" name="horasDiarias" readonly>
-                            </div>
+                            </div>                            
 
                             <div class="col-lg-1">
                                 <label class="form-label">Convenio</label>
@@ -1069,8 +1064,13 @@
                             </div>
 
                             <div class="col-lg-1">
-                                <label class="form-label">Afiliado</label>
-                                <input type="text" class="form-control" name="afiliado" readonly>
+                                <label class="form-label">UTI</label>
+                                <input type="text" class="form-control" name="uti" readonly>
+                            </div>
+
+                            <div class="col-lg-1">
+                                <label class="form-label">Noche</label>
+                                <input type="text" class="form-control" name="noche" readonly>
                             </div>
                         </div>
                     </div>

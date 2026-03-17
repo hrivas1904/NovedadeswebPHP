@@ -31,7 +31,7 @@ function parsearMonto(valor) {
     return isNaN(resultado) ? 0 : resultado;
 }
 
-function calcularHorasHabilesMasiva() {
+function calcularHorasHabilesUTI() {
     const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
     const fechaHasta = document.getElementById("fechaHastaNovedad").value;
 
@@ -80,50 +80,6 @@ function calcularDias() {
     document.getElementById("inputDias").value = dias;
 }
 
-/*
-document
-    .getElementById("fechaHastaNovedad")
-    .addEventListener("change", function () {
-        const fechaDesde = document.getElementById("fechaDesdeNovedad").value;
-        const fechaHasta = this.value;
-
-        if (!fechaDesde || !fechaHasta) return;
-
-        const inicio = new Date(fechaDesde + "T00:00:00");
-        const fin = new Date(fechaHasta + "T00:00:00");
-
-        if (fin < inicio) {
-            Swal.fire(
-                "Fecha inválida",
-                "La fecha hasta no puede ser anterior a la fecha desde",
-                "warning",
-            );
-
-            this.value = "";
-            document.getElementById("inputDias").value = "";
-            return;
-        }
-
-        calcularDias();
-    });*/
-
-//calcular fecha hasta
-$("#inputDias").on("change", function () {
-    let fechaDesdeStr = $("#fechaDesdeNovedad").val();
-    let dias = parseInt($(this).val());
-
-    if (!fechaDesdeStr || isNaN(dias)) return;
-
-    let fechaDesde = new Date(fechaDesdeStr);
-    fechaDesde.setDate(fechaDesde.getDate() + dias);
-
-    let yyyy = fechaDesde.getFullYear();
-    let mm = String(fechaDesde.getMonth() + 1).padStart(2, "0");
-    let dd = String(fechaDesde.getDate()).padStart(2, "0");
-
-    $("#fechaHastaNovedad").val(`${yyyy}-${mm}-${dd}`);
-});
-
 //calcula fecha aplicación como último día del mes
 function setFechaAplicacionUltimoDiaMes() {
     const hoy = new Date();
@@ -132,30 +88,6 @@ function setFechaAplicacionUltimoDiaMes() {
     document.querySelector('input[name="fechaAplicacion"]').value =
         fechaFormateada;
 }
-
-/*document
-    .getElementById("fechaDesdeNovedad")
-    .addEventListener("change", function () {
-        calcularDias();
-        calcularHorasHabilesMasiva();
-    });
-
-document
-    .getElementById("fechaHastaNovedad")
-    .addEventListener("change", function () {
-        calcularDias();
-        calcularHorasHabilesMasiva();
-    });*/
-
-$("#inputImporte").on("change", function () {
-    let monto = 0;
-    monto = $(this).val();
-    $(this).val(formatearPesos(monto));
-});
-
-$("#inputImporte").on("focus", function () {
-    $(this).val("");
-});
 
 $(document).on("change", "#chkTodos", function () {
     const checked = $(this).prop("checked");
@@ -192,10 +124,10 @@ function registrarNovedad(legajoColaborador) {
                 calcularAntiguedad(data.FECHA_INGRESO),
             );
             $("input[name='regimen']").val(data.REGIMEN);
-            $("input[name='horasDiarias']").val(data.HORAS_DIARIAS);
+            $("input[name='uti']").val(data.UTI);
             $("input[name='convenio']").val(data.CONVENIO);
             $("input[name='titulo']").val(data.TITULO);
-            $("input[name='afiliado']").val(data.AFILIADO);
+            $("input[name='noche']").val(data.NOCHE);
 
             modal.modal("show");
         },
@@ -336,85 +268,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    let novedadSeleccionada = null;
-
-    $("#selectNovedad").on("select2:select", function (e) {
-        novedadSeleccionada = e.params.data;
-        const valorNovedad = novedadSeleccionada.valor.trim();
-
-        if (valorNovedad === "Días") {
-            document.getElementById("divPeriodoDias").hidden = false;
-            document.getElementById("divCantidadHoras").hidden = true;
-            document.getElementById("divCantidadPesos").hidden = true;
-        } else if (valorNovedad === "Horas") {
-            document.getElementById("divPeriodoDias").hidden = true;
-            document.getElementById("divCantidadHoras").hidden = false;
-            document.getElementById("divCantidadPesos").hidden = true;
-        } else if (valorNovedad === "Pesos") {
-            document.getElementById("divPeriodoDias").hidden = true;
-            document.getElementById("divCantidadHoras").hidden = true;
-            document.getElementById("divCantidadPesos").hidden = false;
-        }
-    });
-});
-
-/*$("#formCargaNovedad").on("submit", function (e) {
-    e.preventDefault();
-
-    const dias = parseFloat(document.getElementById("inputDias").value) || 0;
-    const horas = parseFloat(document.getElementById("inputHoras").value) || 0;
-    const pesosRaw = document.getElementById("inputImporte").value.trim();
-
-    let valorFinal = null;
-
-    if (pesosRaw !== "") {
-        valorFinal = parsearMonto(pesosRaw);
-    } else if (horas > 0) {
-        valorFinal = horas;
-    } else if (dias > 0) {
-        valorFinal = dias;
-    }
-
-    $("#cantidadFinal").val(valorFinal);
-
-    $.ajax({
-        url: "/novedades/registrar",
-        type: "POST",
-        data: $(this).serialize(),
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        success: function (response) {
-            if (response.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Correcto",
-                    text: response.mensaje,
-                });
-
-                $("#formCargaNovedad")[0].reset();
-                $("#selectNovedad").val(null).trigger("change");
-                $("#modalRegNovedadColaborador").modal("hide");
-
-                if (tablaHistorialNovedades) {
-                    tablaHistorialNovedades.ajax.reload(null, false);
-                }
-
-                if (typeof tablaPersonal !== "undefined") {
-                    tablaPersonal.ajax.reload(null, false);
-                }
-            } else {
-                Swal.fire("Atención", response.mensaje, "warning");
-            }
-        },
-        error: function (xhr) {
-            console.error(xhr.responseText);
-            Swal.fire("Error", "No se pudo registrar la novedad", "error");
-        },
-    });
-});*/
-
 $("#formCargaNovedad").on("submit", function (e) {
     e.preventDefault();
 
@@ -467,6 +320,7 @@ function abrirModalNovedad() {
 function cerrarModalNovedad() {
     $("#formCargaNovedad")[0].reset();
     $("#selectNovedad").val(null).trigger("change");
+    $("#tablaNovedades tbody").empty();
     $("#modalRegNovedadColaborador").modal("hide");
 }
 
@@ -859,6 +713,7 @@ $("#btnGuardarCambios").on("click", function () {
     });
 });
 
+//NUEVO FORMATO DE CARGA
 $(document).ready(function () {
     $.ajax({
         url: "/novedades/selector",
@@ -883,6 +738,44 @@ function inicializarSelect2Fila() {
         width: "100%",
         dropdownParent: $("#modalRegNovedadColaborador"),
     });
+}
+
+function calcularValorFila(row) {
+    const tipo = row.data("tipo_valor");
+
+    const fechaDesde = row.find("input[name='fechaDesde[]']").val();
+    const fechaHasta = row.find("input[name='fechaHasta[]']").val();
+
+    if (!fechaDesde || !fechaHasta) return;
+
+    const inicio = new Date(fechaDesde + "T00:00:00");
+    const fin = new Date(fechaHasta + "T00:00:00");
+
+    if (fin < inicio) return;
+
+    const inputValor = row.find("input[name='valor[]']");
+
+    if (tipo === "HORAS") {
+        let diasHabiles = 0;
+        let fecha = new Date(inicio);
+
+        while (fecha <= fin) {
+            const diaSemana = fecha.getDay();
+
+            if (diaSemana !== 0 && diaSemana !== 6) {
+                diasHabiles++;
+            }
+
+            fecha.setDate(fecha.getDate() + 1);
+        }
+
+        inputValor.val(diasHabiles * 8);
+    } else if (tipo === "DIAS") {
+        const diff = fin - inicio;
+        const dias = Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
+
+        inputValor.val(dias);
+    }
 }
 
 $(document).on("click", "#btnAgregarNovedad", function () {
@@ -925,104 +818,8 @@ $(document).on("click", "#btnAgregarNovedad", function () {
 $(document).on("select2:select", ".selectNovedadRow", function (e) {
     const row = $(this).closest("tr");
     const data = e.params.data;
-
     row.find(".codigoFinnegans").val(data.codigo || "");
-
-    // guardar tipo de valor en la fila
     row.data("tipo_valor", data.tipo_valor);
-});
-
-$(document).on(
-    "change",
-    "input[name='fechaDesde[]'], input[name='fechaHasta[]']",
-    function () {
-        const row = $(this).closest("tr");
-        calcularValorFila(row);
-    },
-);
-
-function calcularValorFila(row) {
-    const tipo = row.data("tipo_valor");
-
-    const fechaDesde = row.find("input[name='fechaDesde[]']").val();
-    const fechaHasta = row.find("input[name='fechaHasta[]']").val();
-
-    if (!fechaDesde || !fechaHasta) return;
-
-    const inicio = new Date(fechaDesde + "T00:00:00");
-    const fin = new Date(fechaHasta + "T00:00:00");
-
-    if (fin < inicio) return;
-
-    const inputValor = row.find("input[name='valor[]']");
-
-    if (tipo === "HORAS") {
-        let diasHabiles = 0;
-        let fecha = new Date(inicio);
-
-        while (fecha <= fin) {
-            const diaSemana = fecha.getDay();
-
-            if (diaSemana !== 0 && diaSemana !== 6) {
-                diasHabiles++;
-            }
-
-            fecha.setDate(fecha.getDate() + 1);
-        }
-
-        inputValor.val(diasHabiles * 8);
-    } else if (tipo === "DIAS") {
-        const diff = fin - inicio;
-        const dias = Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
-
-        inputValor.val(dias);
-    }
-}
-
-$(document).on("blur", "input[name='valor[]']", function () {
-    const row = $(this).closest("tr");
-    const tipo = row.data("tipo_valor");
-
-    if (tipo === "PESOS") {
-        let valor = parsearMonto($(this).val());
-
-        $(this).val(formatearPesos(valor));
-    }
-});
-
-$(document).on("select2:select", ".selectNovedadRow", function (e) {
-    const row = $(this).closest("tr");
-
-    const codigo = e.params.data.codigo;
-    const nombre = e.params.data.text;
-
-    row.find(".codigoFinnegans").val(codigo);
-
-    let extras = "";
-
-    if (nombre === "Licencia anual") {
-        extras = `
-        <select class="form-control tipoVacaciones">
-            <option value="2">Gozadas</option>
-            <option value="3">Gozadas pagadas</option>
-            <option value="4">Pagadas</option>
-            <option value="5">Vencidas</option>
-        </select>
-
-        <input type="number" class="form-control annioVacaciones">
-        `;
-    }
-
-    if (nombre === "Atención sanatorial") {
-        extras = `
-        <input type="number" class="form-control numAtencion" placeholder="N° atención">
-        <input type="text" class="form-control paciente" placeholder="Paciente">
-        <input type="text" class="form-control concepto">
-        <input type="number" class="form-control cuotas">
-        `;
-    }
-
-    row.find(".extras").html(extras);
 });
 
 $(document).on("click", ".btnEliminarRow", function () {
