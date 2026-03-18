@@ -230,12 +230,6 @@ function verDetalleNovedad(idRegistro) {
                     .val(importeCuotasFormateado)
                     .addClass("text-end");
 
-                if (d.novedad === "Atención sanatorial") {
-                    $("#divInfoAtencionMedica").removeClass("d-none");
-                } else {
-                    $("#divInfoAtencionMedica").addClass("d-none");
-                }
-
                 console.log("Abriendo detalle del registro ", idRegistro);
                 const modal = $("#modalDetalleNovedad");
                 modal.modal("show");
