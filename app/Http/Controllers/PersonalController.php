@@ -502,14 +502,15 @@ class PersonalController extends Controller
 
     public function rechazarSolicitud(Request $request)
     {
-        try {
+        try { 
             $request->validate([
                 'idSolicitud' => 'required|integer'
             ]);
 
             $idSolicitud = $request->idSolicitud;
+            $idUser = Auth::user()->id;
 
-            DB::statement("CALL SP_RECHAZAR_SOLICITUD(?, @p_msj)", [$idSolicitud]);
+            DB::statement("CALL SP_RECHAZAR_SOLICITUD(?, ?, @p_msj)", [$idSolicitud], [$idUser]);
 
             $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
 

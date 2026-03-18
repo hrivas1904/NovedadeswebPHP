@@ -13,7 +13,7 @@ class AlertasController extends Controller
         $userId = Auth::user()->id;
 
         $alertas = DB::select("
-            SELECT id, mensaje, modulo, idReferencia, fecha
+            SELECT id, mensaje, modulo, idReferencia, fecha, url
             FROM alertas_usuario
             WHERE usuario_destino = ?
             AND leida = 0

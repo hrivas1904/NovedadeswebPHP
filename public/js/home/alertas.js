@@ -41,7 +41,8 @@ function cargarAlertas() {
                         <li class="alerta-item p-2 border-bottom"
                             data-id="${a.id}"
                             data-modulo="${a.modulo}"
-                            data-ref="${a.idReferencia}">
+                            data-ref="${a.idReferencia}"
+                            data-url="${a.url}">
                             ${a.mensaje}
                         </li>
                     `;
@@ -78,22 +79,29 @@ setInterval(cargarAlertas, 5000);
 $(document).on("click", ".alerta-item", function () {
 
     let idAlerta = $(this).data("id");
+    let url = $(this).data("url");
 
+    // Marcar como leída
     $.ajax({
         url: "/alertas/marcar-leida",
         type: "POST",
-        data: {
-            id: idAlerta
-        },
+        data: { id: idAlerta },
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
         },
-        success: function () {
+        complete: function () {
 
+            // UI
             $(`[data-id="${idAlerta}"]`).remove();
+
             let contador = parseInt($("#contadorAlertas").text());
             if (contador > 0) {
                 $("#contadorAlertas").text(contador - 1);
+            }
+
+            // 🔥 REDIRECCIÓN
+            if (url) {
+                window.location.href = url;
             }
         }
     });
