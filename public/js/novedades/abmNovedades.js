@@ -215,62 +215,36 @@ function resetearNovedades() {
     $("#idNovedad").val("");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const fechaInicio = document.getElementById("fechaDesdeNovedad");
-    const fechaFin = document.getElementById("fechaHastaNovedad");
-    let novedadSeleccionada = null;
-
-    $("#selectNovedad").on("select2:select", function (e) {
-        novedadSeleccionada = e.params.data;
-        calcularFechaFin();
-    });
-
-    fechaInicio.addEventListener("change", calcularFechaFin);
-
-    function calcularFechaFin() {
-        if (!fechaInicio.value || !novedadSeleccionada) return;
-
-        const limiteLicencia = parseInt(novedadSeleccionada.limite) || 0;
-
-        let fecha = new Date(fechaInicio.value + "T00:00:00");
-
-        if (isNaN(fecha.getTime())) {
-            console.error("Fecha de inicio inválida");
-            return;
-        }
-
-        fecha.setDate(fecha.getDate() + limiteLicencia);
-
-        const yyyy = fecha.getFullYear();
-        const mm = String(fecha.getMonth() + 1).padStart(2, "0");
-        const dd = String(fecha.getDate()).padStart(2, "0");
-
-        if (!isNaN(yyyy) && !isNaN(parseInt(mm)) && !isNaN(parseInt(dd))) {
-            fechaFin.value = `${yyyy}-${mm}-${dd}`;
-            fechaFin.dispatchEvent(new Event("change"));
-        }
-    }
-
-    fechaFin.addEventListener("change", () => {
-        if (!fechaInicio.value || !fechaFin.value) return;
-
-        const d1 = new Date(fechaInicio.value + "T00:00:00");
-        const d2 = new Date(fechaFin.value + "T00:00:00");
-
-        if (d2 < d1) {
-            Swal.fire(
-                "Atención",
-                "La fecha de fin no puede ser anterior a la fecha de inicio.",
-                "warning",
-            );
-            fechaFin.value = "";
-        }
-    });
-});
-
 $("#formCargaNovedad").on("submit", function (e) {
     e.preventDefault();
 
+    // 🔥 LIMPIAR VALORES PESOS ANTES DE SERIALIZAR
+    $("#tablaNovedades tbody tr").each(function () {
+        let row = $(this);
+
+        let tipo = row.find("input[name='tipo_valor[]']").val();
+        let inputValor = row.find("input[name='valor[]']");
+        let valor = inputValor.val();
+
+        if (!tipo || !valor) return;
+
+        tipo = tipo.toString().trim().toUpperCase();
+
+        if (tipo === "PESOS") {
+            let limpio = valor
+                .replace(/\$/g, "") // quitar $
+                .replace(/\./g, "") // quitar miles
+                .replace(",", ".") // decimal
+                .trim();
+
+            console.log("valor original:", valor);
+            console.log("valor limpio:", limpio);
+
+            inputValor.val(limpio);
+        }
+    });
+
+    // 🚀 TU AJAX (igual que antes)
     $.ajax({
         url: "/novedades/registrar",
         type: "POST",
@@ -288,9 +262,7 @@ $("#formCargaNovedad").on("submit", function (e) {
                 });
 
                 $("#formCargaNovedad")[0].reset();
-
                 $("#tablaNovedades tbody").empty();
-
                 $("#modalRegNovedadColaborador").modal("hide");
 
                 if (tablaHistorialNovedades) {
@@ -307,7 +279,6 @@ $("#formCargaNovedad").on("submit", function (e) {
 
         error: function (xhr) {
             console.error(xhr.responseText);
-
             Swal.fire("Error", "No se pudo registrar la novedad", "error");
         },
     });
@@ -714,6 +685,64 @@ $("#btnGuardarCambios").on("click", function () {
 });
 
 //NUEVO FORMATO DE CARGA
+function calcularDias(fechaDesde, fechaHasta) {
+    if (!fechaDesde || !fechaHasta) return "";
+
+    const fDesde = new Date(fechaDesde);
+    const fHasta = new Date(fechaHasta);
+
+    if (fHasta < fDesde) return "";
+
+    const diffTime = fHasta - fDesde;
+    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    return diffDias;
+}
+
+function calcularValorFila(row) {
+    const fechaDesde = row.find("input[name='fechaDesde[]']").val();
+    const fechaHasta = row.find("input[name='fechaHasta[]']").val();
+    let tipo = row.find("input[name='tipo_valor[]']").val();
+
+    console.log("tipo raw:", tipo);
+
+    if (tipo) {
+        tipo = tipo.toString().trim().toUpperCase();
+    }
+
+    console.log("tipo normalizado:", tipo);
+
+    const inputValor = row.find("input[name='valor[]']");
+
+    // Reset básico
+    inputValor.css("text-align", "left");
+
+    if (!fechaDesde || !fechaHasta || !tipo) {
+        console.warn("Faltan datos para calcular");
+        return;
+    }
+
+    const dias = calcularDias(fechaDesde, fechaHasta);
+
+    let valor = "";
+
+    if (tipo === "DÍAS") {
+        valor = dias;
+        inputValor.val(valor);
+    } else if (tipo === "HORAS") {
+        valor = dias * 8;
+        inputValor.val(valor);
+    } else if (tipo === "PESOS") {
+        // 🔥 modo moneda
+        inputValor.css("text-align", "right");
+        inputValor.val(""); // ingreso manual
+    } else {
+        console.warn("Tipo no reconocido:", tipo);
+    }
+
+    console.log("valor calculado:", valor);
+}
+
 $(document).ready(function () {
     $.ajax({
         url: "/novedades/selector",
@@ -721,6 +750,7 @@ $(document).ready(function () {
         dataType: "json",
         success: function (data) {
             novedadesSelect = data;
+            console.log("novedadesSelect:", data);
         },
         error: function (err) {
             console.error("Error al cargar novedades:", err);
@@ -740,44 +770,7 @@ function inicializarSelect2Fila() {
     });
 }
 
-function calcularValorFila(row) {
-    const tipo = row.data("tipo_valor");
-
-    const fechaDesde = row.find("input[name='fechaDesde[]']").val();
-    const fechaHasta = row.find("input[name='fechaHasta[]']").val();
-
-    if (!fechaDesde || !fechaHasta) return;
-
-    const inicio = new Date(fechaDesde + "T00:00:00");
-    const fin = new Date(fechaHasta + "T00:00:00");
-
-    if (fin < inicio) return;
-
-    const inputValor = row.find("input[name='valor[]']");
-
-    if (tipo === "HORAS") {
-        let diasHabiles = 0;
-        let fecha = new Date(inicio);
-
-        while (fecha <= fin) {
-            const diaSemana = fecha.getDay();
-
-            if (diaSemana !== 0 && diaSemana !== 6) {
-                diasHabiles++;
-            }
-
-            fecha.setDate(fecha.getDate() + 1);
-        }
-
-        inputValor.val(diasHabiles * 8);
-    } else if (tipo === "DIAS") {
-        const diff = fin - inicio;
-        const dias = Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
-
-        inputValor.val(dias);
-    }
-}
-
+// Agregar fila
 $(document).on("click", "#btnAgregarNovedad", function () {
     let fila = `
     <tr>
@@ -802,24 +795,71 @@ $(document).on("click", "#btnAgregarNovedad", function () {
             <input type="text" class="form-control" name="descripcion[]">
         </td>
         <td>
+            <input type="text" class="form-control d-none" name="tipo_valor[]">
+        </td>
+        <td>
             <button type="button" class="btn btn-danger btnEliminarRow">
                 <i class="fa-solid fa-trash"></i>
             </button>
         </td>
-
     </tr>
     `;
 
     $("#tablaNovedades tbody").append(fila);
-
     inicializarSelect2Fila();
 });
 
 $(document).on("select2:select", ".selectNovedadRow", function (e) {
     const row = $(this).closest("tr");
     const data = e.params.data;
+    console.log("data:", data);
     row.find(".codigoFinnegans").val(data.codigo || "");
-    row.data("tipo_valor", data.tipo_valor);
+    let tipo = data.tipo_valor || data.valor;
+    row.find("input[name='tipo_valor[]']").val(tipo);
+    console.log("tipo detectado:", tipo);
+    calcularValorFila(row);
+});
+
+$(document).on(
+    "change",
+    "input[name='fechaDesde[]'], input[name='fechaHasta[]']",
+    function () {
+        let row = $(this).closest("tr");
+        calcularValorFila(row);
+    },
+);
+
+$(document).on("focus", "input[name='valor[]']", function () {
+    const row = $(this).closest("tr");
+    let tipo = row.find("input[name='tipo_valor[]']").val();
+
+    if (tipo) {
+        tipo = tipo.toString().trim().toUpperCase();
+    }
+
+    if (tipo === "PESOS") {
+        $(this).val(""); // limpia para edición
+    }
+});
+
+$(document).on("blur", "input[name='valor[]']", function () {
+    const row = $(this).closest("tr");
+    let tipo = row.find("input[name='tipo_valor[]']").val();
+
+    if (tipo) {
+        tipo = tipo.toString().trim().toUpperCase();
+    }
+
+    if (tipo === "PESOS") {
+        let valor = $(this).val();
+
+        // Limpiar posibles símbolos antes de parsear
+        valor = valor.replace(/[^\d.-]/g, "");
+
+        if (valor !== "") {
+            $(this).val(formatearPesos(parseFloat(valor)));
+        }
+    }
 });
 
 $(document).on("click", ".btnEliminarRow", function () {

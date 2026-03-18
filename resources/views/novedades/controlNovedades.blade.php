@@ -10,14 +10,14 @@
 
     <div class="card" style="border-radius:15px;">
         <div class="card-header">
-            <div class="row align-items-center g-3">
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-flex">
-                    <label class="form-label">Desde</label>
+            <div class="row align-items-end g-3">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                    <label class="form-label text-sm text-muted">Desde</label>
                     <input type="date" id="filtroDesde" class="form-control mx-1" />
                 </div>
 
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-flex">
-                    <label class="form-label">Hasta</label>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                    <label class="form-label text-sm text-muted">Hasta</label>
                     <input type="date" id="filtroHasta" class="form-control mx-1" />
                 </div>
 

@@ -1000,13 +1000,13 @@
                                     value="{{ now()->format('d-m-Y') }}" readonly>
                             </div>
 
-                            <div class="col-lg-2 col-md-4">
+                            <div class="col-lg-5 col-md-4">
                                 <label class="form-label">Registrante</label>
                                 <input type="text" class="form-control" value="{{ Auth::user()->name }}"
                                     name="registrante" readonly>
                             </div>
 
-                            <div class="col-lg-2 col-md-4">
+                            <div class="col-lg-3 col-md-4">
                                 <label class="form-label">Rol</label>
                                 <input type="text" class="form-control" value="{{ Auth::user()->rol }}" readonly>
                             </div>
@@ -1026,19 +1026,19 @@
 
                     <div class="empleado-box p-3 mb-4">
                         <div class="row g-3">
-                            <div class="col-lg-1">
+                            <div class="col-lg-2">
                                 <label class="form-label">Legajo</label>
                                 <input type="number" class="form-control" name="legajo" id="inputLegajo" required
                                     readonly>
                             </div>
 
-                            <div class="col-lg-2">
-                                <label class="form-label">Empleado</label>
+                            <div class="col-lg-4">
+                                <label class="form-label">Colaborador/a</label>
                                 <input type="text" class="form-control" name="colaborador" id="inputColaborador"
                                     required readonly>
                             </div>
 
-                            <div class="col-lg-2">
+                            <div class="col-lg-4">
                                 <label class="form-label">Servicio</label>
                                 <input type="text" class="form-control" name="servicio" readonly>
                             </div>
@@ -1046,31 +1046,6 @@
                             <div class="col-lg-2">
                                 <label class="form-label">Antigüedad</label>
                                 <input type="text" class="form-control" name="antiguedad" readonly>
-                            </div>
-
-                            <div class="col-lg-1">
-                                <label class="form-label">Régimen</label>
-                                <input type="text" class="form-control" name="regimen" readonly>
-                            </div>                            
-
-                            <div class="col-lg-1">
-                                <label class="form-label">Convenio</label>
-                                <input type="text" class="form-control" name="convenio" readonly>
-                            </div>
-
-                            <div class="col-lg-1">
-                                <label class="form-label">Título</label>
-                                <input type="text" class="form-control" name="titulo" readonly>
-                            </div>
-
-                            <div class="col-lg-1">
-                                <label class="form-label">UTI</label>
-                                <input type="text" class="form-control" name="uti" readonly>
-                            </div>
-
-                            <div class="col-lg-1">
-                                <label class="form-label">Noche</label>
-                                <input type="text" class="form-control" name="noche" readonly>
                             </div>
                         </div>
                     </div>
