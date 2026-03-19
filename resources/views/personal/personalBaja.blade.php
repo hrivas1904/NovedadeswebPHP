@@ -6,7 +6,7 @@
     <div class="container-fluid">
 
         <div class="text-start mb-4">
-            <h3 class="pill-heading tituloVista">GESTIÓN DEL PERSONAL DE BAJA</h3>
+            <h3 class="pill-heading tituloVista">PERSONAL DE BAJA</h3>
         </div>
 
         <div class="card" style="border-radius:15px;">
