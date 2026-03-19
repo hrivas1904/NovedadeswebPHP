@@ -5,7 +5,7 @@ let legajoActivo = null;
 let registroSeleccionado = null;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "50vh" : "60vh";
+    return window.innerWidth < 768 ? "45vh" : "60vh";
 }
 
 //calculo edad
@@ -300,9 +300,9 @@ $(document).ready(function () {
             columnDefs: [
                 { responsivePriority: 1, targets: 1 },
                 { responsivePriority: 2, targets: 0 },
-                { responsivePriority: 3, targets: 8 },
+                { responsivePriority: 3, targets: 2 },
                 { responsivePriority: 4, targets: 9 },
-                { responsivePriority: 100, targets: 2 },
+                { responsivePriority: 100, targets: 8 },
                 { responsivePriority: 100, targets: 3 },
                 { responsivePriority: 100, targets: 4 },
                 { responsivePriority: 100, targets: 5 },
@@ -380,13 +380,13 @@ $(document).ready(function () {
                 {
                     extend: "excelHtml5",
                     text: '<i class="fa-solid fa-file-excel"></i> Excel',
-                    className: "btn-export-excel",
+                    className: "btn-export-excel dt-buttons",
                     exportOptions: { columns: ":visible" },
                 },
                 {
                     extend: "pdfHtml5",
                     text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                    className: "btn-export-pdf",
+                    className: "btn-export-pdf dt-buttons",
                     exportOptions: { columns: ":visible" },
                 },
                 {
@@ -394,7 +394,7 @@ $(document).ready(function () {
                     text: '<i class="fa-solid fa-print"></i> Imprimir',
                     title: "Nómina de personal",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                    className: "btn-printer",
+                    className: "btn-printer dt-buttons",
                 },
             ],
         });
