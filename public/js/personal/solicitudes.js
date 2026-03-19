@@ -1,5 +1,9 @@
 let tablaSolicitudes = null;
 
+function getScrollY() {
+    return window.innerWidth < 768 ? "55vh" : "60vh";
+}
+
 function formatearPesos(valor) {
     if (valor === null || valor === undefined || valor === "") return "";
 
@@ -231,7 +235,20 @@ $(document).ready(function () {
             scrollX: false,
             paging: false,
             scrollCollapse: true,
-            scrollY: "60vh",
+            scrollY: getScrollY(),
+            responsive: true,
+            columnDefs: [
+                { responsivePriority: 1, targets: 1 }, // fecha
+                { responsivePriority: 2, targets: 3 }, // colaborador
+                { responsivePriority: 3, targets: 5 }, // monto
+                { responsivePriority: 4, targets: 7 }, // estado
+                { responsivePriority: 5, targets: 8 }, // acciones
+
+                { responsivePriority: 100, targets: 0 }, // id
+                { responsivePriority: 100, targets: 2 }, // legajo
+                { responsivePriority: 100, targets: 4 }, // area
+                { responsivePriority: 100, targets: 6 }, // observaciones
+            ],
             order: [[0, "desc"]],
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
@@ -323,8 +340,7 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom:
-                "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
+            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
                     <'d-flex flex-column flex-sm-row gap-2'B> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
                 > \
@@ -354,11 +370,9 @@ $(document).ready(function () {
         });
     }
 
-    $(
-            "#selectEstado",
-        ).on("change", function () {
-            tablaSolicitudes.ajax.reload();
-        });
+    $("#selectEstado").on("change", function () {
+        tablaSolicitudes.ajax.reload();
+    });
 
     $(document).on("click", ".btn-AprobarSolicitud", function (event) {
         event.preventDefault();

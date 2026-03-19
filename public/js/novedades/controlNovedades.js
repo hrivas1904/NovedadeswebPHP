@@ -1,6 +1,10 @@
 let tablaControl;
 let tablaDetalle;
 
+function getScrollY() {
+    return window.innerWidth < 768 ? "45vh" : "55vh";
+}
+
 function formatearFechaArgentina(fecha) {
     if (!fecha) return "";
 
@@ -416,7 +420,7 @@ $(document).ready(function () {
             scrollX: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: "55vh",
+            scrollY: getScrollY(),
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
                 lengthMenu: "_MENU_",

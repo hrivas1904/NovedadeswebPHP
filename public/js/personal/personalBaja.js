@@ -4,6 +4,10 @@ let tablaPersonal;
 let legajoActivo = null;
 let registroSeleccionado = null;
 
+function getScrollY() {
+    return window.innerWidth < 768 ? "50vh" : "60vh";
+}
+
 //calculo edad
 function calcularEdad(fecha) {
     if (!fecha) return "";
@@ -291,31 +295,44 @@ $(document).ready(function () {
             scrollX: false,
             paging: false,
             scrollCollapse: true,
-            scrollY: "60vh",
+            scrollY: getScrollY(),
+            responsive: true,
+            columnDefs: [
+                { responsivePriority: 1, targets: 1 },
+                { responsivePriority: 2, targets: 0 },
+                { responsivePriority: 3, targets: 8 },
+                { responsivePriority: 4, targets: 9 },
+                { responsivePriority: 100, targets: 2 },
+                { responsivePriority: 100, targets: 3 },
+                { responsivePriority: 100, targets: 4 },
+                { responsivePriority: 100, targets: 5 },
+                { responsivePriority: 100, targets: 6 },
+                { responsivePriority: 100, targets: 7 },
+            ],
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
             },
             columns: [
                 {
                     data: "LEGAJO",
-                    width: "4%",
+                    width: "5%",
                     className: "text-start",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
                 },
                 { data: "COLABORADOR", width: "auto", className: "text-start" },
-                { data: "DNI", width: "5%", className: "text-start" },
-                { data: "AREA", width: "6%", className: "text-start" },
-                { data: "CATEGORIA", width: "4%", className: "text-start" },
-                { data: "REGIMEN", width: "6", className: "text-center" },
+                { data: "DNI", width: "7%", className: "text-start" },
+                { data: "AREA", width: "10%", className: "text-start" },
+                { data: "CATEGORIA", width: "10%", className: "text-start" },
+                { data: "REGIMEN", width: "5%", className: "text-center" },
                 {
                     data: "HORAS_DIARIAS",
-                    width: "2%",
+                    width: "5%",
                     className: "text-center",
                     width: "auto",
                 },
-                { data: "CONVENIO", width: "2%", className: "text-start" },
+                { data: "CONVENIO", width: "10%", className: "text-start" },
                 {
                     data: "ESTADO",
                     width: "3%",
@@ -329,6 +346,7 @@ $(document).ready(function () {
                 },
                 {
                     data: "FECHA_EGRESO",
+                    width: "8%",
                     render: function (data) {
                         return formatearFechaArgentina(data);
                     },
@@ -336,7 +354,7 @@ $(document).ready(function () {
                 {
                     data: null,
                     className: "text-center",
-                    width: "auto",
+                    width: "5%",
                     orderable: false,
                     render: function (data) {
                         let botones = `
@@ -352,7 +370,7 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
+            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mx-1' \
                     <'d-flex flex-column flex-sm-row gap-2'B> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
                 > \

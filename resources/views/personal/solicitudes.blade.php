@@ -11,13 +11,13 @@
 
         <div class="row align-items-end g-3 mb-3">
 
-            <div class="col-sm-6 col-lg-4 col-xl-2">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl-2">
                 <button type="button" id="btnAbrirModalSolicitud" class="btn-primario w-100">
                     Nueva solicitud
                 </button>
             </div>
 
-            <div class="col-sm-6 col-lg-4 col-xl-2">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl-2">
                 <select id="selectEstado" class="form-select w-100">
                     <option value="">TODAS</option>
                     <option value="PENDIENTE DE AUTORIZACIÓN">PENDIENTES</option>
@@ -26,23 +26,23 @@
                 </select>
             </div>
 
-            <div class="col-sm-6 col-lg-4 col-xl-2">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
                 <label class="small text-muted">Desde</label>
                 <input type="date" id="fechaDesde" class="form-control w-100">
             </div>
 
-            <div class="col-sm-6 col-lg-4 col-xl-2">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
                 <label class="small text-muted">Hasta</label>
                 <input type="date" id="fechaHasta" class="form-control w-100">
             </div>
 
-            <div class="col-sm-6 col-lg-4 col-xl-2">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
                 <button id="btnAplicarFiltros" class="btn-primario w-100">
                     <i class="fa fa-filter"></i> Aplicar
                 </button>
             </div>
 
-            <div class="col-sm-6 col-lg-4 col-xl-2">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
                 <button id="btnLimpiarFiltros" class="btn-secundario w-100">
                     <i class="fa fa-eraser"></i> Limpiar
                 </button>
@@ -55,7 +55,7 @@
             </div>
 
             <div class="table-responsive px-2">
-                <table id="tb_solicitudes" class="table table-striped table-bordered table-hover align-middle nowrap">
+                <table id="tb_solicitudes" class="table table-bordered table-hover align-middle nowrap">
                     <thead class="thead-dark">
                         <tr>
                             <th>N°</th>
@@ -106,42 +106,12 @@
                                         value="{{ now()->format('d-m-Y') }}" readonly>
                                 </div>
 
-                                <div class="col-lg-5 col-md-8 col-sm-12">
-                                    <label class="form-label">Registrante</label>
-                                    <input type="text" class="form-control" value="{{ Auth::user()->name }}"
+                                <input type="hidden" class="form-control" value="{{ Auth::user()->name }}"
                                         name="registrante" readonly>
-                                </div>
 
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <label class="form-label">Rol</label>
-                                    <input type="text" class="form-control" value="{{ Auth::user()->rol }}" readonly>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="section-divider mb-3">
-                            <span>Información del colaborador</span>
-                        </div>
-
-                        <div class="empleado-box p-3 mb-4">
-                            <div class="row g-3">
-                                <div class="col-lg-2 col-md-3 col-sm-12">
-                                    <label class="form-label">Legajo</label>
-                                    <input type="number" class="form-control" name="legajo" id="inputLegajo" required
+                                <input type="hidden" class="form-control" name="legajo" id="inputLegajo" required
                                         value="{{ auth()->user()->legajo }}" readonly>
-                                </div>
 
-                                <div class="col-lg-6 col-md-9 col-sm-12">
-                                    <label class="form-label">Colaborador</label>
-                                    <input type="text" class="form-control" name="colaborador" id="inputColaborador"
-                                        required readonly>
-                                </div>
-
-                                <div class="col-lg-4 col-md-7 col-sm-12">
-                                    <label class="form-label">Servicio</label>
-                                    <input type="text" class="form-control" name="servicio" readonly>
-                                </div>
                             </div>
                         </div>
 

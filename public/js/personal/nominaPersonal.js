@@ -7,6 +7,10 @@ let legajoActivo = null;
 
 let registroSeleccionado = null;
 
+function getScrollY() {
+    return window.innerWidth < 768 ? "50vh" : "60vh";
+}
+
 //calculo edad
 function calcularEdad(fecha) {
     if (!fecha) return "";
@@ -735,10 +739,10 @@ $(document).ready(function () {
                 },
             },
             autoWidth: false,
-            scrollX: true,
+            scrollX: false,
             paging: false,
             scrollCollapse: true,
-            scrollY: "54vh",
+            scrollY: getScrollY(),
             responsive: true,
             columnDefs: [
                 { responsivePriority: 1, targets: 1 },
@@ -758,23 +762,23 @@ $(document).ready(function () {
             columns: [
                 {
                     data: "LEGAJO",
-                    width: "4%",
+                    width: "5%",
                     className: "text-start",
                     render: function (data, type, row) {
                         return data.toString().padStart(5, "0");
                     },
                 },
-                { data: "COLABORADOR", width: "25%", className: "text-start" },
+                { data: "COLABORADOR", width: "auto", className: "text-start" },
                 { data: "DNI", width: "5%", className: "text-start" },
-                { data: "AREA", width: "10%", className: "text-start" },
-                { data: "CATEGORIA", width: "4%", className: "text-start" },
-                { data: "REGIMEN", width: "6%", className: "text-center" },
+                { data: "AREA", width: "12%", className: "text-start" },
+                { data: "CATEGORIA", width: "9%", className: "text-start" },
+                { data: "REGIMEN", width: "5%", className: "text-center" },
                 {
                     data: "HORAS_DIARIAS",
-                    width: "2%",
+                    width: "3%",
                     className: "text-center",
                 },
-                { data: "CONVENIO", width: "8%", className: "text-start" },
+                { data: "CONVENIO", width: "10%", className: "text-start" },
                 {
                     data: "ESTADO",
                     width: "3%",
@@ -790,7 +794,7 @@ $(document).ready(function () {
                 {
                     data: null,
                     className: "text-center acciones-nowrap",
-                    width: "15%",
+                    width: "10%",
                     orderable: false,
                     render: function (data) {
                         let botones = `

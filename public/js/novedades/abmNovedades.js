@@ -633,9 +633,6 @@ $("#btnHabilitarEdicion").on("click", function () {
     $(this).addClass("d-none");
 });
 
-
-
-
 $("#btnGuardarCambios").on("click", function () {
     const data = {
         idRegistro: $("#inputRegistro").val(),

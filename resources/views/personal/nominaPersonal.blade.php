@@ -56,7 +56,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive px-2">
-                <table id="tb_personal" class="table table-striped table-bordered table-hover align-middle">
+                <table id="tb_personal" class="table table-bordered table-hover align-middle">
                     <thead class="thead-dark">
                         <tr>
                             <th>LEGAJO</th>

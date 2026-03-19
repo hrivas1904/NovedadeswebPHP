@@ -11,28 +11,28 @@
     <div class="card" style="border-radius:15px;">
         <div class="card-header">
             <div class="row align-items-end g-3">
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <label class="form-label text-sm text-muted">Desde</label>
                     <input type="date" id="filtroDesde" class="form-control mx-1" />
                 </div>
 
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <label class="form-label text-sm text-muted">Hasta</label>
                     <input type="date" id="filtroHasta" class="form-control mx-1" />
                 </div>
 
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <select id="area" name="area" class="form-select js-select-area w-100"
                         {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
                     </select>
                 </div>
 
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                     <select id="idNovedad" name="idNovedad" class="form-select js-select-novedadFiltro w-100">
                     </select>
                 </div>
 
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                     <select id="paraFinnegans" name="paraFinnegans"
                         class="form-select js-select-novedadFinnegans w-100">
                         <option value="" disabled selected>Seleccion tipo</option>
@@ -46,19 +46,19 @@
                 <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                 @endif
 
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                     <button type="button" id="btnAplicarFiltros" class="btn-primario w-100">
                         <i class="fa-solid fa-filter"></i> Aplicar
                     </button>
                 </div>
 
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                     <button type="button" id="btnLimpiarFiltros" class="btn-secundario w-100">
                         <i class="fa-solid fa-eraser"></i> Limpiar
                     </button>
                 </div>
 
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <button type="button" id="btnCargaMasiva" class="btn-primario w-100">
                         <i class="fa-solid fa-database"></i> Carga masiva
                     </button>
@@ -67,7 +67,7 @@
         </div>
         <div class="table-responsive">
             <div class="card-body">
-                <table id="tb_control" class="table table-striped table-bordered table-hover align-middle nowrap">
+                <table id="tb_control" class="table table-bordered table-hover align-middle nowrap">
                     <thead>
                         <tr>
                             <th>N°</th>
