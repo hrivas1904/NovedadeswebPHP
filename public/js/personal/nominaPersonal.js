@@ -8,7 +8,7 @@ let legajoActivo = null;
 let registroSeleccionado = null;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "50vh" : "60vh";
+    return window.innerWidth < 768 ? "40vh" : "60vh";
 }
 
 //calculo edad
@@ -747,9 +747,9 @@ $(document).ready(function () {
             columnDefs: [
                 { responsivePriority: 1, targets: 1 },
                 { responsivePriority: 2, targets: 0 },
-                { responsivePriority: 3, targets: 8 },
+                { responsivePriority: 3, targets: 2 },
                 { responsivePriority: 4, targets: 9 },
-                { responsivePriority: 100, targets: 2 },
+                { responsivePriority: 100, targets: 8 },
                 { responsivePriority: 100, targets: 3 },
                 { responsivePriority: 100, targets: 4 },
                 { responsivePriority: 100, targets: 5 },
