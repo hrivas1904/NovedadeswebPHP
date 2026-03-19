@@ -2,7 +2,7 @@ let tablaControl;
 let tablaDetalle;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "35vh" : "55vh";
+    return window.innerWidth < 768 ? "30vh" : "55vh";
 }
 
 function formatearFechaArgentina(fecha) {

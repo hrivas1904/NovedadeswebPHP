@@ -46,13 +46,13 @@
                 <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                 @endif
 
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <button type="button" id="btnAplicarFiltros" class="btn-primario w-100">
                         <i class="fa-solid fa-filter"></i> Aplicar
                     </button>
                 </div>
 
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <button type="button" id="btnLimpiarFiltros" class="btn-secundario w-100">
                         <i class="fa-solid fa-eraser"></i> Limpiar
                     </button>
