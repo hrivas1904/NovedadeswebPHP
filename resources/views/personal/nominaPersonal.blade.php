@@ -23,16 +23,16 @@
                             <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
                             @endif
                         </div>
-                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                             <select id="filtroCategoria" class="form-select js-select-categFiltro w-100"></select>
                         </div>
-                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                             <select id="filtroRegimen" class="form-select js-select-regFiltro w-100"></select>
                         </div>
-                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                             <select id="filtroConvenio" class="form-select js-select-convenioFiltro w-100"></select>
                         </div>
-                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                             <button type="button" id="btn-limpiar-filtros" class="btn-secundario w-100">
                                 <i class="fa-solid fa-eraser"></i> Limpiar
                             </button>
@@ -56,7 +56,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive px-2">
-                <table id="tb_personal" class="table table-striped table-bordered table-hover align-middle nowrap">
+                <table id="tb_personal" class="table table-striped table-bordered table-hover align-middle">
                     <thead class="thead-dark">
                         <tr>
                             <th>LEGAJO</th>

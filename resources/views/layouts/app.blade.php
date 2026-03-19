@@ -11,15 +11,16 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
-        integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.css">
+
+    <!-- ✅ DataTables CORREGIDO -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.min.css">
+
     <link rel="stylesheet" href="{{ asset('css/styleDt.css') }}">
     <link rel="stylesheet" href="{{ asset('css/botones.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modales.css') }}">
@@ -27,7 +28,6 @@
     <link rel="stylesheet" href="{{ asset('css/cronograma.css') }}">
     <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
-
 </head>
 
 <body>
@@ -42,11 +42,11 @@
 
             <ul class="nav-links">
                 @if (Auth::user()->rol === 'Administrador/a')
-                    <li>
-                        <a href="{{ route('dashboard') }}"><i class="bx bx-grid-alt"></i> Dashboard</a>
-                    </li>
+                <li>
+                    <a href="{{ route('dashboard') }}"><i class="bx bx-grid-alt"></i> Dashboard</a>
+                </li>
                 @endif
-                
+
                 <li class="nav-dropdown">
                     <a href="javascript:void(0)" class="dropbtn"><i class="bx bx-user"></i> Personal <i
                             class="bx bx-chevron-down"></i></a>
@@ -54,11 +54,11 @@
                         <a href="{{ route('miLegajo') }}">Mi legajo</a>
                         @if (Auth::user()->rol === 'Coordinador/a L2'||Auth::user()->rol==='Administrador/a'||Auth::user()->rol === 'Coordinador/a')
                         <a href="{{ route('nominaPersonal') }}">Personal activo</a>
-                        <a href="{{ route('nominaPersonalBaja') }}"">Personal de baja</a>
+                        <a href="{{ route('nominaPersonalBaja') }}">Personal de baja</a>
                         @endif
                         @if (Auth::user()->rol === 'Coordinador/a L2'||Auth::user()->rol==='Administrador/a')
                         <a href="{{ route('calendarioServicios') }}">Calendario servicios</a>
-                        @endif                        
+                        @endif
                     </div>
                 </li>
 
@@ -68,50 +68,22 @@
                     <div class="dropdown-content">
                         <a href="{{ route('controlNovedades') }}">Mis novedades</a>
                         <a href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a>
-                        <!--<a href="{{ route('controlNovedades') }}">Registrar</a>-->
                         @if (Auth::user()->rol === 'Administrador/a')
-                            <a href="{{ route('configNovedades') }}">Configuración</a>
+                        <a href="{{ route('configNovedades') }}">Configuración</a>
                         @endif
                     </div>
                 </li>
 
-                <!--@if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-dropdown">
-                        <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-badge-check'></i> Calidad <i
-                                class="bx bx-chevron-down"></i></a>
-                        <div class="dropdown-content">
-                            <a href="{{ route('dashboardCalidad') }}">Dashboard SGC</a>
-                            <a href="{{ route('cmiCalidad') }}">CMI - BSC</a>
-                            <a href="{{ route('encuestasCalidad') }}">Encuestas</a>
-                        </div>
-                    </li>
-
-                    <li class="nav-dropdown">
-                        <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-task'></i> Desempeño <i
-                                class="bx bx-chevron-down"></i></a>
-                        <div class="dropdown-content">
-
-                        </div>
-                    </li>
-
-                    <li class="nav-dropdown">
-                        <a href="javascript:void(0)" class="dropbtn"><i class='bx bx-heart-circle'></i> Clima Laboral <i
-                                class="bx bx-chevron-down"></i></a>
-                        <div class="dropdown-content">
-                        </div>
-                    </li>
-                @endif-->
                 <li>
-                    <a href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank"
-                        rel="noopener noreferrer">
+                    <a href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
                         <i class='bx bx-book'></i> Capacitaciones
                     </a>
                 </li>
+
                 <li class="nav-dropdown">
-                    <a href="{{ route('ayuda') }}" class="dropbtn"><i class="fa-regular fa-circle-question"></i> Ayuda
+                    <a href="{{ route('ayuda') }}" class="dropbtn">
+                        <i class="fa-regular fa-circle-question"></i> Ayuda
                     </a>
-                    <div class="dropdown-content">
-                    </div>
                 </li>
             </ul>
 
@@ -121,34 +93,30 @@
                     <span class="user-role">{{ Auth::user()->rol }}</span>
                     <span class="branding-user-role user-area">
                         @if (Auth::user()->area)
-                            {{ Auth::user()->area->NOMBRE }}
-                        @else
+                        {{ Auth::user()->area->NOMBRE }}
                         @endif
-
                     </span>
                 </div>
-                <div class="nav-alertas dropdown">
 
+                <div class="nav-alertas dropdown">
                     <button class="btn-alertas" id="btnAlertas">
                         <i class="fa-solid fa-bell"></i>
                         <span id="contadorAlertas" class="badge-alertas">0</span>
                     </button>
 
                     <div class="dropdown-alertas" id="dropdownAlertas">
-                        <div class="alertas-header">
-                            Notificaciones
-                        </div>
-
+                        <div class="alertas-header">Notificaciones</div>
                         <ul id="listaAlertas"></ul>
-
                     </div>
-
                 </div>
+
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     class="logout-btn">
                     <i class='bx bx-log-out'></i>
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
                 </form>
             </div>
 
@@ -160,28 +128,35 @@
         @yield('content')
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
-
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/navbar.js') }}"></script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.bootstrap5.js"></script>
+    <!-- ✅ DataTables CORREGIDO -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
-        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.bootstrap5.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

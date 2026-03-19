@@ -37,7 +37,7 @@
                                 </button>
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                <button id="btnImprimirDashboard" class="btn-terciario w-100">
+                                <button id="btnImprimirDashboard" class="btn-secundario w-100">
                                     <i class="fa-solid fa-print"></i> Imprimir
                                 </button>
                             </div>

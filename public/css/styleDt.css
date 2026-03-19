@@ -79,3 +79,13 @@
     word-break: break-word;
     padding-right: 6px;
 }
+
+.acciones-nowrap {
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .dt-buttons {
+        display: none !important;
+    }
+}
