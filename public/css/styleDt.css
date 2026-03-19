@@ -85,8 +85,5 @@
 }
 
 @media (max-width: 768px) {
-    div.dt-buttons {
-        display: none !important;
-        visibility: hidden;
-    }
+    
 }

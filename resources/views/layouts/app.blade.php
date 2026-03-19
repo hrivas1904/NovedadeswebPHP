@@ -5,7 +5,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <title>@yield('title', 'Sistema')</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
@@ -82,7 +82,7 @@
                 </li>
 
                 <li class="nav-dropdown">
-                    <a href="{{ route('ayuda') }}" class="dropbtn">
+                    <a href="{{ route('ayuda') }}">
                         <i class="fa-regular fa-circle-question"></i> Ayuda
                     </a>
                 </li>
