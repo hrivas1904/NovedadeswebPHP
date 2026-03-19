@@ -61,9 +61,19 @@
                             <th>N°</th>
                             <th>FECHA</th>
                             <th>LEGAJO</th>
+                            @if (Auth::user()->rol === 'Administrador/a')
+                            <th>CUIL</th>
+                            @endif
                             <th>COLABORADOR</th>
                             <th>ÁREA</th>
-                            <th>MONTO</th>
+                            @if (Auth::user()->rol === 'Administrador/a')
+                            <th>CUENTA</th>
+                            <th>CBU</th>
+                            @endif
+                            <th>IMPORTE</th>
+                            @if (Auth::user()->rol === 'Administrador/a')
+                            <th>COMPROBANTE</th>
+                            @endif
                             <th>OBSERVACIONES</th>
                             <th>ESTADO</th>
                             <th>ACCIONES</th>
@@ -129,7 +139,7 @@
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="form-label">Monto</label>
                                     <input class="form-control" id="inputMonto" style="text-align: end;"
-                                        required></input>
+                                        required ></input>
                                     <input class="form-control" id="inputMontoEnviar" name="monto" hidden
                                         required></input>
                                 </div>

@@ -1,5 +1,35 @@
 let tablaSolicitudes = null;
 
+$("#inputMonto").on("input", function () {
+    let valor = parseFloat($(this).val());
+
+    if (isNaN(valor)) return;
+
+    if (valor > 300000) {        
+        Swal.fire({
+            text: "El monto no puede ser superior a $300.000",
+            icon: "warning",
+            title: "Atención"
+        });
+        $(this).val(300000);
+    } 
+    else if (valor < 0) {
+        $(this).val(0);
+        Swal.fire({
+            text: "El monto no puede ser negativo",
+            icon: "warning",
+            title: "Atención"
+        });
+    } 
+    else if (valor === 0) {
+        Swal.fire({
+            text: "El monto no puede ser $0",
+            icon: "warning",
+            title: "Atención"
+        });
+    }
+});
+
 function getScrollY() {
     return window.innerWidth < 768 ? "40vh" : "60vh";
 }
@@ -278,13 +308,36 @@ $(document).ready(function () {
                     },
                 },
                 {
+                    data: "cuil",
+                    width: "4%",
+                    visible: "false"
+                },
+                {
                     data: "colaborador",
                     width: "25%",
                     className: "text-start",
                 },
+                {
+                    data: null,
+                    width: "4%",
+                    visible: "false"
+                },
+                {
+                    data: null,
+                    width: "4%",
+                    visible: "false"
+                },
                 { data: "area", width: "10%", className: "text-start" },
                 {
                     data: "monto",
+                    width: "5%",
+                    className: "text-start",
+                    render: function (data) {
+                        return formatearPesos(data);
+                    },
+                },
+                {
+                    data: null,
                     width: "5%",
                     className: "text-start",
                     render: function (data) {
