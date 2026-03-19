@@ -238,9 +238,13 @@ $(document).ready(function () {
             scrollY: getScrollY(),
             responsive: true,
             columnDefs: [
-                { responsivePriority: 1, targets: 3 }, // fecha
+                {
+                    targets: [1, 5],
+                    className: "all",
+                },
+                { responsivePriority: 1, targets: 1 }, // fecha
                 { responsivePriority: 2, targets: 5 }, // colaborador
-                { responsivePriority: 3, targets: 1 }, // monto
+                { responsivePriority: 3, targets: 3 }, // monto
                 { responsivePriority: 4, targets: 7 }, // estado
                 { responsivePriority: 5, targets: 8 }, // acciones
 
@@ -248,6 +252,10 @@ $(document).ready(function () {
                 { responsivePriority: 100, targets: 2 }, // legajo
                 { responsivePriority: 100, targets: 4 }, // area
                 { responsivePriority: 100, targets: 6 }, // observaciones
+                {
+                    targets: 8, // columna ACCIONES
+                    visible: USER_ROLE === "Administrador/a",
+                },
             ],
             order: [[0, "desc"]],
             language: {
@@ -278,7 +286,7 @@ $(document).ready(function () {
                 {
                     data: "monto",
                     width: "5%",
-                    className: "text-end",
+                    className: "text-start",
                     render: function (data) {
                         return formatearPesos(data);
                     },
@@ -292,7 +300,7 @@ $(document).ready(function () {
                     data: "estado",
                     width: "10%",
                     orderable: false,
-                    className: "text-center",
+                    className: "text-start",
                     render: function (data) {
                         let clase = "bg-secondary";
                         if (data === "PENDIENTE DE AUTORIZACIÓN")
@@ -304,7 +312,7 @@ $(document).ready(function () {
                 },
                 {
                     data: null,
-                    className: "text-center",
+                    className: "text-start",
                     orderable: false,
                     render: function (row) {
                         if (USER_ROLE !== "Administrador/a") return "";

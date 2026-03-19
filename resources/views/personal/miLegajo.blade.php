@@ -7,15 +7,21 @@
 
         <div class="card shadow-sm">
 
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+
                 <h5 class="mb-0 pill-heading tituloVista">
                     <i class="fa-solid fa-id-card me-2"></i> Mi Legajo
                 </h5>
+
+                <button class="btn-primario btn-sm" type="submit" form="formAltaColaborador">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Guardar
+                </button>
+
             </div>
 
             <form id="formAltaColaborador">
                 @csrf
-                <div class="card-body">                
+                <div class="card-body">
                     <div class="row g-4 mb-4">
                         <div class="col-lg-6">
                             <div class="section-divider mb-3">
@@ -76,7 +82,8 @@
                                     </div>
                                     <div class="col-lg-5">
                                         <label class="form-label">Localidad</label>
-                                        <select id="selectLocalidad" name="localidad" class="form-select" style="width:100%">
+                                        <select id="selectLocalidad" name="localidad" class="form-select"
+                                            style="width:100%">
                                         </select>
                                     </div>
                                 </div>
@@ -269,12 +276,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>                
-                </div>
-                <div class="card-footer d-flex justify-content-end gap-2">
-                    <button class="btn-primario" type="submit">
-                        Actualizar
-                    </button>
+                    </div>
                 </div>
             </form>
         </div>

@@ -21,7 +21,7 @@
                     <input type="date" id="filtroHasta" class="form-control mx-1" />
                 </div>
 
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                     <select id="area" name="area" class="form-select js-select-area w-100"
                         {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
                     </select>
@@ -58,11 +58,15 @@
                     </button>
                 </div>
 
+                @if ((Auth::user()->rol == 'Administrador/a')||
+                    (Auth::user()->rol == 'Coordinador/a')||
+                    (Auth::user()->rol == 'Coordinador/a L2'))
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <button type="button" id="btnCargaMasiva" class="btn-primario w-100">
                         <i class="fa-solid fa-database"></i> Carga masiva
                     </button>
                 </div>
+                @endif
             </div>
         </div>
         <div class="table-responsive">
