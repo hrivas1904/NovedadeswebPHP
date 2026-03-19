@@ -1,7 +1,7 @@
 let tablaSolicitudes = null;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "55vh" : "60vh";
+    return window.innerWidth < 768 ? "40vh" : "60vh";
 }
 
 function formatearPesos(valor) {
@@ -238,9 +238,9 @@ $(document).ready(function () {
             scrollY: getScrollY(),
             responsive: true,
             columnDefs: [
-                { responsivePriority: 1, targets: 1 }, // fecha
-                { responsivePriority: 2, targets: 3 }, // colaborador
-                { responsivePriority: 3, targets: 5 }, // monto
+                { responsivePriority: 1, targets: 3 }, // fecha
+                { responsivePriority: 2, targets: 5 }, // colaborador
+                { responsivePriority: 3, targets: 1 }, // monto
                 { responsivePriority: 4, targets: 7 }, // estado
                 { responsivePriority: 5, targets: 8 }, // acciones
 
