@@ -1,4 +1,4 @@
-@media (max-width: 768px), (pointer: coarse) {
+@media (max-width: 768px), (hover: none) {
 
     html, body {
         font-size: 0.85rem;
