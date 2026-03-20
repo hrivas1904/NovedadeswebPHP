@@ -61,22 +61,17 @@
                             <th>N°</th>
                             <th>FECHA</th>
                             <th>LEGAJO</th>
-                            @if (Auth::user()->rol === 'Administrador/a')
                             <th>CUIL</th>
-                            @endif
                             <th>COLABORADOR</th>
                             <th>ÁREA</th>
-                            @if (Auth::user()->rol === 'Administrador/a')
                             <th>CUENTA</th>
                             <th>CBU</th>
-                            @endif
                             <th>IMPORTE</th>
-                            @if (Auth::user()->rol === 'Administrador/a')
+                            <th>IMPORTE</th>
                             <th>COMPROBANTE</th>
-                            @endif
                             <th>OBSERVACIONES</th>
                             <th>ESTADO</th>
-                            <th>ACCIONES</th>
+                            <th></th>
                         </tr>
                     </thead>
                 </table>

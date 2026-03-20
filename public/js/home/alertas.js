@@ -74,7 +74,7 @@ $(document).on("click", "#listaAlertas li", function () {
     $(this).remove();
 });
 
-setInterval(cargarAlertas, 5000);
+setInterval(cargarAlertas, 2000);
 
 $(document).on("click", ".alerta-item", function () {
 

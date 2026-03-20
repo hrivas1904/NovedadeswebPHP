@@ -5,27 +5,25 @@ $("#inputMonto").on("input", function () {
 
     if (isNaN(valor)) return;
 
-    if (valor > 300000) {        
+    if (valor > 300000) {
         Swal.fire({
             text: "El monto no puede ser superior a $300.000",
             icon: "warning",
-            title: "Atención"
+            title: "Atención",
         });
         $(this).val(300000);
-    } 
-    else if (valor < 0) {
+    } else if (valor < 0) {
         $(this).val(0);
         Swal.fire({
             text: "El monto no puede ser negativo",
             icon: "warning",
-            title: "Atención"
+            title: "Atención",
         });
-    } 
-    else if (valor === 0) {
+    } else if (valor === 0) {
         Swal.fire({
             text: "El monto no puede ser $0",
             icon: "warning",
-            title: "Atención"
+            title: "Atención",
         });
     }
 });
@@ -269,21 +267,29 @@ $(document).ready(function () {
             responsive: true,
             columnDefs: [
                 {
-                    targets: [1, 5],
+                    targets: [1, 8],
                     className: "all",
                 },
                 { responsivePriority: 1, targets: 1 }, // fecha
-                { responsivePriority: 2, targets: 5 }, // colaborador
-                { responsivePriority: 3, targets: 3 }, // monto
-                { responsivePriority: 4, targets: 7 }, // estado
-                { responsivePriority: 5, targets: 8 }, // acciones
-
+                { responsivePriority: 2, targets: 8 }, // monto
+                { responsivePriority: 3, targets: 11 }, // estado
                 { responsivePriority: 100, targets: 0 }, // id
                 { responsivePriority: 100, targets: 2 }, // legajo
-                { responsivePriority: 100, targets: 4 }, // area
-                { responsivePriority: 100, targets: 6 }, // observaciones
+                { responsivePriority: 100, targets: 3 }, // cuil
+                { responsivePriority: 100, targets: 4 }, // colab
+                { responsivePriority: 100, targets: 5 }, // area
+                { responsivePriority: 100, targets: 6 }, // cuenta
+                { responsivePriority: 100, targets: 7 }, // cbu
+                { responsivePriority: 100, targets: 10 }, // comprobante
+                { responsivePriority: 100, targets: 12 }, // observaciones
+                { responsivePriority: 100, targets: 13 }, // acciones
+                { responsivePriority: 100, targets: 9 }, // monto export
                 {
-                    targets: 8, // columna ACCIONES
+                    targets: [3, 5, 6, 7, 9, 10],
+                    visible: false,
+                },
+                {
+                    targets: [13],
                     visible: USER_ROLE === "Administrador/a",
                 },
             ],
@@ -310,24 +316,21 @@ $(document).ready(function () {
                 {
                     data: "cuil",
                     width: "4%",
-                    visible: "false"
                 },
                 {
                     data: "colaborador",
                     width: "25%",
                     className: "text-start",
                 },
-                {
-                    data: null,
-                    width: "4%",
-                    visible: "false"
-                },
-                {
-                    data: null,
-                    width: "4%",
-                    visible: "false"
-                },
                 { data: "area", width: "10%", className: "text-start" },
+                {
+                    data: "num_cuenta",
+                    width: "4%",
+                },
+                {
+                    data: "cbu",
+                    width: "4%",
+                },
                 {
                     data: "monto",
                     width: "5%",
@@ -337,12 +340,14 @@ $(document).ready(function () {
                     },
                 },
                 {
-                    data: null,
+                    data: "monto",
+                    width: "5%",
+                    className: "text-end",
+                },
+                {
+                    data: "comprobante",
                     width: "5%",
                     className: "text-start",
-                    render: function (data) {
-                        return formatearPesos(data);
-                    },
                 },
                 {
                     data: "observaciones",
@@ -351,7 +356,7 @@ $(document).ready(function () {
                 },
                 {
                     data: "estado",
-                    width: "10%",
+                    width: "12%",
                     orderable: false,
                     className: "text-start",
                     render: function (data) {
@@ -366,6 +371,7 @@ $(document).ready(function () {
                 {
                     data: null,
                     className: "text-start",
+                    width: "3%",
                     orderable: false,
                     render: function (row) {
                         if (USER_ROLE !== "Administrador/a") return "";
@@ -411,13 +417,15 @@ $(document).ready(function () {
                 {
                     extend: "excelHtml5",
                     text: '<i class="fa-solid fa-file-excel"></i> Excel',
-                    className: "btn-export-excel",
-                    exportOptions: { columns: ":visible" },
+                    className: "btn-export-excel dt-buttons",
+                    exportOptions: {
+                        columns: [2, 3, 4, 6, 7, 9, 10],
+                    },
                 },
                 {
                     extend: "pdfHtml5",
                     text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                    className: "btn-export-pdf",
+                    className: "btn-export-pdf dt-buttons",
                     exportOptions: { columns: ":visible" },
                 },
                 {
@@ -425,7 +433,7 @@ $(document).ready(function () {
                     text: '<i class="fa-solid fa-print"></i> Imprimir',
                     title: "Nómina de personal",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                    className: "btn-printer",
+                    className: "btn-printer dt-buttons",
                 },
             ],
         });
