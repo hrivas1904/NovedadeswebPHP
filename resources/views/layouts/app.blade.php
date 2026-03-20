@@ -82,6 +82,15 @@
                 </li>
 
                 <li class="nav-dropdown">
+                    <a href="javascript:void(0)" class="dropbtn"><i class="fa-solid fa-award"></i> Calidad <i
+                            class="bx bx-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="{{ route('encuestasCalidad') }}">Encuestas</a>
+                        <a href="{{ route('dashboardCalidad') }}">Dashboard</a>
+                    </div>
+                </li>
+
+                <li class="nav-dropdown">
                     <a href="{{ route('ayuda') }}">
                         <i class="fa-regular fa-circle-question"></i> Ayuda
                     </a>

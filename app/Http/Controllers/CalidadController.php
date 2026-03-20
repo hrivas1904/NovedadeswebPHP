@@ -27,12 +27,15 @@ class CalidadController extends Controller
     public function listarTiposEncuestas()
     {
         try {
-            $tiposEncuestas = DB::select('CALL SP_OBTENER_TIPO_ENCUESTAS()');
 
-            return response()->json($tiposEncuestas);
+            $tipos = DB::select('CALL SP_OBTENER_TIPO_ENCUESTAS()');
+
+            return response()->json($tipos);
         } catch (\Exception $e) {
+
             return response()->json([
-                'error' => 'Error al obtener los tipos de encuestas',
+                'error' => true,
+                'mensaje' => 'Error al obtener tipos de encuestas',
                 'detalle' => $e->getMessage()
             ], 500);
         }
@@ -40,21 +43,10 @@ class CalidadController extends Controller
 
     public function importarExcel(Request $request)
     {
-        if (!$request->hasFile('excel')) {
-            return response()->json(['error' => 'No se recibió archivo'], 400);
-        }
-
         $file = $request->file('excel');
 
-        // Cargar Excel
-        $spreadsheet = IOFactory::load($file->getPathname());
-
-        // Hoja activa
-        $sheet = $spreadsheet->getActiveSheet();
+        $sheet = IOFactory::load($file->getPathname())->getActiveSheet();
         $rows = $sheet->toArray();
-
-        // Convertir a array
-        $data = $sheet->toArray();
 
         return response()->json([
             'headers' => $rows[0],
@@ -65,126 +57,198 @@ class CalidadController extends Controller
     public function procesarExcel(Request $request)
     {
         $file = $request->file('excel');
+        $idTipoEncuesta = (int) $request->input('idTipoEncuesta');
 
-        $sheet = IOFactory::load($file)->getActiveSheet();
+        $spreadsheet = IOFactory::load($file->getPathname());
+        $sheet = $spreadsheet->getActiveSheet();
         $rows = $sheet->toArray();
 
         if (count($rows) < 2) {
             return response()->json([
                 'error' => true,
                 'mensaje' => 'El archivo no contiene datos suficientes'
-            ]);
+            ], 422);
         }
 
-        // Normalizar headers
-        $headers = array_map(function ($h) {
-            return trim(mb_strtoupper($h, 'UTF-8'));
-        }, $rows[0]);
+        $headers = array_map(fn($h) => strtoupper(trim($h)), $rows[0]);
 
-        // Mapeo de columnas por nombre
-        $map = [
-            'numero_atencion' => array_search('Nº ATENCIÓN', $headers),
-            'fecha_atencion' => array_search('FECHA ATENCIÓN', $headers),
-            'fecha_encuesta' => array_search('FECHA ENCUESTA', $headers),
-            'paciente' => array_search('PACIENTE', $headers),
-            'obra_social' => array_search('OBRA SOCIAL', $headers),
-            'plan' => array_search('PLAN', $headers),
-            'area' => array_search('AREA', $headers),
-            'cama' => array_search('CAMA', $headers),
-            'tipo_internacion' => array_search('TIPO INTERNACIÓN', $headers),
-        ];
+        // 🔎 Obtener tipo encuesta (para saber si es guardia o internacion)
+        $tipoEncuesta = DB::table('tipos_encuestas')
+            ->where('idTipoEncuesta', $idTipoEncuesta)
+            ->first();
 
-        $columnasContexto = array_filter($map, fn($v) => $v !== false);
-
-        sort($columnasContexto);
-
-        $ultimoIndiceContexto = max($columnasContexto);
-
-        $indicesPreguntas = [];
-
-        for ($i = $ultimoIndiceContexto + 1; $i < count($headers); $i++) {
-            $indicesPreguntas[] = $i;
+        if (!$tipoEncuesta) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Tipo de encuesta inválido'
+            ], 422);
         }
 
-        $indicesPreguntas = [];
-        foreach ($headers as $i => $h) {
-            if (!in_array($i, $columnasContexto)) {
-                $indicesPreguntas[] = $i;
-            }
-        }
+        $esInternacion = $tipoEncuesta->grupo === 'INTERNACION';
 
-        $idTipoEncuesta = (int) $request->input('idTipoEncuesta');
+        // 📌 Definir columnas base
+        $colInicioPreguntas = $esInternacion ? 5 : 4;
 
+        // 📌 Obtener preguntas BD
         $preguntasDB = DB::table('preguntas_encuestas')
             ->where('idTipoEncuesta', $idTipoEncuesta)
             ->orderBy('orden')
-            ->get();
+            ->get()
+            ->values();
 
         if ($preguntasDB->count() === 0) {
             return response()->json([
                 'error' => true,
-                'mensaje' => 'No hay preguntas configuradas para este tipo de encuesta'
+                'mensaje' => 'No hay preguntas configuradas'
             ], 422);
         }
 
-        if (count($indicesPreguntas) !== $preguntasDB->count()) {
-            return response()->json([
-                'error' => true,
-                'mensaje' => 'Cantidad de preguntas del Excel (' . count($indicesPreguntas) . ') no coincide con la configuración (' . $preguntasDB->count() . ').'
-            ], 422);
-        }
-
-        $registros = [];
-
-        for ($i = 1; $i < count($rows); $i++) {
-
-            $fila = $rows[$i];
-            if (empty(array_filter($fila))) continue;
-
-            // contexto
-            $contexto = [
-                'numeroAtencion' => $fila[$map['numero_atencion']] ?? null,
-                'fechaAtencion' => $fila[$map['fecha_atencion']] ?? null,
-                'fechaEncuesta' => $fila[$map['fecha_encuesta']] ?? null,
-                'paciente' => $fila[$map['paciente']] ?? null,
-                'obraSocial' => $fila[$map['obra_social']] ?? null,
-                'plan' => $fila[$map['plan']] ?? null,
-                'area' => $map['area'] !== false ? ($fila[$map['area']] ?? null) : null,
-                'cama' => $map['cama'] !== false ? ($fila[$map['cama']] ?? null) : null,
-                'tipoInternacion' => $map['tipo_internacion'] !== false ? ($fila[$map['tipo_internacion']] ?? null) : null,
-            ];
-
-            // respuestas (1 registro por pregunta)
-            foreach ($indicesPreguntas as $idx => $colIndex) {
-
-                $preg = $preguntasDB[$idx]; // mismo orden
-
-                $valorRaw = trim((string)($fila[$colIndex] ?? ''));
-
-                $registros[] = [
-                    'idPregunta' => $preg->idPregunta,
-                    'numeroAtencion' => $contexto['numeroAtencion'],
-                    'fechaAtencion' => $contexto['fechaAtencion'],
-                    'fechaEncuesta' => $contexto['fechaEncuesta'],
-                    'paciente' => $contexto['paciente'],
-                    'obraSocial' => $contexto['obraSocial'],
-                    'plan' => $contexto['plan'],
-                    'area' => $contexto['area'],
-                    'cama' => $contexto['cama'],
-                    'tipoInternacion' => $contexto['tipoInternacion'],
-                    'valorNumerico' => $preg->tipoRespuesta === 'NUMERICA' && is_numeric($valorRaw) ? (int)$valorRaw : null,
-                    'valorTexto' => $preg->tipoRespuesta === 'TEXTO' ? $valorRaw : null,
-                ];
+        // 🔥 VALIDACIÓN HEADER P1, P2...
+        foreach ($preguntasDB as $i => $preg) {
+            $esperado = 'P' . ($i + 1);
+            if (($headers[$colInicioPreguntas + $i] ?? '') !== $esperado) {
+                return response()->json([
+                    'error' => true,
+                    'mensaje' => "Se esperaba columna $esperado"
+                ], 422);
             }
         }
 
-        return response()->json([
-            'ok' => true,
-            'idTipoEncuesta' => $idTipoEncuesta,
-            'filasExcel' => count($rows) - 1,
-            'preguntasDetectadas' => count($indicesPreguntas),
-            'registrosGenerados' => count($registros),
-            'muestra' => array_slice($registros, 0, 5),
-        ]);
+        DB::beginTransaction();
+
+        try {
+
+            // 🧾 Crear importación
+            $idImportacion = DB::table('importaciones_encuestas')->insertGetId([
+                'idTipoEncuesta' => $idTipoEncuesta,
+                'nombreArchivo' => $file->getClientOriginalName(),
+                'usuario' => auth()->id() ?? null,
+                'fechaImportacion' => now()
+            ]);
+
+            $registros = [];
+
+            // 🔁 Recorrer filas
+            for ($i = 1; $i < count($rows); $i++) {
+
+                $fila = $rows[$i];
+                if (empty(array_filter($fila))) continue;
+
+                $numeroAtencion = $fila[0] ?? null;
+                $fechaAtencion = $fila[1] ?? null;
+                $fechaEncuesta = $fila[2] ?? null;
+                $paciente = $fila[3] ?? null;
+                $tipoInternacion = $esInternacion ? ($fila[4] ?? null) : null;
+
+                foreach ($preguntasDB as $idx => $preg) {
+
+                    $colIndex = $colInicioPreguntas + $idx;
+                    $valorRaw = trim((string)($fila[$colIndex] ?? ''));
+
+                    $registros[] = [
+                        'idImportacion' => $idImportacion,
+                        'idTipoEncuesta' => $idTipoEncuesta,
+                        'idPregunta' => $preg->idPregunta,
+
+                        'numeroAtencion' => $numeroAtencion,
+                        'fechaAtencion' => $fechaAtencion,
+                        'fechaEncuesta' => $fechaEncuesta,
+                        'paciente' => $paciente,
+                        'tipoInternacion' => $tipoInternacion,
+
+                        'valorNumerico' => $preg->tipoRespuesta === 'NUMERICA' && is_numeric($valorRaw)
+                            ? (int)$valorRaw
+                            : null,
+
+                        'valorTexto' => $preg->tipoRespuesta === 'SI_NO'
+                            ? strtoupper($valorRaw)
+                            : null,
+                    ];
+                }
+            }
+
+            // 🚀 Insert masivo en chunks
+            foreach (array_chunk($registros, 1000) as $chunk) {
+                DB::table('respuestas_encuestas')->insert($chunk);
+            }
+
+            // actualizar cantidad
+            DB::table('importaciones_encuestas')
+                ->where('idImportacion', $idImportacion)
+                ->update(['cantidadRegistros' => count($registros)]);
+
+            DB::commit();
+
+            return response()->json([
+                'ok' => true,
+                'idImportacion' => $idImportacion,
+                'filasProcesadas' => count($rows) - 1,
+                'registrosInsertados' => count($registros)
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error al procesar archivo',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function resultados($idImportacion)
+    {
+        try {
+
+            $resultados = DB::table('respuestas_encuestas as r')
+                ->join('preguntas_encuestas as p', 'p.idPregunta', '=', 'r.idPregunta')
+                ->select(
+                    'r.idPregunta',
+                    'p.texto',
+                    DB::raw('SUM(CASE WHEN r.valorNumerico >= 4 THEN 1 ELSE 0 END) as positivas'),
+                    DB::raw('SUM(CASE WHEN r.valorNumerico BETWEEN 1 AND 3 THEN 1 ELSE 0 END) as negativas'),
+                    DB::raw('SUM(CASE WHEN r.valorNumerico = 0 THEN 1 ELSE 0 END) as no_aplica'),
+                    DB::raw('COUNT(r.valorNumerico) as total'),
+                    DB::raw('ROUND(
+                    SUM(CASE WHEN r.valorNumerico >= 4 THEN 1 ELSE 0 END) / 
+                    NULLIF(COUNT(r.valorNumerico), 0) * 100, 2
+                ) as porc_positivas')
+                )
+                ->where('r.idImportacion', $idImportacion)
+                ->whereNotNull('r.valorNumerico') // excluye SI/NO
+                ->groupBy('r.idPregunta', 'p.texto', 'p.orden')
+                ->orderBy('p.orden')
+                ->get();
+
+            // 🔹 análisis SI/NO (última pregunta)
+            $sino = DB::table('respuestas_encuestas as r')
+                ->join('preguntas_encuestas as p', 'p.idPregunta', '=', 'r.idPregunta')
+                ->select(
+                    'r.idPregunta',
+                    'p.texto',
+                    DB::raw("SUM(CASE WHEN UPPER(r.valorTexto) = 'SI' THEN 1 ELSE 0 END) as si"),
+                    DB::raw("SUM(CASE WHEN UPPER(r.valorTexto) = 'NO' THEN 1 ELSE 0 END) as no")
+                )
+                ->where('r.idImportacion', $idImportacion)
+                ->whereNotNull('r.valorTexto')
+                ->groupBy('r.idPregunta', 'p.texto', 'p.orden')
+                ->orderBy('p.orden')
+                ->get();
+
+            return response()->json([
+                'ok' => true,
+                'idImportacion' => $idImportacion,
+                'resultados' => $resultados,
+                'sino' => $sino
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error al obtener resultados',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
     }
 }

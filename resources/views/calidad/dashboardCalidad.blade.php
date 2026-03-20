@@ -7,7 +7,7 @@
     <div class="container-fluid">
 
         <div class="d-flex justify-content-between ms-auto align-item-end gap-3 my-2">
-            <h3 class="pill-heading tituloVista">DASHBOARD DE SISTEMA DE GESTIÓN DE CALIDAD</h3>
+            <h3 class="pill-heading tituloVista">DASHBOARD SGC</h3>
         </div>
 
     </div>

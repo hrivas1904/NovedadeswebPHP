@@ -24,7 +24,7 @@
                 <select id="selectTipoEncuesta" class="form-control"></select>
             </div>
             <div class="col-2">
-                <button id="btnAnalizarArchivo" class="btn btn-primario">
+                <button type="button" id="btnAnalizar" class="btn btn-primario">
                     Analizar
                 </button>
             </div>
