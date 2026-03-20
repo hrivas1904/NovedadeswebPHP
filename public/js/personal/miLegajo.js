@@ -263,7 +263,7 @@ function cargarMiLegajo() {
 
                 const familiares = response.familiares;
 
-                $("#contenedorHijosVisualizacion").empty();
+                $("#divHijosEdit").empty().removeAttr("hidden");
 
                 if (familiares && familiares.length > 0) {
                     familiares.forEach((f) => {
@@ -275,9 +275,13 @@ function cargarMiLegajo() {
                                 </div>
                             </div>
                         `;
-                        $("#contenedorHijosVisualizacion").append(htmlFamiliar);
+                        $("#divHijosEdit").append(htmlFamiliar);
                     });
                 }
+
+                console.log("RESPONSE COMPLETA:", response);
+                console.log("FAMILIARES:", response.familiares);
+                console.log($("#contenedorHijosVisualizacion").length);
             } else {
                 Swal.fire("Error", response.mensaje, "error");
             }
