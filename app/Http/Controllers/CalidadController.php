@@ -54,6 +54,18 @@ class CalidadController extends Controller
         ]);
     }
 
+    private function parseFecha($valor)
+    {
+        if (!$valor) return null;
+
+        try {
+            return \Carbon\Carbon::createFromFormat('d/m/Y H:i', trim($valor))
+                ->format('Y-m-d H:i:s');
+        } catch (\Exception $e) {
+            return null; // o log si querés
+        }
+    }
+
     public function procesarExcel(Request $request)
     {
         $file = $request->file('excel');
@@ -135,8 +147,8 @@ class CalidadController extends Controller
                 if (empty(array_filter($fila))) continue;
 
                 $numeroAtencion = $fila[0] ?? null;
-                $fechaAtencion = $fila[1] ?? null;
-                $fechaEncuesta = $fila[2] ?? null;
+                $fechaAtencion = $this->parseFecha($fila[1] ?? null);
+                $fechaEncuesta = $this->parseFecha($fila[2] ?? null);
                 $paciente = $fila[3] ?? null;
                 $tipoInternacion = $esInternacion ? ($fila[4] ?? null) : null;
 

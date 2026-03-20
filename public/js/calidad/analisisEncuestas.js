@@ -7,11 +7,12 @@ function cargarTipoEncuestas() {
         url: "/encuestas/tipos",
         method: "GET",
         success: function (data) {
-
             const select = $("#selectTipoEncuesta");
             select.empty();
 
-            select.append('<option value="">Seleccione tipo de encuesta</option>');
+            select.append(
+                '<option value="">Seleccione tipo de encuesta</option>',
+            );
 
             data.forEach((tipo) => {
                 select.append(`
@@ -20,11 +21,10 @@ function cargarTipoEncuestas() {
                     </option>
                 `);
             });
-
         },
         error: function () {
             console.error("Error cargando tipos de encuestas");
-        }
+        },
     });
 }
 
@@ -105,7 +105,10 @@ function renderExcelPreview(headers, rows) {
     });
 }
 
-$("#btnAnalizar").click(function () {
+$("#btnAnalizar").click(function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     let file = $("#excelFile")[0].files[0];
     let tipo = $("#selectTipoEncuesta").val();
 
@@ -161,19 +164,19 @@ $("#btnAnalizar").click(function () {
             cargarResultados(res.idImportacion);
         },
         error: function (err) {
+            console.log("ERROR COMPLETO:", err);
+            console.log("RESPONSE:", err.responseJSON);
+
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text:
-                    err.responseJSON?.mensaje ??
-                    "Error procesando archivo",
+                text: err.responseJSON?.detalle ?? "Error procesando archivo",
             });
         },
     });
 });
 
 function renderResultados(data) {
-
     if ($.fn.DataTable.isDataTable("#tablaResultados")) {
         $("#tablaResultados").DataTable().destroy();
     }
@@ -185,8 +188,8 @@ function renderResultados(data) {
             { title: "Positivas", data: "positivas" },
             { title: "Negativas", data: "negativas" },
             { title: "No Aplica", data: "no_aplica" },
-            { title: "% Positivas", data: "porc_positivas" }
-        ]
+            { title: "% Positivas", data: "porc_positivas" },
+        ],
     });
 }
 
