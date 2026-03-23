@@ -510,7 +510,7 @@ class PersonalController extends Controller
             $idSolicitud = $request->idSolicitud;
             $idUser = Auth::user()->id;
 
-            DB::statement("CALL SP_RECHAZAR_SOLICITUD(?, ?, @p_msj)", [$idSolicitud], [$idUser]);
+            DB::statement("CALL SP_RECHAZAR_SOLICITUD(?, ?, @p_msj)", [$idSolicitud, $idUser]);
 
             $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
 

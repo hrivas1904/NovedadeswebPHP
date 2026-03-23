@@ -1,10 +1,131 @@
-@media (max-width: 768px), (hover: none) {
+/* ============================= */
+/* MOBILE / TABLET */
+/* ============================= */
 
-    html, body {
+@media (max-width: 1300px) {
+
+    /* ------------------ */
+    /* GENERAL */
+    /* ------------------ */
+
+    html,
+    body {
         font-size: 0.85rem;
     }
 
     div.dt-buttons {
         display: none !important;
+    }
+
+    /* ------------------ */
+    /* NAVBAR */
+    /* ------------------ */
+
+    /* ❌ Ocultar perfil completo del navbar */
+    .nav-profile {
+        display: none !important;
+    }
+
+    /* ✅ Acciones (campanita + menú) */
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-left: auto;
+    }
+
+    /* Iconos alineados */
+    .nav-alertas,
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Tamaño uniforme */
+    .nav-alertas i,
+    .mobile-menu-btn {
+        font-size: 22px;
+        color: white;
+        line-height: 1;
+    }
+
+    .mobile-menu-btn {
+        cursor: pointer;
+    }
+
+    /* Badge notificaciones */
+    .badge-alertas {
+        top: -6px;
+        right: -6px;
+        font-size: 10px;
+        padding: 2px 5px;
+    }
+
+    /* ------------------ */
+    /* SIDEBAR */
+    /* ------------------ */
+
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ------------------ */
+    /* PROFILE MOBILE */
+    /* ------------------ */
+
+    .profile-mobile {
+        display: block;
+        padding: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        margin-bottom: 10px;
+    }
+
+    .profile-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .profile-box .user-info {
+        color: white;
+    }
+
+    .profile-box .user-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .profile-box .user-role,
+    .profile-box .user-area {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+
+    /* ------------------ */
+    /* LOGOUT MOBILE */
+    /* ------------------ */
+
+    .logout-desktop {
+        display: none;
+    }
+
+    .logout-mobile {
+        display: block;
+        margin-top: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 10px;
+    }
+
+    .logout-mobile a {
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
     }
 }

@@ -308,10 +308,7 @@ $(document).ready(function () {
                 {
                     data: "legajo",
                     width: "4%",
-                    className: "text-start",
-                    render: function (data) {
-                        return data.toString().padStart(5, "0");
-                    },
+                    className: "text-start"
                 },
                 {
                     data: "cuil",

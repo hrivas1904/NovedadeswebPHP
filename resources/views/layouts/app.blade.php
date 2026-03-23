@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="{{ asset('css/movil.css') }}">
 </head>
 
-<body>
+<body data-theme="light">
     <div id="nav-overlay" class="nav-overlay"></div>
     <nav class="navbar-top">
         <div class="nav-container">
@@ -42,10 +42,24 @@
             </div>
 
             <ul class="nav-links">
-                @if (Auth::user()->rol === 'Administrador/a')
-                <li>
-                    <a href="{{ route('dashboard') }}"><i class="bx bx-grid-alt"></i> Dashboard</a>
+                <li class="profile-mobile">
+                    <div class="profile-box">
+                        <div class="user-info">
+                            <span class="user-name">{{ Auth::user()->name }}</span>
+                            <span class="user-role">{{ Auth::user()->rol }}</span>
+                            <span class="user-area">
+                                @if (Auth::user()->area)
+                                    {{ Auth::user()->area->NOMBRE }}
+                                @endif
+                            </span>
+                        </div>
+                    </div>
                 </li>
+
+                @if (Auth::user()->rol === 'Administrador/a')
+                    <li>
+                        <a href="{{ route('dashboard') }}"><i class="bx bx-grid-alt"></i> Dashboard</a>
+                    </li>
                 @endif
 
                 <li class="nav-dropdown">
@@ -53,12 +67,14 @@
                             class="bx bx-chevron-down"></i></a>
                     <div class="dropdown-content">
                         <a href="{{ route('miLegajo') }}">Mi legajo</a>
-                        @if (Auth::user()->rol === 'Coordinador/a L2'||Auth::user()->rol==='Administrador/a'||Auth::user()->rol === 'Coordinador/a')
-                        <a href="{{ route('nominaPersonal') }}">Personal activo</a>
-                        <a href="{{ route('nominaPersonalBaja') }}">Personal de baja</a>
+                        @if (Auth::user()->rol === 'Coordinador/a L2' ||
+                                Auth::user()->rol === 'Administrador/a' ||
+                                Auth::user()->rol === 'Coordinador/a')
+                            <a href="{{ route('nominaPersonal') }}">Personal activo</a>
+                            <a href="{{ route('nominaPersonalBaja') }}">Personal de baja</a>
                         @endif
-                        @if (Auth::user()->rol === 'Coordinador/a L2'||Auth::user()->rol==='Administrador/a')
-                        <a href="{{ route('calendarioServicios') }}">Calendario servicios</a>
+                        @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
+                            <a href="{{ route('calendarioServicios') }}">Calendario servicios</a>
                         @endif
                     </div>
                 </li>
@@ -70,7 +86,7 @@
                         <a href="{{ route('controlNovedades') }}">Mis novedades</a>
                         <a href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a>
                         @if (Auth::user()->rol === 'Administrador/a')
-                        <a href="{{ route('configNovedades') }}">Configuración</a>
+                            <a href="{{ route('configNovedades') }}">Configuración</a>
                         @endif
                     </div>
                 </li>
@@ -86,19 +102,32 @@
                         <i class="fa-regular fa-circle-question"></i> Ayuda
                     </a>
                 </li>
+
+                <li class="logout-mobile">
+                    <a href="#"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class='bx bx-log-out'></i> Cerrar sesión
+                    </a>
+                </li>
             </ul>
 
-            <div class="nav-profile">
+            <div class="nav-profile profile-desktop">
                 <div class="user-info">
                     <span class="user-name">{{ Auth::user()->name }}</span>
                     <span class="user-role">{{ Auth::user()->rol }}</span>
                     <span class="branding-user-role user-area">
                         @if (Auth::user()->area)
-                        {{ Auth::user()->area->NOMBRE }}
+                            {{ Auth::user()->area->NOMBRE }}
                         @endif
                     </span>
                 </div>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    class="logout-btn logout-desktop">
+                    <i class='bx bx-log-out'></i>
+                </a>
+            </div>
 
+            <div class="nav-actions">
                 <div class="nav-alertas dropdown">
                     <button class="btn-alertas" id="btnAlertas">
                         <i class="fa-solid fa-bell"></i>
@@ -111,17 +140,20 @@
                     </div>
                 </div>
 
-                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    class="logout-btn">
-                    <i class='bx bx-log-out'></i>
-                </a>
+                <button id="toggleTheme" class="btn">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+
+                
+
+                <i class='bx bx-menu mobile-menu-btn' id="mobile-btn"></i>
 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
             </div>
 
-            <i class='bx bx-menu mobile-menu-btn' id="mobile-btn"></i>
+            
         </div>
     </nav>
 
