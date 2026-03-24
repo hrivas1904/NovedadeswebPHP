@@ -35,43 +35,68 @@ class HomeController extends Controller
         // 🔹 Validación básica
         $validator = Validator::make($request->all(), [
             'legajo' => 'required|numeric',
+            'dni' => 'required|numeric',
             'password' => 'required|min:4'
         ]);
 
         if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+            return redirect()->route('usuario')
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $legajo = $request->legajo;
 
-        // 🔹 1. Verificar que exista el legajo en empleados
+        // 🔹 1. Validar legajo + DNI + estado ACTIVO
         $empleado = DB::table('empleados')
-            ->where('legajo', $legajo)
+            ->where('legajo', $request->legajo)
+            ->where('dni', $request->dni)
+            ->where('estado', 'ACTIVO')
             ->first();
 
         if (!$empleado) {
-            return back()->withErrors(['El legajo no existe'])->withInput();
+            return redirect()->route('usuario')
+                ->withErrors(['Datos inválidos o colaborador inactivo'])
+                ->withInput();
         }
 
-        // 🔹 2. Verificar que no exista ya el usuario
+        // 🔹 2. Verificar que no exista usuario
         $existeUsuario = DB::table('users')
             ->where('legajo', $legajo)
             ->exists();
 
         if ($existeUsuario) {
-            return back()->withErrors(['Ya existe un usuario con ese legajo'])->withInput();
+            return redirect()->route('usuario')
+                ->withErrors(['Ya existe un usuario con ese legajo'])
+                ->withInput();
         }
 
         // 🔹 3. Insertar usuario
-        DB::table('users')->insert([
-            'name'      => $empleado->COLABORADOR, // 👈 desde empleados
-            'password'  => Hash::make($request->password), // 👈 bcrypt
-            'area_id'   => $empleado->ID_AREA,
-            'username'  => $legajo,
-            'rol'       => 'Colaborador/a',
-            'legajo'    => $legajo
-        ]);
+        DB::beginTransaction();
 
-        return redirect()->route('login')->with('success', 'Usuario creado correctamente');
+        try {
+
+            DB::table('users')->insert([
+                'name'      => $empleado->COLABORADOR,
+                'password'  => Hash::make($request->password),
+                'area_id'   => $empleado->ID_AREA,
+                'username'  => $request->legajo,
+                'rol'       => 'Colaborador/a',
+                'legajo'    => $request->legajo
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->route('usuario')
+                ->withErrors(['Error al crear el usuario'])
+                ->withInput();
+        }
+
+        // 🔹 Éxito → vuelve al login
+        return redirect()->route('login')
+            ->with('success', 'Usuario creado correctamente');
     }
 }

@@ -42,7 +42,7 @@
         .logo {
             display: block;
             margin: 0 auto 1.6rem;
-            max-width: 180px;
+            max-width: 220px;
         }
 
         .header {
@@ -149,6 +149,11 @@
             <div class="mb-3">
                 <label class="form-label">LEGAJO</label>
                 <input type="number" name="legajo" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">DNI</label>
+                <input type="number" name="dni" class="form-control" required>
             </div>
 
             <div class="mb-3">
