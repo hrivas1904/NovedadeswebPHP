@@ -348,7 +348,15 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#inputEmail").val(d.CORREO);
                 $("#inputTelefono").val(d.TELEFONO);
                 $("#inputDomicilio").val(d.DOMICILIO);
-                $("#inputLocalidad").val(d.LOCALIDAD);
+                if (d.LOCALIDAD) {
+                    let option = new Option(
+                        d.LOCALIDAD,
+                        d.LOCALIDAD,
+                        true,
+                        true,
+                    );
+                    $("#selectLocalidadEdit").append(option).trigger("change");
+                }
 
                 $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
                 $("#inputGenero").val(d.GENERO);
@@ -368,11 +376,11 @@ function verLegajo(legajoColaborador, nombre) {
 
                 $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
                 $("#inputFechaEgreso").val(d.FECHA_EGRESO);
-                $("#inputArea").val(d.AREA);
-                $("#inputServicio").val(d.SERVICIO);
+                $("#inputArea").val(d.ID_AREA);
+                cargarServiciosSimple(d.ID_SERVICIOS);
                 $("#inputConvenio").val(d.CONVENIO);
-                $("#inputCategoria").val(d.CATEGORIA);
-                $("#inputRol").val(d.ROL);
+                $("#inputCategoria").val(d.ID_CATEG);
+                cargarRolesSimple(d.ID_ROL);
                 $("#inputRegimen").val(d.REGIMEN);
                 $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
                 $("#inputCordinador").val(d.COORDINADOR);
@@ -392,8 +400,11 @@ function verLegajo(legajoColaborador, nombre) {
 
                 const familiares = response.familiares;
 
-                // Limpiamos el contenedor por si había datos de otro legajo
-                $("#contenedorHijosVisualizacion").empty();
+                const $contenedor = $("#divHijosEdit");
+
+                $contenedor.empty().removeAttr("hidden");
+
+                console.log("FAMILIARES:", response.familiares);
 
                 if (familiares && familiares.length > 0) {
                     familiares.forEach((f) => {
@@ -405,12 +416,13 @@ function verLegajo(legajoColaborador, nombre) {
                                 </div>
                             </div>
                         `;
-                        $("#contenedorHijosVisualizacion").append(htmlFamiliar);
+                        $("#divHijosEdit").append(htmlFamiliar);
                     });
+
                 } else {
-                    $("#contenedorHijosVisualizacion").append(
-                        '<div class="col-12 text-muted ps-3">No tiene hijos registrados.</div>',
-                    );
+                    $contenedor.append(`
+                        <div class="text-muted">No hay familiares cargados</div>
+                    `);
                 }
 
                 $("#modalLegajoColaborador").modal("show");
@@ -512,7 +524,7 @@ function editEmpleados(legajoColaborador, nombre) {
 
                 $("#estadoCivilEdit").val(d.ESTADO_CIVIL);
                 $("#generoEdit").val(d.GENERO);
-                $("#osEdit").val(d.ID_OS);
+                $("#selectObraSocialEdit").val(d.ID_OS);
                 $("#inputEditCodigoOS").val(d.COD_OS);
                 $("#inputEditTitulo").val(d.TITULO);
                 $("#inputEditDescripTitulo").val(d.DESCRIP_TITULO);
@@ -1072,40 +1084,6 @@ $("#obraSocial").on("select2:clear", function () {
     $("#codigoOS").val("");
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    cargarObrasSocialesEdit();
-
-    const select = document.getElementById("osEdit");
-    const inputCodigo = document.getElementById("inputEditCodigoOS");
-
-    select.addEventListener("change", function () {
-        const selected = this.options[this.selectedIndex];
-        const codigo = selected.getAttribute("data-codigo");
-
-        inputCodigo.value = codigo ? codigo : "";
-    });
-});
-
-function cargarObrasSocialesEdit() {
-    fetch("/obra-social/lista")
-        .then((response) => response.json())
-        .then((data) => {
-            const select = document.getElementById("osEdit");
-
-            data.forEach((item) => {
-                const option = document.createElement("option");
-                option.value = item.id;
-                option.textContent = item.nombre;
-                option.setAttribute("data-codigo", item.codigo);
-
-                select.appendChild(option);
-            });
-        })
-        .catch((error) => {
-            console.error("Error cargando obras sociales:", error);
-        });
-}
-
 //mapa de valores para regimen y hs diarias
 document.addEventListener("DOMContentLoaded", () => {
     const selectRegimen = document.getElementById("selectRegimen");
@@ -1328,6 +1306,50 @@ $(function () {
     });
 });
 
+$(function () {
+    $("#selectLocalidadEdit").select2({
+        language: {
+            inputTooShort: function () {
+                return "Por favor, ingresá 3 o más caracteres";
+            },
+            searching: function () {
+                return "Buscando en Georef...";
+            },
+            noResults: function () {
+                return "No se encontraron localidades";
+            },
+            errorLoading: function () {
+                return "La carga falló. Verificá tu conexión.";
+            },
+        },
+        placeholder: "Buscar localidad...",
+        minimumInputLength: 3, // Subí a 3 para evitar resultados demasiado genéricos
+        width: "100%",
+        dropdownParent: $("#modalLegajoColaborador"),
+        ajax: {
+            url: "/geo/localidades",
+            dataType: "json",
+            delay: 400, // Un poco más de delay ayuda a no disparar tantas peticiones
+            data: function (params) {
+                return { q: params.term };
+            },
+            processResults: function (data) {
+                return {
+                    results: (data.localidades || []).map(function (l) {
+                        let nombreCompleto =
+                            l.nombre + " - " + l.provincia.nombre;
+                        return {
+                            id: nombreCompleto,
+                            text: nombreCompleto,
+                        };
+                    }),
+                };
+            },
+            cache: true,
+        },
+    });
+});
+
 $("#btnAbrirModalOs").on("click", function () {
     const modal = $("#modalNuevaOs");
     modal.modal("show");
@@ -1371,3 +1393,142 @@ function cerrarModalOs() {
     $("#formNuevaOs")[0].reset();
     $("#modalNuevaOs").modal("hide");
 }
+
+//selectores de os y codigo para edición
+$(document).ready(function () {
+    const $select = $("#selectObraSocialEdit");
+
+    $.ajax({
+        url: "/obra-social/lista",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            $select.select2({
+                data: data,
+                placeholder: "Buscar obra social...",
+                allowClear: true,
+                width: "100%",
+                dropdownParent: $("#modalLegajoColaborador"),
+            });
+        },
+        error: function (err) {
+            console.error("Error cargando obras sociales:", err);
+        },
+    });
+});
+
+$("#selectObraSocialEdit").on("select2:select", function (e) {
+    const data = e.params.data;
+    $("#codigoOS").val(data.codigo ?? "");
+});
+
+$("#selectObraSocialEdit").on("select2:clear", function () {
+    $("#codigoOS").val("");
+});
+
+function cargarServiciosSimple(selected = null) {
+    const idArea = $("#inputArea").val();
+    const $select = $("#inputServicio");
+
+    $select.empty().append('<option value="">Cargando...</option>');
+
+    if (!idArea) {
+        $select.html('<option value="">Seleccione servicio</option>');
+        return;
+    }
+
+    $.ajax({
+        url: `/servicios-empleados/por-area/${idArea}`,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            $select
+                .empty()
+                .append('<option value="">Seleccione servicio</option>');
+
+            data.forEach((servicio) => {
+                $select.append(`
+                    <option value="${servicio.id_servicios}">
+                        ${servicio.servicio}
+                    </option>
+                `);
+            });
+
+            // 🔥 marcar seleccionado
+            if (selected) {
+                $select.val(selected).trigger("change");
+            }
+        },
+        error: function () {
+            $select.html("<option>Error al cargar</option>");
+        },
+    });
+}
+
+function cargarRolesSimple(selected = null) {
+    const idCategoria = $("#inputCategoria").val();
+    const $select = $("#inputRol");
+
+    $select.empty().append('<option value="">Cargando...</option>');
+
+    if (!idCategoria) {
+        $select.html('<option value="">Seleccione rol</option>');
+        return;
+    }
+
+    $.ajax({
+        url: `/roles-empleados/por-categoria/${idCategoria}`,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            $select.empty().append('<option value="">Seleccione rol</option>');
+
+            data.forEach((rol) => {
+                $select.append(`
+                    <option value="${rol.id_rol}">
+                        ${rol.nombre}
+                    </option>
+                `);
+            });
+
+            // 🔥 marcar seleccionado
+            if (selected) {
+                $select.val(selected).trigger("change");
+            }
+        },
+        error: function () {
+            $select.html("<option>Error al cargar</option>");
+        },
+    });
+}
+
+$("#formEditColaborador").on("submit", function (e) {
+    e.preventDefault();
+
+    const legajo = $("#inputLegajo").val();
+
+    $.ajax({
+        url: `/personal/${legajo}/actualizar`,
+        type: "POST",
+        data: $(this).serialize(),
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (resp) {
+
+            if (resp.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Correcto",
+                    text: resp.mensaje
+                });
+            } else {
+                Swal.fire("Atención", resp.mensaje, "warning");
+            }
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
+            Swal.fire("Error", "No se pudo actualizar el legajo", "error");
+        }
+    });
+});

@@ -118,6 +118,8 @@ Route::get('/verMiLegajo', [PersonalController::class, 'verMiLegajo'])->middlewa
 Route::post('/actualizarMiLegajo', [PersonalController::class, 'actualizarMiLegajo'])
     ->middleware('auth');
 
+Route::post('/personal/{legajo}/actualizar', [PersonalController::class, 'actualizarLegajoColaborador']);
+
 Route::get(
     '/novedades/historial/{legajo}',
     [PersonalController::class, 'historialNovedades']

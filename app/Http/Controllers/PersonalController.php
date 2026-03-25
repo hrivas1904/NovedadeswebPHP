@@ -301,9 +301,13 @@ class PersonalController extends Controller
     public function verLegajo($legajo)
     {
         try {
-            $data = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
+            $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
+            DB::statement("SET @dummy = 1"); // 🔥 importante para liberar resultados
 
-            if (count($data) === 0) {
+            $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
+            DB::statement("SET @dummy2 = 1");
+
+            if (empty($empleadoData)) {
                 return response()->json([
                     'success' => false,
                     'mensaje' => 'No se encontró el legajo'
@@ -312,7 +316,8 @@ class PersonalController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $data[0]
+                'data' => $empleadoData[0],
+                'familiares' => $familiares // 🔥 ACÁ ESTÁ LA CLAVE
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -502,7 +507,7 @@ class PersonalController extends Controller
 
     public function rechazarSolicitud(Request $request)
     {
-        try { 
+        try {
             $request->validate([
                 'idSolicitud' => 'required|integer'
             ]);
@@ -637,6 +642,55 @@ class PersonalController extends Controller
             return response()->json([
                 'success' => false,
                 'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function actualizarLegajoColaborador(Request $request, $legajo)
+    {
+        try {
+            DB::statement("CALL SP_ACTUALIZAR_LEGAJO_COLABORADOR(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
+                $legajo,
+                $request->correo,
+                $request->telefono,
+                $request->domicilio,
+                $request->localidad,
+                $request->estadoCivil,
+                $request->genero,
+                $request->obra_social_id,
+                $request->descrip_titulo,
+                $request->mat_prof,
+                $request->personaEmerg1,
+                $request->telefEmerg1,
+                $request->parentesco1,
+                $request->personaEmerg2,
+                $request->telefEmerg2,
+                $request->parentesco2,
+                $request->padre,
+                $request->madre,
+                $request->tipo_contrato,
+                $request->area_id,
+                $request->servicio_id,
+                $request->convenio,
+                $request->categoria_id,
+                $request->rol_interno_id,
+                $request->regimen_horas,
+                $request->horas_diarias,
+                $request->es_coordinador,
+                $request->es_afiliado,
+                $request->uti,
+                $request->noche
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Legajo actualizado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al actualizar el legajo',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
