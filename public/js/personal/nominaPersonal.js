@@ -267,11 +267,11 @@ function inicializarORefrescarHistorial() {
                 className: "text-center",
                 render: function (data) {
                     return `
-                        <button type="button" class="btn-terciario btn-subir-archivo" data-registro="${data}">
+                        <button type="button" class="btn btn-primary btn-subir-archivo" data-registro="${data}">
                             <i class="fa-solid fa-upload"></i> Subir
                         </button>
                         <button type="button"
-                            class="btn-secundario btn-ver-archivo"
+                            class="btn btn-secondary btn-ver-archivo"
                             data-registro="${data}">
                             <i class="fa-solid fa-eye"></i> Ver
                         </button>
@@ -786,9 +786,9 @@ $(document).ready(function () {
                     className: "text-center",
                     render: function (data) {
                         let clase =
-                            data === "ACTIVO" ? "badge-activo" : "badge-baja";
+                            data === "ACTIVO" ? "bg-success" : "bg-danger";
 
-                        return `<span style="font-size:0.80rem;" class="badge ${clase}">${data}</span>`;
+                        return `<span class="badge ${clase}">${data}</span>`;
                     },
                 },
                 {
@@ -799,7 +799,7 @@ $(document).ready(function () {
                     render: function (data) {
                         let botones = `
                             <button 
-                                class="btn-secundario btn-VerLegajo"
+                                class="btn btn-secondary btn-VerLegajo"
                                 data-id="${data.LEGAJO}"
                                 title='Ver legajo'
                                 data-nombre="${data.COLABORADOR}">
@@ -814,11 +814,11 @@ $(document).ready(function () {
                         ) {
                             botones += `
                                 <button 
-                                    class="btn-peligro btn-DarBaja"
+                                    class="btn btn-danger btn-DarBaja"
                                     data-id="${data.LEGAJO}"
                                     title='Dar de baja'
                                     data-nombre="${data.COLABORADOR}">
-                                    <i class="fa-solid fa-x"></i>
+                                    <i class="fa-solid fa-square-xmark"></i>
                                 </button>
                             `;
                         }
@@ -832,7 +832,7 @@ $(document).ready(function () {
                         ) {
                             botones += `
                             <button 
-                                class="btn-primario btn-RegNovedad"
+                                class="btn btn-primary btn-RegNovedad"
                                 title='Cargar novedad'
                                 data-id="${data.LEGAJO}">
                                 <i class="fa-solid fa-floppy-disk"></i>

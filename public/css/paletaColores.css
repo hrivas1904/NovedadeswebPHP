@@ -1,0 +1,158 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+* {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+:root {
+    /* ============================= */
+    /* PALETA PROPIA */
+    /* ============================= */
+
+    --nav-bg: #0b3c6d;
+    --nav-text: #ffffff;
+    --nav-hover: #00b18d;
+
+    --color-default: #004a7c;
+    --color-second: #0091d5;
+    --color-accent-green: #00b18d;
+    --color-accent-red: #d64545;
+
+    --color-white: #ffffff;
+    --color-body: #f4f7fa;
+    --color-light: #e2e8f0;
+
+    --text-color: #1e293b;
+    --title-color: #0b3c6d;
+
+    --dropdown-bg: #ffffff;
+    --dropdown-text: #333;
+    --dropdown-hover: #f1f1f1;
+
+    /* ============================= */
+    /* BOOTSTRAP VARIABLES */
+    /* ============================= */
+
+    --bs-primary: var(--color-default);
+    --bs-success: var(--color-accent-green);
+    --bs-danger: var(--color-accent-red);
+
+    /* BACKGROUNDS */
+    --bg-body: #f4f7fa;
+    --bg-card: #ffffff;
+    --bg-input: #ffffff;
+
+    /* TEXT */
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+
+    /* BORDERS */
+    --border-color: #e2e8f0;
+
+    /* SHADOW */
+    --shadow-soft: rgba(0, 0, 0, 0.05);
+}
+
+body[data-theme="dark"] {
+    --nav-bg: #0f172a;
+    --nav-text: #e2e8f0;
+    --nav-hover: #00b491;
+
+    --color-body: #0f172a;
+    --color-light: #1e293b;
+    --color-white: #1e293b;
+
+    --text-color: #e2e8f0;
+    --title-color: #e2e8f0;
+
+    --dropdown-bg: #1e293b;
+    --dropdown-text: #e2e8f0;
+    --dropdown-hover: #334155;
+
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --bg-input: #0f172a;
+
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+
+    --border-color: #334155;
+
+    --shadow-soft: rgba(0, 0, 0, 0.4);
+}
+
+/* ============================= */
+/* BOOTSTRAP OVERRIDES */
+/* ============================= */
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-second);
+    border-color: var(--color-second);
+}
+
+.btn-light {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--border-color);
+}
+
+/* ============================= */
+/* BOOTSTRAP BADGES / COLORS */
+/* ============================= */
+
+.bg-success {
+    background-color: var(--color-accent-green) !important;
+}
+
+.bg-danger {
+    background-color: var(--color-accent-red) !important;
+}
+
+/* ============================= */
+/* NAVBAR */
+/* ============================= */
+
+.logo-navbar {
+    filter: brightness(0) invert(1);
+}
+
+body[data-theme="dark"] .navbar {
+    background-color: var(--nav-bg) !important;
+}
+
+.navbar {
+    background-color: var(--color-default) !important;
+}
+
+.navbar .nav-link {
+    color: rgba(255,255,255,0.85);
+}
+
+.navbar .nav-link:hover {
+    color: #fff;
+}
+
+.navbar .dropdown-menu {
+    background-color: var(--dropdown-bg);
+}
+
+.navbar .dropdown-item {
+    color: var(--dropdown-text);
+}
+
+.navbar .dropdown-item:hover {
+    background-color: var(--dropdown-hover);
+}
+
+/* Dropdown en hover SOLO desktop */
+@media (min-width: 992px) {
+    .navbar .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+}

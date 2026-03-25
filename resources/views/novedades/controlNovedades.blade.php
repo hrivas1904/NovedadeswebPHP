@@ -47,13 +47,13 @@
                 @endif
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <button type="button" id="btnAplicarFiltros" class="btn-primario w-100">
+                    <button type="button" id="btnAplicarFiltros" class="btn btn-primary w-100">
                         <i class="fa-solid fa-filter"></i> Aplicar
                     </button>
                 </div>
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <button type="button" id="btnLimpiarFiltros" class="btn-secundario w-100">
+                    <button type="button" id="btnLimpiarFiltros" class="btn btn-secondary w-100">
                         <i class="fa-solid fa-eraser"></i> Limpiar
                     </button>
                 </div>
@@ -62,7 +62,7 @@
                     (Auth::user()->rol == 'Coordinador/a')||
                     (Auth::user()->rol == 'Coordinador/a L2'))
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <button type="button" id="btnCargaMasiva" class="btn-primario w-100">
+                    <button type="button" id="btnCargaMasiva" class="btn btn-primary w-100">
                         <i class="fa-solid fa-database"></i> Carga masiva
                     </button>
                 </div>
@@ -261,14 +261,14 @@
             </div>
             <div class="modal-footer">
                 @if (Auth::user()->rol !== 'Colaborador/a')
-                <button class="btn-secundario" id="btnHabilitarEdicion">
+                <button class="btn btn-secondary" id="btnHabilitarEdicion">
                     Editar
                 </button>
                 @endif
-                <button class="btn-primario d-none" id="btnGuardarCambios">
+                <button class="btn btn-primary d-none" id="btnGuardarCambios">
                     Actualizar
                 </button>
-                <button class="btn-primario" onclick="cerrarModalDetalleNovedad()">
+                <button class="btn btn-primary" onclick="cerrarModalDetalleNovedad()">
                     Atrás
                 </button>
             </div>
@@ -429,7 +429,7 @@
                                     <tbody>
                                     </tbody>
                                 </table>
-                                <button id="btnAbrirSeleccionColabs" class="btn-primario" type="button">
+                                <button id="btnAbrirSeleccionColabs" class="btn-primary btn" type="button">
                                     Seleccionar colaboradores
                                 </button>
                             </div>
@@ -438,10 +438,10 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-secundario" onclick="cerrarModalCargaMasiva()">
+                    <button class="btn btn-secondary" onclick="cerrarModalCargaMasiva()">
                         Atrás
                     </button>
-                    <button id="btnRegistrarMasivo" class="btn-primario" type="button">
+                    <button id="btnRegistrarMasivo" class="btn-primary btn" type="button">
                         Registrar
                     </button>
                 </div>
@@ -511,10 +511,10 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button class="btn-secundario" onclick="cerrarModalSeleccionColab()">
+                <button class="btn-secondary btn" onclick="cerrarModalSeleccionColab()">
                     Atrás
                 </button>
-                <button id="btnSeleccionarColab" class="btn-primario" type="button">
+                <button id="btnSeleccionarColab" class="btn-primary btn" type="button">
                     Seleccionar colaboradores
                 </button>
             </div>

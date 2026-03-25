@@ -13,8 +13,8 @@
                     <i class="fa-solid fa-id-card me-2"></i> Mi Legajo
                 </h5>
 
-                <button class="btn-primario btn-sm" type="submit" form="formAltaColaborador">
-                    <i class="fa-solid fa-floppy-disk me-1"></i> Guardar
+                <button class="btn btn-primary" type="submit" form="formAltaColaborador">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Guardar cambios
                 </button>
 
             </div>
@@ -146,7 +146,7 @@
                                     </div>
                                     <div class="col-lg-2 d-flex flex-column">
                                         <label class="form-label">Agregar hijo/a</label>
-                                        <button id="btnAgregarHijoEdit" class="btn-primario">
+                                        <button id="btnAgregarHijoEdit" class="btn btn-primary">
                                             <i class="fa-solid fa-plus"></i> Hijo/a
                                         </button>
                                     </div>

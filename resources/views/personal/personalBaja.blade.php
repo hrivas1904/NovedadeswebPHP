@@ -33,7 +33,7 @@
                                 <select id="filtroConvenio" class="form-select js-select-convenioFiltro w-100"></select>
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
-                                <button type="button" id="btn-limpiar-filtros" class="btn-secundario w-100">
+                                <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
                                     <i class="fa-solid fa-eraser"></i> Limpiar
                                 </button>
                             </div>

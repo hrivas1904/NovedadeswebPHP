@@ -14,7 +14,7 @@
         <div class="empleado-box p-2">
             <div class="row align-items-center g-3">
                 <div class="col-lg-5">
-                    <div class="calendar-header d-flex justify-content-between align-items-center bg-light p-2 rounded">
+                    <div class="calendar-header d-flex justify-content-between align-items-center p-2 rounded">
                         <button class="btn btn-tertiary" id="btnPrevMes">◀</button>
                         <h5 id="tituloMes" class="mb-0"></h5>
                         <button class="btn btn-tertiary" id="btnNextMes">▶</button>
@@ -29,16 +29,10 @@
                         </div>
 
                         <div class="col-xl-auto col-lg-auto col-md-4 col-6">
-                            <button type="button" id="btnCrearEvento" class="btn btn-primario w-100">
+                            <button type="button" id="btnCrearEvento" class="btn btn-primary w-100">
                                 <i class="fa-solid fa-list-check"></i> Nuevo evento
                             </button>
                         </div>
-
-                        <!--<div class="col-xl-auto col-lg-auto col-md-4 col-3">
-                            <button type="button" id="btnExportarPdf" class="btn btn-peligro w-100">
-                                <i class="fa-solid fa-file-pdf"></i>
-                            </button>
-                        </div>-->
 
                         <div class="col-xl-auto col-lg-auto col-md-4 col-3">
                             <button type="button" id="btnExportarImagen" class="btn btn-terciario w-100">

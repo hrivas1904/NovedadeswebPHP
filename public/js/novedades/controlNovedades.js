@@ -388,7 +388,7 @@ $(document).ready(function () {
                             return `
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <button type="button" 
-                                        class="btn-sm btn-secundario btn-VerDetalleNovedad" 
+                                        class="btn btn-secondary btn-VerDetalleNovedad" 
                                         data-id="${data}" 
                                         title="Detalle de novedad">
                                         <i class="fa-solid fa-eye"></i>
@@ -399,14 +399,14 @@ $(document).ready(function () {
                             return `
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <button type="button" 
-                                        class="btn-sm btn-secundario btn-VerDetalleNovedad" 
+                                        class="btn btn-secondary btn-VerDetalleNovedad" 
                                         data-id="${data}" 
                                         title="Detalle de novedad">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
                                     <button type="button" 
-                                        class="btn-sm btn-peligro btn-AnularNovedad" 
+                                        class="btn btn-danger btn-AnularNovedad" 
                                         data-id="${data}" 
                                         title="Anular novedad">
                                         <i class="fa-solid fa-trash"></i>

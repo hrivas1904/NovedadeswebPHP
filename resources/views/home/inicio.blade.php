@@ -10,7 +10,7 @@
         </div>
 
         <div class="d-flex justify-content-between ms-auto align-item-end gap-3 my-2">
-            <h3 class="pill-heading tituloVista">NOTIFICACIONES</h3>
+            <h3 class="pill-heading tituloVista">AVISOS</h3>
         </div>
 
         @if(Auth::user()->rol == 'Administrador/a')
@@ -20,10 +20,10 @@
                     <input id="txtNotificacionTitulo" class="form-control mb-2" placeholder="Escriba el asunto...">
                     <textarea id="txtNotificacion" class="form-control" placeholder="Escriba el comunicado..."></textarea>
                     <div class="d-flex justify-content-end mt-3 gap-3">
-                        <button type="button" id='btnCancelarRedactarComunicado' class="btn-secundario">
+                        <button type="button" id='btnCancelarRedactarComunicado' class="btn btn-secondary">
                             Cancelar
                         </button>
-                        <button type="button" id='btnRedactarComunicado' class="btn-primario">
+                        <button type="button" id='btnRedactarComunicado' class="btn btn-primary">
                             <i class="fa-solid fa-bullhorn"></i>
                             Publicar
                         </button>

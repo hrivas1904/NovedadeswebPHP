@@ -34,10 +34,10 @@
                     </div>
                     <input class="form-control" name="descripcion">
                     <div class="d-flex justify-content-end mt-3 gap-3">
-                        <button type="button" id='btnCancelarTicket' class="btn-secundario">
+                        <button type="button" id='btnCancelarTicket' class="btn btn-secondary">
                             Cancelar
                         </button>
-                        <button type="button" id='btnEmitirTicket' class="btn-primario">
+                        <button type="button" id='btnEmitirTicket' class="btn-primary btn">
                             <i class="fa-solid fa-receipt"></i>
                             Enviar ticket
                         </button>

@@ -1,165 +1,116 @@
 /*######################################*/
-/* ============================
-   BOTONES ESTÁNDAR DEL SISTEMA
-============================ */
+/* BOTONES - EXTENSIÓN DE BOOTSTRAP */
+/*######################################*/
 
-/* Botón Primario */
-.btn-primario {
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 38px;
+    font-weight: 500;
+}
+
+.btn i {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+}
+
+
+/* ============================ */
+/* OVERRIDE BOOTSTRAP */
+/* ============================ */
+
+.btn.btn-primary {
     background-color: var(--color-accent-green);
-    border: none;
-    padding: 0.5rem 0.8rem;
-    font-weight: 500;
-    border-radius: 6px;
-    color: #fff;
-    transition: all 0.2s ease;
+    border-color: var(--color-accent-green);
 }
 
-.btn-primario:hover {
+.btn.btn-primary:hover {
     background-color: #009c7c;
-    color: #fff;
+    border-color: #009c7c;
 }
 
-.btn-primario:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0, 177, 141, 0.4);
-}
-
-/* Botón Secundario */
-.btn-secundario {
+.btn.btn-secondary {
     background-color: var(--color-default);
-    border: none;
-    padding: 0.5rem 0.65rem;
-    font-weight: 500;
-    border-radius: 6px;
-    color: #fff;
-    transition: all 0.2s ease;
+    border-color: var(--color-default);
 }
 
-.btn-secundario:hover {
-    background-color: #00395f;
-    color: #fff;
+.btn.btn-secondary:hover {
+    background-color: #0b3c6d;
+    border-color: #0b3c6d;
 }
 
-.btn-secundario:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0, 74, 124, 0.4);
-}
-
-/* Botón Peligro (baja, eliminar) */
-.btn-peligro {
+.btn.btn-danger {
     background-color: var(--color-accent-red);
-    border: none;
-    padding: 0.5rem 0.82rem;
-    font-weight: 500;
-    border-radius: 6px;
-    color: #fff;
-    transition: all 0.2s ease;
+    border-color: var(--color-accent-red);
 }
 
-.btn-peligro:hover {
+.btn.btn-danger:hover {
     background-color: #b02a37;
 }
 
-/* Botón Deshabilitado */
-.btn-primario:disabled,
-.btn-secundario:disabled,
-.btn-peligro:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
+
+/* ============================ */
+/* VARIANTES CUSTOM */
+/* ============================ */
 
 .btn-terciario {
-    background-color: #6c7a89; /* gris azulado elegante */
+    background-color: #6c7a89;
     color: #ffffff;
     border: none;
-    padding: 0.5rem 0.75rem;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease-in-out;
 }
 
 .btn-terciario:hover {
     background-color: #5a6673;
-    color: #ffffff;
-}
-
-.btn-terciario:active {
-    transform: scale(0.97);
-}
-
-.btn-terciario:disabled {
-    background-color: #b0b8c1;
-    cursor: not-allowed;
-    opacity: 0.7;
 }
 
 .btn-alerta {
-    background-color: #f4c430; /* amarillo alerta */
-    color: #1f2937;            /* texto oscuro */
+    background-color: #f4c430;
+    color: #1f2937;
     border: none;
-    padding: 0.5rem 0.7rem;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease-in-out;
 }
 
 .btn-alerta:hover {
-    background-color: #e0b324; /* más oscuro */
-    color: #1f2937;
-}
-
-.btn-alerta:active {
-    transform: scale(0.97);
-}
-
-.btn-alerta:disabled {
-    background-color: #f6df93;
-    color: #6b7280;
-    cursor: not-allowed;
-    opacity: 0.8;
+    background-color: #e0b324;
 }
 
 .btn-exito {
-    background-color: #22c55e; /* verde éxito */
+    background-color: #22c55e;
     color: #ffffff;
     border: none;
-    padding: 0.45rem;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease-in-out;
 }
 
 .btn-exito:hover {
     background-color: #16a34a;
-    color: #ffffff;
 }
 
-.btn-exito:active {
+
+/* ============================ */
+/* ESTADOS */
+/* ============================ */
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn:active {
     transform: scale(0.97);
 }
 
-.btn-exito:disabled {
-    background-color: #86efac;
-    color: #065f46;
-    cursor: not-allowed;
-    opacity: 0.8;
-}
 
-/* ============================
-   BOTONES MINIMALISTAS
-============================ */
+/* ============================ */
+/* BOTONES MINIMALISTAS */
+/* ============================ */
 
 .btn-min {
     background-color: transparent;
     border: 1px solid transparent;
     padding: 0.4rem 0.6rem;
-    font-weight: 500;
     border-radius: 6px;
     transition: all 0.15s ease-in-out;
-    cursor: pointer;
-}
-
-.btn-min:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
 }
 
 .btn-min-primario {
@@ -171,10 +122,6 @@
     background-color: rgba(0, 177, 141, 0.08);
 }
 
-.btn-min-primario:focus {
-    box-shadow: 0 0 0 0.15rem rgba(0, 177, 141, 0.25);
-}
-
 .btn-min-secundario {
     color: var(--color-default);
     border-color: var(--color-default);
@@ -184,21 +131,13 @@
     background-color: rgba(0, 74, 124, 0.08);
 }
 
-.btn-min-secundario:focus {
-    box-shadow: 0 0 0 0.15rem rgba(0, 74, 124, 0.25);
-}
-
 .btn-min-peligro {
-    color: #dc3545;
-    border-color: #dc3545;
+    color: var(--color-accent-red);
+    border-color: var(--color-accent-red);
 }
 
 .btn-min-peligro:hover {
     background-color: rgba(220, 53, 69, 0.08);
-}
-
-.btn-min-peligro:focus {
-    box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25);
 }
 
 .btn-min-alerta {

@@ -12,7 +12,7 @@
         <div class="row align-items-end g-3 mb-3">
 
             <div class="col-6 col-sm-6 col-lg-4 col-xl-2">
-                <button type="button" id="btnAbrirModalSolicitud" class="btn-primario w-100">
+                <button type="button" id="btnAbrirModalSolicitud" class="btn btn-primary w-100">
                     Nueva solicitud
                 </button>
             </div>
@@ -37,13 +37,13 @@
             </div>
 
             <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
-                <button id="btnAplicarFiltros" class="btn-primario w-100">
+                <button id="btnAplicarFiltros" class="btn btn-primary w-100">
                     <i class="fa fa-filter"></i> Aplicar
                 </button>
             </div>
 
             <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
-                <button id="btnLimpiarFiltros" class="btn-secundario w-100">
+                <button id="btnLimpiarFiltros" class="btn btn-secondary w-100">
                     <i class="fa fa-eraser"></i> Limpiar
                 </button>
             </div>
@@ -148,7 +148,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundario" onclick="cerrarModalSolicitud()">Cancelar</button>
-                    <button type="submit" class="btn btn-primario" form="formCargaSolicitud" id="btnRegistrarNovedad">
+                    <button type="submit" class="btn btn-primary" form="formCargaSolicitud" id="btnRegistrarNovedad">
                         <i class="fa-solid fa-floppy-disk me-1"></i>
                         Registrar solicitud
                     </button>

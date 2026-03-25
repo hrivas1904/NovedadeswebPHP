@@ -56,10 +56,10 @@
 
                                 <div class="row g-3">
                                     <div class="col-lg-12 text-end">
-                                        <button type="button" class="btn btn-terciario mx-2"
+                                        <button type="button" class="btn btn-secondary mx-2"
                                             onclick="abrirModalCateg()">Crear categoría</button>
 
-                                        <button type="submit" class="btn btn-primario">
+                                        <button type="submit" class="btn btn-primary">
                                             Crear nueva novedad
                                         </button>
                                     </div>
@@ -124,10 +124,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-secundario" onclick="cerrarModalNovedadEdit()">
+                    <button class="btn btn-secondary" onclick="cerrarModalNovedadEdit()">
                         Atrás
                     </button>
-                    <button class="btn-primario" onclick="cerrarModalNovedadEdit()">
+                    <button class="btn btn-primary" onclick="cerrarModalNovedadEdit()">
                         Actualizar
                     </button>
                 </div>
@@ -169,10 +169,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-secundario" onclick="cerrarModalCateg()">
+                    <button class="btn btn-secondary" onclick="cerrarModalCateg()">
                         Atrás
                     </button>
-                    <button class="btn-primario" onclick="cerrarModalCateg()">
+                    <button class="btn btn-primary" onclick="cerrarModalCateg()">
                         Dar alta
                     </button>
                 </div>

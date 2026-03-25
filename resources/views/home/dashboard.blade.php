@@ -21,23 +21,23 @@
                             </div>
 
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                <button id="btnAplicarFiltros" class="btn-primario w-100">
+                                <button id="btnAplicarFiltros" class="btn btn-primary w-100">
                                     <i class="fa-solid fa-circle-check"></i> Aplicar filtros
                                 </button>
                             </div>
 
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                <button id="btnLimpiarFiltros" class="btn-secundario w-100">
+                                <button id="btnLimpiarFiltros" class="btn btn-secondary w-100">
                                     <i class="fa-solid fa-eraser"></i> Limpiar filtros
                                 </button>
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                <button id="btnExportarPDF" class="btn-peligro w-100">
+                                <button id="btnExportarPDF" class="btn btn-danger w-100">
                                     <i class="fa-solid fa-file-pdf"></i> Exportar PDF
                                 </button>
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                <button id="btnImprimirDashboard" class="btn-secundario w-100">
+                                <button id="btnImprimirDashboard" class="btn btn-secondary w-100">
                                     <i class="fa-solid fa-print"></i> Imprimir
                                 </button>
                             </div>

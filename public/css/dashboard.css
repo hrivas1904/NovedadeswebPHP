@@ -1,6 +1,11 @@
+/* CONTENEDOR */
 .dashboard-container {
-    background: #f3f5f9;
+    background: var(--bg-body);
 }
+
+/* ============================ */
+/* FILTER CARD */
+/* ============================ */
 
 .filter-card {
     background: linear-gradient(
@@ -11,83 +16,107 @@
     color: #ffffff;
     border: none;
     border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 25px var(--shadow-soft);
 }
 
-    .filter-card .form-label {
-        color: #e9ecef;
-    }
+.filter-card .form-label {
+    color: rgba(255,255,255,0.85);
+}
 
-    .filter-card .form-select,
-    .filter-card .form-control {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.4);
-        color: #ffffff;
-    }
+.filter-card .form-select,
+.filter-card .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+/* ============================ */
+/* KPI CARDS */
+/* ============================ */
 
 .kpi-card {
     border: none;
     border-radius: 18px;
-    background: #ffffff;
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    background: var(--bg-card);
+    box-shadow: 0 10px 25px var(--shadow-soft);
 }
 
 .kpi-label {
     font-size: .78rem;
     text-transform: uppercase;
-    color: #6c757d;
+    color: var(--text-muted);
 }
 
 .kpi-value {
     font-size: 1.6rem;
     font-weight: 700;
-    color: #0d1b2a;
+    color: var(--text-main);
 }
 
 .kpi-value-small {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #0d1b2a;
+    color: var(--text-main);
 }
 
 .kpi-subvalue {
     font-size: .8rem;
-    color: #6c757d;
+    color: var(--text-muted);
 }
+
+/* ============================ */
+/* CHART + TABLE CARDS */
+/* ============================ */
 
 .chart-card,
 .table-card {
     border: none;
     border-radius: 18px;
-    background: #ffffff;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+    background: var(--bg-card);
+    box-shadow: 0 12px 30px var(--shadow-soft);
 }
 
+/* HEADER */
+.chart-card .card-header,
+.table-card .card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* TITULOS */
 .chart-title {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #0d1b2a;
+    color: var(--text-main);
 }
 
+/* ============================ */
+/* TABLE */
+/* ============================ */
+
 .table-card thead tr {
-    background-color: #f1f3f8;
+    background-color: var(--border-color);
 }
 
 .table-card thead th {
     font-size: .8rem;
     font-weight: 600;
-    color: #6c757d;
+    color: var(--text-muted);
     text-transform: uppercase;
 }
 
 .table-card tbody td {
     font-size: .86rem;
-    color: #343a40;
+    color: var(--text-main);
 }
+
+/* ============================ */
+/* SUMMARY */
+/* ============================ */
 
 .dashboard-summary li {
     display: flex;
     justify-content: space-between;
     padding: .35rem 0;
-    border-bottom: 1px dashed #e0e4ec;
+    border-bottom: 1px dashed var(--border-color);
 }

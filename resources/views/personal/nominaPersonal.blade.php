@@ -33,13 +33,13 @@
                                 <select id="filtroConvenio" class="form-select js-select-convenioFiltro w-100"></select>
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
-                                <button type="button" id="btn-limpiar-filtros" class="btn-secundario w-100">
+                                <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
                                     <i class="fa-solid fa-eraser"></i> Limpiar
                                 </button>
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto text-xl-end">
                                 @if (Auth::user()->rol === 'Administrador/a')
-                                    <button type="button" class="btn btn-primario w-100" onclick="abrirModal()">
+                                    <button type="button" class="btn btn-primary w-100" onclick="abrirModal()">
                                         <i class="fa-solid fa-user me-2"></i> Nuevo Colaborador
                                     </button>
                                 @endif
@@ -236,7 +236,7 @@
                                         </div>
                                         <div class="col-lg-2 d-flex flex-column">
                                             <label class="form-label">Agregar hijo/a</label>
-                                            <button id="btnAgregarHijo" class="btn-primario">
+                                            <button id="btnAgregarHijo" class="btn btn-primary">
                                                 <i class="fa-solid fa-plus"></i> Hijo/a
                                             </button>
                                         </div>
@@ -282,7 +282,7 @@
                                                 <select name="obra_social_id" id="obraSocial" class="form-select">
                                                     <option value="">Seleccione obra social</option>
                                                 </select>
-                                                <button type="button" class="btn btn-sm btn-primario"
+                                                <button type="button" class="btn btn-sm btn-primary"
                                                     id="btnAbrirModalOs">
                                                     <i class="fa-solid fa-plus"></i>
                                                 </button>
@@ -311,14 +311,6 @@
                                             <label class="form-label">M.P.</label>
                                             <input name="matricula_profesional" class="form-control" type="text" />
                                         </div>
-                                        <!--<div class="col-lg-2 d-flex flex-column">
-                                                    <label class="form-label">Agregar título</label>
-                                                    <button id="btnAgregarTitulo" class="btn-primario">
-                                                        <i class="fa-solid fa-plus"></i> Título
-                                                    </button>
-                                                </div>
-                                                <div id="divTitulos" class="col-lg-12 empleado-box p-3" hidden>
-                                                </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -426,7 +418,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger" onclick="cerrarModal()">
+                    <button class="btn btn-secondary" onclick="cerrarModal()">
                         Cancelar
                     </button>
                     <button type="submit" form="formAltaColaborador" class="btn btn-primary"
@@ -739,233 +731,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-secundario" onclick="cerrarModalLegajo()">
-                        Atrás
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalEditColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-        aria-hidden="true" data-bs-backdrop="static">
-
-        <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content p-2">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="tituloEdit">
-                        <i class="fa-solid fa-user-pen"></i> Editar colaborador
-                    </h5>
-                    <button type="button" class="btn-close" onclick="cerrarEdicionEmpleado()"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form id="formEditColaborador">
-                        @csrf
-                        <div class="row g-4 mb-4">
-                            <div class="col-lg-6">
-                                <div class="section-divider mb-3">
-                                    <span>Datos Personales</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <div class="row g-3">
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Legajo</label>
-                                            <input type="text" id="inputEditLegajo" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <label class="form-label">Apellido y Nombre</label>
-                                            <input type="text" id="inputEditNombre" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Estado</label>
-                                            <input type="text" id="estadoEdit" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">DNI</label>
-                                            <input type="text" id="inputEditDni" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">CUIL</label>
-                                            <input type="text" id="inputEditCuil" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Fecha nacimiento</label>
-                                            <input type="text" id="inputEditFechaNacimiento" class="form-control"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Edad</label>
-                                            <input type="text" id="inputEditEdad" class="form-control" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="section-divider mb-3">
-                                    <span>Datos de Contacto</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <div class="row g-3">
-                                        <div class="col-lg-7">
-                                            <label class="form-label">Correo electrónico</label>
-                                            <input type="text" id="inputEditEmail" class="form-control">
-                                        </div>
-                                        <div class="col-lg-5">
-                                            <label class="form-label">Teléfono</label>
-                                            <input type="tel" id="inputEditTelefono" class="form-control">
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <label class="form-label">Domicilio</label>
-                                            <input type="text" id="inputEditDomicilio" class="form-control">
-                                        </div>
-                                        <div class="col-lg-5">
-                                            <label class="form-label">Localidad</label>
-                                            <input type="text" id="inputEditLocalidad" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="section-divider mb-3">
-                                    <span>Datos Socioeconómicos</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <div class="row g-3">
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Estado civil</label>
-                                            <select id="estadoCivilEdit" class="form-select" required>
-                                                <option selected value="">Seleccione estado civil</option>
-                                                <option value="SOLTERO/A">SOLTERO/A</option>
-                                                <option value="CASADO/A">CASADO/A</option>
-                                                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
-                                                <option value="VIUDO/A">VIUDO/A</option>
-                                                <option value="N/D">N/D</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Género</label>
-                                            <select id="generoEdit" class="form-select" required>
-                                                <option selected value="">Seleccione género</option>
-                                                <option value="MASCULINO">MASCULINO</option>
-                                                <option value="FEMENINO">FEMENINO</option>
-                                                <option value="NO BINARIO">NO BINARIO</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <label class="form-label">Obra social</label>
-                                            <select id="osEdit" class="form-select">
-                                                <option value="">Seleccione obra social</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Código OS</label>
-                                            <input type="text" id="inputEditCodigoOS" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Título</label>
-                                            <input type="text" id="inputEditTitulo" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <label class="form-label">Descripción de Título</label>
-                                            <input type="text" id="inputEditDescripTitulo" class="form-control"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">M.P.</label>
-                                            <input type="text" id="inputEditMatricula" class="form-control" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="section-divider mb-3">
-                                    <span>Datos Laborales</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <div class="row g-3">
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Tipo de contrato</label>
-                                            <select id="tipoContratoEdit" class="form-select">
-                                                <option value="Tiempo fijo">PLAZO FIJO</option>
-                                                <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
-                                                <option value="Pasantía">PASANTÍA</option>
-                                                <option value="Práctica profesional">PRÁCTICA PROFESIONAL</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Fecha ingreso</label>
-                                            <input type="text" id="inputEditFechaIngreso" class="form-control"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Fecha fin prueba</label>
-                                            <input type="text" id="inputEditFechaFinPrueba" class="form-control"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Fecha egreso</label>
-                                            <input type="text" id="inputEditFechaEgreso" class="form-control"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Antiguedad</label>
-                                            <input type="text" id="inputEditAntiguedad" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Área</label>
-                                            <select id="areaEdit" class="form-select js-select-area">
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Servicio</label>
-                                            <input type="text" id="inputEditServicio" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Convenio</label>
-                                            <input type="text" id="inputEditConvenio" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Categoría</label>
-                                            <input type="text" id="inputEditCategoria" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Rol</label>
-                                            <input type="text" id="inputEditRol" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <label class="form-label">Régimen (hs)</label>
-                                            <input type="text" id="inputEditRegimen" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <label class="form-label">Horas diarias</label>
-                                            <input type="text" id="inputEditHorasDiarias" class="form-control"
-                                                readonly required title="Horas Diarias">
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <label class="form-label">Es coordinador</label>
-                                            <input type="text" id="inputEditCordinador" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <label class="form-label">Afiliado</label>
-                                            <input type="text" id="inputEditAfiliado" class="form-control" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="cerrarEdicionEmpleado()">
+                    <button class="btn btn-secondary" onclick="cerrarModalLegajo()">
                         Atrás
                     </button>
                 </div>
@@ -1071,7 +837,7 @@
                                 <tbody></tbody>
                             </table>
 
-                            <button type="button" id="btnAgregarNovedad" class="btn-primario">
+                            <button type="button" id="btnAgregarNovedad" class="btn btn-primary">
                                 Agregar novedad
                             </button>
                         </div>
@@ -1182,8 +948,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secundario" onclick="cerrarModalNovedad()">Cancelar</button>
-                    <button type="submit" class="btn btn-primario" form="formCargaNovedad"
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalNovedad()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" form="formCargaNovedad"
                         id="btnRegistrarNovedad">
                         <i class="fa-solid fa-floppy-disk me-1"></i>
                         Registrar novedad

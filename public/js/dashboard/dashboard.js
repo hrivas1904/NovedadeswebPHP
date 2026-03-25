@@ -11,6 +11,7 @@ let filtrosDashboard = {
     hasta: null,
 };
 
+
 function formatearPesos(valor) {
     if (valor === null || valor === undefined || valor === "") return "";
 

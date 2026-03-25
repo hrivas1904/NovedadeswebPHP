@@ -794,8 +794,8 @@ $(document).on("click", "#btnAgregarNovedad", function () {
         <td>
             <input type="text" class="form-control" name="descripcion[]">
         </td>
-        <td>
-            <input type="text" class="form-control d-none" name="tipo_valor[]">
+        <td class="d-none">
+            <input type="text" class="form-control" name="tipo_valor[]">
         </td>
         <td>
             <button type="button" class="btn btn-danger btnEliminarRow">

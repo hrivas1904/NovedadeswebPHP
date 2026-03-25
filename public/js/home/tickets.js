@@ -149,7 +149,7 @@ $(document).ready(function () {
                         return `<span class="text-muted">—</span>`;
                     }
                     return `
-                        <button class="btn btn-sm btn-primario btnResolverTicket"
+                        <button class="btn btn-primary btnResolverTicket"
                             data-id="${d.id}" title="Resolver ticket">
                             <i class="fa-solid fa-check"></i>
                         </button>

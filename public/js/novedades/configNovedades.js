@@ -64,8 +64,8 @@ $(document).ready(function () {
                     data: "ID_NOVEDAD", className: "text-center",
                     render: function (data) {
                         return `
-                            <button class="btn-alerta btn-edit" data-id="${data}">
-                                <i class="fa-solid fa-pen-to-square"></i>
+                            <button class="btn btn-secondary btn-edit" data-id="${data}">
+                                <i class="fa-solid fa-eye"></i>
                             </button>
                         `;
                     },

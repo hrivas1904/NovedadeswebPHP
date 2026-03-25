@@ -359,7 +359,7 @@ $(document).ready(function () {
                     render: function (data) {
                         let botones = `
                             <button 
-                                class="btn-secundario btn-VerLegajo"
+                                class="btn btn-secondary btn-VerLegajo"
                                 data-id="${data.LEGAJO}"
                                 title='Ver legajo'
                                 data-nombre="${data.COLABORADOR}">

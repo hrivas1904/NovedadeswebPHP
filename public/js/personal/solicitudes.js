@@ -379,11 +379,11 @@ $(document).ready(function () {
                             botones += `
                                 <button
                                     type="button"
-                                    class="btn-primario btn-AprobarSolicitud"
+                                    class="btn btn-primary btn-AprobarSolicitud"
                                     data-id="${row.id}"
                                     data-nombre="${row.colaborador}"
                                     title="Aprobar solicitud">
-                                    <i class="fa-solid fa-square-check"></i>
+                                    <i class="fa-solid fa-file-circle-question"></i>
                                 </button>
                             `;
                         }
@@ -392,7 +392,7 @@ $(document).ready(function () {
                             botones += `
                                 <button
                                     type="button"
-                                    class="btn-secundario btn-RechazarSolicitud"
+                                    class="btn-danger btn btn-RechazarSolicitud"
                                     data-id="${row.id}"
                                     data-nombre="${row.colaborador}"
                                     title="Anular solicitud">
