@@ -107,3 +107,45 @@ $(document).on("click", ".alerta-item", function () {
     });
 
 });
+
+$(document).on("click", "#btnLimpiarAlertas", function (e) {
+    e.stopPropagation();
+
+    Swal.fire({
+        title: "¿Limpiar notificaciones?",
+        text: "Se marcarán todas como leídas",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00b18d",
+        cancelButtonColor: "#004a7c",
+        confirmButtonText: "Sí, limpiar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            $.ajax({
+                url: "/alertas/limpiar",
+                type: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                success: function () {
+
+                    // UI
+                    $("#listaAlertas").html(`
+                        <li class="text-muted p-2">Sin notificaciones</li>
+                    `);
+
+                    $("#contadorAlertas").hide();
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Listo",
+                        text: "Notificaciones limpiadas"
+                    });
+                }
+            });
+
+        }
+    });
+});

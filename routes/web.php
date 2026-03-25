@@ -263,3 +263,4 @@ Route::post('/tickets/resolver', [TicketController::class, 'resolver'])
 //alertas
 Route::get('/alertas/listar', [AlertasController::class, 'listar']);
 Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
+Route::post('/alertas/limpiar', [AlertasController::class, 'limpiarTodas']);

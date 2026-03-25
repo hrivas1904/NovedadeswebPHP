@@ -32,3 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+function swalThemeConfig() {
+    const isDark = document.body.getAttribute("data-theme") === "dark";
+
+    return {
+        background: isDark ? "#1e293b" : "#ffffff",
+        color: isDark ? "#e2e8f0" : "#1e293b",
+        confirmButtonColor: "#00b18d",
+        cancelButtonColor: "#004a7c"
+    };
+}

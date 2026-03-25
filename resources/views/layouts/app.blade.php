@@ -119,7 +119,12 @@
                     </button>
 
                     <div id="dropdownAlertas" class="dropdown-alertas">
-                        <div class="p-2 fw-semibold border-bottom">Notificaciones</div>
+                        <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                            <span class="fw-semibold">Notificaciones</span>
+                            <button id="btnLimpiarAlertas" class="btn btn-sm text-danger p-0">
+                                Limpiar
+                            </button>
+                        </div>
                         <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
                     </div>
 

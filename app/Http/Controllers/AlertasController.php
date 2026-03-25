@@ -38,4 +38,20 @@ class AlertasController extends Controller
             'ok' => true
         ]);
     }
+
+    public function limpiarTodas()
+    {
+        $userId = Auth::user()->id;
+
+        DB::update("
+        UPDATE alertas_usuario
+        SET leida = 1
+        WHERE usuario_destino = ?
+        AND leida = 0
+    ", [$userId]);
+
+        return response()->json([
+            'ok' => true
+        ]);
+    }
 }
