@@ -50,6 +50,11 @@ class PersonalController extends Controller
         return view('personal.miLegajo');
     }
 
+    public function administrarUsuarios()
+    {
+        return view('personal.administrarUsuarios');
+    }
+
     public function listarAreas()
     {
         try {

@@ -42,6 +42,9 @@ Route::get('/controlAsistencia', [PersonalController::class, 'controlAsistencia'
 Route::get('/configuraciones', [PersonalController::class, 'configuraciones'])
     ->name('configuraciones');
 
+Route::get('/administrarUsuarios', [PersonalController::class, 'administrarUsuarios'])
+    ->name('administrarUsuarios');
+
 Route::get('/solicitudes', [PersonalController::class, 'solicitudes'])
     ->name('personal.solicitudes');
 

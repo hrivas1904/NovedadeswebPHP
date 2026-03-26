@@ -72,6 +72,12 @@
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
                             <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario servicios</a></li>
                             @endif
+
+                            @if (Auth::user()->rol === 'Administrador/a')
+                            <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar usuarios</a></li>
+                            <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>
+                            @endif
+
                         </ul>
                     </li>
 
