@@ -70,7 +70,7 @@
 
             <!-- TABLAS -->
             <div class="card p-2 mt-4">
-                <h5>Guardia (Adulto vs Pediátrica)</h5>
+                <h5>Guardia (Adulto - Pediátrica)</h5>
                 <table id="tablaGuardias" class="table table-bordered"></table>
             </div>
 
@@ -84,7 +84,7 @@
                 <table id="tablaUti" class="table table-bordered"></table>
             </div>
 
-            <div class="card p-2 mt-4">
+            <div class="card p-2 mt-4 d-none">
                 <h5>Internación (Ambulatoria vs No)</h5>
                 <table id="tablaInternacion" class="table table-bordered"></table>
             </div>
