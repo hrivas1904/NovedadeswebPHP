@@ -184,8 +184,7 @@
                         <!-- PASSWORD -->
                         <div class="col-md-6">
                             <label class="form-label">Nueva contraseña</label>
-                            <input type="password" class="form-control" id="edit_password"
-                                placeholder="Dejar vacío para no modificar">
+                            <input type="password" class="form-control" id="edit_password">
                         </div>
 
                         <!-- ROL -->
