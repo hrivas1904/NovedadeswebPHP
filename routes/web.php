@@ -133,7 +133,14 @@ Route::get('/servicios-empleados/por-area/{id}', [PersonalController::class, 'li
 
 Route::put('/personal/{legajo}', [PersonalController::class, 'update']);
 
+Route::get('/usuarios/listar', [PersonalController::class, 'listarUsuarios']);
 
+Route::post('/usuarios/crear', [PersonalController::class, 'crearUsuario']);
+
+Route::get('/usuarios/obtener/{legajo}', [PersonalController::class, 'obtener']);
+Route::post('/usuarios/actualizar', [PersonalController::class, 'actualizar']);
+
+Route::post('/usuarios/baja', [PersonalController::class, 'baja']);
 
 //RUTAS DE SP NOVEDADES
 

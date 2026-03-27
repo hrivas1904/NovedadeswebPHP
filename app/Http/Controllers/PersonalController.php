@@ -699,4 +699,136 @@ class PersonalController extends Controller
             ], 500);
         }
     }
+
+    public function listarUsuarios(Request $request)
+    {
+        $area = $request->input('area');     // puede venir null
+        $estado = $request->input('estado'); // puede venir null
+
+        $usuarios = DB::select('CALL SP_LISTA_USUARIOS(?, ?)', [
+            $area,
+            $estado
+        ]);
+
+        return response()->json([
+            'data' => $usuarios
+        ]);
+    }
+
+    public function crearUsuario(Request $request)
+    {
+        try {
+
+            $name = $request->name;
+            $legajo = $request->legajo;
+            $username = $request->username ?: $legajo;
+            $password = bcrypt($request->password);
+            $rol = $request->rol;
+            $area = $request->area;
+
+            DB::statement('CALL SP_REGISTRAR_USUARIO(?, ?, ?, ?, ?, ?, @p_mensaje)', [
+                $name,
+                $legajo,
+                $username,
+                $password,
+                $rol,
+                $area
+            ]);
+
+            $resultado = DB::select('SELECT @p_mensaje as mensaje');
+            $mensaje = $resultado[0]->mensaje ?? 'ERROR';
+
+            if ($mensaje !== 'OK') {
+                return response()->json([
+                    'ok' => false,
+                    'mensaje' => $mensaje
+                ], 400);
+            }
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => 'Usuario creado correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error en el servidor',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function obtener($legajo)
+    {
+        $usuario = DB::table('users')
+            ->where('legajo', $legajo)
+            ->first();
+
+        return response()->json($usuario);
+    }
+
+    public function actualizar(Request $request)
+    {
+        try {
+
+            $data = [
+                'name' => $request->name,
+                'username' => $request->username ?: $request->legajo,
+                'rol' => $request->rol,
+                'area_id' => $request->area
+            ];
+
+            // solo actualiza password si viene
+            if ($request->password) {
+                $data['password'] = bcrypt($request->password);
+            }
+
+            DB::table('users')
+                ->where('legajo', $request->legajo)
+                ->update($data);
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => 'Usuario actualizado correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error al actualizar'
+            ], 500);
+        }
+    }
+
+    public function baja(Request $request)
+    {
+        try {
+
+            $legajo = $request->legajo;
+
+            DB::statement('CALL SP_BAJA_USUARIO(?, @p_mensaje)', [$legajo]);
+
+            $resultado = DB::select('SELECT @p_mensaje as mensaje');
+            $mensaje = $resultado[0]->mensaje ?? 'ERROR';
+
+            if ($mensaje !== 'OK') {
+                return response()->json([
+                    'ok' => false,
+                    'mensaje' => $mensaje
+                ], 400);
+            }
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => 'Usuario dado de baja correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error al dar de baja'
+            ], 500);
+        }
+    }
 }

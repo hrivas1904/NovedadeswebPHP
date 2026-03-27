@@ -127,8 +127,8 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button type="button" class="btn-secundario" id="btnCerrarModalEvento">Cancelar</button>
-                    <button type="button" class="btn-primario" id="btnGuardarEvento">Guardar</button>
+                    <button type="button" class="btn btn-secondary" id="btnCerrarModalEvento">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarEvento">Guardar</button>
                 </div>
             </div>
         </div>
