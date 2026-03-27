@@ -103,3 +103,32 @@ html, body {
 .menu-dropdown a:hover {
     background: rgba(255,255,255,0.15);
 }
+
+.leyenda-resultados {
+    font-size: 14px;
+}
+
+.item-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.color-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.verde {
+    background-color: green;
+}
+
+.naranja {
+    background-color: orange;
+}
+
+.rojo {
+    background-color: red;
+}

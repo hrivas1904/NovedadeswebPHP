@@ -201,6 +201,10 @@ Route::post('/encuestas/procesar', [CalidadController::class, 'procesarExcel']);
 
 Route::get('/encuestas/resultados/{idImportacion}', [CalidadController::class, 'resultados']);
 
+Route::get('/dashboard/resultados', [CalidadController::class, 'dashboardResultados']);
+
+Route::get('/dashboard/completo', [CalidadController::class, 'dashboardCompleto']);
+
 
 //cronograma
 Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);

@@ -99,7 +99,7 @@ class CalidadController extends Controller
         $esInternacion = $tipoEncuesta->grupo === 'INTERNACION';
 
         // 📌 Definir columnas base
-        $colInicioPreguntas = $esInternacion ? 5 : 4;
+        $colInicioPreguntas = $esInternacion ? 6 : 4;
 
         // 📌 Obtener preguntas BD
         $preguntasDB = DB::table('preguntas_encuestas')
@@ -151,6 +151,7 @@ class CalidadController extends Controller
                 $fechaEncuesta = $this->parseFecha($fila[2] ?? null);
                 $paciente = $fila[3] ?? null;
                 $tipoInternacion = $esInternacion ? ($fila[4] ?? null) : null;
+                $area = $esInternacion ? ($fila[5] ?? null) : null;
 
                 foreach ($preguntasDB as $idx => $preg) {
 
@@ -167,6 +168,7 @@ class CalidadController extends Controller
                         'fechaEncuesta' => $fechaEncuesta,
                         'paciente' => $paciente,
                         'tipoInternacion' => $tipoInternacion,
+                        'area' => $area,
 
                         'valorNumerico' => $preg->tipoRespuesta === 'NUMERICA' && is_numeric($valorRaw)
                             ? (int)$valorRaw
@@ -259,6 +261,73 @@ class CalidadController extends Controller
             return response()->json([
                 'error' => true,
                 'mensaje' => 'Error al obtener resultados',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function dashboardResultados(Request $request)
+    {
+        $desde = $request->desde === "null" || $request->desde === "" ? null : $request->desde;
+        $hasta = $request->hasta === "null" || $request->hasta === "" ? null : $request->hasta;
+        $tipo  = $request->tipo === "null" || $request->tipo === "" ? null : $request->tipo;
+
+        $resultados = DB::select('CALL SP_DASHBOARD_RESULTADOS(?, ?, ?)', [
+            $desde,
+            $hasta,
+            $tipo
+        ]);
+
+        return response()->json($resultados);
+    }
+
+    public function dashboardCompleto(Request $request)
+    {
+        $desde = $request->query('desde');
+        $hasta = $request->query('hasta');
+        $tipo  = $request->query('tipo'); // opcional
+
+        try {
+
+            return response()->json([
+
+                // KPI
+                'kpi' => DB::select(
+                    'CALL SP_KPI_GENERAL(?, ?, ?)',
+                    [$desde, $hasta, $tipo]
+                ),
+
+                // Guardia adulto / pediatrica
+                'guardias' => DB::select(
+                    'CALL SP_TABLA_GUARDIAS(?, ?, ?)',
+                    [$desde, $hasta, $tipo]
+                ),
+
+                // Internación por área
+                'areas' => DB::select(
+                    'CALL SP_TABLA_AREAS(?, ?, ?)',
+                    [$desde, $hasta, $tipo]
+                ),
+
+                // UTI detalle
+                'uti' => DB::select(
+                    'CALL SP_TABLA_UTI(?, ?, ?)',
+                    [$desde, $hasta, $tipo]
+                ),
+
+                // Internación ambulatoria vs no
+                'internacion' => DB::select(
+                    'CALL SP_TABLA_INTERNACION(?, ?, ?)',
+                    [$desde, $hasta, $tipo]
+                ),
+
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error en dashboard',
                 'detalle' => $e->getMessage()
             ], 500);
         }
