@@ -868,19 +868,19 @@ $(document).ready(function () {
                 {
                     extend: "excelHtml5",
                     text: '<i class="fa-solid fa-file-excel"></i> Excel',
-                    className: "btn-export-excel dt-buttons"
+                    className: "btn-export-excel dt-buttons",
                 },
                 {
                     extend: "pdfHtml5",
                     text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                    className: "btn-export-pdf dt-buttons"
+                    className: "btn-export-pdf dt-buttons",
                 },
                 {
                     extend: "print",
                     text: '<i class="fa-solid fa-print"></i> Imprimir',
                     title: "Nómina de personal dt-buttons",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                    className: "btn-printer"
+                    className: "btn-printer",
                 },
             ],
         });
