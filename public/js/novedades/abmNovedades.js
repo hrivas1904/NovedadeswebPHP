@@ -349,7 +349,7 @@ $(document).ready(function () {
     if ($("#tbSeleccionColabs").length > 0) {
         tablaPersonal = $("#tbSeleccionColabs").DataTable({
             ajax: {
-                url: "/personal/listar",
+                url: "/personal/listarCargaMasiva",
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {

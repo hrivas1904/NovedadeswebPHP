@@ -329,6 +329,7 @@
                                             <option selected="">Seleccione opción</option>
                                             <option value="Tiempo fijo">PLAZO FIJO</option>
                                             <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
+                                            <option value="Monotributista">MONOTRIBUTISTA</option>
                                             <option value="Pasantía">PASANTÍA</option>
                                             <option value="Práctica profesional">PRÁCTICA PROFESIONAL</option>
                                         </select>
@@ -656,6 +657,7 @@
                                         <select name="tipo_contrato" id="inputTipoContrato" class="form-select">
                                             <option value="Tiempo fijo">PLAZO FIJO</option>
                                             <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
+                                            <option value="Monotributista">MONOTRIBUTISTA</option>
                                             <option value="Pasantía">PASANTÍA</option>
                                             <option value="Práctica profesional">PRÁCTICA PROFESIONAL</option>
                                         </select>

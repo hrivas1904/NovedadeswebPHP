@@ -279,6 +279,32 @@ class PersonalController extends Controller
         }
     }
 
+    public function listarCargaMasiva(Request $request)
+    {
+        try {
+            $areaId    = $request->area_id ?: null;
+            $categId   = $request->categ_id ?: null;
+            $convenio  = $request->p_convenio ?: null;
+            $regimen   = $request->p_regimen ?: null;
+            $uti   = $request->p_uti ?: null;
+            $noche   = $request->p_noche ?: null;
+
+            $empleados = DB::select(
+                "CALL SP_LISTA_EMPLEADOS_CARGA_MASIVA(?, ?, ?, ?, ?, ?)",
+                [$areaId, $categId, $convenio, $regimen, $uti, $noche]
+            );
+
+            return response()->json([
+                'data' => $empleados
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function listarPersonalBaja(Request $request)
     {
         try {

@@ -107,7 +107,7 @@
             <div class="modal-body p-0">
 
                 <!-- Contenedor chat -->
-                <div id="chatContainer" class="p-3" style="height: 400px; overflow-y: auto; background:#f5f5f5;">
+                <div id="chatContainer" class="p-3" data-user-id="{{ auth()->user()->id }} style="height: 400px; overflow-y: auto; background:#f5f5f5;">
                 </div>
 
             </div>

@@ -1,10 +1,10 @@
 let tablaTickets = null;
-let idTicketGlobal=null;
+let idTicketGlobal = null;
 
 $.ajaxSetup({
     headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
+        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+    },
 });
 
 $("#selectorTipoTicketArea").on("change", function () {
@@ -151,7 +151,6 @@ $("#inputMensaje").on("keypress", function (e) {
 });
 
 $("#btnEnviarMensaje").on("click", function () {
-
     let mensaje = $("#inputMensaje").val().trim();
 
     if (!mensaje) return;
@@ -161,21 +160,18 @@ $("#btnEnviarMensaje").on("click", function () {
         type: "POST",
         data: {
             idTicket: idTicketGlobal,
-            mensaje: mensaje
+            mensaje: mensaje,
         },
 
         success: function (resp) {
-
             $("#inputMensaje").val("");
 
             verChat(idTicket);
-
         },
         error: function () {
             Swal.fire("Error", "No se pudo enviar el mensaje", "error");
-        }
+        },
     });
-
 });
 
 function abrirChat(idTicket) {
@@ -194,10 +190,23 @@ function verChat(idTicket) {
             let html = "";
 
             res.forEach((m) => {
+                let esMio = m.usuario_id == $("#chatContainer").data("user-id");
+
                 html += `
-                    <div class="mensaje ${clase} mb-4">
-                        <div>${m.mensaje}</div>
-                        <small>${m.name ?? m.area} - ${m.fechaHora}</small>
+                    <div class="mb-3 d-flex ${esMio ? "text-right" : "text-left"}">                        
+                        <div class="d-flex ${esMio ? "flex-row-reverse" : ""} align-items-start" style="max-width: 70%;">                            
+                            <div class="mx-2">
+                                <i class="fa-solid fa-circle-user fs-4 text-secondary"></i>
+                            </div>
+                            <div class="bg-white p-2 rounded shadow-sm">                                
+                                <small class="text-muted d-block mb-1">
+                                    ${m.name ?? ""} - ${m.fechaHora}
+                                </small>
+                                <div>
+                                    ${m.mensaje}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
@@ -246,12 +255,22 @@ $(document).ready(function () {
                 orderable: false,
                 searchable: false,
                 className: "text-center",
-                render: function (d) {
+                render: function (d) {                    
                     if (USER_ROLE !== "Administrador/a") {
-                        return `<span class="text-muted"></span>`;
+                        return `
+                            <button class="btn btn-secondary btnVerChat"
+                                data-id="${d.id}" title="Resolver ticket">
+                                <i class="fa-regular fa-message"></i>
+                            </button>
+                        `;
                     }
                     if (d.estado === "RESUELTO") {
-                        return `<span class="text-muted">—</span>`;
+                        return `
+                            <button class="btn btn-secondary btnVerChat"
+                                data-id="${d.id}" title="Resolver ticket">
+                                <i class="fa-regular fa-message"></i>
+                            </button>
+                        `;
                     }
                     return `
                         <button class="btn btn-primary btnResolverTicket"
@@ -261,7 +280,7 @@ $(document).ready(function () {
                         <button class="btn btn-secondary btnVerChat"
                             data-id="${d.id}" title="Resolver ticket">
                             <i class="fa-regular fa-message"></i>
-                        </button>
+                        </button>                        
                     `;
                 },
             },
@@ -272,7 +291,6 @@ $(document).ready(function () {
         scrollCollapse: true,
         scrollY: "32vh",
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
             lengthMenu: "_MENU_",
             paginate: {
                 first: "<<",
@@ -297,7 +315,7 @@ $(document).ready(function () {
         event.stopPropagation();
         const idTicket = $(this).data("id");
         console.log("Id registro recibido: " + idTicket);
-        idTicketGlobal=idTicket;
+        idTicketGlobal = idTicket;
         abrirChat(idTicket);
     });
 });

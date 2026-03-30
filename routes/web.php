@@ -105,6 +105,9 @@ Route::post('/personal/guardar', [PersonalController::class, 'store'])
 Route::get('/personal/listar', [PersonalController::class, 'listar'])
     ->name('personal.listar');
 
+Route::get('/personal/listarCargaMasiva', [PersonalController::class, 'listarCargaMasiva'])
+    ->name('personal.listarCargaMasiva');
+
 Route::get('/personal/listarPersonalBaja', [PersonalController::class, 'listarPersonalBaja'])
     ->name('personal.listarPersonalBaja');
 

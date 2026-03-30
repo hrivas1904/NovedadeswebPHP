@@ -1,64 +1,62 @@
-#chatContainer {
-    background: #e5ddd5;
-}
-
-/* fila */
+/* contenedor fila */
 .chat-row {
     display: flex;
     margin-bottom: 10px;
 }
 
-/* mensaje mío (derecha) */
+/* alineación */
 .chat-row.me {
     justify-content: flex-end;
 }
 
-/* mensaje otro (izquierda) */
 .chat-row.other {
     justify-content: flex-start;
 }
 
+/* contenido interno */
+.chat-content {
+    display: flex;
+    align-items: flex-start;
+    max-width: 70%;
+}
+
+/* invertir orden cuando es mío */
+.chat-content.me {
+    flex-direction: row-reverse;
+}
+
+/* avatar */
+.chat-avatar {
+    margin: 0 8px;
+    font-size: 20px;
+    color: #6c757d;
+}
+
 /* burbuja */
 .chat-bubble {
-    max-width: 65%;
-    padding: 10px 12px;
+    padding: 10px;
     border-radius: 12px;
-    position: relative;
     font-size: 14px;
 }
 
-/* colores */
+/* colores tipo WhatsApp */
 .chat-row.me .chat-bubble {
-    background: #d9fdd3; /* verde whatsapp */
+    background-color: #d1e7dd; /* verde */
 }
 
 .chat-row.other .chat-bubble {
-    background: #ffffff;
+    background-color: #ffffff;
 }
 
-/* texto */
-.chat-message {
-    margin-bottom: 5px;
-}
-
-/* meta */
-.chat-meta {
+/* header */
+.chat-header {
+    display: block;
     font-size: 11px;
-    color: #667781;
-    text-align: right;
+    color: #6c757d;
+    margin-bottom: 3px;
 }
 
-/* nombre */
-.chat-user {
-    font-weight: 600;
-    margin-right: 5px;
-}
-
-.chat-bubble {
-    animation: fadeIn 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+/* mensaje */
+.chat-message {
+    word-break: break-word;
 }
