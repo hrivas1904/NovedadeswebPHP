@@ -13,13 +13,16 @@ class TicketController extends Controller
         try {
 
             $legajo = Auth::user()->legajo;
+            $idUser = Auth::user()->id;
 
             DB::statement(
-                "CALL SP_REGISTRAR_TICKET(?, ?, ?, @p_msj)",
+                "CALL SP_REGISTRAR_TICKET(?, ?, ?, ?, ?, @p_msj)",
                 [
                     $request->tipo,
                     $request->descripcion,
-                    $legajo
+                    $legajo,
+                    $request->area,
+                    $idUser
                 ]
             );
 
@@ -103,5 +106,34 @@ class TicketController extends Controller
                 'error' => $e->getMessage()
             ]);
         }
+    }
+
+    public function verChat(Request $request)
+    {
+        $id = $request->id;
+
+        $data = DB::select('CALL SP_VER_CHAT_TICKET(?)', [$id]);
+
+        return response()->json($data);
+    }
+
+    public function responderTicket(Request $request)
+    {
+        $idTicket = $request->idTicket;
+        $mensaje = $request->mensaje;
+        $usuarioId = Auth::user()->id;
+
+        DB::statement('CALL SP_RESPONDER_TICKET(?, ?, ?, @p_msj)', [
+            $idTicket,
+            $mensaje,
+            $usuarioId
+        ]);
+
+        $result = DB::select("SELECT @p_msj as mensaje");
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => $result[0]->mensaje ?? ''
+        ]);
     }
 }

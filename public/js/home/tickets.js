@@ -1,8 +1,58 @@
 let tablaTickets = null;
+let idTicketGlobal=null;
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+$("#selectorTipoTicketArea").on("change", function () {
+    $("#selectorTipoTicketRecursos").val("");
+    $("#selectorTipoTicketSistemas").val("");
+    $("#inputTipoTicket").val("");
+
+    if ($(this).val() === "RRHH") {
+        $("#divTipoTicketRecursos").removeClass("d-none");
+        $("#divTipoTicketSistemas").addClass("d-none");
+    } else if ($(this).val() === "SISTEMAS") {
+        $("#divTipoTicketSistemas").removeClass("d-none");
+        $("#divTipoTicketRecursos").addClass("d-none");
+    }
+});
+
+$("#selectorTipoTicketRecursos").on("change", function () {
+    $("#inputTipoTicket").val($(this).val());
+});
+
+$("#selectorTipoTicketSistemas").on("change", function () {
+    $("#inputTipoTicket").val($(this).val());
+});
+
+function limpiarFormulario() {
+    $("#selectorTipoTicketArea").val("");
+    $("#selectorTipoTicketRecursos").val("");
+    $("#selectorTipoTicketSistemas").val("");
+    $("#inputTipoTicket").val("");
+    $("#inputDescripcion").val("");
+
+    $("#divTipoTicketRecursos").addClass("d-none");
+    $("#divTipoTicketSistemas").addClass("d-none");
+}
 
 $("#btnEmitirTicket").on("click", function () {
-    let tipo = $("#selectorTipoTicket").val();
-    let descripcion = $("input[name='descripcion']").val(); 
+    let tipo = $("#inputTipoTicket").val();
+    let descripcion = $("#inputDescripcion").val();
+    let area = $("#selectorTipoTicketArea").val();
+
+    if (!area) {
+        Swal.fire(
+            "Atención",
+            "Debe seleccionar un área para el ticket",
+            "warning",
+        );
+        return;
+    }
 
     if (!tipo) {
         Swal.fire("Atención", "Debe seleccionar un tipo de ticket", "warning");
@@ -20,6 +70,7 @@ $("#btnEmitirTicket").on("click", function () {
         data: {
             tipo: tipo,
             descripcion: descripcion,
+            area: area,
         },
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -35,9 +86,8 @@ $("#btnEmitirTicket").on("click", function () {
             });
 
             if (resp.ok) {
-                $("#selectorTipoTicket").val("");
-                $("input[name='descripcion']").val("");
-                if (typeof tablaTickets !== 'undefined') {
+                limpiarFormulario();
+                if (typeof tablaTickets !== "undefined") {
                     tablaTickets.ajax.reload(null, false);
                 }
             }
@@ -94,6 +144,72 @@ function resolverTicket(idTicket) {
     });
 }
 
+$("#inputMensaje").on("keypress", function (e) {
+    if (e.which === 13) {
+        $("#btnEnviarMensaje").click();
+    }
+});
+
+$("#btnEnviarMensaje").on("click", function () {
+
+    let mensaje = $("#inputMensaje").val().trim();
+
+    if (!mensaje) return;
+
+    $.ajax({
+        url: "/tickets/responder",
+        type: "POST",
+        data: {
+            idTicket: idTicketGlobal,
+            mensaje: mensaje
+        },
+
+        success: function (resp) {
+
+            $("#inputMensaje").val("");
+
+            verChat(idTicket);
+
+        },
+        error: function () {
+            Swal.fire("Error", "No se pudo enviar el mensaje", "error");
+        }
+    });
+
+});
+
+function abrirChat(idTicket) {
+    $("#idTicketActual").val(idTicket);
+    $("#modalChatTicket").modal("show");
+    verChat(idTicket);
+}
+
+function verChat(idTicket) {
+    $.ajax({
+        url: "/tickets/verChat",
+        type: "GET",
+        data: { id: idTicket },
+
+        success: function (res) {
+            let html = "";
+
+            res.forEach((m) => {
+                html += `
+                    <div class="mensaje ${clase} mb-4">
+                        <div>${m.mensaje}</div>
+                        <small>${m.name ?? m.area} - ${m.fechaHora}</small>
+                    </div>
+                `;
+            });
+
+            $("#chatContainer").html(html);
+
+            // Scroll automático al final
+            $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
+        },
+    });
+}
+
 $(document).ready(function () {
     tablaTickets = $("#tablaTickets").DataTable({
         ajax: {
@@ -107,17 +223,6 @@ $(document).ready(function () {
             { data: "fecha", width: "6%" },
             { data: "colaborador", width: "16%" },
             { data: "tipo" },
-            {
-                data: "descripcion",
-                width: "45%",
-                render: function (data) {
-                    return `
-                        <div class="descripcion-ticket">
-                            ${data ?? ""}
-                        </div>
-                    `;
-                },
-            },
             {
                 data: "estado",
                 width: "5%",
@@ -150,8 +255,12 @@ $(document).ready(function () {
                     }
                     return `
                         <button class="btn btn-primary btnResolverTicket"
-                            data-id="${d.id}" title="Resolver ticket">
+                            data-id="${d.id}" title="Ver chat">
                             <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button class="btn btn-secondary btnVerChat"
+                            data-id="${d.id}" title="Resolver ticket">
+                            <i class="fa-regular fa-message"></i>
                         </button>
                     `;
                 },
@@ -181,5 +290,14 @@ $(document).ready(function () {
         const idTicket = $(this).data("id");
         console.log("Id registro recibido: " + idTicket);
         resolverTicket(idTicket);
+    });
+
+    $(document).on("click", ".btnVerChat", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const idTicket = $(this).data("id");
+        console.log("Id registro recibido: " + idTicket);
+        idTicketGlobal=idTicket;
+        abrirChat(idTicket);
     });
 });

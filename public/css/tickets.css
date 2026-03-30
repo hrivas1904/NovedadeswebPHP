@@ -1,0 +1,64 @@
+#chatContainer {
+    background: #e5ddd5;
+}
+
+/* fila */
+.chat-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+/* mensaje mío (derecha) */
+.chat-row.me {
+    justify-content: flex-end;
+}
+
+/* mensaje otro (izquierda) */
+.chat-row.other {
+    justify-content: flex-start;
+}
+
+/* burbuja */
+.chat-bubble {
+    max-width: 65%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    position: relative;
+    font-size: 14px;
+}
+
+/* colores */
+.chat-row.me .chat-bubble {
+    background: #d9fdd3; /* verde whatsapp */
+}
+
+.chat-row.other .chat-bubble {
+    background: #ffffff;
+}
+
+/* texto */
+.chat-message {
+    margin-bottom: 5px;
+}
+
+/* meta */
+.chat-meta {
+    font-size: 11px;
+    color: #667781;
+    text-align: right;
+}
+
+/* nombre */
+.chat-user {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.chat-bubble {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -272,6 +272,10 @@ Route::get('/tickets/lista', [TicketController::class, 'listar'])
 Route::post('/tickets/resolver', [TicketController::class, 'resolver'])
     ->name('tickets.resolver');
 
+Route::get('/tickets/verChat', [TicketController::class, 'verChat']);
+
+Route::post('/tickets/responder', [TicketController::class, 'responderTicket']);
+
 //alertas
 Route::get('/alertas/listar', [AlertasController::class, 'listar']);
 Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
