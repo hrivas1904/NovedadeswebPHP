@@ -68,6 +68,8 @@
                             <th>HD</th>
                             <th>CONVENIO</th>
                             <th>ESTADO</th>
+                            <th>UTI</th>
+                            <th>NOCHE</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>

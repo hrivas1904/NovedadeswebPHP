@@ -803,6 +803,8 @@ $(document).ready(function () {
                         return `<span class="badge ${clase}">${data}</span>`;
                     },
                 },
+                { data: "UTI", width: "10%", className: "text-start", visible: false },
+                { data: "NOCHE", width: "10%", className: "text-start", visible: false },
                 {
                     data: null,
                     className: "text-center acciones-nowrap",
@@ -866,14 +868,12 @@ $(document).ready(function () {
                 {
                     extend: "excelHtml5",
                     text: '<i class="fa-solid fa-file-excel"></i> Excel',
-                    className: "btn-export-excel dt-buttons",
-                    exportOptions: { columns: ":visible" },
+                    className: "btn-export-excel dt-buttons"
                 },
                 {
                     extend: "pdfHtml5",
                     text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                    className: "btn-export-pdf dt-buttons",
-                    exportOptions: { columns: ":visible" },
+                    className: "btn-export-pdf dt-buttons"
                 },
                 {
                     extend: "print",
