@@ -880,7 +880,7 @@ $(document).ready(function () {
                     text: '<i class="fa-solid fa-print"></i> Imprimir',
                     title: "Nómina de personal dt-buttons",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                    className: "btn-printer",
+                    className: "btn-printer"
                 },
             ],
         });
