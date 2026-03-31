@@ -321,17 +321,17 @@ $(document).ready(function () {
                 },
                 { data: "area", width: "10%", className: "text-start" },
                 {
+                    data: "numero_cuenta",
+                    render: function (data, type, row) {
+                        return data;
+                    },
+                },
+                {
                     data: "cbu",
                     render: function (data, type, row) {
                         if (type === "display" || type === "filter") {
                             return data;
                         }
-                        return data;
-                    },
-                },
-                {
-                    data: "numero_cuenta",
-                    render: function (data, type, row) {
                         return data;
                     },
                 },
