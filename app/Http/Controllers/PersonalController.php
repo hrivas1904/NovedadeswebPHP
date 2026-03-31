@@ -514,8 +514,8 @@ class PersonalController extends Controller
     public function aprobarSolicitud(Request $request)
     {
         try {
-            
-            $idUser=Auth::user()->id;
+
+            $idUser = Auth::user()->id;
 
             $request->validate([
                 'idSolicitud' => 'required|integer'
@@ -683,13 +683,14 @@ class PersonalController extends Controller
     public function actualizarLegajoColaborador(Request $request, $legajo)
     {
         try {
+
             DB::statement("CALL SP_ACTUALIZAR_LEGAJO_COLABORADOR(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
                 $legajo,
                 $request->correo,
                 $request->telefono,
                 $request->domicilio,
                 $request->localidad,
-                $request->estadoCivil,
+                $request->estado_civil,
                 $request->genero,
                 $request->obra_social_id,
                 $request->descrip_titulo,
@@ -705,7 +706,7 @@ class PersonalController extends Controller
                 $request->tipo_contrato,
                 $request->area_id,
                 $request->servicio_id,
-                $request->convenio,
+                $request->posee_convenio,
                 $request->categoria_id,
                 $request->rol_interno_id,
                 $request->regimen_horas,
@@ -721,6 +722,7 @@ class PersonalController extends Controller
                 'mensaje' => 'Legajo actualizado correctamente'
             ]);
         } catch (\Exception $e) {
+
             return response()->json([
                 'success' => false,
                 'mensaje' => 'Error al actualizar el legajo',

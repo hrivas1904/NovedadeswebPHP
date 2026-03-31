@@ -497,22 +497,19 @@
                                 <div class="row g-3">
                                     <div class="col-lg-7">
                                         <label class="form-label">Correo electrónico</label>
-                                        <input type="text" id="inputEmail" class="form-control"
-                                            name="correoEdit">
+                                        <input id="inputEmail" name="correo" class="form-control">
                                     </div>
                                     <div class="col-lg-5">
                                         <label class="form-label">Teléfono</label>
-                                        <input type="tel" id="inputTelefono" class="form-control"
-                                            name="telefonoEdit">
+                                        <input id="inputTelefono" name="telefono" class="form-control">
                                     </div>
                                     <div class="col-lg-7">
                                         <label class="form-label">Domicilio</label>
-                                        <input type="text" id="inputDomicilio" class="form-control"
-                                            name="domEdit">
+                                        <input id="inputDomicilio" name="domicilio" class="form-control">
                                     </div>
                                     <div class="col-lg-5">
                                         <label class="form-label">Localidad</label>
-                                        <select id="selectLocalidadEdit" name="localidadEdit" class="form-select"
+                                        <select id="selectLocalidadEdit" name="localidad" class="form-select"
                                             style="width:100%" required>
                                             <option value="">Seleccionar localidad</option>
                                         </select>
@@ -531,27 +528,27 @@
                                 <div class="row g-3">
                                     <div class="col-lg-2">
                                         <label class="form-label">Nombre</label>
-                                        <input id="personaEmergencia1Edit" class="form-control" name="personaEmergencia1Edit"></input>
+                                        <input id="personaEmergencia1Edit" name="personaEmerg1" class="form-control">
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Teléfono</label>
-                                        <input id="contactoEmergencia1Edit" class="form-control" name="contactoEmergencia1Edit" type="number"></input>
+                                        <input id="contactoEmergencia1Edit" name="telefEmerg1" class="form-control">
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Parentesco</label>
-                                        <input id="parentescoEmergencia1Edit" class="form-control" name="parentescoEmergencia1Edit"></input>
+                                        <input id="parentescoEmergencia1Edit" name="parentesco1" class="form-control">
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Nombre</label>
-                                        <input id="personaEmergencia2Edit" class="form-control" name="personaEmergencia2Edit"></input>
+                                        <input id="personaEmergencia2Edit" name="personaEmerg2" class="form-control">
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Teléfono</label>
-                                        <input id="contactoEmergencia2Edit" class="form-control" type="number" name="contactoEmergencia2Edit"></input>
+                                        <input id="contactoEmergencia2Edit" name="telefEmerg2" class="form-control">
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Parentesco</label>
-                                        <input id="parentescoEmergencia2Edit" class="form-control" name="parentescoEmergencia2Edit"></input>
+                                        <input id="parentescoEmergencia2Edit" name="parentesco2" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -567,11 +564,11 @@
                                 <div class="row g-3">
                                     <div class="col-lg-2">
                                         <label class="form-label">Padre</label>
-                                        <input id="padreColaboradorEdit" class="form-control" name="padreColaboradorEdit"></input>
+                                        <input id="padreColaboradorEdit" name="padre" class="form-control">
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Madre</label>
-                                        <input id="madreColaboradorEdit" class="form-control" name="madreColaboradorEdit" type="text"></input>
+                                        <input id="madreColaboradorEdit" name="madre" class="form-control">
                                     </div>
 
                                     <div class="col-lg-2 d-flex flex-column">
@@ -599,7 +596,7 @@
                                 <div class="row g-3">
                                     <div class="col-lg-3">
                                         <label class="form-label">Estado civil</label>
-                                        <select name="estado_civil" id="inputEstadoCivil" class="form-select">
+                                        <select id="inputEstadoCivil" name="estado_civil" class="form-select">
                                             <option value="SOLTERO/A">SOLTERO/A</option>
                                             <option value="CASADO/A">CASADO/A</option>
                                             <option value="DIVORCIADO/A">DIVORCIADO/A</option>
@@ -618,7 +615,7 @@
                                     <div class="col-lg-6">
                                         <label class="form-label">Obra social</label>
                                         <div class="input-group flex-nowrap">
-                                            <select name="obra_social_id" id="selectObraSocialEdit" class="form-select">
+                                            <select id="selectObraSocialEdit" name="obra_social_id" class="form-select">
                                             </select>
                                             <button type="button" class="btn btn-sm btn-primary"
                                                 id="btnAbrirModalOs">
@@ -636,11 +633,11 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <label class="form-label">Descripción de Título</label>
-                                        <input type="text" id="inputDescripTitulo" class="form-control">
+                                        <input id="inputDescripTitulo" name="descrip_titulo" class="form-control">
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">M.P.</label>
-                                        <input type="text" id="inputMatricula" class="form-control">
+                                        <input id="inputMatricula" name="mat_prof" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -656,7 +653,7 @@
                                 <div class="row g-3">
                                     <div class="col-lg-2">
                                         <label class="form-label">Tipo de contrato</label>
-                                        <select name="tipo_contrato" id="inputTipoContrato" class="form-select">
+                                        <select id="inputTipoContrato" name="tipo_contrato" class="form-select">
                                             <option value="Tiempo fijo">PLAZO FIJO</option>
                                             <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
                                             <option value="Monotributista">MONOTRIBUTISTA</option>
@@ -728,26 +725,25 @@
                                     </div>
                                     <div class="col-lg-1">
                                         <label class="form-label">Horas diarias</label>
-                                        <input type="text" id="inputHorasDiarias" class="form-control" readonly
-                                            required title="Horas Diarias">
+                                        <input id="inputHorasDiarias" name="horas_diarias" class="form-control" readonly>
                                     </div>
                                     <div class="col-lg-1">
                                         <label class="form-label">Es coordinador</label>
-                                        <select name="es_coordinador" id="inputCordinador" class="form-select">
+                                        <select id="inputCordinador" name="es_coordinador" class="form-select">
                                             <option value="SI">SI</option>
                                             <option value="NO">NO</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-1">
                                         <label class="form-label">Afiliado al sindicato</label>
-                                        <select name="es_afiliado" id="inputAfiliado" class="form-select">
+                                        <select id="inputAfiliado" name="es_afiliado" class="form-select">
                                             <option value="SI">SI</option>
                                             <option value="NO">NO</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-1">
                                         <label class="form-label">Noche</label>
-                                        <select id="inputNoche" class="form-select">
+                                        <select id="inputNoche" name="noche" class="form-select">
                                             <option value="1">SI</option>
                                             <option value="0">NO</option>
                                         </select>
@@ -755,7 +751,7 @@
                                     </div>
                                     <div class="col-lg-1">
                                         <label class="form-label">UTI</label>
-                                        <select id="inputUti" class="form-select">
+                                        <select id="inputUti" name="uti" class="form-select">
                                             <option value="1">SI</option>
                                             <option value="0">NO</option>
                                         </select>

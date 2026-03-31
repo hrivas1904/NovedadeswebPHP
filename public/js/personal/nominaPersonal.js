@@ -1507,10 +1507,14 @@ $("#formEditColaborador").on("submit", function (e) {
 
     const legajo = $("#inputLegajo").val();
 
+    const data = $(this).serialize();
+
+    console.log("DATA:", data); // debug clave
+
     $.ajax({
         url: `/personal/${legajo}/actualizar`,
         type: "POST",
-        data: $(this).serialize(),
+        data: data,
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
@@ -1522,6 +1526,9 @@ $("#formEditColaborador").on("submit", function (e) {
                     title: "Correcto",
                     text: resp.mensaje
                 });
+
+                $("#modalLegajoColaborador").modal("hide");
+
             } else {
                 Swal.fire("Atención", resp.mensaje, "warning");
             }
