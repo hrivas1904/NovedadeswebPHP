@@ -141,7 +141,7 @@ $(document).on("click", "#btnLimpiarAlertas", function (e) {
                     Swal.fire({
                         icon: "success",
                         title: "Listo",
-                        text: "Notificaciones limpiadas"
+                        text: "Se han eliminado las notificaciones"
                     });
                 }
             });

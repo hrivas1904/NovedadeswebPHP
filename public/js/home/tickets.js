@@ -1,5 +1,8 @@
 let tablaTickets = null;
 let idTicketGlobal = null;
+let userId = USER_ID;
+let yo=USER_NAME;
+console.log(userId);
 
 $.ajaxSetup({
     headers: {
@@ -164,9 +167,34 @@ $("#btnEnviarMensaje").on("click", function () {
         },
 
         success: function (resp) {
+            let mensaje = $("#inputMensaje").val().trim();
             $("#inputMensaje").val("");
 
-            verChat(idTicket);
+            let html = `
+                <div class="chat-row me"> 
+                    <div class="chat-content me"> 
+                        
+                        <div class="chat-avatar">
+                            <i class="fa-solid fa-circle-user"></i>
+                        </div>
+
+                        <div class="chat-bubble shadow-sm"> 
+                            <small class="chat-header">
+                                ${yo} - ${new Date().toLocaleString()}
+                            </small>
+                            <div class="chat-message">
+                                ${mensaje}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+
+            $("#chatContainer").append(html);
+
+            // scroll abajo
+            $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
         },
         error: function () {
             Swal.fire("Error", "No se pudo enviar el mensaje", "error");
@@ -188,24 +216,36 @@ function verChat(idTicket) {
 
         success: function (res) {
             let html = "";
-
+            
             res.forEach((m) => {
-                let esMio = m.usuario_id == $("#chatContainer").data("user-id");
+                let esMio = m.usuario_id == userId;
+
+                console.log(
+                    "mensaje:",
+                    m.usuario_id,
+                    "user:",
+                    userId,
+                    "esMio:",
+                    esMio,
+                );
 
                 html += `
-                    <div class="mb-3 d-flex ${esMio ? "text-right" : "text-left"}">                        
-                        <div class="d-flex ${esMio ? "flex-row-reverse" : ""} align-items-start" style="max-width: 70%;">                            
-                            <div class="mx-2">
-                                <i class="fa-solid fa-circle-user fs-4 text-secondary"></i>
+                    <div class="chat-row ${esMio ? "me" : "other"}"> 
+                        <div class="chat-content ${esMio ? "me" : ""}"> 
+                            
+                            <div class="chat-avatar">
+                                <i class="fa-solid fa-circle-user"></i>
                             </div>
-                            <div class="bg-white p-2 rounded shadow-sm">                                
-                                <small class="text-muted d-block mb-1">
+
+                            <div class="chat-bubble shadow-sm"> 
+                                <small class="chat-header">
                                     ${m.name ?? ""} - ${m.fechaHora}
                                 </small>
-                                <div>
+                                <div class="chat-message">
                                     ${m.mensaje}
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 `;
@@ -255,11 +295,11 @@ $(document).ready(function () {
                 orderable: false,
                 searchable: false,
                 className: "text-center",
-                render: function (d) {                    
+                render: function (d) {
                     if (USER_ROLE !== "Administrador/a") {
                         return `
                             <button class="btn btn-secondary btnVerChat"
-                                data-id="${d.id}" title="Resolver ticket">
+                                data-id="${d.id}" title="Ver chat">
                                 <i class="fa-regular fa-message"></i>
                             </button>
                         `;
@@ -267,18 +307,18 @@ $(document).ready(function () {
                     if (d.estado === "RESUELTO") {
                         return `
                             <button class="btn btn-secondary btnVerChat"
-                                data-id="${d.id}" title="Resolver ticket">
+                                data-id="${d.id}" title="Ver chat">
                                 <i class="fa-regular fa-message"></i>
                             </button>
                         `;
                     }
                     return `
                         <button class="btn btn-primary btnResolverTicket"
-                            data-id="${d.id}" title="Ver chat">
+                            data-id="${d.id}" title="Cerrar ticket">
                             <i class="fa-solid fa-check"></i>
                         </button>
                         <button class="btn btn-secondary btnVerChat"
-                            data-id="${d.id}" title="Resolver ticket">
+                            data-id="${d.id}" title="Ver chat">
                             <i class="fa-regular fa-message"></i>
                         </button>                        
                     `;

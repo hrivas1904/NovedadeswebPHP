@@ -96,7 +96,7 @@
 
 @push('modals')
 <div class="modal fade" id="modalChatTicket" tabindex="-1">
-    <div class="modal-dialog modal-md modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
 
             <div class="modal-header bg-primary text-white">
@@ -107,7 +107,7 @@
             <div class="modal-body p-0">
 
                 <!-- Contenedor chat -->
-                <div id="chatContainer" class="p-3" data-user-id="{{ auth()->user()->id }} style="height: 400px; overflow-y: auto; background:#f5f5f5;">
+                <div id="chatContainer" class="p-3" style="font-size: 1rem; height: 400px; overflow-y: auto; background:#f5f5f5;">
                 </div>
 
             </div>
@@ -127,9 +127,10 @@
 @endpush
 
 @push('scripts')
-<script src="{{ asset('js/home/tickets.js') }}"></script>
 <script>
     const USER_ROLE = "{{ Auth::user()->rol }}";
-    const USER_ID = "{{ Auth::user()->id }}";
+    const USER_ID = {{ Auth::user()->id }};
+    const USER_NAME = "{{ Auth::user()->name }}";
 </script>
+<script src="{{ asset('js/home/tickets.js') }}"></script>
 @endpush

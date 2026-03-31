@@ -514,13 +514,16 @@ class PersonalController extends Controller
     public function aprobarSolicitud(Request $request)
     {
         try {
+            
+            $idUser=Auth::user()->id;
+
             $request->validate([
                 'idSolicitud' => 'required|integer'
             ]);
 
             $idSolicitud = $request->idSolicitud;
 
-            DB::statement("CALL SP_APROBAR_SOLICITUD(?, @p_msj)", [$idSolicitud]);
+            DB::statement("CALL SP_APROBAR_SOLICITUD(?, ?, @p_msj)", [$idSolicitud, $idUser]);
             $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
 
             return response()->json([

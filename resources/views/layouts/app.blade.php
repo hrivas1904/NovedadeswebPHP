@@ -28,8 +28,7 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cronograma.css') }}">
     <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/area.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
 </head>
 
 <body>

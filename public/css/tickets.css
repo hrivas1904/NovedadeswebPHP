@@ -28,7 +28,7 @@
 /* avatar */
 .chat-avatar {
     margin: 0 8px;
-    font-size: 20px;
+    font-size: 2rem;
     color: #6c757d;
 }
 
@@ -36,7 +36,7 @@
 .chat-bubble {
     padding: 10px;
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 /* colores tipo WhatsApp */
