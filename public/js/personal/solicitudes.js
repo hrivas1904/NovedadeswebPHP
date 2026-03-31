@@ -308,7 +308,7 @@ $(document).ready(function () {
                 {
                     data: "legajo",
                     width: "4%",
-                    className: "text-start"
+                    className: "text-start",
                 },
                 {
                     data: "cuil",
@@ -321,12 +321,19 @@ $(document).ready(function () {
                 },
                 { data: "area", width: "10%", className: "text-start" },
                 {
-                    data: "num_cuenta",
-                    width: "4%",
+                    data: "cbu",
+                    render: function (data, type, row) {
+                        if (type === "display" || type === "filter") {
+                            return data;
+                        }
+                        return data;
+                    },
                 },
                 {
-                    data: "cbu",
-                    width: "4%",
+                    data: "numero_cuenta",
+                    render: function (data, type, row) {
+                        return data;
+                    },
                 },
                 {
                     data: "monto",
@@ -343,6 +350,11 @@ $(document).ready(function () {
                 },
                 {
                     data: "comprobante",
+                    width: "5%",
+                    className: "text-start",
+                },
+                {
+                    data: "banco",
                     width: "5%",
                     className: "text-start",
                 },
@@ -416,21 +428,36 @@ $(document).ready(function () {
                     text: '<i class="fa-solid fa-file-excel"></i> Excel',
                     className: "btn-export-excel dt-buttons",
                     exportOptions: {
-                        columns: [2, 3, 4, 6, 7, 9, 10],
+                        columns: [2, 3, 4, 6, 7, 9, 10, 11],
+                        format: {
+                            body: function (data, row, column, node) {
+                                // Detecta números largos (CBU, cuenta, CUIL)
+                                if (/^\d{11,}$/.test(data)) {
+                                    return "'" + data;
+                                }
+
+                                return data;
+                            },
+                        },
                     },
                 },
                 {
                     extend: "pdfHtml5",
                     text: '<i class="fa-solid fa-file-pdf"></i> PDF',
                     className: "btn-export-pdf dt-buttons",
-                    exportOptions: { columns: ":visible" },
+                    orientation: "landscape",
+                    pageSize: "A4",
+                    exportOptions: {
+                        columns: [2, 3, 4, 6, 7, 9, 10, 11],
+                    },
                 },
                 {
                     extend: "print",
                     text: '<i class="fa-solid fa-print"></i> Imprimir',
                     title: "Nómina de personal",
-                    exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                    className: "btn-printer dt-buttons",
+                    exportOptions: {
+                        columns: [2, 3, 4, 6, 7, 9, 10, 11],
+                    },
                 },
             ],
         });

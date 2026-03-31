@@ -113,6 +113,7 @@
                                         <option value="Tarde">Tarde</option>
                                         <option value="Noche">Noche</option>
                                         <option value="Refuerzo">Refuerzo</option>
+                                        <option value="Otro">Otro</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-3 d-flex align-items-end gap-2">

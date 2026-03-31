@@ -69,6 +69,7 @@
                             <th>IMPORTE</th>
                             <th>IMPORTE</th>
                             <th>COMPROBANTE</th>
+                            <th>BANCO</th>
                             <th>OBSERVACIONES</th>
                             <th>ESTADO</th>
                             <th></th>
