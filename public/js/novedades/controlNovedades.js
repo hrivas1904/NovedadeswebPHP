@@ -321,7 +321,7 @@ $(document).ready(function () {
                     data: "CODIGO_NOVEDAD",
                     width: "3%",
                     className: "text-start",
-                    title: "NOVEDAD"
+                    title: "NOVEDAD",
                 },
                 { data: "NOVEDAD_NOMBRE" },
                 { data: "CENTRO_COSTO" },
@@ -332,7 +332,7 @@ $(document).ready(function () {
                         tipoValorNov = row.TIPO_VALOR;
 
                         if (tipoValorNov === "Pesos") {
-                            return ("$",data);
+                            return ("$", data);
                         } else {
                             return parseInt(data);
                         }
@@ -462,7 +462,7 @@ $(document).ready(function () {
                                 );
                             } else {
                                 return [
-                                    5, 6, 8, 9, 10, 11, 13, 14, 16, 20, 21
+                                    5, 6, 8, 9, 10, 11, 13, 14, 16, 20, 21,
                                 ].includes(idx);
                             }
                         },
@@ -500,6 +500,44 @@ $(document).ready(function () {
                         var sheet = xlsx.xl.worksheets["sheet1.xml"];
                         var row = $("row:first", sheet).find("c");
 
+                        // =========================
+                        // ALINEAR A LA DERECHA
+                        // =========================
+                        var styles = xlsx.xl["styles.xml"];
+                        var cellXfs = $("cellXfs xf", styles);
+
+                        // Crear estilo alineado a la derecha
+                        cellXfs
+                            .last()
+                            .after(
+                                '<xf xfId="0" applyAlignment="1"><alignment horizontal="right"/></xf>',
+                            );
+
+                        var rightAlignIndex = cellXfs.length;
+
+                        // Columnas a alinear (post-export)
+                        let columnasDerecha = esLicenciaAnual()
+                            ? [1, 2, 3] // ajustá si querés
+                            : [0, 3, 4, 5, 6, 7]; // ej: legajo + fechas + valores
+
+                        $("row c", sheet).each(function () {
+                            var cell = $(this);
+                            var cellRef = cell.attr("r");
+                            var colLetter = cellRef.replace(/[0-9]/g, "");
+
+                            // Soporte AA, AB, etc
+                            var colIndex = 0;
+                            for (var i = 0; i < colLetter.length; i++) {
+                                colIndex *= 26;
+                                colIndex += colLetter.charCodeAt(i) - 64;
+                            }
+                            colIndex--;
+
+                            if (columnasDerecha.includes(colIndex)) {
+                                cell.attr("s", rightAlignIndex);
+                            }
+                        });
+
                         let headers = esLicenciaAnual()
                             ? [
                                   "EMPRESA",
@@ -521,7 +559,7 @@ $(document).ready(function () {
                                   "FECHAHASTA",
                                   "DESCRIPCION",
                                   "COLABORADOR",
-                                  "CONCEPTO_NOVEDAD"                                  
+                                  "CONCEPTO_NOVEDAD",
                               ];
 
                         row.each(function (i) {
