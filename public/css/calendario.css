@@ -59,7 +59,15 @@
 }
 
 .tn-row {
+    grid-template-columns: repeat(1, 3fr);
+}
+
+.tr-row {
     grid-template-columns: repeat(2, 1.5fr);
+}
+
+.ar-row {
+    grid-template-columns: repeat(1, 3fr);
 }
 
 /* ============================ */
@@ -127,6 +135,11 @@
 }
 
 /* REFUERZO */
+.badge-TR {
+    background: var(--color-default);
+    color: #fff;
+}
+
 .badge-TR {
     background: var(--color-default);
     color: #fff;

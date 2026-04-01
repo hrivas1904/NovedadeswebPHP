@@ -11,6 +11,23 @@
         </h3>
     </div>
 
+    <div class="empleado-box p-2 mb-2">
+        <div class="row gap-3 d-flex">
+            <div class="col-6">
+                <h6 class="">Referencias: </h6>
+                <label>TM: Turno Mañana</label>
+                <label class="mx-2">TR: Turno Refuerzo</label>
+                <label class="mx-2">TT: Turno Tarde</label>
+                <label class="mx-2">TN: Turno Noche</label>
+                <label class="mx-2">AR: Adicional Recepción</label>
+                <label>C: Caja</label>
+            </div> 
+            <div class="col-6">
+                
+            </div>           
+        </div>
+    </div>
+
     <div class="empleado-box p-2">
         <div class="row align-items-center g-3">
             <div class="col-lg-5">

@@ -104,7 +104,7 @@ $("#btnAgregarDetalle").on("click", function () {
                 <option value="Refuerzo">Refuerzo</option>
                 <option value="Tarde">Tarde</option>
                 <option value="Noche">Noche</option>
-                <option value="Noche">Adic Recep</option>             
+                <option value="Adic Recep">Adic Recep</option>             
             </select>`,
             `<select class="form-select form-select selectCaja">
                 <option value="0">NO</option>
@@ -435,12 +435,10 @@ function cargarEventosMes(year, month) {
                     let selectorTurno = "";
 
                     if (evento.turno_sigla === "TM") selectorTurno = ".tm-row";
+                    if (evento.turno_sigla === "TR") selectorTurno = ".tr-row";
                     if (evento.turno_sigla === "TT") selectorTurno = ".tt-row";
-                    if (
-                        evento.turno_sigla === "TN" ||
-                        evento.turno_sigla === "TR"
-                    )
-                        selectorTurno = ".tn-row";
+                    if (evento.turno_sigla === "TN") selectorTurno = ".tn-row";
+                    if (evento.turno_sigla === "AR") selectorTurno = ".ar-row";
 
                     // Buscamos el contenedor específico de ese turno en ese día
                     const contenedorTurno = $(
@@ -508,15 +506,17 @@ function generarCalendario(fecha) {
         const diaFecha = `${year}-${mm}-${dd}`;
 
         $("#calendarGrid").append(`
-        <div class="calendar-day" data-fecha="${diaFecha}">
-            <div class="calendar-day-header">${dia}</div>
-            <div class="calendar-events-container">
-                <div class="turno-row tm-row" data-turno="Mañana"></div>
-                <div class="turno-row tt-row" data-turno="Tarde"></div>
-                <div class="turno-row tn-row" data-turno="Noche"></div>
+            <div class="calendar-day" data-fecha="${diaFecha}">
+                <div class="calendar-day-header">${dia}</div>
+                <div class="calendar-events-container">
+                    <div class="turno-row tm-row" data-turno="Mañana"></div>
+                    <div class="turno-row tr-row" data-turno="Refuerzo"></div>
+                    <div class="turno-row tt-row" data-turno="Tarde"></div>
+                    <div class="turno-row tn-row" data-turno="Noche"></div>
+                    <div class="turno-row ar-row" data-turno="Adic Recep"></div>
+                </div>
             </div>
-        </div>
-    `);
+        `);
     }
 
     cargarEventosMes(year, month + 1);
