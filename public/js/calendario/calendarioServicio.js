@@ -3,6 +3,12 @@ let idArea;
 let tablaEventos;
 let colaboradoresData = [];
 
+$(document).ready(function () {
+    let hoy = new Date();
+    let fecha = hoy.toLocaleDateString("es-AR");
+    $("#fechaHoy").val(fecha);
+});
+
 //SELECTOR TURNOS --> NOCHE --> CAJA SI
 $(document).on("change", ".selectTurno", function () {
     let fila = $(this).closest("tr");
@@ -39,11 +45,9 @@ $(document).ready(function () {
 });
 
 //CÁLCULO DE HORAS CON FECHAS
-$(document).on("change", ".inputDesde, .inputHasta", function () {
-    let fila = $(this).closest("tr");
-
-    let desde = fila.find(".inputDesde").val();
-    let hasta = fila.find(".inputHasta").val();
+function calcularHoras(fila) {
+    let desde = $(fila).find(".inputDesde").val();
+    let hasta = $(fila).find(".inputHasta").val();
 
     if (!desde || !hasta) return;
 
@@ -52,15 +56,15 @@ $(document).on("change", ".inputDesde, .inputHasta", function () {
 
     if (f2 < f1) {
         Swal.fire("Error", "La fecha hasta no puede ser menor", "warning");
-        fila.find(".inputHasta").val("");
+        $(fila).find(".inputHasta").val("");
         return;
     }
 
     let dias = Math.floor((f2 - f1) / (1000 * 60 * 60 * 24)) + 1;
     let horas = dias * 8;
 
-    fila.find(".inputHoras").val(horas);
-});
+    $(fila).find(".inputHoras").val(horas);
+}
 
 //NUEVO MÉTODO DE CARGA CON DATATABLE
 $(document).ready(function () {
@@ -118,13 +122,23 @@ $("#btnAgregarDetalle").on("click", function () {
         .node();
 
     flatpickr($(fila).find(".inputDesde")[0], {
-        dateFormat: "Y-m-d",
         locale: "es",
+        altInput: true,
+        altFormat: "d/m/Y",
+        dateFormat: "Y-m-d",
+        onChange: function () {
+            calcularHoras(fila);
+        },
     });
 
     flatpickr($(fila).find(".inputHasta")[0], {
-        dateFormat: "Y-m-d",
         locale: "es",
+        altInput: true,
+        altFormat: "d/m/Y",
+        dateFormat: "Y-m-d",
+        onChange: function () {
+            calcularHoras(fila);
+        },
     });
 
     let $select = $(fila).find(".selectColab");
@@ -225,7 +239,7 @@ $("#btnGuardarEvento").on("click", function (e) {
     });
 });
 
-//APERTURA Y CIERRA MODAL
+//APERTURA Y CIERRA MODAL TAREA
 $("#btnCrearEvento").on("click", function () {
     $("#modalNuevaTarea").modal("show");
 });
@@ -236,6 +250,81 @@ function cerrarModalTarea() {
     $("#selectColab").val("").trigger("change");
     $("#modalNuevaTarea").modal("hide");
 }
+
+//GENERAR REPORTE RECEPCIÓN
+$("#btnModalReporte").on("click", function () {
+    $("#modalExportarReporte").modal("show");
+    $(document).ready(function () {
+        flatpickr("#fechaDesde", {
+            locale: "es",
+            altInput: true,
+            altFormat: "d/m/Y",
+            dateFormat: "Y-m-d",
+        });
+        flatpickr("#fechaHasta", {
+            locale: "es",
+            altInput: true,
+            altFormat: "d/m/Y",
+            dateFormat: "Y-m-d",
+        });
+    });
+});
+
+function cerrarModalReporte() {
+    $("#fechaDesde").val("");
+    $("#fechaHasta").val("");
+    $("#modalExportarReporte").modal("hide");
+}
+
+$("#btnGenerarReporte").on("click", function () {
+    let desde = $("#fechaDesde").val();
+    let hasta = $("#fechaHasta").val();
+
+    $.ajax({
+        url: "/calendario/reporte/exportar",
+        type: "POST",
+        data: {
+            fechaDesde: desde,
+            fechaHasta: hasta,
+        },
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        xhrFields: {
+            responseType: "blob",
+        },
+        beforeSend: function () {
+            Swal.fire({
+                title: "Generando reporte...",
+                text: "Por favor espere",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+        },
+        success: function (data) {
+            let blob = new Blob([data]);
+            let url = window.URL.createObjectURL(blob);
+
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "reporte_calendario.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            cerrarModalReporte();
+        },
+        error: function () {
+            Swal.fire("Error", "No se pudo generar el reporte", "error");
+        },
+        complete: function () {
+            Swal.close();
+        },
+    });
+});
 
 //VISUALIZACIÓN DEL CALENDARIO
 function pintarEvento(contenedor, evento, fechaString) {

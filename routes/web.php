@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeoController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AlertasController;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 Route::get('/usuario', [HomeController::class, 'crearUsuario'])
     ->name('usuario');
@@ -227,6 +228,7 @@ Route::get('/calendario/colaboradores-area', [CalendarioServController::class, '
 Route::post('/calendario/guardar', [CalendarioServController::class, 'guardarEvento']);
 Route::get('/calendario/eventos/{idArea}', [CalendarioServController::class, 'obtenerEventos']);
 Route::post('/eventos/modificar', [CalendarioServController::class, 'modificarEvento']);
+Route::post('/calendario/reporte/exportar', [CalendarioServController::class, 'exportarReporte']);
 
 //dashboard
 Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);
@@ -283,3 +285,9 @@ Route::post('/tickets/responder', [TicketController::class, 'responderTicket']);
 Route::get('/alertas/listar', [AlertasController::class, 'listar']);
 Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
 Route::post('/alertas/limpiar', [AlertasController::class, 'limpiarTodas']);
+
+//test libería excel
+Route::get('/test-excel', function () {
+    new Spreadsheet();
+    return 'OK';
+});

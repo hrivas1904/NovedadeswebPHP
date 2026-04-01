@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class CalendarioServController extends Controller
 {
@@ -134,6 +136,63 @@ class CalendarioServController extends Controller
                 'ok' => false,
                 'mensaje' => 'Error al modificar el evento',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function exportarReporte(Request $request)
+    {
+        try {
+            $desde = $request->fechaDesde ?: null;
+            $hasta = $request->fechaHasta ?: null;
+
+            $data = DB::select("CALL SP_REPORTE_SERVICIOS(?, ?)", [
+                $desde,
+                $hasta
+            ]);
+
+            // 🔥 Crear Excel
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Encabezados
+            $sheet->fromArray([
+                [
+                    'Legajo',
+                    'Colaborador',
+                    'Desde',
+                    'Hasta',
+                    'Días',
+                    'Horas',
+                    'Caja',
+                    'Turno'
+                ]
+            ], null, 'A1');
+
+            // Datos
+            $fila = 2;
+            foreach ($data as $row) {
+                $sheet->setCellValue("A{$fila}", $row->legajo);
+                $sheet->setCellValue("B{$fila}", $row->colaborador);
+                $sheet->setCellValue("C{$fila}", $row->fechaDesde);
+                $sheet->setCellValue("D{$fila}", $row->fechaHasta);
+                $sheet->setCellValue("E{$fila}", $row->cantidad_dias);
+                $sheet->setCellValue("F{$fila}", $row->horas);
+                $sheet->setCellValue("G{$fila}", $row->caja ? 'SI' : 'NO');
+                $sheet->setCellValue("H{$fila}", $row->turno);
+                $fila++;
+            }
+
+            $writer = new Xlsx($spreadsheet);
+            $fileName = 'reporte_calendario.xlsx';
+            $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+            $writer->save($temp_file);
+
+            return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage()
             ], 500);
         }
     }
