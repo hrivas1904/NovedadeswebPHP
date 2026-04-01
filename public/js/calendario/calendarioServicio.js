@@ -327,6 +327,21 @@ $("#btnGenerarReporte").on("click", function () {
 });
 
 //VISUALIZACIÓN DEL CALENDARIO
+function generarColorPorNombre(nombre) {
+    let hash = 0;
+    for (let i = 0; i < nombre.length; i++) {
+        hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+    for (let i = 0; i < 3; i++) {
+        let value = (hash >> (i * 8)) & 255;
+        color += ("00" + value.toString(16)).slice(-2);
+    }
+
+    return color;
+}
+
 function pintarEvento(contenedor, evento, fechaString) {
     const apellido = evento.colaborador.split(" ")[0];
 
@@ -337,10 +352,13 @@ function pintarEvento(contenedor, evento, fechaString) {
 
     const idEvento = evento.idEvento ?? evento.id;
 
+    let color = generarColorPorNombre(evento.colaborador);
+
     const html = `
         <button
             type="button"
-            class="event-item badge-${evento.turno_sigla}"
+            class="event-item"
+            style="background:${color}20; border-left:4px solid ${color}"
             data-id-evento="${idEvento}"
             data-fecha="${fechaString}"
             title="Quitar este día (${evento.colaborador})">
