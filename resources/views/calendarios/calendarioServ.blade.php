@@ -88,6 +88,29 @@
 
                         <div class="empleado-box p-3 mb-4">
                             <div class="row g-3">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>COLABORADOR</th>
+                                            <th>LEGAJO</th>
+                                            <th>SERVICIO</th>
+                                            <th>TURNO</th>
+                                            <th>CAJA</th>
+                                            <th>DESDE</th>
+                                            <th>HASTA</th>
+                                            <th>HORAS</th>
+                                            <th>OBSERV</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <button type="button" id="btnAgregarDetalle" class="btn btn-primary">
+                                <i class="fa-solid fa-square-plus"></i> Agregar
+                            </button>
+                        </div>
+
+                        <div class="empleado-box p-3 mb-4">
+                            <div class="row g-3">
                                 <div class="col-lg-5">
                                     <label for="selectColaborador" class="form-label">Colaborador</label>
                                     <select id="selectColab" name="selectColab" class="form-select selectjs" required>
