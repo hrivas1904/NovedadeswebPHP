@@ -331,7 +331,7 @@ $(document).ready(function () {
                         tipoValorNov = row.TIPO_VALOR;
 
                         if (tipoValorNov === "Pesos") {
-                            return formatearPesos(data);
+                            return ("$",data);
                         } else {
                             return parseInt(data);
                         }
