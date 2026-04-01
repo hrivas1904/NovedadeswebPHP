@@ -36,28 +36,55 @@ class CalendarioServController extends Controller
     public function guardarEvento(Request $request)
     {
         try {
-            $request->validate([
-                'legajo' => 'required',
-                'fechaDesde' => 'required|date',
-                'fechaHasta' => 'required|date',
-                'caja' => 'required',
-                'turno' => 'required'
-            ]);
+            $eventos = $request->eventos;
+
+            if (!$eventos || count($eventos) === 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No hay eventos para guardar'
+                ], 400);
+            }
 
             $registrante = Auth::user()->name ?? 'Sistema';
 
-            DB::statement("CALL SP_GUARDAR_EVENTO_CALENDARIO(?, ?, ?, ?, ?, ?)", [
-                $request->legajo,
-                $request->fechaDesde,
-                $request->fechaHasta,
-                $request->caja,
-                $request->turno,
-                $registrante
-            ]);
+            DB::beginTransaction();
 
-            return response()->json(['success' => true, 'message' => 'Evento guardado correctamente.']);
+            foreach ($eventos as $ev) {
+
+                // Validación por cada fila
+                if (
+                    empty($ev['legajo']) ||
+                    empty($ev['fechaDesde']) ||
+                    empty($ev['fechaHasta']) ||
+                    empty($ev['turno'])
+                ) {
+                    throw new \Exception("Datos incompletos en una fila.");
+                }
+
+                DB::statement("CALL SP_GUARDAR_EVENTO_CALENDARIO(?, ?, ?, ?, ?, ?, ?)", [
+                    $ev['legajo'],
+                    $ev['fechaDesde'],
+                    $ev['fechaHasta'],
+                    $ev['caja'],
+                    $ev['turno'],
+                    $registrante,
+                    $ev['horas']
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Eventos guardados correctamente.'
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -100,7 +127,6 @@ class CalendarioServController extends Controller
                 'ok' => true,
                 'mensaje' => $mensaje->mensaje
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
 

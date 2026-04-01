@@ -1,43 +1,28 @@
 let fechaActual = new Date();
 let idArea;
+let tablaEventos;
+let colaboradoresData = [];
 
-$(document).ready(function () {
-    function validarFechas() {
-        const fechaDesde = $("#inputFechaDesde").val();
-        const fechaHasta = $("#inputFechaHasta").val();
-
-        if (fechaDesde && fechaHasta) {
-            if (new Date(fechaDesde) > new Date(fechaHasta)) {
-                alert("La fecha Desde no puede ser mayor a la fecha Hasta");
-                $("#inputFechaHasta").val("");
-                $("#inputFechaDesde").val("");
-            }
-        }
-    }
-    $("#inputFechaDesde, #inputFechaHasta").on("change", function () {
-        validarFechas();
-    });
-});
-
-$("#selectTurnoEvento").on("change", function () {
-    const selectorTurno = $(this).val();
-
-    if (selectorTurno === "Noche") {
-        $("#selectCaja").val("1");
+//SELECTOR TURNOS --> NOCHE --> CAJA SI
+$(document).on("change", ".selectTurno", function () {
+    let fila = $(this).closest("tr");
+    let turno = $(this).val();
+    if (turno === "Noche") {
+        fila.find(".selectCaja").val("1");
     }
 });
 
-//select2 de colabs
-$("#selectColab").on("select2:select", function (e) {
+//SELECTOR COLAB --> LEGAJO
+$(document).on("select2:select", ".selectColab", function (e) {
     let data = e.params.data;
+    let fila = $(this).closest("tr");
     console.log("Seleccionado:", data);
-    $("#inputLegajo").val(data.legajo);
-    $("#inputServicio").val(data.servicio);
+    fila.find(".inputLegajo").val(data.legajo);
 });
 
+//SELECTOR DE COLABS
 $(document).ready(function () {
     const idArea = parseInt($("#idArea").val());
-    const $select = $("#selectColab");
 
     $.ajax({
         url: "/calendario/colaboradores-area",
@@ -45,14 +30,7 @@ $(document).ready(function () {
         data: { idArea: idArea },
         dataType: "json",
         success: function (data) {
-            // Inicializar Select2 UNA SOLA VEZ con los datos
-            $select.select2({
-                data: data,
-                placeholder: "Seleccione un colaborador",
-                allowClear: true,
-                width: "100%",
-                dropdownParent: $("#modalNuevaTarea"),
-            });
+            colaboradoresData = data;
         },
         error: function (err) {
             console.error("Error al cargar colaboradores:", err);
@@ -60,16 +38,206 @@ $(document).ready(function () {
     });
 });
 
+//CÁLCULO DE HORAS CON FECHAS
+$(document).on("change", ".inputDesde, .inputHasta", function () {
+    let fila = $(this).closest("tr");
+
+    let desde = fila.find(".inputDesde").val();
+    let hasta = fila.find(".inputHasta").val();
+
+    if (!desde || !hasta) return;
+
+    let f1 = new Date(desde);
+    let f2 = new Date(hasta);
+
+    if (f2 < f1) {
+        Swal.fire("Error", "La fecha hasta no puede ser menor", "warning");
+        fila.find(".inputHasta").val("");
+        return;
+    }
+
+    let dias = Math.floor((f2 - f1) / (1000 * 60 * 60 * 24)) + 1;
+    let horas = dias * 8;
+
+    fila.find(".inputHoras").val(horas);
+});
+
+//NUEVO MÉTODO DE CARGA CON DATATABLE
+$(document).ready(function () {
+    tablaEventos = $("#tbDetalleEventos").DataTable({
+        paging: false,
+        searching: false,
+        info: false,
+        ordering: false,
+        columnDefs: [{ targets: "_all", className: "align-middle" }],
+        columns: [
+            { width: "5%" }, // Legajo
+            { width: "20%" }, // Colaborador
+            { width: "10%" }, // Turno
+            { width: "5%" }, // Caja
+            { width: "15%" }, // Desde
+            { width: "15%" }, // Hasta
+            { width: "5%" }, // Horas
+            { width: "20%" }, // Observ
+            { width: "5%", className: "text-center" }, // Acciones
+        ],
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json",
+        },
+    });
+});
+
+$("#btnAgregarDetalle").on("click", function () {
+    let fila = tablaEventos.row
+        .add([
+            `<input type="text" class="form-control form-control inputLegajo" readonly>`,
+            `<select class="form-select form-select selectColab">
+                <option></option>
+            </select>`,
+            `<select class="form-select form-select selectTurno">
+                <option value="">Turno</option>
+                <option value="Mañana">Mañana</option>
+                <option value="Refuerzo">Refuerzo</option>
+                <option value="Tarde">Tarde</option>
+                <option value="Noche">Noche</option>
+                <option value="Noche">Adic Recep</option>             
+            </select>`,
+            `<select class="form-select form-select selectCaja">
+                <option value="0">NO</option>
+                <option value="1">SI</option>
+            </select>`,
+            `<input type="text" class="inputDesde form-control form-control">`,
+            `<input type="text" class="inputHasta form-control form-control">`,
+            `<input type="text" class="form-control form-control inputHoras">`,
+            `<input type="text" class="form-control form-control inputObserv">`,
+            `<button class="btn btn-danger btn btnEliminarFila">
+                <i class="fa fa-trash"></i>
+            </button>`,
+        ])
+        .draw()
+        .node();
+
+    flatpickr($(fila).find(".inputDesde")[0], {
+        dateFormat: "Y-m-d",
+        locale: "es",
+    });
+
+    flatpickr($(fila).find(".inputHasta")[0], {
+        dateFormat: "Y-m-d",
+        locale: "es",
+    });
+
+    let $select = $(fila).find(".selectColab");
+
+    $select.select2({
+        data: colaboradoresData,
+        placeholder: "Seleccione un colaborador",
+        allowClear: true,
+        width: "100%",
+        dropdownParent: $("#modalNuevaTarea"),
+    });
+});
+
+$(document).on("click", ".btnEliminarFila", function () {
+    tablaEventos.row($(this).closest("tr")).remove().draw();
+});
+
+//RECORRER DATATABLE Y GUARDAR EVENTO
+function obtenerDatosTabla() {
+    let datos = [];
+
+    $("#tbDetalleEventos tbody tr").each(function () {
+        let fila = $(this);
+
+        let legajo = fila.find(".inputLegajo").val();
+        let turno = fila.find(".selectTurno").val();
+        let caja = fila.find(".selectCaja").val();
+        let desde = fila.find(".inputDesde").val();
+        let hasta = fila.find(".inputHasta").val();
+        let horas = fila.find(".inputHoras").val();
+        let observ = fila.find(".inputObserv").val();
+
+        if (!legajo || !turno || !desde || !hasta) {
+            return; // saltea filas incompletas
+        }
+
+        datos.push({
+            legajo,
+            fechaDesde: desde,
+            fechaHasta: hasta,
+            caja,
+            turno,
+            horas,
+            observ,
+        });
+    });
+
+    return datos;
+}
+
+$("#btnGuardarEvento").on("click", function (e) {
+    e.preventDefault();
+
+    let datos = obtenerDatosTabla();
+
+    if (datos.length === 0) {
+        Swal.fire("Error", "Debe agregar al menos un evento", "warning");
+        return;
+    }
+
+    $.ajax({
+        url: "/calendario/guardar",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ eventos: datos }),
+
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        beforeSend: function () {
+            $("#btnGuardarEvento").prop("disabled", true).text("Guardando...");
+        },
+
+        success: function (response) {
+            if (response.success) {
+                Swal.fire("Éxito", response.message, "success");
+
+                tablaEventos.clear().draw();
+                $("#modalNuevaTarea").modal("hide");
+
+                generarCalendario(fechaActual);
+            }
+        },
+
+        error: function (xhr) {
+            let errorMsg = "Ocurrió un error al guardar.";
+            if (xhr.responseJSON?.message) {
+                errorMsg = xhr.responseJSON.message;
+            }
+
+            Swal.fire("Error", errorMsg, "error");
+        },
+
+        complete: function () {
+            $("#btnGuardarEvento").prop("disabled", false).text("Guardar");
+        },
+    });
+});
+
+//APERTURA Y CIERRA MODAL
 $("#btnCrearEvento").on("click", function () {
     $("#modalNuevaTarea").modal("show");
 });
 
-$("#btnCerrarModalEvento").on("click", function () {
+function cerrarModalTarea() {
     $("#formRegistrarEvento")[0].reset();
+    tablaEventos.clear().draw();
     $("#selectColab").val("").trigger("change");
     $("#modalNuevaTarea").modal("hide");
-});
+}
 
+//VISUALIZACIÓN DEL CALENDARIO
 function pintarEvento(contenedor, evento, fechaString) {
     const apellido = evento.colaborador.split(" ")[0];
 
@@ -99,67 +267,6 @@ function pintarEvento(contenedor, evento, fechaString) {
     contenedor.append(html);
 }
 
-$(document).ready(function () {
-    $("#btnGuardarEvento").on("click", function (e) {
-        e.preventDefault();
-
-        // Referencia al formulario
-        const formulario = $("#formRegistrarEvento");
-
-        // Validación básica de HTML5 (required)
-        if (formulario[0].checkValidity()) {
-            const formData = formulario.serialize();
-
-            $.ajax({
-                url: "/calendario/guardar", // Genera la URL de Laravel
-                type: "POST",
-                data: formData,
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content",
-                    ),
-                },
-                beforeSend: function () {
-                    $("#btnGuardarEvento")
-                        .prop("disabled", true)
-                        .text("Guardando...");
-                },
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Evento registrado",
-                            text: response.message,
-                        });
-                        formulario[0].reset();
-                        $("#selectColab").val(null).trigger("change");
-                        $("#modalNuevaTarea").modal("hide");
-                        generarCalendario(fechaActual);
-                    }
-                },
-                error: function (xhr) {
-                    let errorMsg = "Ocurrió un error al guardar.";
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMsg = xhr.responseJSON.message;
-                    }
-                    Swal.fire({
-                        icon: "success",
-                        title: "Evento registrado",
-                        text: errorMsg,
-                    });
-                },
-                complete: function () {
-                    $("#btnGuardarEvento")
-                        .prop("disabled", false)
-                        .text("Guardar");
-                },
-            });
-        } else {
-            formulario[0].reportValidity();
-        }
-    });
-});
-
 function modificarEventoDirecto(idEvento, fechaInterrupcion) {
     //if (!confirm("¿Quitar este día del evento?")) return;
 
@@ -169,9 +276,9 @@ function modificarEventoDirecto(idEvento, fechaInterrupcion) {
         icon: "warning",
         showCancelButton: true,
         cancelButtonColor: "#004a7c",
-        confirmButtonColor: "#00b18d",        
+        confirmButtonColor: "#00b18d",
         confirmButtonText: "Borrar",
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: "Cancelar",
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
@@ -188,23 +295,23 @@ function modificarEventoDirecto(idEvento, fechaInterrupcion) {
                 },
                 success: function () {
                     Swal.fire({
-                            icon: "success",
-                            title: "Evento modificado",
-                            text: "El evento fue modificado correctamente"
-                        });
+                        icon: "success",
+                        title: "Evento modificado",
+                        text: "El evento fue modificado correctamente",
+                    });
                     generarCalendario(fechaActual);
                 },
                 error: function () {
                     Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "No se pudo modificar el evento",
-                        });
+                        icon: "error",
+                        title: "Error",
+                        text: "No se pudo modificar el evento",
+                    });
                 },
             });
         }
     });
-};
+}
 
 $(document).on("click", ".event-item", function () {
     const idEvento = $(this).data("id-evento");
@@ -338,52 +445,59 @@ $("#btnNextMes").click(() => {
 
 generarCalendario(fechaActual);
 
-document.getElementById("btnExportarImagen").addEventListener("click", function () {
-    const calendario = document.querySelector(".calendar-grid");
+document
+    .getElementById("btnExportarImagen")
+    .addEventListener("click", function () {
+        const calendario = document.querySelector(".calendar-grid");
 
-    const width = calendario.scrollWidth;
-    const height = calendario.scrollHeight;
+        const width = calendario.scrollWidth;
+        const height = calendario.scrollHeight;
 
-    html2canvas(calendario, {
-        scale: 4, 
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: "#ffffff",
-        width: width,
-        height: height,
-        windowWidth: width,
-        windowHeight: height,
+        html2canvas(calendario, {
+            scale: 4,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: "#ffffff",
+            width: width,
+            height: height,
+            windowWidth: width,
+            windowHeight: height,
 
-        onclone: function (clonedDoc) {
-            const clonedCalendar = clonedDoc.querySelector(".calendar-grid");
+            onclone: function (clonedDoc) {
+                const clonedCalendar =
+                    clonedDoc.querySelector(".calendar-grid");
 
-            clonedCalendar.style.backgroundColor = "#ffffff";
-            clonedCalendar.style.width = width + "px";
-            clonedCalendar.style.maxWidth = "none";
+                clonedCalendar.style.backgroundColor = "#ffffff";
+                clonedCalendar.style.width = width + "px";
+                clonedCalendar.style.maxWidth = "none";
 
-            const originalEvents = document.querySelectorAll(".event-item");
-            const clonedEvents = clonedDoc.querySelectorAll(".event-item");
+                const originalEvents = document.querySelectorAll(".event-item");
+                const clonedEvents = clonedDoc.querySelectorAll(".event-item");
 
-            clonedEvents.forEach((el, index) => {
-                const originalStyle = window.getComputedStyle(originalEvents[index]);
-                
-                el.style.backgroundColor = originalStyle.backgroundColor;
-                el.style.color = originalStyle.color;
-                el.style.borderColor = originalStyle.borderColor;
-                el.style.borderStyle = "solid";
-                el.style.borderRadius = originalStyle.borderRadius;
-                el.style.fontWeight = "600";
-                el.style.display = "block";
-                el.style.opacity = "1";
-            });
+                clonedEvents.forEach((el, index) => {
+                    const originalStyle = window.getComputedStyle(
+                        originalEvents[index],
+                    );
 
-            clonedDoc.body.style.fontFamily = window.getComputedStyle(document.body).fontFamily;
-        }
-    }).then((canvas) => {
-        const link = document.createElement("a");
-        const fecha = new Date().toISOString().slice(0, 10);
-        link.download = `calendario_turnos_${fecha}_ULTRA.png`;
-        link.href = canvas.toDataURL("image/png", 1.0);
-        link.click();
+                    el.style.backgroundColor = originalStyle.backgroundColor;
+                    el.style.color = originalStyle.color;
+                    el.style.borderColor = originalStyle.borderColor;
+                    el.style.borderStyle = "solid";
+                    el.style.borderRadius = originalStyle.borderRadius;
+                    el.style.fontWeight = "600";
+                    el.style.display = "block";
+                    el.style.opacity = "1";
+                });
+
+                clonedDoc.body.style.fontFamily = window.getComputedStyle(
+                    document.body,
+                ).fontFamily;
+            },
+        }).then((canvas) => {
+            const link = document.createElement("a");
+            const fecha = new Date().toISOString().slice(0, 10);
+            link.download = `calendario_turnos_${fecha}_ULTRA.png`;
+            link.href = canvas.toDataURL("image/png", 1.0);
+            link.click();
+        });
     });
-});

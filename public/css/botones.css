@@ -166,3 +166,18 @@
 .btn-min-terciario:hover {
     background-color: rgba(108, 122, 137, 0.12);
 }
+
+/*PICKER DE CALENDARIO*/
+.flatpickr-calendar {
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.flatpickr-day.selected {
+    background: #0091d5;
+    border-color: #0091d5;
+}
+
+.flatpickr-day.today {
+    border-color: #00b18d;
+}
