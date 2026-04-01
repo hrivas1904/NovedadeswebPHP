@@ -321,6 +321,7 @@ $(document).ready(function () {
                     data: "CODIGO_NOVEDAD",
                     width: "3%",
                     className: "text-start",
+                    title: "NOVEDAD"
                 },
                 { data: "NOVEDAD_NOMBRE" },
                 { data: "CENTRO_COSTO" },
@@ -505,7 +506,7 @@ $(document).ready(function () {
                               ]
                             : [
                                   "LEGAJO",
-                                  "CODIGO",
+                                  "NOVEDAD",
                                   "CENTROCOSTO",
                                   "VALOR1",
                                   "VALOR2",
