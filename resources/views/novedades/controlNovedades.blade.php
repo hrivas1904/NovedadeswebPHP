@@ -93,7 +93,9 @@
                             <th>DESCRIPCION</th>
                             <th>AÑO</th>
                             <th>LEGAJO</th>
-                            <th>TIPO</th>
+                            <th>TIPO</th>                            
+                            <th>COLABORADOR</th>
+                            <th>CONCEPTO</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>

@@ -294,7 +294,7 @@ $(document).ready(function () {
             },
             columnDefs: [
                 {
-                    targets: [5, 6, 8, 9, 10, 11, 12, 16, 17, 18, 19],
+                    targets: [5, 6, 8, 9, 10, 11, 12, 16, 17, 18, 19, 20, 21],
                     visible: false,
                     searchable: false,
                 },
@@ -327,6 +327,7 @@ $(document).ready(function () {
                 { data: "CENTRO_COSTO" },
                 {
                     data: "DURACION",
+                    className: "text-end",
                     render: function (data, type, row) {
                         tipoValorNov = row.TIPO_VALOR;
 
@@ -341,6 +342,7 @@ $(document).ready(function () {
                 { data: "VALOR2" },
                 {
                     data: "FECHA_APLICACION",
+                    className: "text-end",
                     render: function (data) {
                         return formatearFechaArgentina(data);
                     },
@@ -348,12 +350,14 @@ $(document).ready(function () {
                 { data: "EMPRESA" },
                 {
                     data: "FECHA_DESDE",
+                    className: "text-end",
                     render: function (data) {
                         return formatearFechaArgentina(data);
                     },
                 },
                 {
                     data: "FECHA_HASTA",
+                    className: "text-end",
                     render: function (data) {
                         return formatearFechaArgentina(data);
                     },
@@ -380,6 +384,8 @@ $(document).ready(function () {
                     },
                 },
                 { data: "TIPO" },
+                { data: "COLABORADOR" },
+                { data: "NOVEDAD_NOMBRE" },
                 {
                     data: "REGISTRO",
                     orderable: false,
@@ -456,7 +462,7 @@ $(document).ready(function () {
                                 );
                             } else {
                                 return [
-                                    5, 6, 8, 9, 10, 11, 13, 14, 16,
+                                    5, 6, 8, 9, 10, 11, 13, 14, 16, 20, 21
                                 ].includes(idx);
                             }
                         },
@@ -514,6 +520,8 @@ $(document).ready(function () {
                                   "FECHADESDE",
                                   "FECHAHASTA",
                                   "DESCRIPCION",
+                                  "COLABORADOR",
+                                  "CONCEPTO_NOVEDAD"                                  
                               ];
 
                         row.each(function (i) {
