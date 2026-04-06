@@ -116,7 +116,6 @@
                     <div class="text-end text-white small">
                         <div><strong>{{ Auth::user()->name }}</strong></div>
                         <div>{{ Auth::user()->rol }}</div>
-                        <!--<div>{{ Auth::user()->area->NOMBRE }}</div>-->
                     </div>
 
                     <button class="btn btn-light position-relative" id="btnAlertas">
