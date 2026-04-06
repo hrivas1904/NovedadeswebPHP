@@ -360,7 +360,7 @@ function verLegajo(legajoColaborador, nombre) {
 
                 $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
                 $("#inputGenero").val(d.GENERO);
-                $("#inputObraSocial").val(d.OBRA_SOCIAL);
+                $("#selectObraSocialEdit").val(d.ID_OS);
                 $("#inputCodigoOS").val(d.COD_OS);
                 $("#inputTitulo").val(d.TITULO);
                 $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
@@ -418,7 +418,6 @@ function verLegajo(legajoColaborador, nombre) {
                         `;
                         $("#divHijosEdit").append(htmlFamiliar);
                     });
-
                 } else {
                     $contenedor.append(`
                         <div class="text-muted">No hay familiares cargados</div>
@@ -488,99 +487,6 @@ $("#select-titulo").on("change", function () {
         modal.addClass("d-none");
         modal2.addClass("d-none");
     }
-});
-
-//edit empleado
-function editEmpleados(legajoColaborador, nombre) {
-    console.log("Mostrando legajo:", legajoColaborador);
-    legajoActivo = legajoColaborador;
-
-    $("#tituloEdit").html(`
-        <i class="fa-solid fa-user-pen me-2"></i>
-        Editar legajo de <strong>${nombre}</strong>
-    `);
-
-    $.ajax({
-        url: `/personal/ver-legajo/${legajoColaborador}`,
-        type: "GET",
-        success: function (response) {
-            if (response.success) {
-                const d = response.data;
-
-                $("#inputEditLegajo").val(d.LEGAJO);
-                $("#inputEditNombre").val(d.COLABORADOR);
-                $("#estadoEdit").val(d.ESTADO);
-                $("#inputEditDni").val(d.DNI);
-                $("#inputEditCuil").val(d.CUIL);
-                $("#inputEditFechaNacimiento").val(
-                    formatearFechaArgentina(d.FECHA_NAC),
-                );
-
-                $("#inputEditEdad").val(calcularEdad(d.FECHA_NAC));
-                $("#inputEditEmail").val(d.CORREO);
-                $("#inputEditTelefono").val(d.TELEFONO);
-                $("#inputEditDomicilio").val(d.DOMICILIO);
-                $("#inputEditLocalidad").val(d.LOCALIDAD);
-
-                $("#estadoCivilEdit").val(d.ESTADO_CIVIL);
-                $("#generoEdit").val(d.GENERO);
-                $("#selectObraSocialEdit").val(d.ID_OS);
-                $("#inputEditCodigoOS").val(d.COD_OS);
-                $("#inputEditTitulo").val(d.TITULO);
-                $("#inputEditDescripTitulo").val(d.DESCRIP_TITULO);
-                $("#inputEditMatricula").val(d.MAT_PROF);
-
-                $("#tipoContratoEdit").val(d.TIPO_CONTRATO);
-                $("#inputEditFechaIngreso").val(
-                    formatearFechaArgentina(d.FECHA_INGRESO),
-                );
-                $("#inputEditFechaFinPrueba").val(
-                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA),
-                );
-
-                $("#inputEditAntiguedad").val(
-                    calcularAntiguedad(d.FECHA_INGRESO),
-                );
-                $("#inputEditFechaEgreso").val(d.FECHA_EGRESO);
-                $("#areaEdit").val(d.ID_AREA);
-                $("#inputEditServicio").val(d.SERVICIO);
-                $("#inputEditConvenio").val(d.CONVENIO);
-                $("#inputEditCategoria").val(d.CATEGORIA);
-                $("#inputEditRol").val(d.ROL);
-                $("#inputEditRegimen").val(d.REGIMEN);
-                $("#inputEditHorasDiarias").val(d.HORAS_DIARIAS);
-                $("#inputEditCordinador").val(d.COORDINADOR);
-                $("#inputEditAfiliado").val(d.AFILIADO);
-
-                $("#modalEditColaborador").modal("show");
-            } else {
-                Swal.fire("Error", response.mensaje, "error");
-            }
-        },
-        error: function () {
-            Swal.fire("Error", "No se pudo cargar el legajo", "error");
-        },
-    });
-}
-
-$("#formEditEmpleado").on("submit", function (e) {
-    e.preventDefault();
-
-    const legajo = $("#edit_legajo").val();
-
-    $.ajax({
-        url: `/personal/${legajo}`,
-        type: "POST",
-        data: $(this).serialize(),
-        success: function () {
-            alert("Empleado actualizado correctamente");
-            $("#modalEditEmpleado").modal("hide");
-            tablaPersonal.ajax.reload(null, false);
-        },
-        error: function () {
-            alert("Error al actualizar empleado");
-        },
-    });
 });
 
 function cerrarEdicionEmpleado() {
@@ -803,8 +709,18 @@ $(document).ready(function () {
                         return `<span class="badge ${clase}">${data}</span>`;
                     },
                 },
-                { data: "UTI", width: "10%", className: "text-start", visible: false },
-                { data: "NOCHE", width: "10%", className: "text-start", visible: false },
+                {
+                    data: "UTI",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "NOCHE",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
                 {
                     data: null,
                     className: "text-center acciones-nowrap",
@@ -1089,6 +1005,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectRegimen = document.getElementById("selectRegimen");
     const inputHoras = document.getElementById("horasDiarias");
 
+    const selectRegimenEdit = document.getElementById("inputRegimen");
+    const inputHorasEdit = document.getElementById("inputHorasDiarias");
+
     const equivalencias = {
         44: 8,
         40: 7.28,
@@ -1107,6 +1026,16 @@ document.addEventListener("DOMContentLoaded", () => {
             inputHoras.value = equivalencias[valor];
         } else {
             inputHoras.value = "";
+        }
+    });
+
+    selectRegimenEdit.addEventListener("change", function () {
+        const valor = this.value;
+
+        if (equivalencias[valor]) {
+            inputHorasEdit.value = equivalencias[valor];
+        } else {
+            inputHorasEdit.value = "";
         }
     });
 });
@@ -1419,11 +1348,11 @@ $(document).ready(function () {
 
 $("#selectObraSocialEdit").on("select2:select", function (e) {
     const data = e.params.data;
-    $("#codigoOS").val(data.codigo ?? "");
+    $("#inputCodigoOS").val(data.codigo ?? "");
 });
 
 $("#selectObraSocialEdit").on("select2:clear", function () {
-    $("#codigoOS").val("");
+    $("#inputCodigoOS").val(data.codigo ?? "");
 });
 
 function cargarServiciosSimple(selected = null) {
@@ -1504,13 +1433,9 @@ function cargarRolesSimple(selected = null) {
 
 $("#formEditColaborador").on("submit", function (e) {
     e.preventDefault();
-
     const legajo = $("#inputLegajo").val();
-
     const data = $(this).serialize();
-
-    console.log("DATA:", data); // debug clave
-
+    console.log("DATA:", data);
     $.ajax({
         url: `/personal/${legajo}/actualizar`,
         type: "POST",
@@ -1519,16 +1444,14 @@ $("#formEditColaborador").on("submit", function (e) {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (resp) {
-
             if (resp.success) {
                 Swal.fire({
                     icon: "success",
                     title: "Correcto",
-                    text: resp.mensaje
+                    text: resp.mensaje,
                 });
-
                 $("#modalLegajoColaborador").modal("hide");
-
+                $("#tb_personal").ajax.reload(null,false);
             } else {
                 Swal.fire("Atención", resp.mensaje, "warning");
             }
@@ -1536,6 +1459,6 @@ $("#formEditColaborador").on("submit", function (e) {
         error: function (xhr) {
             console.error(xhr.responseText);
             Swal.fire("Error", "No se pudo actualizar el legajo", "error");
-        }
+        },
     });
 });
