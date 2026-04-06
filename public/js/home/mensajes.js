@@ -84,7 +84,9 @@ function cargarNotificaciones() {
                             <small class="text-muted">Publicado por <strong>${n.name}</strong></small>
                             <small class="text-muted float-end">${n.fecha_publicacion}</small>
                             <h4 style="color: #0b3c6d;"><strong>${n.titulo}</strong></h4>                                                        
-                            <h5 style="color: #1e293b;">${n.contenido}</h5>                            
+                            <h5 style="color: #1e293b; white-space: pre-line;">
+                                ${n.contenido}
+                            </h5>                            
                             ${botones}                                                        
                         </div>
                     `);
