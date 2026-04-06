@@ -636,6 +636,8 @@ class PersonalController extends Controller
         try {
 
             $legajo = Auth::user()->legajo;
+            $reqs = $request->req_alimenticios ?? [];
+            $observ = $request->req_alimenticio_otro ?? '';
 
             DB::statement("CALL SP_ACTUALIZAR_MI_LEGAJO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
                 $legajo,
@@ -667,6 +669,18 @@ class PersonalController extends Controller
                 }
             }
 
+            DB::statement("CALL SP_LIMPIAR_REQ_ALIMENTICIOS(?)", [
+                $legajo
+            ]);
+
+            foreach ($reqs as $r) {
+                $obs = ($r == 12) ? $observ : '';
+                DB::statement(
+                    "CALL SP_REGISTRAR_REQUERIMIENTO_ALIMENTARIO(?,?,?)",
+                    [$r, $legajo, $obs]
+                );
+            }
+
             return response()->json([
                 'success' => true,
                 'mensaje' => 'Legajo actualizado correctamente'
@@ -682,6 +696,10 @@ class PersonalController extends Controller
 
     public function actualizarLegajoColaborador(Request $request, $legajo)
     {
+
+        $reqs = $request->req_alimenticios ?? [];
+        $observ = $request->req_alimenticio_otro ?? '';
+
         try {
 
             DB::statement("CALL SP_ACTUALIZAR_LEGAJO_COLABORADOR(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
@@ -716,6 +734,18 @@ class PersonalController extends Controller
                 $request->uti,
                 $request->noche
             ]);
+
+            DB::statement("CALL SP_LIMPIAR_REQ_ALIMENTICIOS(?)", [
+                $legajo
+            ]);
+
+            foreach ($reqs as $r) {
+                $obs = ($r == 12) ? $observ : '';
+                DB::statement(
+                    "CALL SP_REGISTRAR_REQUERIMIENTO_ALIMENTARIO(?,?,?)",
+                    [$r, $legajo, $obs]
+                );
+            }
 
             return response()->json([
                 'success' => true,
@@ -861,5 +891,24 @@ class PersonalController extends Controller
                 'mensaje' => 'Error al dar de baja'
             ], 500);
         }
+    }
+
+    public function listaRequerimientos()
+    {
+        $data = DB::table('requerimientos_alimenticios')
+            ->orderBy('id')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function obtenerReqAlimenticios($legajo)
+    {
+        $data = DB::select(
+            "CALL SP_LISTAR_REQ_ALIMENTICIOS_COLAB(?)",
+            [$legajo]
+        );
+
+        return response()->json($data);
     }
 }

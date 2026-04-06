@@ -206,3 +206,40 @@ table.dataTable tbody tr:hover {
     color: var(--title-color) !important;
     font-weight: 600;
 }
+
+.req-card {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all .15s ease;
+    display: block;
+    height: 100%;
+    background: var(--bs-body-bg);
+}
+
+.req-card:hover {
+    border-color: var(--color-second);
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.req-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.req-title {
+    font-weight: 600;
+}
+
+.req-desc {
+    color: #6c757d;
+    display: block;
+    line-height: 1.2;
+}
+
+.req-card input[type="checkbox"] {
+    transform: scale(1.2);
+}

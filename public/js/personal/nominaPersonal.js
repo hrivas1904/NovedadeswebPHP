@@ -11,6 +11,10 @@ function getScrollY() {
     return window.innerWidth < 768 ? "40vh" : "60vh";
 }
 
+$(document).ready(function () {
+    cargarRequerimientosAlimentarios();
+});
+
 //calculo edad
 function calcularEdad(fecha) {
     if (!fecha) return "";
@@ -327,6 +331,9 @@ function verLegajo(legajoColaborador, nombre) {
         <i class="fa-solid fa-id-card me-2"></i>
         Legajo de <strong>${nombre}</strong>
     `);
+
+    cargarRequerimientosAlimentarios();
+    cargarReqSeleccionados(legajoColaborador);
 
     $.ajax({
         url: `/personal/ver-legajo/${legajoColaborador}`,
@@ -1451,7 +1458,7 @@ $("#formEditColaborador").on("submit", function (e) {
                     text: resp.mensaje,
                 });
                 $("#modalLegajoColaborador").modal("hide");
-                $("#tb_personal").ajax.reload(null,false);
+                $("#tb_personal").ajax.reload(null, false);
             } else {
                 Swal.fire("Atención", resp.mensaje, "warning");
             }
@@ -1462,3 +1469,96 @@ $("#formEditColaborador").on("submit", function (e) {
         },
     });
 });
+
+function cargarRequerimientosAlimentarios() {
+    $.ajax({
+        url: "/requerimientos-alimentarios",
+        type: "GET",
+        success: function (data) {
+            let html = "";
+
+            data.forEach((r) => {
+                html += `
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+                        <label class="req-card w-100">
+                            <div class="req-check">
+                                <input type="checkbox"
+                                       name="req_alimenticios[]"
+                                       value="${r.id}">
+                                <span class="req-title">
+                                    ${r.nombre}
+                                </span>
+                            </div>
+
+                            <small class="req-desc">
+                                ${r.descripcion ?? ""}
+                            </small>
+                        </label>
+                    </div>
+                `;
+            });
+
+            $("#contenedorRequerimientos").html(html);
+        },
+        error: function () {
+            console.error("Error cargando requerimientos alimentarios");
+        },
+    });
+}
+
+$(document).on("change", "input[name='req_alimenticios[]']", function () {
+    const idOtro = 12; // ID "Otro"
+    const seleccionados = $("input[name='req_alimenticios[]']:checked")
+        .map(function () {
+            return parseInt($(this).val());
+        })
+        .get();
+
+    if (seleccionados.includes(idOtro)) {
+        $("#rowObservacionReq").slideDown(150);
+    } else {
+        $("#rowObservacionReq").slideUp(150);
+        $("#inputReqOtro").val("");
+    }
+});
+
+function cargarReqSeleccionados(legajo) {
+    $.get(`/personal/${legajo}/req-alimenticios`, function (data) {
+        $("input[name='req_alimenticios[]']").prop("checked", false);
+
+        data.forEach((r) => {
+            $(`input[value="${r.idRequerimiento}"]`).prop("checked", true);
+
+            if (r.idRequerimiento == 12) {
+                $("#rowObservacionReq").show();
+                $("#inputReqOtro").val(r.observ);
+            }
+        });
+    });
+}
+
+function cargarReqSeleccionados(legajo) {
+    $.ajax({
+        url: `/personal/${legajo}/req-alimenticios`,
+        type: "GET",
+        success: function (data) {
+            // limpiar todos
+            $("input[name='req_alimenticios[]']").prop("checked", false);
+
+            $("#rowObservacionReq").hide();
+            $("#inputReqOtro").val("");
+
+            data.forEach((r) => {
+                $(
+                    `input[name='req_alimenticios[]'][value='${r.idRequerimiento}']`,
+                ).prop("checked", true);
+
+                // si es "otro"
+                if (r.idRequerimiento == 12) {
+                    $("#rowObservacionReq").show();
+                    $("#inputReqOtro").val(r.observ);
+                }
+            });
+        },
+    });
+}

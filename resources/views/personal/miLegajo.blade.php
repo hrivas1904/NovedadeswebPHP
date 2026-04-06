@@ -61,7 +61,6 @@
                             </div>
                         </div>
 
-
                         <div class="col-lg-6">
                             <div class="section-divider mb-3">
                                 <span>Datos de Contacto</span>
@@ -85,6 +84,30 @@
                                         <select id="selectLocalidad" name="localidad" class="form-select"
                                             style="width:100%">
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="section-divider mb-3">
+                                <span>Requerimientos alimentarios</span>
+                            </div>
+                            <div class="empleado-box p-3">
+                                <div class="row g-1">
+                                    <p class="fs-6 fst-italic">Si no tiene ningún requerimiento alimentario específico, no
+                                        seleccione nada</p>
+                                    <p class="fs-6 fst-italic">Si no encuentra un requerimiento alimentario específico,
+                                        seleccione el ítem "Otro" y complete el campo "Observaciones"</p>
+                                    <div class="row g-1" id="contenedorRequerimientos"></div>
+                                    <div class="row mt-3" id="rowObservacionReq" style="display:none;">
+                                        <div class="col-12">
+                                            <label class="form-label">Observaciones</label>
+                                            <input type="text" name="req_alimenticio_otro" id="inputReqOtro"
+                                                class="form-control">
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -146,6 +146,10 @@ Route::post('/usuarios/actualizar', [PersonalController::class, 'actualizar']);
 
 Route::post('/usuarios/baja', [PersonalController::class, 'baja']);
 
+Route::get('/requerimientos-alimentarios', [PersonalController::class, 'listaRequerimientos']);
+
+Route::get('/personal/{legajo}/req-alimenticios', [PersonalController::class, 'obtenerReqAlimenticios']);
+
 //RUTAS DE SP NOVEDADES
 
 Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])
