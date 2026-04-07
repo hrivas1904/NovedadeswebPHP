@@ -42,7 +42,9 @@ class WebPushService
 
             $webPush->queueNotification($subscription, $payload);
 
-            $report = $webPush->flush();
+            foreach ($webPush->flush() as $report) {
+                // no hacer nada
+            }
 
             foreach ($report as $result) {
                 logger($result);
