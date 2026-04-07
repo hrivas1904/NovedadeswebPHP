@@ -34,7 +34,8 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm" style="background-color: var(--color-default);">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm"
+        style="background-color: var(--color-default);">
         <div class="container-fluid">
 
             <a class="navbar-brand d-flex align-items-center" href="{{ route('index') }}">
@@ -50,11 +51,11 @@
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">
-                            <i class="bx bx-grid-alt"></i> Dashboard
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard') }}">
+                                <i class="bx bx-grid-alt"></i> Dashboard
+                            </a>
+                        </li>
                     @endif
 
                     <li class="nav-item dropdown">
@@ -65,19 +66,23 @@
                             <li><a class="dropdown-item" href="{{ route('miLegajo') }}">Mi legajo</a></li>
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
-                            Auth::user()->rol === 'Administrador/a' ||
-                            Auth::user()->rol === 'Coordinador/a')
-                            <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Personal activo</a></li>
-                            <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Personal de baja</a></li>
+                                    Auth::user()->rol === 'Administrador/a' ||
+                                    Auth::user()->rol === 'Coordinador/a')
+                                <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Personal activo</a>
+                                </li>
+                                <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Personal de
+                                        baja</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                            <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario servicios</a></li>
+                                <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario
+                                        servicios</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                            <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar usuarios</a></li>
-                            <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>-->
+                                <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar
+                                        usuarios</a></li>
+                                <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>-->
                             @endif
 
                         </ul>
@@ -89,10 +94,12 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Mis novedades</a></li>
-                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
+                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto
+                                    sueldo</a></li>
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                            <li><a class="dropdown-item" href="{{ route('configNovedades') }}">Configuración</a></li>
+                                <li><a class="dropdown-item" href="{{ route('configNovedades') }}">Configuración</a>
+                                </li>
                             @endif
                         </ul>
                     </li>
@@ -193,6 +200,12 @@
 
     <script src="{{ asset('js/home/alertas.js') }}"></script>
     <script src="{{ asset('js/home/darkMode.js') }}"></script>
+
+    <script>
+        const VAPID_PUBLIC_KEY = "{{ env('VAPID_PUBLIC_KEY') }}";
+    </script>
+
+    <script src="/js/push.js"></script>
 
     @stack('modals')
     @stack('scripts')

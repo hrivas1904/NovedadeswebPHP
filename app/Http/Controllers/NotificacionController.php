@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\WebPushService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,15 @@ class NotificacionController extends Controller
             );
 
             $resultado = DB::select("SELECT @p_mensaje AS mensaje");
+
+            $push = new WebPushService();
+
+            $push->send(
+                Auth::id(),
+                "PRUEBA PUSH",
+                "Si ves esto funciona",
+                "/"
+            );
 
             return response()->json([
                 'success' => true,

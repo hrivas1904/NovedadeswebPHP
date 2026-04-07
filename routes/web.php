@@ -12,7 +12,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeoController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AlertasController;
+use App\Http\Controllers\PushController;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+Route::post('/push/subscribe', [PushController::class, 'subscribe']);
 
 Route::get('/usuario', [HomeController::class, 'crearUsuario'])
     ->name('usuario');
