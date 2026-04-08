@@ -81,6 +81,7 @@
                     </a>
                 </li>
 
+                @if (Auth::user()->rol==='Administrador/a'||Auth::user()->rol === 'Supervisor/a Calidad')
                 <li class="nav-dropdown">
                     <a href="javascript:void(0)" class="dropbtn"><i class="fa-solid fa-award"></i> Calidad <i
                             class="bx bx-chevron-down"></i></a>
@@ -89,6 +90,7 @@
                         <a href="{{ route('dashboardCalidad') }}">Dashboard</a>
                     </div>
                 </li>
+                @endif
 
                 <li class="nav-dropdown">
                     <a href="{{ route('ayuda') }}">
