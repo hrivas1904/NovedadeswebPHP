@@ -57,12 +57,25 @@ $("#btnImportar").click(function () {
 
     console.log("Enviando tipo:", tipo);
 
+    // 🔥 spinner mientras procesa
+    Swal.fire({
+        title: "Procesando archivo...",
+        text: "Leyendo Excel",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        },
+    });
+
     $.ajax({
         url: "/encuestas/importar",
         type: "POST",
         data: formData,
         processData: false,
         contentType: false,
+
         success: function (res) {
             console.log("PREPROCESAMIENTO OK:", res);
 
@@ -74,6 +87,7 @@ $("#btnImportar").click(function () {
                 text: "Preprocesamiento correcto",
             });
         },
+
         error: function (err) {
             console.log("STATUS:", err.status);
             console.log("RESPONSE:", err.responseJSON);
@@ -155,13 +169,10 @@ $("#btnAnalizar").click(function (e) {
                 icon: "success",
                 title: "Datos procesados",
                 text: `Se insertaron ${res.registrosInsertados} registros`,
+                confirmButtonText: "OK",
+            }).then(() => {
+                location.reload(); // refresh completo
             });
-
-            // 🔥 IMPORTANTE: guardar idImportacion
-            window.idImportacionActual = res.idImportacion;
-
-            // 👉 siguiente paso: traer resultados
-            cargarResultados(res.idImportacion);
         },
         error: function (err) {
             console.log("ERROR COMPLETO:", err);

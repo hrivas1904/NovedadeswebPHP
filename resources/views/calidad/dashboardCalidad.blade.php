@@ -7,7 +7,7 @@
     <div class="container-fluid">
 
         <div class="d-flex justify-content-between ms-auto align-item-end gap-3 my-2">
-            <h3 class="pill-heading tituloVista">DASHBOARD SGC</h3>
+            <h3 class="pill-heading tituloVista">DASHBOARD CALIDAD</h3>
         </div>
 
         <div class="row mb-3">
@@ -18,19 +18,19 @@
                 <input type="date" id="fechaHasta" class="form-control">
             </div>
             <div class="col-md-2">
-                <button id="btnFiltrar" class="btn btn-primario w-100">
+                <button id="btnFiltrar" class="btn btn-primary w-100">
                     <i class="fa-solid fa-filter"></i>
                      Filtrar
                 </button>
             </div>
             <div class="col-md-2">
-                <button id="btnLimpiar" class="btn btn-secundario w-100">
+                <button id="btnLimpiar" class="btn btn-secondary w-100">
                     <i class="fa-solid fa-eraser"></i>
                      Limpiar filtros
                 </button>
             </div>
             <div class="col-md-2">
-                <button id="btnLimpiar" class="btn btn-peligro w-100" onclick="exportarDashboardPDF(dashboardData)">
+                <button id="btnLimpiar" class="btn btn-danger w-100" onclick="exportarDashboardPDF(dashboardData)">
                     <i class="fa-solid fa-file-pdf"></i>
                      Informe
                 </button>

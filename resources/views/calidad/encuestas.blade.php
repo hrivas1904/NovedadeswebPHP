@@ -9,33 +9,42 @@
             <h3 class="pill-heading tituloVista">ENCUESTAS DE CALIDAD</h3>
         </div>
 
-        <div class="row d-flex align-item-center justify-content-start">
-            <div class="col-auto">
-                <select id="selectTipoEncuesta" class="form-control"></select>
+        <div class="row align-items-end g-2">
+
+            <div class="col-12 col-md-auto">
+                <label class="form-label mb-0">Tipo encuesta</label>
+                <select id="selectTipoEncuesta" class="form-select"></select>
             </div>
-            <div class="col-auto">
-                <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" class="btn-primario">
-                <button id="btnImportar" type="button" class="btn-primario">
+
+            <div class="col-12 col-md-auto">
+                <label class="form-label mb-0">Archivo</label>
+                <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" class="form-control">
+            </div>
+
+            <div class="col-12 col-md-auto">
+                <button id="btnImportar" type="button" class="btn btn-primary w-100">
                     Importar Excel
                 </button>
-            </div>            
-            <div class="col-2">
-                <button type="button" id="btnAnalizar" class="btn btn-primario">
+            </div>
+
+            <div class="col-12 col-md-auto">
+                <button type="button" id="btnAnalizar" class="btn btn-secondary w-100">
                     Analizar
                 </button>
             </div>
+
         </div>
 
         <div class="container-fluid my-3 empleado-box p-3">
             <h5 class="fw-bold mb-3">Previsualización del archivo</h5>
-                <div class="row d-flex gap-3 mx-auto my-4">
-                    <table id="tablaExcel" class="table table-striped table-bordered table-hover align-middle nowrap">
-                        <thead>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="row d-flex gap-3 mx-auto my-4">
+                <table id="tablaExcel" class="table table-striped table-bordered table-hover align-middle nowrap">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>

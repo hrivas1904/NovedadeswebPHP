@@ -222,11 +222,16 @@ Route::get('/dashboardCalidad', [CalidadController::class, 'dashboardCalidad'])
 Route::get('/cmiCalidad', [CalidadController::class, 'cmiCalidad'])
     ->name('cmiCalidad');
 
-Route::get('/encuestas/tipos', [CalidadController::class, 'listarTiposEncuestas'])
-    ->name('encuestas.tipos');
+Route::get('/encuestas/tipos', [CalidadController::class, 'listarTiposEncuestas']);
 
 Route::post('/encuestas/importar', [CalidadController::class, 'importarExcel']);
 Route::post('/encuestas/procesar', [CalidadController::class, 'procesarExcel']);
+
+Route::get('/encuestas/resultados/{idImportacion}', [CalidadController::class, 'resultados']);
+
+Route::get('/dashboard/resultados', [CalidadController::class, 'dashboardResultados']);
+
+Route::get('/dashboard/completo', [CalidadController::class, 'dashboardCompleto']);
 
 
 
