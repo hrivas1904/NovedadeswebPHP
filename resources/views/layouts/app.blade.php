@@ -104,6 +104,27 @@
                         </ul>
                     </li>
 
+                    @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-award"></i> Calidad
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('encuestasCalidad') }}">
+                                        Encuestas
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('dashboardCalidad') }}">
+                                        Dashboard
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
                     <li class="nav-item">
                         <a class="nav-link" href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
                             <i class='bx bx-book'></i> Capacitaciones
