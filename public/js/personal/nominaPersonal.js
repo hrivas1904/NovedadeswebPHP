@@ -1459,7 +1459,7 @@ $("#formEditColaborador").on("submit", function (e) {
                     text: resp.mensaje,
                 });
                 $("#modalLegajoColaborador").modal("hide");
-                $("#tb_personal").ajax.reload(null, false);
+                $("#tb_personal").DataTable().ajax.reload(null, false);
             } else {
                 Swal.fire("Atención", resp.mensaje, "warning");
             }
