@@ -26,9 +26,9 @@
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                                 <select id="filtroCategoria" class="form-select js-select-categFiltro w-100"></select>
                             </div>
-                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
+                            <!--<div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                                 <select id="filtroRegimen" class="form-select js-select-regFiltro w-100"></select>
-                            </div>
+                            </div>-->
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                                 <select id="filtroConvenio" class="form-select js-select-convenioFiltro w-100"></select>
                             </div>
@@ -526,8 +526,10 @@
                                 </div>
                                 <div class="empleado-box p-3">
                                     <div class="row g-1">
-                                        <p class="fs-6 fst-italic">Si no tiene ningún requerimiento alimentario específico, no seleccione nada</p>
-                                        <p class="fs-6 fst-italic">Si no encuentra un requerimiento alimentario específico, seleccione el ítem "Otro" y complete el campo "Observaciones"</p>
+                                        <p class="fs-6 fst-italic">Si no tiene ningún requerimiento alimentario específico,
+                                            no seleccione nada</p>
+                                        <p class="fs-6 fst-italic">Si no encuentra un requerimiento alimentario específico,
+                                            seleccione el ítem "Otro" y complete el campo "Observaciones"</p>
                                         <div class="row g-1" id="contenedorRequerimientos"></div>
                                         <div class="row mt-3" id="rowObservacionReq" style="display:none;">
                                             <div class="col-12">
@@ -577,7 +579,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
 
                         <div class="row mb-4">
                             <div class="col-12">
@@ -614,69 +616,11 @@
                         <div class="row mb-4">
                             <div class="col-12">
                                 <div class="section-divider mb-3">
-                                    <span>Datos Socioeconómicos</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <div class="row g-3">
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Estado civil</label>
-                                            <select id="inputEstadoCivil" name="estado_civil" class="form-select">
-                                                <option value="SOLTERO/A">SOLTERO/A</option>
-                                                <option value="CASADO/A">CASADO/A</option>
-                                                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
-                                                <option value="VIUDO/A">VIUDO/A</option>
-                                                <option value="N/D">N/D</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Género</label>
-                                            <select name="genero" id="inputGenero" class="form-select">
-                                                <option value="MASCULINO">MASCULINO</option>
-                                                <option value="FEMENINO">FEMENINO</option>
-                                                <option value="NO BINARIO">NO BINARIO</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <label class="form-label">Obra social</label>
-                                            <div class="input-group flex-nowrap">
-                                                <select id="selectObraSocialEdit" name="obra_social_id"
-                                                    class="form-select">
-                                                </select>
-                                                <button type="button" class="btn btn-sm btn-primary"
-                                                    id="btnAbrirModalOs">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Código OS</label>
-                                            <input type="text" id="inputCodigoOS" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Título</label>
-                                            <input type="text" id="inputTitulo" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <label class="form-label">Descripción de Título</label>
-                                            <input id="inputDescripTitulo" name="descrip_titulo" class="form-control">
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">M.P.</label>
-                                            <input id="inputMatricula" name="mat_prof" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="section-divider mb-3">
                                     <span>Datos Laborales</span>
                                 </div>
                                 <div class="empleado-box p-3">
                                     <div class="row g-3">
-                                        <div class="col-lg-2">
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Tipo de contrato</label>
                                             <select id="inputTipoContrato" name="tipo_contrato" class="form-select">
                                                 <option value="Tiempo fijo">PLAZO FIJO</option>
@@ -686,54 +630,55 @@
                                                 <option value="Práctica profesional">PRÁCTICA PROFESIONAL</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-xl-2 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Fecha ingreso</label>
                                             <input type="text" id="inputFechaIngreso" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-xl-2 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Fecha fin prueba</label>
                                             <input type="text" id="inputFechaFinPrueba" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-xl-2 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Fecha egreso</label>
                                             <input type="text" id="inputFechaEgreso" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Antiguedad</label>
                                             <input type="text" id="inputAntiguedad" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Área</label>
-                                            <select name="area_id" id="inputArea" class="form-select js-select-area">
+                                            <select name="area_id" id="inputArea"
+                                                class="form-select js-select-area w-100">
                                             </select>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Servicio</label>
-                                            <select name="servicio_id" id="inputServicio" class="form-select">
+                                            <select name="servicio_id" id="inputServicio" class="form-select w-100">
                                             </select>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Convenio</label>
-                                            <select name="posee_convenio" id="inputConvenio" class="form-select">
+                                            <select name="posee_convenio" id="inputConvenio" class="form-select w-100">
                                                 <option value="SANIDAD">SANIDAD</option>
                                                 <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Categoría</label>
                                             <select name="categoria_id" id="inputCategoria"
-                                                class="form-select js-select-categoria">
+                                                class="form-select js-select-categoria w-100">
                                                 <option value="">Seleccione categoría</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Rol</label>
-                                            <select name="rol_interno_id" id="inputRol" class="form-select">
+                                            <select name="rol_interno_id" id="inputRol" class="form-select w-100">
                                                 <option value="">Seleccione rol</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-1">
-                                            <label class="form-label">Régimen (hs)</label>
+                                        <div class="col-xl-1 col-lg-3 col-md-6 col-12">
+                                            <label class="form-label">Régimen</label>
                                             <select name="regimen_horas" id="inputRegimen" class="form-select">
                                                 <option selected disabled value="">Seleccione régimen</option>
                                                 <option value="44">44</option>
@@ -746,34 +691,33 @@
                                                 <option value="20">20</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">Horas diarias</label>
                                             <input id="inputHorasDiarias" name="horas_diarias" class="form-control"
                                                 readonly>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">Es coordinador</label>
                                             <select id="inputCordinador" name="es_coordinador" class="form-select">
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">Afiliado al sindicato</label>
                                             <select id="inputAfiliado" name="es_afiliado" class="form-select">
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-xl-1 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">Noche</label>
                                             <select id="inputNoche" name="noche" class="form-select">
                                                 <option value="1">SI</option>
                                                 <option value="0">NO</option>
                                             </select>
-                                            <!--<input type="text" id="inputNoche" class="form-control" readonly>-->
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-xl-1 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">UTI</label>
                                             <select id="inputUti" name="uti" class="form-select">
                                                 <option value="1">SI</option>
@@ -929,108 +873,108 @@
                         </div>
 
                         <!--<div class="empleado-box p-3">
-                                    <div class="row g-3">
+                                        <div class="row g-3">
 
-                                        <div class="col-lg-3">
-                                            <label for="" class="form-label">Novedad</label>
-                                            <select id="selectNovedad" name="idNovedad" class="form-select selectjs" required>
-                                                <option value="">Seleccionar novedad</option>
-                                            </select>
+                                            <div class="col-lg-3">
+                                                <label for="" class="form-label">Novedad</label>
+                                                <select id="selectNovedad" name="idNovedad" class="form-select selectjs" required>
+                                                    <option value="">Seleccionar novedad</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-2">
+                                                <label class="form-label">Código Novedad</label>
+                                                <input type="text" class="form-control" id="codigoFinnegans" readonly>
+                                            </div>
+
+                                            <input type="hidden" id="idNovedad" name="idNovedad" required readonly>
+
+                                            
+
+                                            <div class="col-lg-2">
+                                                <label class="form-label">Fecha desde</label>
+                                                <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad"
+                                                    required>
+                                            </div>
+
+                                            <div class="col-lg-2">
+                                                <label class="form-label">Fecha hasta</label>
+                                                <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad"
+                                                    required>
+                                            </div>
+
+                                            <div class="col-lg-1" id="divPeriodoDias" hidden>
+                                                <label class="form-label">Período (días)</label>
+                                                <input id="inputDias" name="duracionDias" type="text" class="form-control">
+                                            </div>
+
+                                            <div class="col-lg-1" id="divCantidadHoras" hidden>
+                                                <label class="form-label">Horas</label>
+                                                <input id="inputHoras" name="horas" type="text" class="form-control">
+                                            </div>
+
+                                            <div class="col-lg-1" id="divCantidadPesos" hidden>
+                                                <label class="form-label">Importe</label>
+                                                <input id="inputImporte" type="text" class="form-control text-end">
+                                            </div>
+
+                                            <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>
+
+                                            <div class="col-lg-2 d-none" id="divSelectTipoVacaciones">
+                                                <label class="form-label">Tipo de vacaciones</label>
+                                                <select id="selectTipoVacaciones" name="tipoVacaciones" class="form-control"
+                                                    {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
+                                                    <option value="">Seleccione tipo de vacaciones</option>
+                                                    <option value="2">Gozadas</option>
+                                                    <option value="3" selected
+                                                        {{ Auth::user()->rol !== 'Administrador/a' ? 'selected' : '' }}>
+                                                        Gozadas pagadas
+                                                    </option>
+                                                    <option value="4">Pagadas</option>
+                                                    <option value="5">Vencidas</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-1 d-none" id="divSelectAnnioVacaciones">
+                                                <label class="form-label">Año</label>
+                                                <input type="number" class="form-control" name="annio">
+                                            </div>
+
+                                            <div class="col-lg-1 d-none" id="divNumeroAtencion">
+                                                <label class="form-label">N° de atención</label>
+                                                <input type="number" class="form-control" id="numAtencion" name="numAtencion">
+                                            </div>
+
+                                            <div class="col-lg-2 d-none" id="divIngresarPacienteAtencion">
+                                                <label class="form-label">Paciente</label>
+                                                <input type="text" class="form-control" id="paciente"
+                                                    name="pacienteAtencion">
+                                            </div>
+
+                                            <div class="col-lg-4 d-none" id="divConceptoAtencion">
+                                                <label class="form-label">Concepto</label>
+                                                <input type="text" class="form-control" id="conceptoAtencion"
+                                                    name="conceptoAtencion">
+                                            </div>
+
+                                            <div class="col-lg-1 d-none" id="divCantidadCuotas">
+                                                <label class="form-label">Cuotas</label>
+                                                <input type="number" class="form-control" id="cantidadCuotas"
+                                                    name="cantidadCuotas">
+                                            </div>
+
+                                            <div class="col-lg-4 d-none">
+                                                <label class="form-label">Comprobante</label>
+                                                <input type="file" class="form-control">
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <label class="form-label">Descripción/Observaciones</label>
+                                                <input type="text" class="form-control" name="descripcion"
+                                                    placeholder="Descripción de la novedad (opcional)">
+                                            </div>
                                         </div>
-
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Código Novedad</label>
-                                            <input type="text" class="form-control" id="codigoFinnegans" readonly>
-                                        </div>
-
-                                        <input type="hidden" id="idNovedad" name="idNovedad" required readonly>
-
-                                        
-
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Fecha desde</label>
-                                            <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad"
-                                                required>
-                                        </div>
-
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Fecha hasta</label>
-                                            <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad"
-                                                required>
-                                        </div>
-
-                                        <div class="col-lg-1" id="divPeriodoDias" hidden>
-                                            <label class="form-label">Período (días)</label>
-                                            <input id="inputDias" name="duracionDias" type="text" class="form-control">
-                                        </div>
-
-                                        <div class="col-lg-1" id="divCantidadHoras" hidden>
-                                            <label class="form-label">Horas</label>
-                                            <input id="inputHoras" name="horas" type="text" class="form-control">
-                                        </div>
-
-                                        <div class="col-lg-1" id="divCantidadPesos" hidden>
-                                            <label class="form-label">Importe</label>
-                                            <input id="inputImporte" type="text" class="form-control text-end">
-                                        </div>
-
-                                        <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>
-
-                                        <div class="col-lg-2 d-none" id="divSelectTipoVacaciones">
-                                            <label class="form-label">Tipo de vacaciones</label>
-                                            <select id="selectTipoVacaciones" name="tipoVacaciones" class="form-control"
-                                                {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
-                                                <option value="">Seleccione tipo de vacaciones</option>
-                                                <option value="2">Gozadas</option>
-                                                <option value="3" selected
-                                                    {{ Auth::user()->rol !== 'Administrador/a' ? 'selected' : '' }}>
-                                                    Gozadas pagadas
-                                                </option>
-                                                <option value="4">Pagadas</option>
-                                                <option value="5">Vencidas</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="col-lg-1 d-none" id="divSelectAnnioVacaciones">
-                                            <label class="form-label">Año</label>
-                                            <input type="number" class="form-control" name="annio">
-                                        </div>
-
-                                        <div class="col-lg-1 d-none" id="divNumeroAtencion">
-                                            <label class="form-label">N° de atención</label>
-                                            <input type="number" class="form-control" id="numAtencion" name="numAtencion">
-                                        </div>
-
-                                        <div class="col-lg-2 d-none" id="divIngresarPacienteAtencion">
-                                            <label class="form-label">Paciente</label>
-                                            <input type="text" class="form-control" id="paciente"
-                                                name="pacienteAtencion">
-                                        </div>
-
-                                        <div class="col-lg-4 d-none" id="divConceptoAtencion">
-                                            <label class="form-label">Concepto</label>
-                                            <input type="text" class="form-control" id="conceptoAtencion"
-                                                name="conceptoAtencion">
-                                        </div>
-
-                                        <div class="col-lg-1 d-none" id="divCantidadCuotas">
-                                            <label class="form-label">Cuotas</label>
-                                            <input type="number" class="form-control" id="cantidadCuotas"
-                                                name="cantidadCuotas">
-                                        </div>
-
-                                        <div class="col-lg-4 d-none">
-                                            <label class="form-label">Comprobante</label>
-                                            <input type="file" class="form-control">
-                                        </div>
-
-                                        <div class="col-lg-4">
-                                            <label class="form-label">Descripción/Observaciones</label>
-                                            <input type="text" class="form-control" name="descripcion"
-                                                placeholder="Descripción de la novedad (opcional)">
-                                        </div>
-                                    </div>
-                                </div>-->
+                                    </div>-->
                     </form>
                 </div>
                 <div class="modal-footer">

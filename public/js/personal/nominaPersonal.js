@@ -659,7 +659,7 @@ $(document).ready(function () {
                     }
 
                     d.categ_id = $("#filtroCategoria").val() || null;
-                    d.p_regimen = $("#filtroRegimen").val() || null;
+                    //d.p_regimen = $("#filtroRegimen").val() || null;
                     d.p_convenio = $("#filtroConvenio").val() || null;
                 },
             },
@@ -697,11 +697,12 @@ $(document).ready(function () {
                 { data: "DNI", width: "5%", className: "text-start" },
                 { data: "AREA", width: "12%", className: "text-start" },
                 { data: "CATEGORIA", width: "9%", className: "text-start" },
-                { data: "REGIMEN", width: "5%", className: "text-center" },
+                { data: "REGIMEN", width: "5%", className: "text-center", visible:false},
                 {
                     data: "HORAS_DIARIAS",
                     width: "3%",
                     className: "text-center",
+                    visible:false 
                 },
                 { data: "CONVENIO", width: "10%", className: "text-start" },
                 {
