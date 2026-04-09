@@ -58,29 +58,42 @@ class CalidadController extends Controller
     {
         if (!$valor) return null;
 
+        \Log::debug('parseFecha input', [
+            'valor' => $valor,
+            'tipo'  => gettype($valor),
+            'es_datetime' => $valor instanceof \DateTime,
+        ]);
+
         try {
-            // 1. Verificamos si ya es un objeto DateTime (a veces la librería lo convierte sola)
             if ($valor instanceof \DateTime) {
                 return \Carbon\Carbon::instance($valor)->format('Y-m-d H:i:s');
             }
 
-            // 2. Si es un número (el formato serie de Excel), usamos el helper de PhpSpreadsheet
             if (is_numeric($valor)) {
                 return \Carbon\Carbon::instance(
                     \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($valor)
                 )->format('Y-m-d H:i:s');
             }
 
-            // 3. Si llega como texto, intentamos el parseo manual que ya tenías
-            return \Carbon\Carbon::createFromFormat('d/m/Y H:i', trim($valor))
-                ->format('Y-m-d H:i:s');
-        } catch (\Exception $e) {
-            // Si falla todo, intentamos un parseo flexible
-            try {
-                return \Carbon\Carbon::parse($valor)->format('Y-m-d H:i:s');
-            } catch (\Exception $e2) {
-                return null;
+            $valor = trim((string)$valor);
+
+            foreach (['d/m/Y H:i:s', 'd/m/Y H:i'] as $formato) {
+                try {
+                    return \Carbon\Carbon::createFromFormat($formato, $valor)
+                        ->format('Y-m-d H:i:s');
+                } catch (\Exception $e) {
+                    continue;
+                }
             }
+
+            return null;
+        } catch (\Exception $e) {
+            \Log::error('parseFecha error', [
+                'valor' => $valor,
+                'mensaje' => $e->getMessage()
+            ]);
+
+            return null;
         }
     }
 
@@ -100,8 +113,6 @@ class CalidadController extends Controller
             ], 422);
         }
 
-        $headers = array_map(fn($h) => strtoupper(trim($h)), $rows[0]);
-
         // 🔎 Obtener tipo encuesta (para saber si es guardia o internacion)
         $tipoEncuesta = DB::table('tipos_encuestas')
             ->where('idTipoEncuesta', $idTipoEncuesta)
@@ -114,10 +125,19 @@ class CalidadController extends Controller
             ], 422);
         }
 
+        $headers = array_values(array_map(fn($h) => strtoupper(trim((string)$h)), $rows[0]));
+
         $esInternacion = $tipoEncuesta->grupo === 'INTERNACION';
 
-        // 📌 Definir columnas base
-        $colInicioPreguntas = $esInternacion ? 6 : 4;
+        // Buscar automáticamente dónde empieza P1
+        $colInicioPreguntas = array_search('P1', $headers, true);
+
+        if ($colInicioPreguntas === false) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'No se encontró la columna P1 en el archivo'
+            ], 422);
+        }
 
         // 📌 Obtener preguntas BD
         $preguntasDB = DB::table('preguntas_encuestas')
