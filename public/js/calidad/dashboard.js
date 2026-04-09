@@ -34,8 +34,11 @@ function cargarDashboard() {
             dashboardData = res;
 
             if (res.kpi && res.kpi.length > 0) {
-                $("#kpiSatisfaccion").text(res.kpi[0].satisfaccion + "%");
-                $("#kpiEncuestas").text(res.kpi[0].total_encuestas);
+                let satisfaccion = res.kpi[0].satisfaccion ?? 0;
+                let total = res.kpi[0].total_encuestas ?? 0;
+
+                $("#kpiSatisfaccion").text(satisfaccion + "%");
+                $("#kpiEncuestas").text(total);
             }
 
             renderTablaGuardias(res.guardias);

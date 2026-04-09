@@ -59,10 +59,28 @@ class CalidadController extends Controller
         if (!$valor) return null;
 
         try {
+            // 1. Verificamos si ya es un objeto DateTime (a veces la librería lo convierte sola)
+            if ($valor instanceof \DateTime) {
+                return \Carbon\Carbon::instance($valor)->format('Y-m-d H:i:s');
+            }
+
+            // 2. Si es un número (el formato serie de Excel), usamos el helper de PhpSpreadsheet
+            if (is_numeric($valor)) {
+                return \Carbon\Carbon::instance(
+                    \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($valor)
+                )->format('Y-m-d H:i:s');
+            }
+
+            // 3. Si llega como texto, intentamos el parseo manual que ya tenías
             return \Carbon\Carbon::createFromFormat('d/m/Y H:i', trim($valor))
                 ->format('Y-m-d H:i:s');
         } catch (\Exception $e) {
-            return null; // o log si querés
+            // Si falla todo, intentamos un parseo flexible
+            try {
+                return \Carbon\Carbon::parse($valor)->format('Y-m-d H:i:s');
+            } catch (\Exception $e2) {
+                return null;
+            }
         }
     }
 
@@ -322,7 +340,6 @@ class CalidadController extends Controller
                 ),
 
             ]);
-
         } catch (\Exception $e) {
 
             return response()->json([
