@@ -37,7 +37,7 @@
 
         <div class="container-fluid my-3 empleado-box p-3">
             <h5 class="fw-bold mb-3">Previsualización del archivo</h5>
-            <div class="row d-flex gap-3 mx-auto my-4">
+            <div class="row d-flex mx-auto my-4">
                 <table id="tablaExcel" class="table table-striped table-bordered table-hover align-middle nowrap">
                     <thead>
                     </thead>

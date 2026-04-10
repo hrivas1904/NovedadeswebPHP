@@ -1,3 +1,7 @@
+function getScrollY() {
+    return window.innerWidth < 768 ? "30vh" : "50vh";
+}
+
 $(document).ready(function () {
     cargarTipoEncuestas();
 });
@@ -116,6 +120,14 @@ function renderExcelPreview(headers, rows) {
         pageLength: 10,
         destroy: true,
         scrollX: true,
+        autoWidth: true,
+        paging: false,
+        searching: false,
+        scrollCollapse: true,
+        scrollY: getScrollY(),
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+        },
     });
 }
 
@@ -171,7 +183,7 @@ $("#btnAnalizar").click(function (e) {
                 text: `Se insertaron ${res.registrosInsertados} registros`,
                 confirmButtonText: "OK",
             }).then(() => {
-                location.reload(); // refresh completo
+                location.reload();
             });
         },
         error: function (err) {
