@@ -475,7 +475,7 @@ function cargarEventosMes(year, month) {
                                 type="button"
                                 class="event-item badge-turno-${evento.turno_sigla}"
                                 data-id-evento="${evento.idEvento}"
-                                data-fecha="${fechaString}"
+                                data-fecha="${fechaString}">
                                 <span class="event-text">
                                     ${apellido}
                                     <small>${evento.turno_sigla}${badgeCaja}</small>
@@ -490,6 +490,16 @@ function cargarEventosMes(year, month) {
         },
     });
 }
+
+//VALIDACIÓN DE CLICK PARA VERIFICAR FUNCIONAMIENTO ELIMINAR EVENTO
+$(document).on("click", ".event-item", function () {
+    const idEvento = $(this).data("id-evento");
+    const fecha = $(this).data("fecha");
+
+    console.log("CLICK", idEvento, fecha);
+
+    modificarEventoDirecto(idEvento, fecha);
+});
 
 function generarCalendario(fecha) {
     const year = fecha.getFullYear();
