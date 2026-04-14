@@ -5,7 +5,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="text-start mb-3">
-        <h3 class="pill-heading tituloVista">CONTROL DE NOVEDADES</h3>
+        <h3 class="pill-heading tituloVista">CONTROL DE NOVEDADES MENSUALES</h3>
     </div>
 
     <div class="card" style="border-radius:15px;">

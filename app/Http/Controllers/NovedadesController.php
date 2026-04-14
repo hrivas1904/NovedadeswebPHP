@@ -26,6 +26,11 @@ class NovedadesController extends Controller
         return view('novedades.configNovedades');
     }
 
+    public function misNovedades()
+    {
+        return view('novedades.misNovedades');
+    }
+
     public function listarCategorias()
     {
         try {

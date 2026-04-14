@@ -82,7 +82,7 @@
                             @if (Auth::user()->rol === 'Administrador/a')
                                 <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar
                                         usuarios</a></li>
-                                <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>-->
+                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>
                             @endif
 
                         </ul>
@@ -93,13 +93,13 @@
                             <i class="bx bx-folder"></i> Novedades
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Mis novedades</a></li>
-                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto
-                                    sueldo</a></li>
-
+                            <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis novedades</a></li>
+                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
                             @if (Auth::user()->rol === 'Administrador/a')
-                                <li><a class="dropdown-item" href="{{ route('configNovedades') }}">Configuración</a>
-                                </li>
+                                <li><a class="dropdown-item" href="{{ route('configNovedades') }}">Configuración</a></li>                                
+                            @endif
+                            @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
+                                <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registrar novedades</a></li>
                             @endif
                         </ul>
                     </li>
@@ -110,15 +110,9 @@
                                 <i class="fa-solid fa-award"></i> Calidad
                             </a>
                             <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar encuestas</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
-                                </li>
+                                <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar encuestas</a></li>
+                                <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a></li>
                             </ul>
                         </li>
                     @endif
