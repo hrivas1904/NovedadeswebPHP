@@ -153,7 +153,6 @@ class CalidadController extends Controller
             ], 422);
         }
 
-        // 🔥 VALIDACIÓN HEADER P1, P2...
         foreach ($preguntasDB as $i => $preg) {
             $esperado = 'P' . ($i + 1);
             if (($headers[$colInicioPreguntas + $i] ?? '') !== $esperado) {
@@ -168,17 +167,19 @@ class CalidadController extends Controller
 
         try {
 
-            // 🧾 Crear importación
-            $idImportacion = DB::table('importaciones_encuestas')->insertGetId([
-                'idTipoEncuesta' => $idTipoEncuesta,
-                'nombreArchivo' => $file->getClientOriginalName(),
-                'usuario' => auth()->id() ?? null,
-                'fechaImportacion' => now()
+            //CREAR BLOQUE DE IMPORTACION DE ENCABEZADO+DETALLE DE LA ENCUESTA
+            DB::statement("CALL SP_GUARDAR_ENCUESTAS_IMPORTACION(?,?,?,?,@idImportacion)", [
+                $idTipoEncuesta,
+                $file->getClientOriginalName(),
+                auth()->id() ?? null,
+                0
             ]);
 
-            $registros = [];
+            $idImportacion = DB::select("SELECT @idImportacion as id")[0]->id;
 
-            // 🔁 Recorrer filas
+            $registrosInsertados = 0;
+
+            //RECORRER FILAS DEL DATATABLE DE PREVIEW
             for ($i = 1; $i < count($rows); $i++) {
 
                 $fila = $rows[$i];
@@ -188,46 +189,65 @@ class CalidadController extends Controller
                 $fechaAtencion = $this->parseFecha($fila[1] ?? null);
                 $fechaEncuesta = $this->parseFecha($fila[2] ?? null);
                 $paciente = $fila[3] ?? null;
-                $tipoInternacion = $esInternacion ? ($fila[4] ?? null) : null;
-                $area = $esInternacion ? ($fila[5] ?? null) : null;
+                $os = $fila[4] ?? null;
+                $plan = $fila[5] ?? null;
 
+                $area = $esInternacion ? ($fila[6] ?? null) : null;
+                $cama = $esInternacion ? ($fila[7] ?? null) : null;
+                $tipoInternacion = $esInternacion ? ($fila[8] ?? null) : null;
+
+                //INSERT ENCABEZADO DE LA ENCUESTA
+                DB::statement("CALL SP_GUARDAR_ENCUESTAS_ENC(?,?,?,?,?,?,?,?,?,?,?,?,@idEncuesta)", [
+                    $idImportacion,
+                    $idTipoEncuesta,
+                    $numeroAtencion,
+                    $fechaAtencion,
+                    $fechaEncuesta,
+                    $paciente,
+                    $os,
+                    $plan,
+                    $area,
+                    $cama,
+                    $tipoInternacion,
+                    null
+                ]);
+
+                $idEncuesta = DB::select("SELECT @idEncuesta as id")[0]->id;
+
+                //INSERTAR DETALLE DE LA ENCUESTA --> RESPUESTAS
                 foreach ($preguntasDB as $idx => $preg) {
 
                     $colIndex = $colInicioPreguntas + $idx;
                     $valorRaw = trim((string)($fila[$colIndex] ?? ''));
 
-                    $registros[] = [
-                        'idImportacion' => $idImportacion,
-                        'idTipoEncuesta' => $idTipoEncuesta,
-                        'idPregunta' => $preg->idPregunta,
+                    $valorNumerico = null;
+                    $valorTexto = null;
 
-                        'numeroAtencion' => $numeroAtencion,
-                        'fechaAtencion' => $fechaAtencion,
-                        'fechaEncuesta' => $fechaEncuesta,
-                        'paciente' => $paciente,
-                        'tipoInternacion' => $tipoInternacion,
-                        'area' => $area,
+                    if ($preg->tipoRespuesta === 'NUMERICA' && is_numeric($valorRaw)) {
+                        $valorNumerico = (int)$valorRaw;
+                    }
 
-                        'valorNumerico' => $preg->tipoRespuesta === 'NUMERICA' && is_numeric($valorRaw)
-                            ? (int)$valorRaw
-                            : null,
+                    if ($preg->tipoRespuesta === 'SI_NO') {
+                        $valorTexto = strtoupper($valorRaw);
+                    }
 
-                        'valorTexto' => $preg->tipoRespuesta === 'SI_NO'
-                            ? strtoupper($valorRaw)
-                            : null,
-                    ];
+                    DB::statement("CALL SP_GUARDAR_ENCUESTAS_DET(?,?,?,?)", [
+                        $idEncuesta,
+                        $preg->idPregunta,
+                        $valorNumerico,
+                        $valorTexto
+                    ]);
+
+                    $registrosInsertados++;
                 }
             }
 
-            // 🚀 Insert masivo en chunks
-            foreach (array_chunk($registros, 1000) as $chunk) {
-                DB::table('respuestas_encuestas')->insert($chunk);
-            }
-
-            // actualizar cantidad
+            //ACTUALIZAR CANTIDAD DE REGISTROS IMPORTADOS
             DB::table('importaciones_encuestas')
                 ->where('idImportacion', $idImportacion)
-                ->update(['cantidadRegistros' => count($registros)]);
+                ->update([
+                    'cantidadRegistros' => $registrosInsertados
+                ]);
 
             DB::commit();
 
@@ -235,8 +255,17 @@ class CalidadController extends Controller
                 'ok' => true,
                 'idImportacion' => $idImportacion,
                 'filasProcesadas' => count($rows) - 1,
-                'registrosInsertados' => count($registros)
+                'registrosInsertados' => $registrosInsertados
             ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error al procesar archivo',
+                'detalle' => $e->getMessage()
+            ], 500);
         } catch (\Exception $e) {
 
             DB::rollBack();
