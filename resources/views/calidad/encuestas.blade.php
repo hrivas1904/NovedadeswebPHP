@@ -6,7 +6,7 @@
 
     <div class="container-fluid">
         <div class="d-flex justify-content-between ms-auto align-item-end gap-3 my-2">
-            <h3 class="pill-heading tituloVista">ENCUESTAS DE CALIDAD</h3>
+            <h3 class="pill-heading tituloVista">IMPORTAR ENCUESTAS</h3>
         </div>
 
         <div class="row align-items-end g-2">

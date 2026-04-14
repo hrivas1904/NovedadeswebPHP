@@ -233,6 +233,8 @@ Route::get('/dashboard/resultados', [CalidadController::class, 'dashboardResulta
 
 Route::get('/dashboard/completo', [CalidadController::class, 'dashboardCompleto']);
 
+Route::get('/respuestasEncuestas', [CalidadController::class, 'respuestasEncuestas'])
+    ->name('respuestasEncuestas');
 
 
 //cronograma

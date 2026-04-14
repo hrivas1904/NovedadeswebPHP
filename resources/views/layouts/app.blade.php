@@ -111,15 +111,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('encuestasCalidad') }}">
-                                        Encuestas
-                                    </a>
+                                    <a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar encuestas</a>
                                 </li>
-
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('dashboardCalidad') }}">
-                                        Dashboard
-                                    </a>
+                                    <a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
                                 </li>
                             </ul>
                         </li>

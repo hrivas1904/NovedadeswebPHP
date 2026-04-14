@@ -24,6 +24,11 @@ class CalidadController extends Controller
         return view('calidad.cmi');
     }
 
+    public function respuestasEncuestas()
+    {
+        return view('calidad.respuestasEncuestas');
+    }
+
     public function listarTiposEncuestas()
     {
         try {
@@ -333,26 +338,11 @@ class CalidadController extends Controller
         }
     }
 
-    public function dashboardResultados(Request $request)
-    {
-        $desde = $request->desde === "null" || $request->desde === "" ? null : $request->desde;
-        $hasta = $request->hasta === "null" || $request->hasta === "" ? null : $request->hasta;
-        $tipo  = $request->tipo === "null" || $request->tipo === "" ? null : $request->tipo;
-
-        $resultados = DB::select('CALL SP_DASHBOARD_RESULTADOS(?, ?, ?)', [
-            $desde,
-            $hasta,
-            $tipo
-        ]);
-
-        return response()->json($resultados);
-    }
-
     public function dashboardCompleto(Request $request)
     {
         $desde = $request->query('desde');
         $hasta = $request->query('hasta');
-        $tipo  = $request->query('tipo'); // opcional
+        $tipo  = $request->query('tipo');
 
         try {
 
