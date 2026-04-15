@@ -15,7 +15,7 @@ $(document).on("change", ".selectTurno", function () {
     let turno = $(this).val();
     if (turno === "Noche") {
         fila.find(".selectCaja").val("1");
-    }
+    }    
 });
 
 //SELECTOR COLAB --> LEGAJO
@@ -48,6 +48,8 @@ $(document).ready(function () {
 function calcularHoras(fila) {
     let desde = $(fila).find(".inputDesde").val();
     let hasta = $(fila).find(".inputHasta").val();
+    let horas = null;
+    let turno = $(fila).find(".selectTurno").val();
 
     if (!desde || !hasta) return;
 
@@ -61,7 +63,12 @@ function calcularHoras(fila) {
     }
 
     let dias = Math.floor((f2 - f1) / (1000 * 60 * 60 * 24)) + 1;
-    let horas = dias * 8;
+
+    if (turno === "Refuerzo") {
+        horas = dias * 12;
+    } else {
+        horas = dias * 8;
+    }
 
     $(fila).find(".inputHoras").val(horas);
 }
