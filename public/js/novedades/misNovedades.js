@@ -92,15 +92,7 @@ $(document).ready(function () {
                         return formatearFechaArgentina(data);
                     },
                 },
-                { data: "AREA", width: "%4" },
                 { data: "REGISTRANTE" },
-                { data: "COLABORADOR" },
-                {
-                    data: "LEGAJO",
-                    render: function (data, type, row) {
-                        return data.toString().padStart(5, "0");
-                    },
-                },
                 {
                     data: "CODIGO_NOVEDAD",
                     width: "3%",
@@ -108,30 +100,6 @@ $(document).ready(function () {
                     title: "NOVEDAD",
                 },
                 { data: "NOVEDAD_NOMBRE" },
-                { data: "CENTRO_COSTO" },
-                {
-                    data: "DURACION",
-                    className: "text-end",
-                    render: function (data, type, row) {
-                        tipoValorNov = row.TIPO_VALOR;
-
-                        if (tipoValorNov === "Pesos") {
-                            return ("$", data);
-                        } else {
-                            return parseInt(data);
-                        }
-                        return data;
-                    },
-                },
-                { data: "VALOR2" },
-                {
-                    data: "FECHA_APLICACION",
-                    className: "text-end",
-                    render: function (data) {
-                        return formatearFechaArgentina(data);
-                    },
-                },
-                { data: "EMPRESA" },
                 {
                     data: "FECHA_DESDE",
                     className: "text-end",
@@ -145,7 +113,7 @@ $(document).ready(function () {
                     render: function (data) {
                         return formatearFechaArgentina(data);
                     },
-                },
+                },                
                 {
                     data: "DURACION",
                     render: function (data, type, row) {
@@ -160,16 +128,6 @@ $(document).ready(function () {
                     },
                 },
                 { data: "DESCRIPCION" },
-                { data: "ANNIO" },
-                {
-                    data: "LEGAJO",
-                    render: function (data, type, row) {
-                        return data.toString().padStart(5, "0");
-                    },
-                },
-                { data: "TIPO" },
-                { data: "COLABORADOR" },
-                { data: "NOVEDAD_NOMBRE" },
                 {
                     data: "REGISTRO",
                     orderable: false,

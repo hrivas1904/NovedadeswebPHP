@@ -37,16 +37,6 @@
                         <i class="fa-solid fa-eraser"></i> Limpiar
                     </button>
                 </div>
-
-                @if ((Auth::user()->rol == 'Administrador/a')||
-                    (Auth::user()->rol == 'Coordinador/a')||
-                    (Auth::user()->rol == 'Coordinador/a L2'))
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <button type="button" id="btnCargaMasiva" class="btn btn-primary w-100">
-                        <i class="fa-solid fa-database"></i> Carga masiva
-                    </button>
-                </div>
-                @endif
             </div>
         </div>
         <div class="table-responsive">
@@ -63,6 +53,7 @@
                             <th>HASTA</th>
                             <th>VALOR</th>
                             <th>DESCRIPCION</th>
+                            <th>ACCIONES</th>
                         </tr>
                     </thead>
                 </table>
