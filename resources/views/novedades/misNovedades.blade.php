@@ -26,6 +26,13 @@
                     </select>
                 </div>
 
+                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
+                    <select id="liquidada" name="liquidada" class="form-select w-100">
+                        <option value="0" selected>A LIQUIDAR</option>
+                        <option value="1">LIQUIDADAS</option>
+                    </select>
+                </div>
+
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <button type="button" id="btnAplicarFiltros" class="btn btn-primary w-100">
                         <i class="fa-solid fa-filter"></i> Aplicar

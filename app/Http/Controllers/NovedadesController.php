@@ -189,16 +189,17 @@ class NovedadesController extends Controller
             $legajo = Auth::user()->legajo;
             $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
             $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
+            $liquidada = ($request->liquidada && $request->liquidada !== "") ? $request->liquidada : null;
 
-            // IMPORTANTE: Ahora pasamos 5 signos de pregunta (?)
-            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?,?,?)", [
+            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?,?,?,?)", [
                 $areaId,
                 $idNovedad,
                 $paraFinnegans,
                 $desde,
                 $hasta,
                 $rol,
-                $legajo
+                $legajo,
+                $liquidada
             ]);
 
             return response()->json([

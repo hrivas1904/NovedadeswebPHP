@@ -54,6 +54,14 @@ function cargarFiltroNovedad() {
     });
 }
 
+function cerrarModalDetalleNovedad() {
+    $("#formDetalleNovedad")[0].reset();
+    $("#btnGuardarCambios").addClass("d-none");
+    $("#btnHabilitarEdicion").removeClass("d-none");
+    $("#modalDetalleNovedad").modal("hide");
+}
+
+
 $(document).ready(function () {
     cargarFiltroNovedad();
 });
@@ -81,6 +89,7 @@ $(document).ready(function () {
                     d.idNovedad = $("#idNovedad").val();
                     d.desde = $("#filtroDesde").val();
                     d.hasta = $("#filtroHasta").val();
+                    d.liquidada = $("#liquidada").val();
                 },
             },
             order: [[0, "desc"]],
@@ -344,3 +353,86 @@ $(document).ready(function () {
         });
     }
 });
+
+function verDetalleNovedad(idRegistro) {
+    $.ajax({
+        url: `/novedades/verDetalleRegistroNovedad/${idRegistro}`,
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            if (response.success) {
+                const d = response.data;
+
+                $("#inputRegistro").val(d.id_nxe);
+                $("#inputFechaReg").val(
+                    formatearFechaArgentina(d.fecha_registro),
+                );
+                $("#inputRegistrante").val(d.registrante);
+
+                $("#inputLegajo").val(d.legajo);
+                $("#inputColaborador").val(d.colaborador);
+                $("#inputEstado").val(d.estado);
+                $("#inputDni").val(d.dni);
+                $("#inputArea").val(d.area);
+
+                $("#inputFechaAplicacion").val(
+                    formatearFechaArgentina(d.FECHA_APLICACION),
+                );
+                $("#inputFechaDesde").val(d.FECHA_DESDE);
+                $("#inputFechaHasta").val(d.FECHA_HASTA);
+
+                let valor = d.DURACION;
+                let valorFormateado = 0;
+                let tipo_valor = d.tipo_valor;
+                $("#tipoValor").val(tipo_valor);
+
+                if (tipo_valor === "Pesos") {
+                    valorFormateado = formatearPesos(valor);
+                    $("#inputValor").val(valorFormateado);
+                    $("#inputValor").addClass("text-end");
+                } else {
+                    $("#inputValor").val(parseInt(valor));
+                    $("#inputValor").addClass("text-start");
+                }
+
+                if (tipo_valor === "Horas") {
+                    calcularHorasHabiles();
+                }
+
+                $("#inputCodigo").val(d.codigo_novedad);
+                $("#inputNovedad").val(d.novedad);
+                $("#inputDescripcion").val(d.DESCRIPCION);
+
+                $("#inputTipoVacaciones").val(d.TIPO);
+                $("#inputAnnioVacaciones").val(d.ANNIO);
+
+                if (d.novedad === "Licencia anual") {
+                    $("#divInfoVacaciones").removeClass("d-none");
+                } else {
+                    $("#divInfoVacaciones").addClass("d-none");
+                }
+
+                let importeCuotas = d.importeCuotas;
+                let importeCuotasFormateado = formatearPesos(importeCuotas);
+
+                $("#inputNumAtencion").val(d.NUM_ATENCION);
+                $("#inputPacienteAtencion").val(d.PACIENTE);
+                $("#inputConcepto").val(d.CONCEPTO);
+                $("#inputCuotas").val(d.CUOTAS);
+                $("#inputImporteCuotas")
+                    .val(importeCuotasFormateado)
+                    .addClass("text-end");
+
+                console.log("Abriendo detalle del registro ", idRegistro);
+                const modal = $("#modalDetalleNovedad");
+                modal.modal("show");
+            } else {
+                alert("Error: " + response.mensaje);
+            }
+        },
+        error: function (error) {
+            console.error("Error en la petición:", error);
+            alert("No se pudo conectar con el servidor");
+        },
+    });
+}
