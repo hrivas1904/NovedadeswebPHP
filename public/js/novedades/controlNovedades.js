@@ -78,6 +78,19 @@ $("#btnLimpiarFiltros").on("click", function () {
     $("#tb_control").DataTable().ajax.reload();
 });
 
+$(document).on("change", "#checkAll", function () {
+    const isChecked = $(this).is(":checked");
+
+    $(".check-row").prop("checked", isChecked);
+});
+
+$(document).on("change", ".check-row", function () {
+    const total = $(".check-row").length;
+    const checked = $(".check-row:checked").length;
+
+    $("#checkAll").prop("checked", total === checked);
+});
+
 function cargarAreas() {
     $.ajax({
         url: "/areas/lista",
@@ -388,6 +401,7 @@ $(document).ready(function () {
                 { data: "NOVEDAD_NOMBRE" },
                 {
                     data: "REGISTRO",
+                    className: "text-center",
                     orderable: false,
                     width: "10%",
                     render: function (data, type, row) {
@@ -421,6 +435,22 @@ $(document).ready(function () {
                                 </div>
                             `;
                         }
+                    },
+                },
+                {
+                    data: "REGISTRO",
+                    orderable: false,
+                    width: "10%",
+                    render: function (data, type, row) {
+                        return `
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <div class="text-center">
+                                    <input type="checkbox" 
+                                        class="form-check-input check-row" 
+                                        data-id="${data}">
+                                </div>
+                            </div>
+                        `;
                     },
                 },
             ],
@@ -824,3 +854,95 @@ function cerrarModalDetalleNovedad() {
     $("#btnHabilitarEdicion").removeClass("d-none");
     $("#modalDetalleNovedad").modal("hide");
 }
+
+//LIQUIDAR NOVEDADES
+$("#btnLiquidarNovedadesSelec").on("click", function () {
+    let ids = [];
+
+    $(".check-row:checked:not(:disabled)").each(function () {
+        ids.push($(this).data("id"));
+    });
+
+    if (ids.length === 0) {
+        Swal.fire({
+            icon: "warning",
+            title: "Atención",
+            text: "Debe seleccionar al menos una novedad",
+            customClass: {
+                confirmButton: "btn btn-primary me-2",
+                cancelButton: "btn btn-secondary",
+            },
+        });
+        return;
+    }
+
+    console.log("IDs a liquidar:", ids);
+
+    Swal.fire({
+        title: "¿Confirmar liquidación?",
+        text: `Se liquidarán ${ids.length} novedades seleccionadas`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, liquidar",
+        cancelButtonText: "Cancelar",
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: "btn btn-primary me-2",
+            cancelButton: "btn btn-secondary",
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // 🔹 Spinner de carga
+            Swal.fire({
+                title: "Procesando...",
+                text: "Liquidando novedades",
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+
+            $.ajax({
+                url: "/novedades/liquidarNovedades",
+                type: "POST",
+                data: {
+                    ids: ids,
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                },
+                success: function (res) {
+                    Swal.close();
+
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Éxito",
+                            text: res.mensaje,
+                        });
+
+                        $("#tb_control").DataTable().ajax.reload(null, false);
+                    } else {
+                        console.error("Error backend:", res.error);
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: res.error
+                                ? `${res.mensaje}: ${res.error}`
+                                : res.mensaje,
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    Swal.close();
+                    console.error("AJAX error:", xhr.responseText);
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Error en la operación",
+                    });
+                },
+            });
+        }
+    });
+});

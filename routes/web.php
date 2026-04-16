@@ -167,6 +167,13 @@ Route::post('/novedades/registrar', [NovedadesController::class, 'registrarNoved
 Route::get('/novedades/listarNovedadesPorArea', [NovedadesController::class, 'listarNovedadesPorArea'])
     ->name('novedades.listarNovedadesPorArea');
 
+Route::get('/novedades/historico', [NovedadesController::class, 'vistaHistorico'])
+    ->name('novedades.historico');
+
+Route::get('/novedades/historicoNovedades', [NovedadesController::class, 'listarHistoricoNovedades'])
+    ->name('novedades.historicoNovedades');
+
+
 Route::get('/novedades/listarMisNovedades', [NovedadesController::class, 'listarMisNovedades'])
     ->name('novedades.listarMisNovedades');
 
@@ -212,6 +219,8 @@ Route::post('/novedades/actualizar', [NovedadesController::class, 'actualizar'])
 
 Route::get('/novedades/misNovedades', [NovedadesController::class, 'misNovedades'])
     ->name('novedades.misNovedades');
+
+Route::post('/novedades/liquidarNovedades', [NovedadesController::class, 'liquidarNovedades']);
 
 //mensajes
 Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');

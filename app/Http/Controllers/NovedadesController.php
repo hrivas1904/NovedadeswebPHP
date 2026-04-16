@@ -31,6 +31,11 @@ class NovedadesController extends Controller
         return view('novedades.misNovedades');
     }
 
+    public function vistaHistorico()
+    {
+        return view('novedades.historicoNovedades');
+    }
+
     public function listarCategorias()
     {
         try {
@@ -189,7 +194,7 @@ class NovedadesController extends Controller
             $legajo = Auth::user()->legajo;
             $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
             $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
-            $liquidada = ($request->has('liquidada') && $request->liquidada !== "") ? (int)$request->liquidada : null;
+            $liquidada = 0;
 
             $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?,?,?,?)", [
                 $areaId,
@@ -224,10 +229,44 @@ class NovedadesController extends Controller
 
             $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADESXCOLABORADOR (?,?,?,?,?)", [
                 $legajo,
-                $liquidada,                
+                $liquidada,
                 $desde,
                 $hasta,
-                $idNovedad                
+                $idNovedad
+            ]);
+
+            return response()->json([
+                'data' => $ListaNovedades
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function listarHistoricoNovedades(Request $request)
+    {
+        try {
+            $areaId = ($request->area_id && $request->area_id !== "") ? (int)$request->area_id : null;
+            $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? (int)$request->idNovedad : null;
+            $paraFinnegans = ($request->paraFinnegans === '' || $request->paraFinnegans === null) ? null : (int)$request->paraFinnegans;
+            $rol = Auth::user()->rol;
+            $legajo = Auth::user()->legajo;
+            $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
+            $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
+            $liquidada = ($request->has('liquidada') && $request->liquidada !== "") ? (int)$request->liquidada : null;
+
+            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?,?,?,?)", [
+                $areaId,
+                $idNovedad,
+                $paraFinnegans,
+                $desde,
+                $hasta,
+                $rol,
+                $legajo,
+                $liquidada
             ]);
 
             return response()->json([
@@ -482,6 +521,41 @@ class NovedadesController extends Controller
             return response()->json([
                 'success' => false,
                 'mensaje' => 'Error al actualizar la novedad',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function liquidarNovedades(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        if (!$ids || count($ids) == 0) {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'No se seleccionaron registros'
+            ]);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($ids as $id) {
+                DB::select('CALL SP_LIQUIDAR_NOVEDADEDES(?)', [$id]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => 'Novedades liquidadas correctamente'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Error al liquidar',
                 'error' => $e->getMessage()
             ]);
         }
