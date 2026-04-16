@@ -19,19 +19,46 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        // 1. Validamos
-        $credentials = $request->validate([
+        $request->validate([
             'username' => ['required'],
             'password' => ['required'],
         ]);
 
-        // 2. Intentamos el ingreso (Laravel hace todo el trabajo aquí)
-        if (Auth::attempt($credentials)) {
+        $user = \App\Models\User::where('username', $request->username)->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'username' => 'Las credenciales no coinciden con nuestros registros.',
+            ]);
+        }
+
+        // 1. Usuario debe estar activo SIEMPRE
+        if ($user->estado !== 'ACTIVO') {
+            return back()->withErrors([
+                'username' => 'El usuario se encuentra de baja.',
+            ]);
+        }
+
+        // 2. Busco empleado (puede no existir)
+        $empleado = DB::table('empleados')
+            ->where('LEGAJO', $user->legajo)
+            ->first();
+
+        if ($empleado && $empleado->ESTADO !== 'ACTIVO') {
+            return back()->withErrors([
+                'username' => 'El colaborador se encuentra de baja.',
+            ]);
+        }
+
+        // 4. Login
+        if (Auth::attempt([
+            'username' => $request->username,
+            'password' => $request->password
+        ])) {
             $request->session()->regenerate();
             return redirect()->intended('index');
         }
 
-        // 3. Si falla
         return back()->withErrors([
             'username' => 'Las credenciales no coinciden con nuestros registros.',
         ]);
@@ -46,6 +73,4 @@ class LoginController extends Controller
 
         return redirect()->route('login');
     }
-
-    
 }

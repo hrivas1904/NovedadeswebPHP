@@ -35,7 +35,7 @@
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <button type="button" id="btnAplicarFiltros" class="btn btn-primary w-100">
-                        <i class="fa-solid fa-filter"></i> Aplicar
+                        <i class="fa-solid fa-filter"></i> Aplicar filtros
                     </button>
                 </div>
 

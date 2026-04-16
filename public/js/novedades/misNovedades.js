@@ -61,7 +61,6 @@ function cerrarModalDetalleNovedad() {
     $("#modalDetalleNovedad").modal("hide");
 }
 
-
 $(document).ready(function () {
     cargarFiltroNovedad();
 });
@@ -70,7 +69,8 @@ $("#btnLimpiarFiltros").on("click", function () {
     $("#filtroDesde").val(null);
     $("#filtroHasta").val(null);
     $("#idNovedad").val(null);
-    tablaPersonal.ajax.reload();
+    $("#liquidada").val(0);
+    tablaControl.ajax.reload();
 });
 
 $("#btnAplicarFiltros").on("click", function () {
@@ -340,7 +340,8 @@ $(document).ready(function () {
             tablaControl.ajax.reload();
         });
 
-        $("#paraFinnegans").on("change", function () {
+        $("#liquidada").on("change", function () {
+            console.log($(this).val())
             tablaControl.ajax.reload();
         });
 
