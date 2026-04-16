@@ -235,8 +235,9 @@ function inicializarORefrescarHistorial() {
         ajax: {
             url: `/novedades/historial/${legajoActivo}`,
             type: "GET",
-            dataSrc: "",
+            dataSrc: "data",
         },
+        order: [[0, "desc"]],
         columns: [
             { data: "REGISTRO" },
             {

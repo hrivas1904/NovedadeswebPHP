@@ -94,7 +94,7 @@
                             <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis novedades</a></li>
                             <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
                             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
-                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registrar novedades</a></li>
+                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de novedades</a></li>
                             <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Histórico novedades</a></li>
                             @endif
                         </ul>

@@ -389,12 +389,20 @@ class PersonalController extends Controller
     public function historialNovedades($legajo)
     {
         try {
-            $data = DB::select(
-                "CALL SP_LISTA_NOVEDADESXCOLABORADOR(?)",
-                [$legajo]
+            $ListaNovedades = DB::select(
+                "CALL SP_LISTA_NOVEDADESXCOLABORADOR(?,?,?,?,?)",
+                [
+                    $legajo,
+                    null, // liquidada
+                    null, // desde
+                    null, // hasta
+                    null  // idNovedad
+                ]
             );
 
-            return response()->json($data);
+            return response()->json([
+                'data' => $ListaNovedades
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => true,
