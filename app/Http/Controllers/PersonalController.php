@@ -253,15 +253,38 @@ class PersonalController extends Controller
         }
     }
 
+    private function normalizarFiltro($valor)
+    {
+        if ($valor === null || $valor === '') {
+            return null;
+        }
+
+        // Si viene como array → lo paso a "1,2,3"
+        if (is_array($valor)) {
+            return implode(',', $valor);
+        }
+
+        return $valor;
+    }
+
     public function listar(Request $request)
     {
         try {
-            $areaId    = $request->area_id ?: null;
-            $categId   = $request->categ_id ?: null;
-            $convenio  = $request->p_convenio ?: null;
-            $regimen   = $request->p_regimen ?: null;
-            $uti   = $request->p_uti ?: null;
-            $noche   = $request->p_noche ?: null;
+            $areaId   = $this->normalizarFiltro($request->area_id);
+            $categId  = $this->normalizarFiltro($request->categ_id);
+            $convenio = $this->normalizarFiltro($request->p_convenio);
+
+            $regimen  = $request->p_regimen !== null && $request->p_regimen !== ''
+                ? (int)$request->p_regimen
+                : null;
+
+            $uti = $request->p_uti !== null && $request->p_uti !== ''
+                ? (int)$request->p_uti
+                : null;
+
+            $noche = $request->p_noche !== null && $request->p_noche !== ''
+                ? (int)$request->p_noche
+                : null;
 
             $empleados = DB::select(
                 "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?)",

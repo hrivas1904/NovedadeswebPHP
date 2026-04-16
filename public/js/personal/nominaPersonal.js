@@ -8,8 +8,44 @@ let legajoActivo = null;
 let registroSeleccionado = null;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "40vh" : "60vh";
+    return window.innerWidth < 768 ? "36vh" : "56vh";
 }
+
+function getAreasSeleccionadas() {
+    return $(".check-area:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}
+
+function getCategoriasSeleccionadas() {
+    return $(".check-categ:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}
+
+function getConveniosSeleccionados() {
+    return $(".check-convenio:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}
+
+$("#toggleAreas").on("click", function () {
+    $("#listaAreas").toggleClass("d-none");
+});
+
+$("#toggleCateg").on("click", function () {
+    $("#listaCateg").toggleClass("d-none");
+});
+
+$("#toggleConvenios").on("click", function () {
+    $("#listaConvenios").toggleClass("d-none");
+});
 
 $(document).ready(function () {
     cargarRequerimientosAlimentarios();
@@ -517,30 +553,25 @@ function cargarAreas() {
         url: "/areas/lista",
         method: "GET",
         success: function (data) {
-            const select = $(".js-select-area");
-            const areaFija = $("#areaFija").val(); // puede ser undefined
+            const container = $("#listaAreas");
+            const areaFija = $("#areaFija").val();
 
-            select.empty();
-            select.append('<option value="">Seleccione área</option>');
+            container.empty();
 
             data.forEach((area) => {
-                select.append(`
-                    <option value="${area.id_area}">
+                const checked = areaFija == area.id_area ? "checked" : "";
+                const disabled = areaFija ? "disabled" : "";
+
+                container.append(`
+                    <label class="filtro-item">
+                        <input type="checkbox" 
+                               class="check-area" 
+                               value="${area.id_area}" 
+                               ${checked} ${disabled}>
                         ${area.nombre}
-                    </option>
+                    </label>
                 `);
             });
-
-            // 👉 LÓGICA CORRECTA
-            if (areaFija) {
-                select.val(areaFija);
-                select.prop("disabled", true);
-            } else {
-                select.prop("disabled", false);
-            }
-        },
-        error: function () {
-            console.error("Error cargando áreas");
         },
     });
 }
@@ -550,16 +581,18 @@ function cargarFiltroCateg() {
         url: "/categorias-empleados/lista",
         method: "GET",
         success: function (data) {
-            const select = $(".js-select-categFiltro");
+            const container = $("#listaCateg");
 
-            select.empty();
-            select.append('<option value="">Seleccione categoría</option>');
+            container.empty();
 
             data.forEach((categoria) => {
-                select.append(`
-                    <option value="${categoria.id_categ}">
+                container.append(`
+                    <label class="filtro-item">
+                        <input type="checkbox" 
+                               class="check-categ" 
+                               value="${categoria.id_categ}">
                         ${categoria.nombre}
-                    </option>
+                    </label>
                 `);
             });
         },
@@ -574,21 +607,26 @@ function cargarFiltroConvenio() {
         url: "/convenios/lista",
         method: "GET",
         success: function (data) {
-            const select = $(".js-select-convenioFiltro");
+            const container = $("#listaConvenios");
 
-            select.empty();
-            select.append('<option value="">Seleccione convenio</option>');
+            container.empty();
 
             data.forEach((convenio) => {
-                select.append(`
-                    <option value="${convenio.convenio}">
+                if (!convenio.convenio || convenio.convenio.trim() === "") {
+                    return;
+                }
+                container.append(`
+                    <label class="filtro-item">
+                        <input type="checkbox" 
+                               class="check-convenio" 
+                               value="${convenio.convenio}">
                         ${convenio.convenio}
-                    </option>
+                    </label>
                 `);
             });
         },
         error: function () {
-            console.error("Error cargando categorías");
+            console.error("Error cargando convenios");
         },
     });
 }
@@ -656,12 +694,12 @@ $(document).ready(function () {
                     ) {
                         d.area_id = USER_AREA_ID;
                     } else {
-                        d.area_id = $("#filtroArea").val() || null;
+                        d.area_id = getAreasSeleccionadas().join(",") || null;
                     }
 
-                    d.categ_id = $("#filtroCategoria").val() || null;
+                    d.categ_id = getCategoriasSeleccionadas().join(",") || null;
                     //d.p_regimen = $("#filtroRegimen").val() || null;
-                    d.p_convenio = $("#filtroConvenio").val() || null;
+                    d.convenio = getConveniosSeleccionados().join(",") || null;
                 },
             },
             autoWidth: false,
@@ -696,16 +734,21 @@ $(document).ready(function () {
                 },
                 { data: "COLABORADOR", width: "auto", className: "text-start" },
                 { data: "DNI", width: "5%", className: "text-start" },
-                { data: "AREA", width: "12%", className: "text-start" },
-                { data: "CATEGORIA", width: "9%", className: "text-start" },
-                { data: "REGIMEN", width: "5%", className: "text-center", visible:false},
+                { data: "AREA", width: "auto", className: "text-start" },
+                { data: "CATEGORIA", width: "auto", className: "text-start" },
+                {
+                    data: "REGIMEN",
+                    width: "5%",
+                    className: "text-center",
+                    visible: false,
+                },
                 {
                     data: "HORAS_DIARIAS",
                     width: "3%",
                     className: "text-center",
-                    visible:false 
+                    visible: false,
                 },
-                { data: "CONVENIO", width: "10%", className: "text-start" },
+                { data: "CONVENIO", width: "auto", className: "text-start" },
                 {
                     data: "ESTADO",
                     width: "3%",
@@ -737,13 +780,7 @@ $(document).ready(function () {
                     orderable: false,
                     render: function (data) {
                         let botones = `
-                            <button 
-                                class="btn btn-secondary btn-VerLegajo"
-                                data-id="${data.LEGAJO}"
-                                title='Ver legajo'
-                                data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-address-card"></i>
-                            </button>
+                            
                         `;
 
                         // SOLO ADMIN
@@ -810,18 +847,22 @@ $(document).ready(function () {
             ],
         });
 
-        $(
-            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado",
-        ).on("change", function () {
-            tablaPersonal.ajax.reload();
-        });
+        $(document).on(
+            "change",
+            ".check-area, .check-categ, .check-convenio",
+            function () {
+                tablaPersonal.ajax.reload();
+            },
+        );
 
         $("#btn-limpiar-filtros").on("click", function () {
-            $("#filtroArea").val(null);
-            $("#filtroCategoria").val(null);
-            $("#filtroRegimen").val(null);
-            $("#filtroConvenio").val(null);
-            $("#filtroEstado").val(null);
+            $(".check-area, .check-categ, .check-convenio").prop(
+                "checked",
+                false,
+            );
+            $("#toggleAreas span").text("Áreas");
+            $("#toggleCateg span").text("Categorías");
+            $("#toggleConvenios span").text("Convenios");
             tablaPersonal.search("").draw();
             tablaPersonal.ajax.reload();
         });
@@ -832,13 +873,14 @@ $(document).ready(function () {
             }
         }, 500);
 
-        $(document).on("click", ".btn-VerLegajo", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            const nombre = $(this).data("nombre");
-            console.log("Legajo recibido: " + legajoColaborador);
-            verLegajo(legajoColaborador, nombre);
+        $(document).on("click", "#tb_personal tbody tr", function () {
+            const tabla = $("#tb_personal").DataTable();
+            const data = tabla.row(this).data();
+            if (!data) return;
+            const legajo = data.LEGAJO;
+            const nombre = data.COLABORADOR;
+            console.log("Legajo recibido: " + legajo);
+            verLegajo(legajo, nombre);
         });
 
         $(document).on("click", ".btn-DarBaja", function (event) {

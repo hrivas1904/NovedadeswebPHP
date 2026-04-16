@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="{{ asset('css/cronograma.css') }}">
     <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
     <link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssFiltroEcommerce.css') }}">
 </head>
 
 <body>
