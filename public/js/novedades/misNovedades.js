@@ -83,7 +83,7 @@ $(document).ready(function () {
     if (tablaControl.length > 0) {
         tablaControl = new DataTable("#tb_control", {
             ajax: {
-                url: "/novedades/listarNovedadesPorArea",
+                url: "/novedades/listarMisNovedades",
                 type: "GET",
                 data: function (d) {
                     d.idNovedad = $("#idNovedad").val();
