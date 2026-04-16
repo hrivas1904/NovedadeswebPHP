@@ -167,6 +167,9 @@ Route::post('/novedades/registrar', [NovedadesController::class, 'registrarNoved
 Route::get('/novedades/listarNovedadesPorArea', [NovedadesController::class, 'listarNovedadesPorArea'])
     ->name('novedades.listarNovedadesPorArea');
 
+Route::get('/novedades/listarMisNovedades', [NovedadesController::class, 'listarMisNovedades'])
+    ->name('novedades.listarMisNovedades');
+
 Route::get(
     '/personal/info/{legajo}',
     [PersonalController::class, 'infoMinimaEmpleado']
