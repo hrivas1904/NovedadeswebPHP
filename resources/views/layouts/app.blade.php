@@ -69,10 +69,12 @@
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
                                     Auth::user()->rol === 'Administrador/a' ||
                                     Auth::user()->rol === 'Coordinador/a')
-                                <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Personal activo</a>
-                                </li>
-                                <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Personal de
-                                        baja</a></li>
+                                <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Personal activo</a></li>
+                                <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Personal de baja</a></li>
+                            @endif
+
+                            @if (Auth::user()->rol === 'Administrador/a')
+                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
@@ -81,8 +83,7 @@
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a>
-                                </li>
+                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>
                             @endif
 
                         </ul>

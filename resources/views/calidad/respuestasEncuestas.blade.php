@@ -10,25 +10,25 @@
 
     <div class="row align-items-end g-2">
 
-        <div class="col-md-3">
+        <div class="col-md-3 col-lg-2">
             <label class="form-label mb-0 text-muted">Desde</label>
             <input type="date" id="fechaDesde" class="form-control">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-lg-2">
             <label class="form-label mb-0 text-muted">Hasta</label>
             <input type="date" id="fechaHasta" class="form-control">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2 col-lg-2">
             <label class="form-label mb-0 text-muted">Tipo encuesta</label>
             <select id="selectTipoEncuesta" class="form-select"></select>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2 col-lg-2">
             <button id="btnFiltrar" class="btn btn-primary w-100">
                 <i class="fa-solid fa-filter"></i>
                 Filtrar
             </button>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2 col-lg-2">
             <button id="btnLimpiar" class="btn btn-secondary w-100">
                 <i class="fa-solid fa-eraser"></i>
                 Limpiar filtros
