@@ -8,7 +8,7 @@ let legajoActivo = null;
 let registroSeleccionado = null;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "36vh" : "56vh";
+    return window.innerWidth < 768 ? "40vh" : "60vh";
 }
 
 function getAreasSeleccionadas() {

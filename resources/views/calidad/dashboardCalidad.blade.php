@@ -20,22 +20,22 @@
             <div class="col-md-2">
                 <button id="btnFiltrar" class="btn btn-primary w-100">
                     <i class="fa-solid fa-filter"></i>
-                     Filtrar
+                    Filtrar
                 </button>
             </div>
             <div class="col-md-2">
                 <button id="btnLimpiar" class="btn btn-secondary w-100">
                     <i class="fa-solid fa-eraser"></i>
-                     Limpiar filtros
+                    Limpiar filtros
                 </button>
             </div>
             <div class="col-md-2">
                 <button id="btnLimpiar" class="btn btn-danger w-100" onclick="exportarDashboardPDF(dashboardData)">
                     <i class="fa-solid fa-file-pdf"></i>
-                     Informe
+                    Informe
                 </button>
             </div>
-        </div>        
+        </div>
 
         <div class="container-fluid justify-content-center">
             <!-- CARDS -->
@@ -69,6 +69,7 @@
             </div>
 
             <!-- TABLAS -->
+            <h3 class="pill-heading tituloVista mt-3">INFORMACIÓN RESUMIDA</h3>
             <div class="card p-2 mt-4">
                 <h5>Guardia (Adulto - Pediátrica)</h5>
                 <table id="tablaGuardias" class="table table-bordered"></table>
@@ -88,7 +89,38 @@
                 <h5>Internación (Ambulatoria vs No)</h5>
                 <table id="tablaInternacion" class="table table-bordered"></table>
             </div>
-        </div>       
+
+            <div class="card p-2 mt-4 d-none">
+                <h5>Internación (Ambulatoria vs No)</h5>
+                <table id="tablaInternacion" class="table table-bordered"></table>
+            </div>
+
+            <h3 class="pill-heading tituloVista mt-3">RESPUESTAS POR TIPO DE ENCUESTAS Y ÁREAS</h3>
+
+            <div class="card p-2 mt-4" id="cardGuardiaAdulto">
+                <h5>RESULTADOS GUARDIA ADULTO</h5>
+
+                <table id="tablaGuardia" class="table table-striped table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th>Pregunta</th>
+                            <th>Positivos</th>
+                            <th>Negativos</th>
+                            <th>No aplica</th>
+                            <th>Total</th>
+                            <th>% Positivos</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="card p-2 mt-4">
+                <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
+                <table id="tablaInternacionPreguntas" class="table table-bordered w-100"></table>
+            </div>
+        </div>
+
+
 
     </div>
 

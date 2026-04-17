@@ -251,6 +251,8 @@ Route::get('/dashboard/completo', [CalidadController::class, 'dashboardCompleto'
 Route::get('/respuestasEncuestas', [CalidadController::class, 'respuestasEncuestas'])
     ->name('respuestasEncuestas');
 
+Route::get('/encuestas/guardia-adulto/data', [CalidadController::class, 'dataGuardiaAdulto']);
+
 
 //cronograma
 Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);

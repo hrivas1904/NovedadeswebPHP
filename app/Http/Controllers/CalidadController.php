@@ -378,6 +378,16 @@ class CalidadController extends Controller
                     [$desde, $hasta, $tipo]
                 ),
 
+                'guardia_adulto_preguntas' => DB::select(
+                    'CALL SP_ANALISIS_GUARDIA_ADULTO_PREGUNTAS(?, ?)',
+                    [$desde, $hasta]
+                ),
+
+                'internacion_preguntas' => DB::select(
+                    'CALL SP_ANALISIS_INTERNACION_EST_PREGUNTAS(?, ?)',
+                    [$desde, $hasta]
+                ),
+
             ]);
         } catch (\Exception $e) {
 

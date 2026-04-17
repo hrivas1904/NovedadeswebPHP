@@ -45,6 +45,8 @@ function cargarDashboard() {
             renderTablaAreas(res.areas);
             renderTablaUti(res.uti);
             renderTablaInternacion(res.internacion);
+            renderTablaGuardiaPreguntas(res.guardia_adulto_preguntas);
+            renderTablaInternacionPreguntas(res.internacion_preguntas);
         },
     });
 }
@@ -182,6 +184,143 @@ function renderTablaInternacion(data) {
             },
         ],
         pageLength: 5,
+    });
+}
+
+function renderTablaGuardiaPreguntas(data) {
+    if ($.fn.DataTable.isDataTable("#tablaGuardia")) {
+        $("#tablaGuardia").DataTable().destroy();
+    }
+
+    $("#tablaGuardia").DataTable({
+        data: data,
+        autoWidth: false,
+        scrollX: false,
+        paging: false,
+        scrollCollapse: true,
+        scrollY: getScrollY(),
+        responsive: true,
+        searching: false,
+        info: false,
+
+        columns: [
+            { title: "Pregunta", data: "pregunta" },
+
+            {
+                title: "Positivos",
+                data: "positivos",
+                render: function (data) {
+                    return `<span style="color:green;font-weight:bold">${data}</span>`;
+                },
+            },
+
+            {
+                title: "Negativos",
+                data: "negativos",
+                render: function (data) {
+                    return `<span style="color:red;font-weight:bold">${data}</span>`;
+                },
+            },
+
+            {
+                title: "No Aplica",
+                data: "no_aplica",
+            },
+
+            {
+                title: "Total",
+                data: "total_respuestas",
+            },
+
+            {
+                title: "% Positivos",
+                data: null,
+                render: function (row) {
+                    let total = row.total_respuestas;
+                    let positivos = row.positivos;
+
+                    let porcentaje =
+                        total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
+
+                    let color =
+                        porcentaje >= 80
+                            ? "green"
+                            : porcentaje >= 60
+                              ? "orange"
+                              : "red";
+
+                    return `<span style="color:${color}; font-weight:bold">${porcentaje}%</span>`;
+                },
+            },
+        ],
+    });
+}
+
+function renderTablaInternacionPreguntas(data) {
+    if ($.fn.DataTable.isDataTable("#tablaInternacionPreguntas")) {
+        $("#tablaInternacionPreguntas").DataTable().destroy();
+    }
+
+    $("#tablaInternacionPreguntas").DataTable({
+        data: data,
+        autoWidth: false,
+        scrollX: false,
+        paging: false,
+        scrollCollapse: true,
+        scrollY: getScrollY(),
+        responsive: true,
+        searching: false,
+        info: false,
+
+        columns: [
+            { title: "Área", data: "area" },
+
+            { title: "Pregunta", data: "pregunta" },
+
+            {
+                title: "Positivos",
+                data: "positivos",
+                render: d => `<span style="color:green;font-weight:bold">${d}</span>`
+            },
+
+            {
+                title: "Negativos",
+                data: "negativos",
+                render: d => `<span style="color:red;font-weight:bold">${d}</span>`
+            },
+
+            {
+                title: "No Aplica",
+                data: "no_aplica"
+            },
+
+            {
+                title: "Total",
+                data: "total_respuestas"
+            },
+
+            {
+                title: "% Positivos",
+                data: null,
+                render: function (row) {
+                    let total = row.total_respuestas;
+                    let positivos = row.positivos;
+
+                    let porcentaje = total > 0
+                        ? (positivos * 100 / total).toFixed(1)
+                        : 0;
+
+                    let color =
+                        porcentaje >= 80 ? "green" :
+                        porcentaje >= 60 ? "orange" :
+                        "red";
+
+                    return `<span style="color:${color}; font-weight:bold">${porcentaje}%</span>`;
+                }
+            }
+        ],
+
+        order: [[0, 'asc'], [6, 'asc']] // primero área, después peor %
     });
 }
 
