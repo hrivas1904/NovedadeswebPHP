@@ -7,8 +7,18 @@ body {
     font-size: 1rem;
 }
 
+body {
+    background-image: url("/img/backg_v7.png");
+    background-size: cover; /* ocupa toda la pantalla */
+    background-repeat: no-repeat; /* no se repite */
+    background-position: center; /* centrado */
+    background-attachment: fixed; /* efecto moderno tipo "parallax" */
+    background-color: #e9f2f1; /* tono suave verdoso acorde al diseño */
+}
+
 body[data-theme="dark"] {
     --bs-body-bg: var(--bg-body);
+    background-image: url("/img/backg_dark.png");
     --bs-body-color: var(--text-main);
     --title-color: var(--text-main);
 }
@@ -212,7 +222,7 @@ table.dataTable tbody tr:hover {
     border-radius: 10px;
     padding: 12px;
     cursor: pointer;
-    transition: all .15s ease;
+    transition: all 0.15s ease;
     display: block;
     height: 100%;
     background: var(--bs-body-bg);
@@ -220,7 +230,7 @@ table.dataTable tbody tr:hover {
 
 .req-card:hover {
     border-color: var(--color-second);
-    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .req-check {
@@ -243,4 +253,3 @@ table.dataTable tbody tr:hover {
 .req-card input[type="checkbox"] {
     transform: scale(1.2);
 }
-

@@ -3,7 +3,7 @@
 @section('title', 'Inicio')
 
 @section('content')
-    <div class="container-fluid dashboard-container py-3">
+    <div class="container-fluid dashboard-container card py-3">
 
         <div class="row mb-3">
             <div class="col-12">
