@@ -1092,3 +1092,44 @@ $("#btnAbrirModalOs").on("click", function () {
     const modal = $("#modalNuevaOs");
     modal.modal("show");
 });
+
+$(document).on("submit", "#formNuevaOs", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let form = $(this);
+
+    $.ajax({
+        url: form.attr("action"),
+        method: "POST",
+        data: form.serialize(),
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "OK",
+                    text: response.mensaje,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload(); // 👈 recarga toda la vista
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: response.mensaje,
+                });
+            }
+        },
+        error: function (xhr) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: xhr.responseJSON?.mensaje || "Error inesperado",
+            });
+        },
+    });
+
+    return false;
+});

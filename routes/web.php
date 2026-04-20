@@ -153,6 +153,9 @@ Route::get('/requerimientos-alimentarios', [PersonalController::class, 'listaReq
 
 Route::get('/personal/{legajo}/req-alimenticios', [PersonalController::class, 'obtenerReqAlimenticios']);
 
+Route::post('/obra-social/crear', [PersonalController::class, 'registraNuevaOs'])
+    ->name('obraSocial.registraNuevaOs');
+
 //RUTAS DE SP NOVEDADES
 
 Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])

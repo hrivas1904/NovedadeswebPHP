@@ -942,4 +942,29 @@ class PersonalController extends Controller
 
         return response()->json($data);
     }
+
+    public function registraNuevaOs(Request $request)
+    {
+        try {
+            $nombre = $request->input('nombreOs');
+            $codigo = $request->input('codigoOs');
+
+            DB::statement('CALL SP_CREAR_OBRA_SOCIAL(?, ?)', [
+                $nombre,
+                $codigo
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Obra social registrada correctamente'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al registrar la obra social',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

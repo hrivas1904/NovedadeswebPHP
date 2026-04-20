@@ -1141,7 +1141,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="formNuevaOs" action="{{ route('novedades.store') }}" method="POST">
+                <form id="formNuevaOs" action="{{ route('obraSocial.registraNuevaOs') }}" method="POST">
                     @csrf <div class="row">
                         <div class="col-6 mb-2">
                             <label class="form-label fw-bold">Código de la Obra Social</label>
@@ -1157,7 +1157,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="cerrarModalOs()">Cancelar</button>
-                <button type="submit" class="btn btn-primary" form="formCargaNovedad" id="btnRegistrarOs">
+                <button type="submit" class="btn btn-primary" form="formNuevaOs" id="btnRegistrarOs">
                     <i class="fa-solid fa-floppy-disk me-1"></i>
                     Registrar OS
                 </button>
