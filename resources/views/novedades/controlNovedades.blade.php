@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Control de Novedades')
+@section('title', 'Registro de Novedades')
 
 @section('content')
 <div class="container-fluid">
     <div class="text-start mb-2">
-        <h3 class="pill-heading tituloVista">CONTROL DE NOVEDADES MENSUALES</h3>
+        <h3 class="pill-heading tituloVista">REGISTRO DE NOVEDADES MENSUALES</h3>
     </div>
 
     <div class="card" style="border-radius:15px;">
@@ -33,7 +33,6 @@
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
                     <select id="paraFinnegans" name="paraFinnegans"
                         class="form-select js-select-novedadFinnegans w-100">
-                        <option value="" disabled selected>Seleccion tipo</option>
                         <option value="">Todas</option>
                         <option value="0">Informativas</option>
                         <option value="1">Para Finnegans</option>

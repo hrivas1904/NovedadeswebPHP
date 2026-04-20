@@ -1,7 +1,17 @@
 let tablaControl;
 
+flatpickr("#filtroDesde, #filtroHasta", {
+    locale: "es",
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    onChange: function () {
+        tablaControl.ajax.reload();
+    },
+});
+
 function getScrollY() {
-    return window.innerWidth < 768 ? "30vh" : "55vh";
+    return window.innerWidth < 768 ? "30vh" : "60vh";
 }
 
 function formatearFechaArgentina(fecha) {
@@ -66,14 +76,10 @@ $(document).ready(function () {
 });
 
 $("#btnLimpiarFiltros").on("click", function () {
-    $("#filtroDesde").val(null);
-    $("#filtroHasta").val(null);
+    document.querySelector("#filtroDesde")._flatpickr.clear();
+    document.querySelector("#filtroHasta")._flatpickr.clear();
     $("#idNovedad").val(null);
     $("#liquidada").val(0);
-    tablaControl.ajax.reload();
-});
-
-$("#btnAplicarFiltros").on("click", function () {
     tablaControl.ajax.reload();
 });
 

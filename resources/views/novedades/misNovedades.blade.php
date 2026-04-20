@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="text-start mb-3">
+    <div class="text-start mb-2">
         <h3 class="pill-heading tituloVista">MIS NOVEDADES</h3>
     </div>
 
@@ -12,13 +12,11 @@
         <div class="card-header">
             <div class="row align-items-end g-3">
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <label class="form-label text-sm text-muted">Desde</label>
-                    <input type="date" id="filtroDesde" class="form-control mx-1" />
+                    <input type="text" id="filtroDesde" class="form-control mx-1" placeholder="Desde" />
                 </div>
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <label class="form-label text-sm text-muted">Hasta</label>
-                    <input type="date" id="filtroHasta" class="form-control mx-1" />
+                    <input type="text" id="filtroHasta" class="form-control mx-1" placeholder="Hasta" />
                 </div>
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
@@ -31,12 +29,6 @@
                         <option value="0" selected>A LIQUIDAR</option>
                         <option value="1">LIQUIDADAS</option>
                     </select>
-                </div>
-
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <button type="button" id="btnAplicarFiltros" class="btn btn-primary w-100">
-                        <i class="fa-solid fa-filter"></i> Aplicar filtros
-                    </button>
                 </div>
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">

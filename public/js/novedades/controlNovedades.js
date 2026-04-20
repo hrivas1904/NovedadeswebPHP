@@ -82,10 +82,12 @@ $(document).ready(function () {
 });
 
 $("#btnLimpiarFiltros").on("click", function () {
-    $(".js-select-area").val("");
-    $(".js-select-novedadFiltro").val("");
-    $(".js-select-novedadFinnegans").val("");
-    $("#tb_control").DataTable().ajax.reload();
+    document.querySelector("#filtroDesde")._flatpickr.clear();
+    document.querySelector("#filtroHasta")._flatpickr.clear();
+    $("#area").val("");
+    $("#idNovedad").val("");
+    $("#paraFinnegans").val("");
+    tablaControl.ajax.reload();
 });
 
 $(document).on("change", "#checkAll", function () {
@@ -277,15 +279,6 @@ function verDetalleNovedad(idRegistro) {
     }
 })*/
 
-$("#btnLimpiarFiltros").on("click", function () {
-    document.querySelector("#filtroDesde")._flatpickr.clear();
-    document.querySelector("#filtroHasta")._flatpickr.clear();
-    $("#paraFinnegans").val(null);
-    $("#idNovedad").val(null);
-    $("#area").val(null);
-    tablaPersonal.ajax.reload();
-});
-
 //carga dt novedades
 $(document).ready(function () {
     tablaControl = $("#tb_control");
@@ -295,18 +288,9 @@ $(document).ready(function () {
                 url: "/novedades/listarNovedadesPorArea",
                 type: "GET",
                 data: function (d) {
-                    // Lógica de área según rol
-                    if (USER_ROLE !== "Administrador/a") {
-                        d.area_id = USER_AREA_ID;
-                    } else {
-                        d.area_id = $("#area").val();
-                    }
-
-                    // Filtros adicionales
+                    d.area = $("#area").val();
                     d.idNovedad = $("#idNovedad").val();
                     d.paraFinnegans = $("#paraFinnegans").val();
-
-                    // Enviamos las fechas al controlador
                     d.desde = $("#filtroDesde").val();
                     d.hasta = $("#filtroHasta").val();
                 },
@@ -461,7 +445,7 @@ $(document).ready(function () {
                     <'d-flex flex-column flex-sm-row gap-2'B> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
                 > \
-                <'my-2'rt> \
+                <'my-2't> \
                 <'d-bottom d-flex justify-content-center'i>",
             buttons: [
                 {

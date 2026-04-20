@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-fluid">
 
-        <div class="text-start mb-4">
+        <div class="text-start mb-2">
             <h3 class="pill-heading tituloVista">SOLICITUD DE ADELANTO DE SUELDO</h3>
         </div>
 
@@ -27,19 +27,11 @@
             </div>
 
             <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
-                <label class="small text-muted">Desde</label>
-                <input type="date" id="fechaDesde" class="form-control w-100">
+                <input type="text" id="fechaDesde" class="form-control w-100" placeholder="Desde">
             </div>
 
             <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
-                <label class="small text-muted">Hasta</label>
-                <input type="date" id="fechaHasta" class="form-control w-100">
-            </div>
-
-            <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
-                <button id="btnAplicarFiltros" class="btn btn-primary w-100">
-                    <i class="fa fa-filter"></i> Aplicar
-                </button>
+                <input type="text" id="fechaHasta" class="form-control w-100" placeholder="Hasta">
             </div>
 
             <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
@@ -53,7 +45,6 @@
         <div class="card" style="border-radius:15px;">
             <div class="my-2">
             </div>
-
             <div class="table-responsive px-2">
                 <table id="tb_solicitudes" class="table table-bordered table-hover align-middle nowrap">
                     <thead class="thead-dark">
@@ -75,11 +66,17 @@
                             <th></th>
                         </tr>
                     </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="8" style="text-align:right">Total Monto:</th>
+                            <th id="total_adelanto_display"></th>
+                            <th colspan="5"></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
-
         </div>
-
     </div>
 @endsection
 
@@ -111,13 +108,15 @@
                                     <input type="text" class="form-control" name="fechaRegistro"
                                         value="{{ now()->format('d-m-Y') }}" readonly>
                                 </div>
-
                                 <input type="hidden" class="form-control" value="{{ Auth::user()->name }}"
-                                        name="registrante" readonly>
-
+                                    name="registrante" readonly>
                                 <input type="hidden" class="form-control" name="legajo" id="inputLegajo" required
-                                        value="{{ auth()->user()->legajo }}" readonly>
-
+                                    value="{{ auth()->user()->legajo }}" readonly>
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label class="form-label">Tipo de solicitud</label>
+                                    <input class="form-control" name="tipoSolicitud" required readonly
+                                        value="Adelanto de Sueldo"></input>
+                                </div>
                             </div>
                         </div>
 
@@ -127,17 +126,16 @@
 
                         <div class="empleado-box p-3">
                             <div class="row g-3">
-                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                    <label class="form-label">Tipo de solicitud</label>
-                                    <input class="form-control" name="tipoSolicitud" required readonly
-                                        value="Adelanto de Sueldo"></input>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12">
+
+                                <div class="col-lg-3 col-md-3 col-sm-12">
                                     <label class="form-label">Monto</label>
-                                    <input class="form-control" id="inputMonto" style="text-align: end;"
-                                        required ></input>
+                                    <input class="form-control" id="inputMonto" style="text-align: end;" required></input>
                                     <input class="form-control" id="inputMontoEnviar" name="monto" hidden
                                         required></input>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-12">
+                                    <label class="form-label">Descripción del monto</label>
+                                    <input class="form-control" id="inputDescripMonto" readonly></input>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <label class="form-label">Observaciones</label>
@@ -160,7 +158,7 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/personal/solicitudes.js') }}"></script>
+    <script src="{{ asset('js/novedades/solicitudes.js') }}"></script>
     <script>
         const USER_LEGAJO = {{ auth()->user()->legajo ?? 'null' }};
         const USER_ROLE = "{{ auth()->user()->rol ?? 'null' }}";

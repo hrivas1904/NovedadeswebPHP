@@ -173,7 +173,6 @@ Route::get('/novedades/historico', [NovedadesController::class, 'vistaHistorico'
 Route::get('/novedades/historicoNovedades', [NovedadesController::class, 'listarHistoricoNovedades'])
     ->name('novedades.historicoNovedades');
 
-
 Route::get('/novedades/listarMisNovedades', [NovedadesController::class, 'listarMisNovedades'])
     ->name('novedades.listarMisNovedades');
 

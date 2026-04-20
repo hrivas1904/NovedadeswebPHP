@@ -42,7 +42,7 @@ class PersonalController extends Controller
 
     public function solicitudes()
     {
-        return view('personal.solicitudes');
+        return view('novedades.solicitudes');
     }
 
     public function miLegajo()

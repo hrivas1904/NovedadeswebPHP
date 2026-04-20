@@ -1,5 +1,15 @@
 let tablaSolicitudes = null;
 
+flatpickr("#fechaDesde, #fechaHasta", {
+    locale: "es",
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    onChange: function () {
+        tablaSolicitudes.ajax.reload();
+    },
+});
+
 $("#inputMonto").on("input", function () {
     let valor = parseFloat($(this).val());
 
@@ -28,8 +38,99 @@ $("#inputMonto").on("input", function () {
     }
 });
 
+function numeroALetras(num) {
+    num = parseInt(num);
+
+    if (isNaN(num) || num === 0) return "cero";
+
+    const unidades = [
+        "",
+        "un",
+        "dos",
+        "tres",
+        "cuatro",
+        "cinco",
+        "seis",
+        "siete",
+        "ocho",
+        "nueve",
+    ];
+    const decenas = [
+        "diez",
+        "once",
+        "doce",
+        "trece",
+        "catorce",
+        "quince",
+        "dieciséis",
+        "diecisiete",
+        "dieciocho",
+        "diecinueve",
+    ];
+    const decenasMas = [
+        "veinte",
+        "treinta",
+        "cuarenta",
+        "cincuenta",
+        "sesenta",
+        "setenta",
+        "ochenta",
+        "noventa",
+    ];
+    const centenas = [
+        "",
+        "ciento",
+        "doscientos",
+        "trescientos",
+        "cuatrocientos",
+        "quinientos",
+        "seiscientos",
+        "setecientos",
+        "ochocientos",
+        "novecientos",
+    ];
+
+    if (num < 10) return unidades[num];
+
+    if (num < 20) return decenas[num - 10];
+
+    if (num < 100) {
+        return (
+            decenasMas[Math.floor(num / 10) - 2] +
+            (num % 10 !== 0 ? " y " + unidades[num % 10] : "")
+        );
+    }
+
+    if (num === 100) return "cien";
+
+    if (num < 1000) {
+        return (
+            centenas[Math.floor(num / 100)] +
+            (num % 100 !== 0 ? " " + numeroALetras(num % 100) : "")
+        );
+    }
+
+    // 🔥 miles
+    if (num < 1000000) {
+        const miles = Math.floor(num / 1000);
+        const resto = num % 1000;
+
+        let textoMiles = "";
+
+        if (miles === 1) {
+            textoMiles = "mil";
+        } else {
+            textoMiles = numeroALetras(miles) + " mil";
+        }
+
+        return textoMiles + (resto !== 0 ? " " + numeroALetras(resto) : "");
+    }
+
+    return "Número muy grande";
+}
+
 function getScrollY() {
-    return window.innerWidth < 768 ? "40vh" : "60vh";
+    return window.innerWidth < 768 ? "30vh" : "58vh";
 }
 
 function formatearPesos(valor) {
@@ -68,6 +169,10 @@ $("#inputMonto").on("change", function () {
     const montoParseado = parsearMonto(montoFormateado);
     $("#inputMontoEnviar").val(montoParseado);
     console.log($("#inputMontoEnviar").val());
+    $("#inputDescripMonto").val(
+        numeroALetras($("#inputMontoEnviar").val()).toUpperCase() + " PESOS",
+    );
+    console.log($("#inputDescripMonto").val());
 });
 
 function abrirSolicitud() {
@@ -249,6 +354,7 @@ function anularSolicitud(idSolicitud, nombre, e) {
 $(document).ready(function () {
     if ($("#tb_solicitudes").length > 0) {
         tablaSolicitudes = $("#tb_solicitudes").DataTable({
+            processing: true,
             ajax: {
                 url: "/personal/listarSolicitudes",
                 type: "GET",
@@ -296,6 +402,16 @@ $(document).ready(function () {
             order: [[0, "desc"]],
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+            },
+            footerCallback: function (row, data, start, end, display) {
+                let api = this.api();
+                let totalFiltrado = api
+                    .column(9, { filter: "applied" })
+                    .data()
+                    .reduce(function (a, b) {
+                        return (parseFloat(a) || 0) + (parseFloat(b) || 0);
+                    }, 0);
+                $(api.column(8).footer()).html(formatearPesos(totalFiltrado));
             },
             columns: [
                 {
@@ -482,18 +598,11 @@ $(document).ready(function () {
     });
 });
 
-$("#btnAplicarFiltros").on("click", function (e) {
-    e.preventDefault();
-    tablaSolicitudes.ajax.reload(null, false);
-});
-
 $("#btnLimpiarFiltros").on("click", function (e) {
     e.preventDefault();
-
     $("#selectEstado").val("");
-    $("#fechaDesde").val("");
-    $("#fechaHasta").val("");
-
+    document.querySelector("#fechaDesde")._flatpickr.clear();
+    document.querySelector("#fechaHasta")._flatpickr.clear();
     tablaSolicitudes.search("").draw(); // opcional: limpia búsqueda global
     tablaSolicitudes.ajax.reload(null, false);
 });
