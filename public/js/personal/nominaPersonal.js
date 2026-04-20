@@ -1,16 +1,13 @@
-console.log("nominaPersonal.js cargado");
-
-let tablaPersonal;
-
+let tablaPersonal = null;
 let tablaHistorialNovedades = null;
 let legajoActivo = null;
-
 let registroSeleccionado = null;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "40vh" : "60vh";
+    return window.innerWidth < 768 ? "30vh" : "60vh";
 }
 
+//FILTRO TIPO ECOMMERCE
 function getAreasSeleccionadas() {
     return $(".check-area:checked")
         .map(function () {
@@ -533,19 +530,11 @@ $("#select-titulo").on("change", function () {
     }
 });
 
-function cerrarEdicionEmpleado() {
-    $("#formEditColaborador")[0].reset();
-    $("#modalEditColaborador").modal("hide");
-    $(".modal-backdrop").remove();
-}
-
 //sp para cargar selectores filtros
 $(document).ready(function () {
     cargarAreas();
     cargarFiltroCateg();
     cargarFiltroConvenio();
-    cargarFiltroRegimen();
-    cargarFiltroEstados();
 });
 
 function cargarAreas() {
@@ -627,54 +616,6 @@ function cargarFiltroConvenio() {
         },
         error: function () {
             console.error("Error cargando convenios");
-        },
-    });
-}
-
-function cargarFiltroRegimen() {
-    $.ajax({
-        url: "/regimenes/lista",
-        method: "GET",
-        success: function (data) {
-            const select = $(".js-select-regFiltro");
-
-            select.empty();
-            select.append('<option value="">Seleccione régimen</option>');
-
-            data.forEach((regimen) => {
-                select.append(`
-                    <option value="${regimen.regimen}">
-                        ${regimen.regimen}
-                    </option>
-                `);
-            });
-        },
-        error: function () {
-            console.error("Error cargando categorías");
-        },
-    });
-}
-
-function cargarFiltroEstados() {
-    $.ajax({
-        url: "/estados/lista",
-        method: "GET",
-        success: function (data) {
-            const select = $(".js-select-estadoFiltro");
-
-            select.empty();
-            select.append('<option value="">Seleccione estado</option>');
-
-            data.forEach((estado) => {
-                select.append(`
-                    <option value="${estado.estado}">
-                        ${estado.estado}
-                    </option>
-                `);
-            });
-        },
-        error: function () {
-            console.error("Error cargando estado");
         },
     });
 }
@@ -1153,40 +1094,6 @@ function cerrarModalLegajo() {
     $("#modalLegajoColaborador").modal("hide");
 }
 
-$("#btnAgregarTitulo").on("click", function () {
-    $("#divTitulos").removeAttr("hidden");
-
-    const html = `
-        <div class="row d-flex">
-            <div class="col-lg-6">
-                <label class="form-label">Descripción de Título</label>
-                <input type="text" name="titulo_descripcion[]" 
-                    class="form-control">
-            </div>
-
-            <div class="col-lg-2">
-                <label class="form-label">M.P.</label>
-                <input type="text" name="matricula_profesional[]" 
-                    class="form-control">
-            </div>
-
-            <div class="col-lg-2 d-flex align-items-end">
-                <button type="button" class="btnQuitarTitulo btn-peligro">
-                    <i class="fa-solid fa-x"></i>
-                </button>
-            </div>
-        </div>
-    `;
-
-    $("#divTitulos").append(html);
-});
-
-$(document).on("click", ".btnQuitarTitulo", function () {
-    $(this).closest(".col-lg-2").prev().prev().remove();
-    $(this).closest(".col-lg-2").prev().remove();
-    $(this).closest(".col-lg-2").remove();
-});
-
 $("#btnAgregarHijo").on("click", function (e) {
     e.preventDefault();
     $("#divHijos").removeAttr("hidden");
@@ -1216,7 +1123,6 @@ $("#btnAgregarHijoEdit").on("click", function (e) {
     e.preventDefault();
     $("#divHijosEdit").removeAttr("hidden");
 
-    // Es importante usar el nombre hijos[] para que Laravel lo reciba como un array
     const html = `
         <div class="row d-flex mb-2 fila-hijo"> 
             <div class="col-lg-4">
@@ -1237,11 +1143,11 @@ $("#btnAgregarHijoEdit").on("click", function (e) {
     $("#divHijosEdit").append(html);
 });
 
-//  eliminar la fila agregada
 $(document).on("click", ".btnQuitarHijo", function () {
     $(this).closest(".fila-hijo").remove();
 });
 
+//API GEOREST
 $(function () {
     $("#selectLocalidad").select2({
         language: {
@@ -1335,6 +1241,7 @@ $("#btnAbrirModalOs").on("click", function () {
     modal.modal("show");
 });
 
+//CONSTRUIT CUIL COLAB
 function armarCuil() {
     const cuilStart = $("#firstPartCuil").val();
     const cuilMiddle = $("#middlePartCuil").val();
@@ -1565,21 +1472,6 @@ $(document).on("change", "input[name='req_alimenticios[]']", function () {
         $("#inputReqOtro").val("");
     }
 });
-
-function cargarReqSeleccionados(legajo) {
-    $.get(`/personal/${legajo}/req-alimenticios`, function (data) {
-        $("input[name='req_alimenticios[]']").prop("checked", false);
-
-        data.forEach((r) => {
-            $(`input[value="${r.idRequerimiento}"]`).prop("checked", true);
-
-            if (r.idRequerimiento == 12) {
-                $("#rowObservacionReq").show();
-                $("#inputReqOtro").val(r.observ);
-            }
-        });
-    });
-}
 
 function cargarReqSeleccionados(legajo) {
     $.ajax({

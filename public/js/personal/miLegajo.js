@@ -290,8 +290,6 @@ function cargarMiLegajo() {
                     });
                 }
 
-                
-
                 console.log("RESPONSE COMPLETA:", response);
                 console.log("FAMILIARES:", response.familiares);
                 console.log($("#contenedorHijosVisualizacion").length);
@@ -301,7 +299,15 @@ function cargarMiLegajo() {
         },
 
         error: function () {
-            Swal.fire("Error", "No se pudo cargar el legajo", "error");
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo cargar el legajo",
+                icon: "error",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
+            });
         },
     });
 }

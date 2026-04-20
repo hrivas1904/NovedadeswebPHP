@@ -5,6 +5,7 @@ body {
     height: 100%;
     font-family: "Roboto", sans-serif;
     font-size: 1rem;
+    overflow-x: hidden;
 }
 
 body {
@@ -27,6 +28,7 @@ body[data-theme="dark"] {
     font-size: 1.4rem;
     font-weight: 600;
     color: var(--title-color);
+    font-family: 'Roboto';
 }
 
 .pill-heading {
@@ -213,7 +215,7 @@ table.dataTable tbody tr:hover {
 }
 
 .modal-title {
-    color: var(--title-color) !important;
+    color: rgba(255, 255, 255, 0.88);
     font-weight: 600;
 }
 

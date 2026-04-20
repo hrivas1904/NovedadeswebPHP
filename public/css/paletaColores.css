@@ -63,7 +63,7 @@ body[data-theme="dark"] {
     --color-white: #1e293b;
 
     --text-color: #e2e8f0;
-    --title-color: #e2e8f0;
+    --title-color: rgba(255, 255, 255, 0.88);
 
     --dropdown-bg: #1e293b;
     --dropdown-text: #e2e8f0;

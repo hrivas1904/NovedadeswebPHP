@@ -5,12 +5,12 @@
 @section('content')
 <div class="container-fluid">
 
-    <div class="text-start mb-4">
+    <div class="text-start mb-2">
         <h3 class="pill-heading tituloVista">GESTIÓN DEL PERSONAL ACTIVO</h3>
     </div>
 
     <div class="row d-flex justify-content-start align-items-start">
-        <div class="col-2">
+        <div class="col-2 d-none d-xl-block">
             <div class="card" style="border-radius:15px;">
                 <div class="card-header">
                     <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
@@ -42,7 +42,7 @@
                         <div class="filtro-body d-none" id="listaConvenios">
                         </div>
                     </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
+                    <div class="col-12">
                         <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
                             <i class="fa-solid fa-eraser"></i> Limpiar
                         </button>
@@ -50,13 +50,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-10">
+        <div class="col-12 col-xl-10 col-xxl-10">
             <div class="card" style="border-radius:15px;">
                 <div class="card-header">
                     <div class="row d-flex align-item-center">
                         <div class="col-12 d-flex justify-content-start align-items-center gap-3">
                             <div class="row g-2 align-items-end d-flex justify-content-end">
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-auto text-xl-end">
+                                <div class="col-12">
                                     @if (Auth::user()->rol === 'Administrador/a')
                                     <button type="button" class="btn btn-primary w-100" onclick="abrirModal()">
                                         <i class="fa-solid fa-user me-2"></i> Nuevo Colaborador
@@ -64,8 +64,6 @@
                                     @endif
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -829,12 +827,12 @@
                                     <thead>
                                         <tr>
                                             <th>N°</th>
-                                            <th>Fecha registro</th>
-                                            <th>Novedad</th>
-                                            <th>Fecha desde</th>
-                                            <th>Fecha hasta</th>
-                                            <th>Días/Horas</th>
-                                            <th>Comprobantes</th>
+                                            <th>FECHA REGISTRO</th>
+                                            <th>NOVEDAD</th>
+                                            <th>DESDE</th>
+                                            <th>HASTA</th>
+                                            <th>VALOR</th>
+                                            <th>COMPROBANTES</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>

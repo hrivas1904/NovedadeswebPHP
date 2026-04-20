@@ -1,14 +1,18 @@
-console.log("nominaPersonal.js cargado");
-
 let tablaPersonal;
 let legajoActivo = null;
 let registroSeleccionado = null;
 
+$(document).ready(function () {
+    cargarAreas();
+    cargarFiltroCateg();
+    cargarFiltroConvenio();
+});
+
 function getScrollY() {
-    return window.innerWidth < 768 ? "45vh" : "60vh";
+    return window.innerWidth < 768 ? "30vh" : "60vh";
 }
 
-//calculo edad
+//CALCULAR EDAD
 function calcularEdad(fecha) {
     if (!fecha) return "";
 
@@ -25,7 +29,7 @@ function calcularEdad(fecha) {
     return edad;
 }
 
-//calculo antiguedad
+//CALCULAR ANTINGÜEDAD
 function calcularAntiguedad(fecha) {
     if (!fecha) return "";
 
@@ -59,7 +63,7 @@ function calcularAntiguedad(fecha) {
     return texto || "0 meses";
 }
 
-//formato fecha arg
+//FORMATEAR FECHA ARG
 function formatearFechaArgentina(fecha) {
     if (!fecha) return "";
 
@@ -156,43 +160,31 @@ function verLegajo(legajoColaborador, nombre) {
     });
 }
 
-$(document).ready(function () {
-    cargarAreas();
-    cargarFiltroCateg();
-    cargarFiltroConvenio();
-    cargarFiltroRegimen();
-    cargarFiltroEstados();
-});
-
+//FILTROS TIPO ECOMMERCE
 function cargarAreas() {
     $.ajax({
         url: "/areas/lista",
         method: "GET",
         success: function (data) {
-            const select = $(".js-select-area");
-            const areaFija = $("#areaFija").val(); // puede ser undefined
+            const container = $("#listaAreas");
+            const areaFija = $("#areaFija").val();
 
-            select.empty();
-            select.append('<option value="">Seleccione área</option>');
+            container.empty();
 
             data.forEach((area) => {
-                select.append(`
-                    <option value="${area.id_area}">
+                const checked = areaFija == area.id_area ? "checked" : "";
+                const disabled = areaFija ? "disabled" : "";
+
+                container.append(`
+                    <label class="filtro-item">
+                        <input type="checkbox" 
+                               class="check-area" 
+                               value="${area.id_area}" 
+                               ${checked} ${disabled}>
                         ${area.nombre}
-                    </option>
+                    </label>
                 `);
             });
-
-            // 👉 LÓGICA CORRECTA
-            if (areaFija) {
-                select.val(areaFija);
-                select.prop("disabled", true);
-            } else {
-                select.prop("disabled", false);
-            }
-        },
-        error: function () {
-            console.error("Error cargando áreas");
         },
     });
 }
@@ -202,16 +194,18 @@ function cargarFiltroCateg() {
         url: "/categorias-empleados/lista",
         method: "GET",
         success: function (data) {
-            const select = $(".js-select-categFiltro");
+            const container = $("#listaCateg");
 
-            select.empty();
-            select.append('<option value="">Seleccione categoría</option>');
+            container.empty();
 
             data.forEach((categoria) => {
-                select.append(`
-                    <option value="${categoria.id_categ}">
+                container.append(`
+                    <label class="filtro-item">
+                        <input type="checkbox" 
+                               class="check-categ" 
+                               value="${categoria.id_categ}">
                         ${categoria.nombre}
-                    </option>
+                    </label>
                 `);
             });
         },
@@ -226,49 +220,67 @@ function cargarFiltroConvenio() {
         url: "/convenios/lista",
         method: "GET",
         success: function (data) {
-            const select = $(".js-select-convenioFiltro");
+            const container = $("#listaConvenios");
 
-            select.empty();
-            select.append('<option value="">Seleccione convenio</option>');
+            container.empty();
 
             data.forEach((convenio) => {
-                select.append(`
-                    <option value="${convenio.convenio}">
+                if (!convenio.convenio || convenio.convenio.trim() === "") {
+                    return;
+                }
+                container.append(`
+                    <label class="filtro-item">
+                        <input type="checkbox" 
+                               class="check-convenio" 
+                               value="${convenio.convenio}">
                         ${convenio.convenio}
-                    </option>
+                    </label>
                 `);
             });
         },
         error: function () {
-            console.error("Error cargando categorías");
+            console.error("Error cargando convenios");
         },
     });
 }
 
-function cargarFiltroRegimen() {
-    $.ajax({
-        url: "/regimenes/lista",
-        method: "GET",
-        success: function (data) {
-            const select = $(".js-select-regFiltro");
-
-            select.empty();
-            select.append('<option value="">Seleccione régimen</option>');
-
-            data.forEach((regimen) => {
-                select.append(`
-                    <option value="${regimen.regimen}">
-                        ${regimen.regimen}
-                    </option>
-                `);
-            });
-        },
-        error: function () {
-            console.error("Error cargando categorías");
-        },
-    });
+function getAreasSeleccionadas() {
+    return $(".check-area:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
 }
 
+function getCategoriasSeleccionadas() {
+    return $(".check-categ:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}
+
+function getConveniosSeleccionados() {
+    return $(".check-convenio:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}
+
+$("#toggleAreas").on("click", function () {
+    $("#listaAreas").toggleClass("d-none");
+});
+
+$("#toggleCateg").on("click", function () {
+    $("#listaCateg").toggleClass("d-none");
+});
+
+$("#toggleConvenios").on("click", function () {
+    $("#listaConvenios").toggleClass("d-none");
+});
+
+//CARGA TB PERSONAL
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
         tablaPersonal = $("#tb_personal").DataTable({
@@ -283,12 +295,12 @@ $(document).ready(function () {
                     ) {
                         d.area_id = USER_AREA_ID;
                     } else {
-                        d.area_id = $("#filtroArea").val() || null;
+                        d.area_id = getAreasSeleccionadas().join(",") || null;
                     }
 
-                    d.categ_id = $("#filtroCategoria").val() || null;
-                    d.p_regimen = $("#filtroRegimen").val() || null;
-                    d.p_convenio = $("#filtroConvenio").val() || null;
+                    d.categ_id = getCategoriasSeleccionadas().join(",") || null;
+                    //d.p_regimen = $("#filtroRegimen").val() || null;
+                    d.convenio = getConveniosSeleccionados().join(",") || null;
                 },
             },
             autoWidth: true,
@@ -323,20 +335,22 @@ $(document).ready(function () {
                 },
                 { data: "COLABORADOR", width: "auto", className: "text-start" },
                 { data: "DNI", width: "7%", className: "text-start" },
-                { data: "AREA", width: "10%", className: "text-start" },
-                { data: "CATEGORIA", width: "10%", className: "text-start" },
-                { data: "REGIMEN", width: "5%", className: "text-center" },
+                { data: "AREA", width: "auto", className: "text-start" },
+                { data: "CATEGORIA", width: "auto", className: "text-start" },
+                { data: "REGIMEN", width: "5%", className: "text-center", visible:false, },
                 {
                     data: "HORAS_DIARIAS",
                     width: "5%",
                     className: "text-center",
                     width: "auto",
+                    visible:false,
                 },
-                { data: "CONVENIO", width: "10%", className: "text-start" },
+                { data: "CONVENIO", width: "auto", className: "text-start" },
                 {
                     data: "ESTADO",
                     width: "3%",
                     orderable: false,
+                    visible:false,
                     className: "text-center",
                     render: function (data) {
                         let clase =
@@ -346,28 +360,15 @@ $(document).ready(function () {
                 },
                 {
                     data: "FECHA_EGRESO",
-                    width: "8%",
+                    width: "10%",
                     render: function (data) {
                         return formatearFechaArgentina(data);
                     },
                 },
                 {
-                    data: null,
-                    className: "text-center",
-                    width: "5%",
-                    orderable: false,
-                    render: function (data) {
-                        let botones = `
-                            <button 
-                                class="btn btn-secondary btn-VerLegajo"
-                                data-id="${data.LEGAJO}"
-                                title='Ver legajo'
-                                data-nombre="${data.COLABORADOR}">
-                                <i class="fa-solid fa-address-card"></i>
-                            </button>
-                        `;
-                        return botones;
-                    },
+                    data: "MOTIVO_BAJA",
+                    width: "auto",
+                    visible: false
                 },
             ],
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mx-1' \
@@ -399,18 +400,22 @@ $(document).ready(function () {
             ],
         });
 
-        $(
-            "#filtroArea, #filtroCategoria, #filtroRegimen, #filtroConvenio, #filtroEstado",
-        ).on("change", function () {
-            tablaPersonal.ajax.reload();
-        });
+        $(document).on(
+            "change",
+            ".check-area, .check-categ, .check-convenio",
+            function () {
+                tablaPersonal.ajax.reload();
+            },
+        );
 
         $("#btn-limpiar-filtros").on("click", function () {
-            $("#filtroArea").val(null);
-            $("#filtroCategoria").val(null);
-            $("#filtroRegimen").val(null);
-            $("#filtroConvenio").val(null);
-            $("#filtroEstado").val(null);
+            $(".check-area, .check-categ, .check-convenio").prop(
+                "checked",
+                false,
+            );
+            $("#toggleAreas span").text("Áreas");
+            $("#toggleCateg span").text("Categorías");
+            $("#toggleConvenios span").text("Convenios");
             tablaPersonal.search("").draw();
             tablaPersonal.ajax.reload();
         });
@@ -421,39 +426,14 @@ $(document).ready(function () {
             }
         }, 500);
 
-        $(document).on("click", ".btn-VerLegajo", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            const nombre = $(this).data("nombre");
-            console.log("Legajo recibido: " + legajoColaborador);
-            verLegajo(legajoColaborador, nombre);
-        });
-
-        $(document).on("click", ".btn-DarBaja", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            const nombre = $(this).data("nombre");
-            console.log("Id recibido: " + legajoColaborador);
-            darDeBaja(legajoColaborador, nombre);
-        });
-
-        $(document).on("click", ".btn-RegNovedad", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            console.log("Id recibido: " + legajoColaborador);
-            registrarNovedad(legajoColaborador);
-        });
-
-        $(document).on("click", ".btn-Editar", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            const nombre = $(this).data("nombre");
-            console.log("Id recibido: " + legajoColaborador);
-            editEmpleados(legajoColaborador, nombre);
+        $(document).on("click", "#tb_personal tbody tr", function () {
+            const tabla = $("#tb_personal").DataTable();
+            const data = tabla.row(this).data();
+            if (!data) return;
+            const legajo = data.LEGAJO;
+            const nombre = data.COLABORADOR;
+            console.log("Legajo recibido: " + legajo);
+            verLegajo(legajo, nombre);
         });
     }
 });

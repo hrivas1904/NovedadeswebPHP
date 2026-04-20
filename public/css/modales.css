@@ -16,14 +16,13 @@
         var(--color-default),
         var(--color-second)
     );
-    color: var(--color-white);
     border-bottom: none;
     padding: 1rem 1.5rem;
 }
 
 .modal-title {
     font-weight: 600;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.4px;    
 }
 
 .modal-header .btn-close {

@@ -186,9 +186,9 @@
                         <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
                     </div>
 
-                    <button id="toggleTheme" class="btn btn-light">
+                    <!--<button id="toggleTheme" class="btn btn-light">
                         <i id="themeIcon" class="fa-solid fa-moon"></i>
-                    </button>
+                    </button>-->
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST">
                         @csrf
