@@ -18,6 +18,7 @@
                     </h5>
                 </div>
                 <div class="card-body d-flex flex-column gap-3">
+                    @if (Auth::user()->rol === 'Administrador/a' || Auth::user()->rol === 'Colaborador/a L2')
                     <div class="filtro-box">
                         <div class="filtro-header" id="toggleAreas">
                             <span>Áreas</span>
@@ -26,6 +27,7 @@
                         <div class="filtro-body d-none" id="listaAreas">
                         </div>
                     </div>
+                    @endif
                     <div class="filtro-box">
                         <div class="filtro-header" id="toggleCateg">
                             <span>Categorías</span>
@@ -1169,7 +1171,10 @@
 
 @push('scripts')
 <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
+<script src="{{ asset('js/personal/scriptComun.js') }}"></script>
+<script src="{{ asset('js/personal/editColaborador.js') }}"></script>
 <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
+
 <script>
     const USER_ROLE = "{{ Auth::user()->rol }}";
     const USER_AREA_ID = "{{ Auth::user()->area_id }}";

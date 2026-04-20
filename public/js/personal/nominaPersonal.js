@@ -3,113 +3,25 @@ let tablaHistorialNovedades = null;
 let legajoActivo = null;
 let registroSeleccionado = null;
 
-function getScrollY() {
-    return window.innerWidth < 768 ? "30vh" : "60vh";
-}
-
-//FILTRO TIPO ECOMMERCE
-function getAreasSeleccionadas() {
-    return $(".check-area:checked")
-        .map(function () {
-            return $(this).val();
-        })
-        .get();
-}
-
-function getCategoriasSeleccionadas() {
-    return $(".check-categ:checked")
-        .map(function () {
-            return $(this).val();
-        })
-        .get();
-}
-
-function getConveniosSeleccionados() {
-    return $(".check-convenio:checked")
-        .map(function () {
-            return $(this).val();
-        })
-        .get();
-}
-
-$("#toggleAreas").on("click", function () {
-    $("#listaAreas").toggleClass("d-none");
-});
-
-$("#toggleCateg").on("click", function () {
-    $("#listaCateg").toggleClass("d-none");
-});
-
-$("#toggleConvenios").on("click", function () {
-    $("#listaConvenios").toggleClass("d-none");
-});
-
 $(document).ready(function () {
-    cargarRequerimientosAlimentarios();
+    cargarSelectAreas();
+    cargarFiltroCateg();
+    cargarFiltroConvenio();
+    cargarCategorias();
 });
 
-//calculo edad
-function calcularEdad(fecha) {
-    if (!fecha) return "";
+$(document).on("show.bs.modal", ".modal", function () {
+    const zIndex = 1040 + 10 * $(".modal:visible").length;
+    $(this).css("z-index", zIndex);
+    setTimeout(() => {
+        $(".modal-backdrop")
+            .not(".modal-stack")
+            .css("z-index", zIndex - 1)
+            .addClass("modal-stack");
+    }, 0);
+});
 
-    const nacimiento = new Date(fecha);
-    const hoy = new Date();
-
-    let edad = hoy.getFullYear() - nacimiento.getFullYear();
-    const m = hoy.getMonth() - nacimiento.getMonth();
-
-    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
-        edad--;
-    }
-
-    return edad;
-}
-
-//calculo antiguedad
-function calcularAntiguedad(fecha) {
-    if (!fecha) return "";
-
-    const ingreso = new Date(fecha);
-    const hoy = new Date();
-
-    let años = hoy.getFullYear() - ingreso.getFullYear();
-    let meses = hoy.getMonth() - ingreso.getMonth();
-
-    // Ajuste si todavía no cumplió el mes
-    if (hoy.getDate() < ingreso.getDate()) {
-        meses--;
-    }
-
-    // Ajuste si los meses quedan negativos
-    if (meses < 0) {
-        años--;
-        meses += 12;
-    }
-
-    let texto = "";
-
-    if (años > 0) {
-        texto += `${años} año${años > 1 ? "s" : ""}`;
-    }
-
-    if (meses > 0) {
-        texto += (texto ? " " : "") + `${meses} mes${meses > 1 ? "es" : ""}`;
-    }
-
-    return texto || "0 meses";
-}
-
-//formato fecha arg
-function formatearFechaArgentina(fecha) {
-    if (!fecha) return "";
-
-    const partes = fecha.split("-"); // yyyy-mm-dd
-    if (partes.length !== 3) return fecha;
-
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-}
-
-//seleccionar tipo de contrato
+//SELECCIONAR TIPO CONTRATO
 document.addEventListener("DOMContentLoaded", () => {
     const tipoContrato = document.getElementById("tipoContrato");
     const fechaInicio = document.getElementById("fechaInicio");
@@ -157,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//subir comprobante
+//SUBIR COMPROBANTE DE NOVEDAD
 $(document).on("click", ".btn-subir-archivo", function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -200,7 +112,7 @@ function subirComprobantes(files) {
     });
 }
 
-//ver comprobantes
+//VER COMPROBANTES DE NOVEDAD
 $(document).on("click", ".btn-ver-archivo", function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -256,6 +168,7 @@ function verComprobantes(idNovedad) {
     });
 }
 
+//HISTORIAL DE NOVEDADES
 function inicializarORefrescarHistorial() {
     if (tablaHistorialNovedades) {
         tablaHistorialNovedades.ajax
@@ -356,7 +269,7 @@ function inicializarORefrescarHistorial() {
     });
 }
 
-//ver legajo
+//VER LEGAJO
 function verLegajo(legajoColaborador, nombre) {
     console.log("Mostrando legajo:", legajoColaborador);
     legajoActivo = legajoColaborador;
@@ -397,11 +310,11 @@ function verLegajo(legajoColaborador, nombre) {
                         true,
                     );
                     $("#selectLocalidadEdit").append(option).trigger("change");
-                }
-
+                };
                 $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
                 $("#inputGenero").val(d.GENERO);
-                $("#selectObraSocialEdit").val(d.ID_OS);
+                $("#selectObraSocialEdit").val(d.ID_OS).trigger("change");
+
                 $("#inputCodigoOS").val(d.COD_OS);
                 $("#inputTitulo").val(d.TITULO);
                 $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
@@ -483,7 +396,7 @@ function verLegajo(legajoColaborador, nombre) {
     });
 }
 
-//dar de baja empleado
+//DAR BAJA EMPLEADO
 function darDeBaja(legajoColaborador, nombre) {
     Swal.fire({
         title: `¿Dar de baja a <strong>${nombre}</strong>?`,
@@ -517,7 +430,7 @@ function darDeBaja(legajoColaborador, nombre) {
     });
 }
 
-//selector para titulo
+//SELECTOR DE TÍTULO
 $("#select-titulo").on("change", function () {
     const modal = $("#divTitulo");
     const modal2 = $("#divMatricula");
@@ -530,97 +443,7 @@ $("#select-titulo").on("change", function () {
     }
 });
 
-//sp para cargar selectores filtros
-$(document).ready(function () {
-    cargarAreas();
-    cargarFiltroCateg();
-    cargarFiltroConvenio();
-});
-
-function cargarAreas() {
-    $.ajax({
-        url: "/areas/lista",
-        method: "GET",
-        success: function (data) {
-            const container = $("#listaAreas");
-            const areaFija = $("#areaFija").val();
-
-            container.empty();
-
-            data.forEach((area) => {
-                const checked = areaFija == area.id_area ? "checked" : "";
-                const disabled = areaFija ? "disabled" : "";
-
-                container.append(`
-                    <label class="filtro-item">
-                        <input type="checkbox" 
-                               class="check-area" 
-                               value="${area.id_area}" 
-                               ${checked} ${disabled}>
-                        ${area.nombre}
-                    </label>
-                `);
-            });
-        },
-    });
-}
-
-function cargarFiltroCateg() {
-    $.ajax({
-        url: "/categorias-empleados/lista",
-        method: "GET",
-        success: function (data) {
-            const container = $("#listaCateg");
-
-            container.empty();
-
-            data.forEach((categoria) => {
-                container.append(`
-                    <label class="filtro-item">
-                        <input type="checkbox" 
-                               class="check-categ" 
-                               value="${categoria.id_categ}">
-                        ${categoria.nombre}
-                    </label>
-                `);
-            });
-        },
-        error: function () {
-            console.error("Error cargando categorías");
-        },
-    });
-}
-
-function cargarFiltroConvenio() {
-    $.ajax({
-        url: "/convenios/lista",
-        method: "GET",
-        success: function (data) {
-            const container = $("#listaConvenios");
-
-            container.empty();
-
-            data.forEach((convenio) => {
-                if (!convenio.convenio || convenio.convenio.trim() === "") {
-                    return;
-                }
-                container.append(`
-                    <label class="filtro-item">
-                        <input type="checkbox" 
-                               class="check-convenio" 
-                               value="${convenio.convenio}">
-                        ${convenio.convenio}
-                    </label>
-                `);
-            });
-        },
-        error: function () {
-            console.error("Error cargando convenios");
-        },
-    });
-}
-
-//carga dt personal
+//CARGAR TB PERSONAL
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
         tablaPersonal = $("#tb_personal").DataTable({
@@ -852,11 +675,7 @@ $(document).ready(function () {
     }
 });
 
-//sp para cargar selector categorias
-$(document).ready(function () {
-    cargarCategorias();
-});
-
+//SELECTORES CATEGORÍAS Y ROLES
 function cargarCategorias() {
     $.ajax({
         url: "/categorias-empleados/lista",
@@ -889,7 +708,6 @@ function cargarCategorias() {
     });
 }
 
-//sp para cargar selector de roles
 $(document).on("change", ".js-select-categoria", function () {
     const idCategoria = $(this).val();
     const selectRol = $(".js-select-rol");
@@ -922,7 +740,34 @@ $(document).on("change", ".js-select-categoria", function () {
     });
 });
 
-//sp para cargar selector de servicios
+//SELECTORES ÁREAS Y SERVICIOS
+function cargarSelectAreas() {
+    const $select = $("#area");
+
+    $select.empty().append('<option value="">Cargando...</option>');
+
+    $.ajax({
+        url: "/areas/lista",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            $select.empty().append('<option value="">Seleccione área</option>');
+
+            data.forEach((area) => {
+                $select.append(`
+                    <option value="${area.id_area}">
+                        ${area.nombre}
+                    </option>
+                `);
+            });
+        },
+        error: function (err) {
+            console.error("Error cargando áreas:", err);
+            $select.html('<option value="">Error al cargar</option>');
+        },
+    });
+}
+
 $(document).on("change", ".js-select-area", function () {
     const idArea = $(this).val();
     const selectServicio = $(".js-select-servicio");
@@ -960,7 +805,7 @@ $(document).on("change", ".js-select-area", function () {
     });
 });
 
-//selectores de os y codigo
+//SELECTORES OS Y CODIGO OS
 $(document).ready(function () {
     const $select = $("#obraSocial");
 
@@ -992,7 +837,7 @@ $("#obraSocial").on("select2:clear", function () {
     $("#codigoOS").val("");
 });
 
-//mapa de valores para regimen y hs diarias
+//MAPEO DE REGIMEN CON HORAS DIARIAS
 document.addEventListener("DOMContentLoaded", () => {
     const selectRegimen = document.getElementById("selectRegimen");
     const inputHoras = document.getElementById("horasDiarias");
@@ -1032,68 +877,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//alta de colaborador
-function abrirModal() {
-    $("#modalAltaColaborador").modal("show");
-}
-
-function cerrarModal() {
-    $("#selectLocalidad").val(null).trigger("change");
-    $("#formAltaColaborador")[0].reset();
-    $("#modalAltaColaborador").modal("hide");
-}
-
-$("#formAltaColaborador").on("submit", function (e) {
-    e.preventDefault();
-
-    let formData = $(this).serialize();
-
-    $.ajax({
-        url: "/personal/guardar",
-        type: "POST",
-        data: formData,
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        success: function (response) {
-            if (response.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Correcto",
-                    text: response.mensaje,
-                });
-
-                $("#formAltaColaborador")[0].reset();
-                $("#modalAltaColaborador").modal("hide");
-                tablaPersonal.ajax.reload(null, false);
-            } else {
-                Swal.fire({
-                    icon: "warning",
-                    title: "Atención",
-                    text: response.mensaje,
-                });
-            }
-        },
-        error: function (xhr) {
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Ocurrió un error al guardar el colaborador",
-            });
-            console.error(xhr.responseText);
-        },
-    });
-});
-
-//legajo del colaborador
-function abrirModalLegajo() {
-    $("#modalLegajoColaborador").modal("show");
-}
-
-function cerrarModalLegajo() {
-    $("#modalLegajoColaborador").modal("hide");
-}
-
+//AGREGAR HIJOS
 $("#btnAgregarHijo").on("click", function (e) {
     e.preventDefault();
     $("#divHijos").removeAttr("hidden");
@@ -1117,30 +901,6 @@ $("#btnAgregarHijo").on("click", function (e) {
         </div>
     `;
     $("#divHijos").append(html);
-});
-
-$("#btnAgregarHijoEdit").on("click", function (e) {
-    e.preventDefault();
-    $("#divHijosEdit").removeAttr("hidden");
-
-    const html = `
-        <div class="row d-flex mb-2 fila-hijo"> 
-            <div class="col-lg-4">
-                <label class="form-label">Nombre y Apellido</label>
-                <input type="text" name="hijosEdit[0][nombre]" class="form-control" required>
-            </div>
-            <div class="col-lg-3">
-                <label class="form-label">DNI</label>
-                <input type="text" name="hijosEdit[0][dni]" class="form-control">
-            </div>
-            <div class="col-lg-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger btnQuitarHijo">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `;
-    $("#divHijosEdit").append(html);
 });
 
 $(document).on("click", ".btnQuitarHijo", function () {
@@ -1236,11 +996,6 @@ $(function () {
     });
 });
 
-$("#btnAbrirModalOs").on("click", function () {
-    const modal = $("#modalNuevaOs");
-    modal.modal("show");
-});
-
 //CONSTRUIT CUIL COLAB
 function armarCuil() {
     const cuilStart = $("#firstPartCuil").val();
@@ -1265,236 +1020,67 @@ $("#firstPartCuil, #lastPartCuil").on("input", function () {
     armarCuil();
 });
 
-$(document).on("show.bs.modal", ".modal", function () {
-    const zIndex = 1040 + 10 * $(".modal:visible").length;
-    $(this).css("z-index", zIndex);
-    setTimeout(() => {
-        $(".modal-backdrop")
-            .not(".modal-stack")
-            .css("z-index", zIndex - 1)
-            .addClass("modal-stack");
-    }, 0);
+//DAR DE ALTA COLABORADOR
+function abrirModal() {
+    $("#modalAltaColaborador").modal("show");
+}
+
+function cerrarModal() {
+    $("#selectLocalidad").val(null).trigger("change");
+    $("#obraSocial").val(null).trigger("change");
+    $("#formAltaColaborador")[0].reset();
+    $("#modalAltaColaborador").modal("hide");
+}
+
+$("#formAltaColaborador").on("submit", function (e) {
+    e.preventDefault();
+
+    let formData = $(this).serialize();
+
+    $.ajax({
+        url: "/personal/guardar",
+        type: "POST",
+        data: formData,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Correcto",
+                    text: response.mensaje,
+                });
+
+                $("#formAltaColaborador")[0].reset();
+                $("#modalAltaColaborador").modal("hide");
+                tablaPersonal.ajax.reload(null, false);
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Atención",
+                    text: response.mensaje,
+                });
+            }
+        },
+        error: function (xhr) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Ocurrió un error al guardar el colaborador",
+            });
+            console.error(xhr.responseText);
+        },
+    });
 });
 
+//CREACIÓN NUEVA OBRA SOCIAL
 function cerrarModalOs() {
     $("#formNuevaOs")[0].reset();
     $("#modalNuevaOs").modal("hide");
 }
 
-//selectores de os y codigo para edición
-$(document).ready(function () {
-    const $select = $("#selectObraSocialEdit");
-
-    $.ajax({
-        url: "/obra-social/lista",
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            $select.select2({
-                data: data,
-                placeholder: "Buscar obra social...",
-                allowClear: true,
-                width: "100%",
-                dropdownParent: $("#modalLegajoColaborador"),
-            });
-        },
-        error: function (err) {
-            console.error("Error cargando obras sociales:", err);
-        },
-    });
+$("#btnAbrirModalOs").on("click", function () {
+    const modal = $("#modalNuevaOs");
+    modal.modal("show");
 });
-
-$("#selectObraSocialEdit").on("select2:select", function (e) {
-    const data = e.params.data;
-    $("#inputCodigoOS").val(data.codigo ?? "");
-});
-
-$("#selectObraSocialEdit").on("select2:clear", function () {
-    $("#inputCodigoOS").val(data.codigo ?? "");
-});
-
-function cargarServiciosSimple(selected = null) {
-    const idArea = $("#inputArea").val();
-    const $select = $("#inputServicio");
-
-    $select.empty().append('<option value="">Cargando...</option>');
-
-    if (!idArea) {
-        $select.html('<option value="">Seleccione servicio</option>');
-        return;
-    }
-
-    $.ajax({
-        url: `/servicios-empleados/por-area/${idArea}`,
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            $select
-                .empty()
-                .append('<option value="">Seleccione servicio</option>');
-
-            data.forEach((servicio) => {
-                $select.append(`
-                    <option value="${servicio.id_servicios}">
-                        ${servicio.servicio}
-                    </option>
-                `);
-            });
-
-            // 🔥 marcar seleccionado
-            if (selected) {
-                $select.val(selected).trigger("change");
-            }
-        },
-        error: function () {
-            $select.html("<option>Error al cargar</option>");
-        },
-    });
-}
-
-function cargarRolesSimple(selected = null) {
-    const idCategoria = $("#inputCategoria").val();
-    const $select = $("#inputRol");
-
-    $select.empty().append('<option value="">Cargando...</option>');
-
-    if (!idCategoria) {
-        $select.html('<option value="">Seleccione rol</option>');
-        return;
-    }
-
-    $.ajax({
-        url: `/roles-empleados/por-categoria/${idCategoria}`,
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            $select.empty().append('<option value="">Seleccione rol</option>');
-
-            data.forEach((rol) => {
-                $select.append(`
-                    <option value="${rol.id_rol}">
-                        ${rol.nombre}
-                    </option>
-                `);
-            });
-
-            // 🔥 marcar seleccionado
-            if (selected) {
-                $select.val(selected).trigger("change");
-            }
-        },
-        error: function () {
-            $select.html("<option>Error al cargar</option>");
-        },
-    });
-}
-
-$("#formEditColaborador").on("submit", function (e) {
-    e.preventDefault();
-    const legajo = $("#inputLegajo").val();
-    const data = $(this).serialize();
-    console.log("DATA:", data);
-    $.ajax({
-        url: `/personal/${legajo}/actualizar`,
-        type: "POST",
-        data: data,
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        success: function (resp) {
-            if (resp.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Correcto",
-                    text: resp.mensaje,
-                });
-                $("#modalLegajoColaborador").modal("hide");
-                $("#tb_personal").DataTable().ajax.reload(null, false);
-            } else {
-                Swal.fire("Atención", resp.mensaje, "warning");
-            }
-        },
-        error: function (xhr) {
-            console.error(xhr.responseText);
-            Swal.fire("Error", "No se pudo actualizar el legajo", "error");
-        },
-    });
-});
-
-function cargarRequerimientosAlimentarios() {
-    $.ajax({
-        url: "/requerimientos-alimentarios",
-        type: "GET",
-        success: function (data) {
-            let html = "";
-
-            data.forEach((r) => {
-                html += `
-                    <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                        <label class="req-card w-100">
-                            <div class="req-check">
-                                <input type="checkbox"
-                                       name="req_alimenticios[]"
-                                       value="${r.id}">
-                                <span class="req-title">
-                                    ${r.nombre}
-                                </span>
-                            </div>
-
-                            <small class="req-desc">
-                                ${r.descripcion ?? ""}
-                            </small>
-                        </label>
-                    </div>
-                `;
-            });
-
-            $("#contenedorRequerimientos").html(html);
-        },
-        error: function () {
-            console.error("Error cargando requerimientos alimentarios");
-        },
-    });
-}
-
-$(document).on("change", "input[name='req_alimenticios[]']", function () {
-    const idOtro = 12; // ID "Otro"
-    const seleccionados = $("input[name='req_alimenticios[]']:checked")
-        .map(function () {
-            return parseInt($(this).val());
-        })
-        .get();
-
-    if (seleccionados.includes(idOtro)) {
-        $("#rowObservacionReq").slideDown(150);
-    } else {
-        $("#rowObservacionReq").slideUp(150);
-        $("#inputReqOtro").val("");
-    }
-});
-
-function cargarReqSeleccionados(legajo) {
-    $.ajax({
-        url: `/personal/${legajo}/req-alimenticios`,
-        type: "GET",
-        success: function (data) {
-            // limpiar todos
-            $("input[name='req_alimenticios[]']").prop("checked", false);
-
-            $("#rowObservacionReq").hide();
-            $("#inputReqOtro").val("");
-
-            data.forEach((r) => {
-                $(
-                    `input[name='req_alimenticios[]'][value='${r.idRequerimiento}']`,
-                ).prop("checked", true);
-
-                // si es "otro"
-                if (r.idRequerimiento == 12) {
-                    $("#rowObservacionReq").show();
-                    $("#inputReqOtro").val(r.observ);
-                }
-            });
-        },
-    });
-}
