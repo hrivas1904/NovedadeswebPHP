@@ -155,8 +155,7 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <label class="form-label">Fecha nacimiento</label>
-                                        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento"
-                                            class="form-control" required>
+                                        <input id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" type="text" required>
                                     </div>
                                 </div>
                             </div>

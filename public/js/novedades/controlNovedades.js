@@ -1,8 +1,18 @@
 let tablaControl;
 let tablaDetalle;
 
+flatpickr("#filtroDesde, #filtroHasta", {
+    locale: "es",
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    onChange: function () {
+        tablaControl.ajax.reload();
+    },
+});
+
 function getScrollY() {
-    return window.innerWidth < 768 ? "30vh" : "55vh";
+    return window.innerWidth < 768 ? "30vh" : "60vh";
 }
 
 function formatearFechaArgentina(fecha) {
@@ -268,16 +278,12 @@ function verDetalleNovedad(idRegistro) {
 })*/
 
 $("#btnLimpiarFiltros").on("click", function () {
-    $("#filtroDesde").val(null);
-    $("#filtroHasta").val(null);
+    document.querySelector("#filtroDesde")._flatpickr.clear();
+    document.querySelector("#filtroHasta")._flatpickr.clear();
     $("#paraFinnegans").val(null);
     $("#idNovedad").val(null);
     $("#area").val(null);
     tablaPersonal.ajax.reload();
-});
-
-$("#btnAplicarFiltros").on("click", function () {
-    tablaControl.ajax.reload();
 });
 
 //carga dt novedades
@@ -401,31 +407,29 @@ $(document).ready(function () {
                 { data: "NOVEDAD_NOMBRE" },
                 {
                     data: "REGISTRO",
-                    className: "text-center",
+                    className: "text-end",
                     orderable: false,
                     width: "10%",
                     render: function (data, type, row) {
-                        if (USER_ROLE === "Colaborador/a") {
+                        if (USER_ROLE === "Administrador/a") {
                             return `
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <button type="button" 
-                                        class="btn btn-secondary btn-VerDetalleNovedad" 
+                                        class="btn btn-danger btn-AnularNovedad" 
                                         data-id="${data}" 
-                                        title="Detalle de novedad">
-                                        <i class="fa-solid fa-eye"></i>
+                                        title="Anular novedad">
+                                        <i class="fa-solid fa-trash"></i>
                                     </button>
+                                    <div class="text-center">
+                                        <input type="checkbox" 
+                                            class="form-check-input check-row" 
+                                            data-id="${data}">
+                                    </div>
                                 </div>
                             `;
                         } else {
                             return `
                                 <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <button type="button" 
-                                        class="btn btn-secondary btn-VerDetalleNovedad" 
-                                        data-id="${data}" 
-                                        title="Detalle de novedad">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-
                                     <button type="button" 
                                         class="btn btn-danger btn-AnularNovedad" 
                                         data-id="${data}" 
@@ -435,22 +439,6 @@ $(document).ready(function () {
                                 </div>
                             `;
                         }
-                    },
-                },
-                {
-                    data: "REGISTRO",
-                    orderable: false,
-                    width: "10%",
-                    render: function (data, type, row) {
-                        return `
-                            <div class="d-flex align-items-center justify-content-center gap-2">
-                                <div class="text-center">
-                                    <input type="checkbox" 
-                                        class="form-check-input check-row" 
-                                        data-id="${data}">
-                                </div>
-                            </div>
-                        `;
                     },
                 },
             ],
@@ -633,11 +621,17 @@ $(document).ready(function () {
             }
         }, 500);
 
-        $(document).on("click", ".btn-VerDetalleNovedad", function (event) {
+        $(document).on("click", "#tb_control tbody tr", function (event) {
             event.preventDefault();
-            event.stopPropagation();
-            const idRegistro = $(this).data("id");
-            console.log("Id registro recibido: " + idRegistro);
+
+            const tabla = $("#tb_control").DataTable();
+            const data = tabla.row(this).data();
+
+            if (!data) return;
+
+            const idRegistro = data.REGISTRO; // 🔥 correcto
+
+            console.log("Id registro recibido:", idRegistro);
             verDetalleNovedad(idRegistro);
         });
 

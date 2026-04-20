@@ -56,11 +56,11 @@
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">
-                                <i class="bx bx-grid-alt"></i> Dashboard
-                            </a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('dashboard') }}">
+                            <i class="bx bx-grid-alt"></i> Dashboard
+                        </a>
+                    </li>
                     @endif
 
                     <li class="nav-item dropdown">
@@ -71,23 +71,23 @@
                             <li><a class="dropdown-item" href="{{ route('miLegajo') }}">Mi legajo</a></li>
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
-                                    Auth::user()->rol === 'Administrador/a' ||
-                                    Auth::user()->rol === 'Coordinador/a')
-                                <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Personal activo</a></li>
-                                <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Personal de baja</a></li>
+                            Auth::user()->rol === 'Administrador/a' ||
+                            Auth::user()->rol === 'Coordinador/a')
+                            <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Personal activo</a></li>
+                            <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Personal de baja</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>
+                            <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>-->
                             @endif
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                                <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario
-                                        servicios</a></li>
+                            <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario
+                                    servicios</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>
+                            <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>-->
                             @endif
 
                         </ul>
@@ -100,35 +100,36 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis novedades</a>
                             </li>
+
+                            @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
+                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de
+                                    novedades</a></li>
+                            <li><a class="dropdown-item"
+                                    href="{{ route('novedades.historico') }}">Histórico novedades</a></li>
+                            @endif
                             <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto
                                     sueldo</a></li>
-                            @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
-                                <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de
-                                        novedades</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('novedades.historico') }}">Histórico novedades</a></li>
-                            @endif
                         </ul>
                     </li>
 
                     @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                <i class="fa-solid fa-award"></i> Calidad
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar
-                                        encuestas</a></li>
-                                <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a>
-                                </li>
-                                <li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
-                                </li>
-                            </ul>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-award"></i> Calidad
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar
+                                    encuestas</a></li>
+                            <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a>
+                            </li>
+                            <!--<li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
+                                </li>-->
+                        </ul>
+                    </li>
                     @endif
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                        <li class="nav-item dropdown">
+                    <!--<li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                                 <i class="fa-solid fa-gear"></i> Ajustes
                             </a>
@@ -144,7 +145,7 @@
                                 <li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Categorías y
                                         Roles</a></li>
                             </ul>
-                        </li>
+                        </li>-->
                     @endif
 
                     <li class="nav-item">

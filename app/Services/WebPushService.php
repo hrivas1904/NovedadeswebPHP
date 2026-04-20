@@ -1,5 +1,3 @@
-<?php
-
 namespace App\Services;
 
 use Minishlink\WebPush\WebPush;
@@ -41,16 +39,19 @@ class WebPushService
             ]);
 
             $webPush->queueNotification($subscription, $payload);
-
-            foreach ($webPush->flush() as $report) {
-                // no hacer nada
-            }
-
-            foreach ($report as $result) {
-                logger($result);
-            }
         }
 
-        $webPush->flush();
+        foreach ($webPush->flush() as $report) {
+
+            if ($report->isSuccess()) {
+                logger("Push OK: {$report->getEndpoint()}");
+            } else {
+                logger("Push ERROR: {$report->getReason()}");
+
+                DB::table('push_subscriptions')
+                    ->where('endpoint', $report->getEndpoint())
+                    ->delete();
+            }
+        }
     }
 }

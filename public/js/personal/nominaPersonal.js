@@ -21,6 +21,14 @@ $(document).on("show.bs.modal", ".modal", function () {
     }, 0);
 });
 
+flatpickr("#fecha_nacimiento", {
+    locale: "es",
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    maxDate: "today",
+});
+
 //SELECCIONAR TIPO CONTRATO
 document.addEventListener("DOMContentLoaded", () => {
     const tipoContrato = document.getElementById("tipoContrato");
@@ -310,7 +318,7 @@ function verLegajo(legajoColaborador, nombre) {
                         true,
                     );
                     $("#selectLocalidadEdit").append(option).trigger("change");
-                };
+                }
                 $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
                 $("#inputGenero").val(d.GENERO);
                 $("#selectObraSocialEdit").val(d.ID_OS).trigger("change");
