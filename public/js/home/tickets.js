@@ -1,7 +1,7 @@
 let tablaTickets = null;
 let idTicketGlobal = null;
 let userId = USER_ID;
-let yo=USER_NAME;
+let yo = USER_NAME;
 console.log(userId);
 
 $.ajaxSetup({
@@ -79,6 +79,8 @@ $("#btnEmitirTicket").on("click", function () {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (resp) {
+            console.log("RESPUESTA /tickets/registrar:", resp);
+
             const icono = resp.ok ? "success" : "error";
             const titulo = resp.ok ? "Operación Exitosa" : "Error";
 
@@ -95,8 +97,14 @@ $("#btnEmitirTicket").on("click", function () {
                 }
             }
         },
-        error: function () {
-            Swal.fire("Error", "No se pudo conectar con el servidor", "error");
+        error: function (xhr) {
+            console.error("ERROR REAL:", xhr.responseJSON);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: xhr.responseJSON?.error || "Error inesperado",
+            });
         },
     });
 });
@@ -216,7 +224,7 @@ function verChat(idTicket) {
 
         success: function (res) {
             let html = "";
-            
+
             res.forEach((m) => {
                 let esMio = m.usuario_id == userId;
 

@@ -10,6 +10,15 @@ $(document).ready(function () {
     cargarCategorias();
 });
 
+$(document).on("click", "#btnAbrirModalOs", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const modalElement = document.getElementById("modalNuevaOs");
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+});
+
 $(document).on("show.bs.modal", ".modal", function () {
     const zIndex = 1040 + 10 * $(".modal:visible").length;
     $(this).css("z-index", zIndex);
@@ -1085,13 +1094,13 @@ $("#formAltaColaborador").on("submit", function (e) {
 //CREACIÓN NUEVA OBRA SOCIAL
 function cerrarModalOs() {
     $("#formNuevaOs")[0].reset();
-    $("#modalNuevaOs").modal("hide");
-}
 
-$("#btnAbrirModalOs").on("click", function () {
-    const modal = $("#modalNuevaOs");
-    modal.modal("show");
-});
+    const modalElement = document.getElementById("modalNuevaOs");
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    if (modalInstance) {
+        modalInstance.hide();
+    }
+}
 
 $(document).on("submit", "#formNuevaOs", function (e) {
     e.preventDefault();

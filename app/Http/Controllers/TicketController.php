@@ -11,12 +11,25 @@ class TicketController extends Controller
     public function registrar(Request $request)
     {
         try {
+            $request->validate([
+                'tipo' => 'required|string|max:100',
+                'descripcion' => 'required|string|max:5000',
+                'area' => 'required|string|max:50',
+            ]);
 
-            $legajo = Auth::user()->legajo;
-            $idUser = Auth::user()->id;
+            $user = Auth::user();
+            $legajo = $user->legajo;
+            $idUser = $user->id;
+
+            if (!$legajo) {
+                return response()->json([
+                    'ok' => false,
+                    'mensaje' => 'El usuario autenticado no tiene legajo asociado.'
+                ], 400);
+            }
 
             DB::statement(
-                "CALL SP_REGISTRAR_TICKET(?, ?, ?, ?, ?, @p_msj)",
+                "CALL SP_REGISTRAR_TICKET(?, ?, ?, ?, ?)",
                 [
                     $request->tipo,
                     $request->descripcion,
@@ -26,19 +39,20 @@ class TicketController extends Controller
                 ]
             );
 
-            $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
-
             return response()->json([
                 'ok' => true,
-                'mensaje' => $mensaje->mensaje
+                'mensaje' => 'Ticket registrado correctamente. Será revisado a la brevedad.'
             ]);
         } catch (\Exception $e) {
+            \Log::error('Error al registrar ticket', [
+                'error' => $e->getMessage()
+            ]);
 
             return response()->json([
                 'ok' => false,
                 'mensaje' => 'Error al registrar ticket',
                 'error' => $e->getMessage()
-            ]);
+            ], 500);
         }
     }
 

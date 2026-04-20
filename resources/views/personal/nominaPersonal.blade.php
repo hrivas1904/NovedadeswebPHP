@@ -299,8 +299,7 @@
                                             <select name="obra_social_id" id="obraSocial" class="form-select">
                                                 <option value="">Seleccione obra social</option>
                                             </select>
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                id="btnAbrirModalOs">
+                                            <button type="button" class="btn btn-sm btn-primary" id="btnAbrirModalOs">
                                                 <i class="fa-solid fa-plus"></i>
                                             </button>
                                         </div>
