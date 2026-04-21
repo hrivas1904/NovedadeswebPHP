@@ -4,8 +4,13 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="text-start mb-2">
-        <h3 class="pill-heading tituloVista">REGISTRO DE NOVEDADES MENSUALES</h3>
+    <div class="text-start mb-2">       
+        <div class="d-flex align-items-center gap-2">
+            <h3 class="pill-heading tituloVista">REGISTRO DE NOVEDADES MENSUALES</h3>
+            <i class="fa-solid fa-circle-info text-primary" style="cursor: pointer;" data-bs-toggle="tooltip"
+                data-bs-placement="right" title="En esta sección se cargan las novedades y se encuentran aquellas próximas a liquidar.">
+            </i>
+        </div>
     </div>
 
     <div class="card" style="border-radius:15px;">
@@ -20,9 +25,10 @@
                 </div>
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
-                    <select id="area" name="area" class="form-select js-select-area w-100"
-                        {{ Auth::user()->rol !== 'Administrador/a' ? 'hidden' : '' }}>
+                    @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
+                    <select id="area" name="area" class="form-select js-select-area w-100">
                     </select>
+                    @endif
                 </div>
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
@@ -336,20 +342,17 @@
 
                                     <div class="col-lg-2">
                                         <label class="form-label">Fecha desde</label>
-                                        <input type="date" class="form-control" name="fechaDesde"
-                                            id="fechaDesdeNovedad" required>
+                                        <input type="text" class="form-control" name="fechaDesde" id="fechaDesdeNovedad" required>
                                     </div>
 
                                     <div class="col-lg-2">
                                         <label class="form-label">Fecha hasta</label>
-                                        <input type="date" class="form-control" name="fechaHasta"
-                                            id="fechaHastaNovedad" required>
+                                        <input type="text" class="form-control" name="fechaHasta" id="fechaHastaNovedad" required>
                                     </div>
 
                                     <div class="col-lg-2" id="divPeriodoDias" hidden>
                                         <label class="form-label">Período (días)</label>
-                                        <input id="inputDias" name="duracionDias" type="text"
-                                            class="form-control">
+                                        <input id="inputDias" name="duracionDias" type="text" class="form-control">
                                     </div>
 
                                     <div class="col-lg-2" id="divCantidadHoras" hidden>

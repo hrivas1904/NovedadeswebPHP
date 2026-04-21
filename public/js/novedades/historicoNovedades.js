@@ -1,8 +1,18 @@
 let tablaControl;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "30vh" : "55vh";
+    return window.innerWidth < 768 ? "30vh" : "60vh";
 }
+
+flatpickr("#filtroDesde, #filtroHasta", {
+    locale: "es",
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    onChange: function () {
+        tablaControl.ajax.reload();
+    },
+});
 
 function formatearFechaArgentina(fecha) {
     if (!fecha) return "";
@@ -18,6 +28,38 @@ function formatearPesos(valor) {
         currency: "ARS",
         minimumFractionDigits: 2,
     }).format(valor);
+}
+
+function calcularHorasHabiles() {
+    const fechaDesde = document.getElementById("inputFechaDesde").value;
+    const fechaHasta = document.getElementById("inputFechaHasta").value;
+
+    if (!fechaDesde || !fechaHasta) return;
+
+    const inicio = new Date(fechaDesde + "T00:00:00");
+    const fin = new Date(fechaHasta + "T00:00:00");
+
+    if (fin < inicio) {
+        document.getElementById("inputHoras").value = "";
+        return;
+    }
+
+    let diasHabiles = 0;
+    let fecha = new Date(inicio);
+
+    while (fecha <= fin) {
+        const diaSemana = fecha.getDay();
+
+        // Cuenta lunes a viernes como día hábil
+        if (diaSemana !== 0 && diaSemana !== 6) {
+            diasHabiles++;
+        }
+
+        fecha.setDate(fecha.getDate() + 1);
+    }
+
+    const horas = diasHabiles * 8;
+    document.getElementById("inputValor").value = horas;
 }
 
 function cargarFiltroNovedad() {
@@ -66,14 +108,10 @@ $(document).ready(function () {
 });
 
 $("#btnLimpiarFiltros").on("click", function () {
-    $("#filtroDesde").val(null);
-    $("#filtroHasta").val(null);
+    document.querySelector("#filtroDesde")._flatpickr.clear();
+    document.querySelector("#filtroHasta")._flatpickr.clear();
     $("#idNovedad").val(null);
     $("#liquidada").val(0);
-    tablaControl.ajax.reload();
-});
-
-$("#btnAplicarFiltros").on("click", function () {
     tablaControl.ajax.reload();
 });
 
@@ -102,6 +140,7 @@ $(document).ready(function () {
                     },
                 },
                 { data: "REGISTRANTE" },
+                { data: "COLABORADOR" },
                 {
                     data: "CODIGO_NOVEDAD",
                     width: "3%",
@@ -122,7 +161,7 @@ $(document).ready(function () {
                     render: function (data) {
                         return formatearFechaArgentina(data);
                     },
-                },                
+                },
                 {
                     data: "DURACION",
                     render: function (data, type, row) {
@@ -137,37 +176,6 @@ $(document).ready(function () {
                     },
                 },
                 { data: "DESCRIPCION", width: "auto" },
-                {
-                    data: "REGISTRO",
-                    orderable: false,
-                    width: "auto",
-                    className: "text-center",
-                    render: function (data, type, row) {
-                        if (USER_ROLE === "Colaborador/a") {
-                            return `
-                                <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <button type="button" 
-                                        class="btn btn-secondary btn-VerDetalleNovedad" 
-                                        data-id="${data}" 
-                                        title="Detalle de novedad">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                </div>
-                            `;
-                        } else {
-                            return `
-                                <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <button type="button" 
-                                        class="btn btn-secondary btn-VerDetalleNovedad" 
-                                        data-id="${data}" 
-                                        title="Detalle de novedad">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                </div>
-                            `;
-                        }
-                    },
-                },
             ],
             scrollX: true,
             paging: false,
@@ -335,15 +343,21 @@ $(document).ready(function () {
         });
 
         $("#liquidada").on("change", function () {
-            console.log($(this).val())
+            console.log($(this).val());
             tablaControl.ajax.reload();
         });
 
-        $(document).on("click", ".btn-VerDetalleNovedad", function (event) {
+        $(document).on("click", "#tb_control tbody tr", function (event) {
             event.preventDefault();
-            event.stopPropagation();
-            const idRegistro = $(this).data("id");
-            console.log("Id registro recibido: " + idRegistro);
+
+            const tabla = $("#tb_control").DataTable();
+            const data = tabla.row(this).data();
+
+            if (!data) return;
+
+            const idRegistro = data.REGISTRO;
+
+            console.log("Id registro recibido:", idRegistro);
             verDetalleNovedad(idRegistro);
         });
     }
@@ -388,10 +402,6 @@ function verDetalleNovedad(idRegistro) {
                 } else {
                     $("#inputValor").val(parseInt(valor));
                     $("#inputValor").addClass("text-start");
-                }
-
-                if (tipo_valor === "Horas") {
-                    calcularHorasHabiles();
                 }
 
                 $("#inputCodigo").val(d.codigo_novedad);

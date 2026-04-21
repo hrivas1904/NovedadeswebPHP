@@ -354,7 +354,6 @@ function anularSolicitud(idSolicitud, nombre, e) {
 $(document).ready(function () {
     if ($("#tb_solicitudes").length > 0) {
         tablaSolicitudes = $("#tb_solicitudes").DataTable({
-            processing: true,
             ajax: {
                 url: "/personal/listarSolicitudes",
                 type: "GET",

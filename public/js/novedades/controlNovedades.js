@@ -288,11 +288,12 @@ $(document).ready(function () {
                 url: "/novedades/listarNovedadesPorArea",
                 type: "GET",
                 data: function (d) {
-                    d.area = $("#area").val();
+                    d.area_id = $("#area").val();
                     d.idNovedad = $("#idNovedad").val();
                     d.paraFinnegans = $("#paraFinnegans").val();
                     d.desde = $("#filtroDesde").val();
                     d.hasta = $("#filtroHasta").val();
+                    console.log("Filtro area:", d.area);
                 },
             },
             columnDefs: [
@@ -587,7 +588,8 @@ $(document).ready(function () {
             ],
         });
 
-        $("#area").on("change", function () {
+        $(document).on("change", "#area", function () {
+            console.log("Cambio de área");
             tablaControl.ajax.reload();
         });
 

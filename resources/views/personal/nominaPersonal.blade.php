@@ -539,11 +539,13 @@
                                 <span>Requerimientos alimentarios</span>
                             </div>
                             <div class="empleado-box p-3">
+                                <i class="fa-solid fa-circle-info text-primary" style="cursor: pointer;" data-bs-toggle="tooltip"
+                                    data-bs-placement="right"
+                                    title="Si no tiene ningún requerimiento específico, no
+                                    seleccione nada. Si no encuentra un requerimiento específico,
+                                    seleccione Otro y complete Observaciones">
+                                </i>
                                 <div class="row g-1">
-                                    <p class="fs-6 fst-italic">Si no tiene ningún requerimiento alimentario específico,
-                                        no seleccione nada</p>
-                                    <p class="fs-6 fst-italic">Si no encuentra un requerimiento alimentario específico,
-                                        seleccione el ítem "Otro" y complete el campo "Observaciones"</p>
                                     <div class="row g-1" id="contenedorRequerimientos"></div>
                                     <div class="row mt-3" id="rowObservacionReq" style="display:none;">
                                         <div class="col-12">

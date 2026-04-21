@@ -249,7 +249,7 @@ class NovedadesController extends Controller
     public function listarHistoricoNovedades(Request $request)
     {
         try {
-            $areaId = Auth::user()->area_id;
+            $areaId = ($request->area_id && $request->area_id !== "") ? (int)$request->area_id : null;
             $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? (int)$request->idNovedad : null;
             $paraFinnegans = ($request->paraFinnegans === '' || $request->paraFinnegans === null) ? null : (int)$request->paraFinnegans;
             $rol = Auth::user()->rol;
@@ -560,4 +560,50 @@ class NovedadesController extends Controller
             ]);
         }
     }
+
+    public function crearNuevoConceptoNovedad(Request $request)
+{
+    try {
+
+        $request->validate([
+            'codigoNovedad' => 'required|string|max:50',
+            'nombreNovedad' => 'required|string|max:250',
+            'tipoValor' => 'required|string|max:50',
+            'paraFinnegans' => 'required|in:0,1'
+        ]);
+
+        $codigo = $request->codigoNovedad;
+        $nombre = $request->nombreNovedad;
+        $tipoValor = $request->tipoValor;
+        $limite = $request->limiteNovedad ?: null;
+        $paraFinnegans = $request->paraFinnegans;
+
+        DB::statement("CALL SP_NUEVA_NOVEDAD(?, ?, ?, ?, ?, @p_mensaje)", [
+            $codigo,
+            $nombre,
+            $tipoValor,
+            $limite,
+            $paraFinnegans
+        ]);
+
+        $resultado = DB::selectOne("SELECT @p_mensaje as mensaje");
+
+        $mensaje = $resultado->mensaje ?? 'Sin respuesta';
+
+        $ok = $mensaje === 'Novedad creada correctamente';
+
+        return response()->json([
+            'ok' => $ok,
+            'mensaje' => $mensaje
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'ok' => false,
+            'mensaje' => 'Error al crear novedad',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 }

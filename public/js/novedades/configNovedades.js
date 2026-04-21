@@ -113,24 +113,49 @@ $(document).ready(function () {
     });
 });
 
-
-$("#formNuevaNovedad").on("submit", function (e) {
+$(document).on("submit", "#formNuevaNovedad", function (e) {
     e.preventDefault();
-    $.ajax({
-        url: "/novedades",
-        type: "POST",
-        data: $(this).serialize(),
-        success: function (res) {
-            alert(res.mensaje);
 
-            if (res.mensaje.includes("correctamente")) {
-                $("#formNuevaNovedad")[0].reset();
-                $("#tb_configuracion").ajax.reload();
+    let form = $(this);
+
+    $.ajax({
+        url: "/novedades/crear",
+        method: "POST",
+        data: form.serialize(),
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (resp) {
+
+            console.log("RESP:", resp);
+
+            const icono = resp.ok ? "success" : "warning";
+            const titulo = resp.ok ? "Operación Exitosa" : "Atención";
+
+            Swal.fire({
+                icon: icono,
+                title: titulo,
+                text: resp.mensaje,
+            });
+
+            if (resp.ok) {
+                form[0].reset();
+
+                // si tenés tabla de novedades
+                if (typeof tablaNovedades !== "undefined") {
+                    tablaNovedades.ajax.reload(null, false);
+                }
             }
         },
-        error: function (err) {
-            console.error("Error creando novedad", err);
-            alert("Error al crear la novedad");
+        error: function (xhr) {
+
+            console.error("ERROR:", xhr.responseJSON);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: xhr.responseJSON?.error || "Error inesperado",
+            });
         }
     });
 });

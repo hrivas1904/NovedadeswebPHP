@@ -224,6 +224,9 @@ Route::get('/novedades/misNovedades', [NovedadesController::class, 'misNovedades
 
 Route::post('/novedades/liquidarNovedades', [NovedadesController::class, 'liquidarNovedades']);
 
+Route::post('/novedades/crear', [NovedadesController::class, 'crearNuevoConceptoNovedad'])
+    ->name('novedades.crearNuevoConceptoNovedad');
+
 //mensajes
 Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');
 Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->middleware('auth')->name('notificaciones.lista');

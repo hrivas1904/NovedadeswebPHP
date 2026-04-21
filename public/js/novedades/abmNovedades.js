@@ -1,6 +1,16 @@
 let novedades = [];
 let novedadesSelect = [];
 
+flatpickr("#fechaDesdeNovedad, #fechaHastaNovedad", {
+    locale: "es",
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    onChange: function () {
+        
+    },
+});
+
 function formatearFechaArgentina(fecha) {
     if (!fecha) return "";
 
@@ -582,7 +592,9 @@ $("#btnRegistrarMasivo").on("click", function () {
                     }).then(() => {
                         tablaDetalle.clear().draw();
                         $("#formCargaMasiva")[0].reset();
+                        $('#selectNovedad').val(null).trigger('change');   
                         $("#modalCargaMasivaNovedad").modal("hide");
+                        $('#selectNovedad').val(null).trigger('change'); 
                         tablaControl.ajax.reload();
                     });
                 } else {
