@@ -9,7 +9,7 @@ $.ajaxSetup({
 });
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "40vh" : "60vh";
+    return window.innerWidth < 768 ? "35vh" : "58vh";
 }
 
 function cargarAreas() {
@@ -45,7 +45,6 @@ $("#btnLimpiarFiltros").on("click", function () {
 
 $(document).ready(function () {
     let tabla = $("#tb_usuarios").DataTable({
-        processing: true,
         ajax: {
             url: "/usuarios/listar",
             data: function (d) {
@@ -59,6 +58,9 @@ $(document).ready(function () {
         scrollCollapse: true,
         scrollY: getScrollY(),
         responsive: true,
+        language: {
+            url: "/js/es-ES.json",
+        },
         columns: [
             { data: "legajo" },
             { data: "colaborador" },
@@ -79,7 +81,7 @@ $(document).ready(function () {
             {
                 data: null,
                 orderable: false,
-                className:"text-center",
+                className: "text-center",
                 render: function (data) {
                     if (
                         data.estado === "DE BAJA" ||
@@ -88,13 +90,13 @@ $(document).ready(function () {
                         return "";
                     }
                     return `
-            <button class="btn btn-sm btn-primary btnEditar" data-id="${data.legajo}">
-                <i class="fa fa-edit"></i>
-            </button>
-            <button class="btn btn-sm btn-danger btnEliminar" data-id="${data.legajo}">
-                <i class="fa fa-user-slash"></i>
-            </button>
-        `;
+                        <button class="btn btn-primary btnEditar" data-id="${data.legajo}">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btnEliminar" data-id="${data.legajo}">
+                            <i class="fa fa-user-slash"></i>
+                        </button>
+                    `;
                 },
             },
         ],
@@ -251,6 +253,10 @@ $(document).on("click", ".btnEliminar", function () {
         showCancelButton: true,
         confirmButtonText: "Sí, dar de baja",
         cancelButtonText: "Cancelar",
+        customClass: {
+            confirmButton: "btn btn-primary",
+            cancelButton: "btn btn-secondary",
+        },
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({

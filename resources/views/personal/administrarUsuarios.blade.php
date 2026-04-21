@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="text-start mb-4">
+    <div class="text-start mb-2">
         <h3 class="pill-heading tituloVista">ADMINISTRAR USUARIOS</h3>
     </div>
 
@@ -17,13 +17,13 @@
                 <div class="col-12 col-sm-12 col-md-3 col-xl-3 col-xxl-2">
                     <select class="form-select w-100" id="filtroEstado">
                         <option value="">TODOS</option>
-                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="ACTIVO" selected>ACTIVO</option>
                         <option value="DE BAJA">DE BAJA</option>
                     </select>
                 </div>
                 <div class="col-12 col-sm-12 col-md-3 col-xl-3 col-xxl-2">
                     <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario">
-                        Nuevo usuario
+                        <i class="fa-solid fa-user-plus"></i> Nuevo usuario
                     </button>
                 </div>
                 <div class="col-12 col-sm-12 col-md-3 col-xl-3 col-xxl-2">

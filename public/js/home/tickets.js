@@ -118,8 +118,8 @@ function resolverTicket(idTicket) {
         confirmButtonText: "Sí, resolver",
         cancelButtonText: "Cancelar",
         customClass: {
-            confirmButton: "btn-primario",
-            cancelButton: "btn-secundario",
+            confirmButton: "btn btn-primary",
+            cancelButton: "btn btn-secondary",
         },
     }).then((result) => {
         if (!result.isConfirmed) return;
@@ -140,6 +140,9 @@ function resolverTicket(idTicket) {
                         icon: "success",
                         title: "Ticket resuelto",
                         text: resp.mensaje,
+                        customClass: {
+                            confirmButton: "btn btn-primary",
+                        },
                     });
 
                     tablaTickets.ajax.reload(null, false);
@@ -274,7 +277,6 @@ $(document).ready(function () {
             type: "GET",
             dataSrc: "data",
         },
-
         columns: [
             { data: "id", width: "3%" },
             { data: "fecha", width: "6%" },
@@ -339,6 +341,7 @@ $(document).ready(function () {
         scrollCollapse: true,
         scrollY: "32vh",
         language: {
+            url: "/js/es-ES.json",
             lengthMenu: "_MENU_",
             paginate: {
                 first: "<<",

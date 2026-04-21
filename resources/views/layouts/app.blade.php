@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssFiltroEcommerce.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssNavbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
 </head>
 
 <body>

@@ -1,0 +1,5 @@
+.card-glass {
+    background: rgba(255,255,255,0.9);
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
