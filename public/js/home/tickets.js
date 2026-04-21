@@ -339,7 +339,7 @@ $(document).ready(function () {
         scrollX: true,
         paging: false,
         scrollCollapse: true,
-        scrollY: "32vh",
+        scrollY: "40vh",
         language: {
             url: "/js/es-ES.json",
             lengthMenu: "_MENU_",

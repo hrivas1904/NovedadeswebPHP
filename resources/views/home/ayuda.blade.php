@@ -31,7 +31,8 @@
                                 <option value="Error en el registro personal de novedades">Error en el registro personal de
                                     novedades</option>
                                 <option value="Error en la carga de novedades">Error en la carga de novedades</option>
-                                <option value="Error en el registro de solicitud de adelanto">Error en el registro de solicitud
+                                <option value="Error en el registro de solicitud de adelanto">Error en el registro de
+                                    solicitud
                                     de adelanto</option>
                                 <option value="El sistema está lento">El sistema RRHH está lento</option>
                                 <option value="Sugerencia de mejora">Sugerencia de mejora</option>
@@ -44,7 +45,8 @@
                                 <option value="La conexión a internet está lenta">La conexión a internet está lenta</option>
                                 <option value="La compuntadora no enciende o está lenta">La compuntadora no enciende o está
                                     lenta</option>
-                                <option value="Problemas con el mouse, teclado y/o monitor">Problemas con el mouse, teclado y/o
+                                <option value="Problemas con el mouse, teclado y/o monitor">Problemas con el mouse, teclado
+                                    y/o
                                     monitor</option>
                                 <option value="Problemas con la impresora">Problemas con la impresora</option>
                                 <option value="No puedo enviar/recibir correos">No puedo enviar/recibir correos</option>
@@ -54,7 +56,8 @@
                     </div>
                     <textarea id="inputDescripcion" class="form-control" name="descripcion" placeholder="Escriba aquí su ticket..."></textarea>
                     <div class="d-flex justify-content-end mt-3 gap-3">
-                        <button type="button" id='btnCancelarTicket' class="btn btn-secondary" onclick="limpiarFormulario()">
+                        <button type="button" id='btnCancelarTicket' class="btn btn-secondary"
+                            onclick="limpiarFormulario()">
                             Cancelar
                         </button>
                         <button type="button" id='btnEmitirTicket' class="btn-primary btn">
@@ -66,8 +69,7 @@
             </div>
         </div>
 
-        <h5>Historial de Consultas</h5>
-
+        <h3 class="pill-heading tituloVista">Historial de Consultas</h3>
         <div id="listaTickets" class="row">
             <div class="col-12">
                 <div class="card-glass p-1">
