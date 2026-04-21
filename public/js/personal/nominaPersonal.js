@@ -30,7 +30,7 @@ $(document).on("show.bs.modal", ".modal", function () {
     }, 0);
 });
 
-flatpickr("#fecha_nacimiento", {
+flatpickr("#fecha_nacimiento, #fechaBajaColab", {
     locale: "es",
     altInput: true,
     altFormat: "d/m/Y",
@@ -415,37 +415,58 @@ function verLegajo(legajoColaborador, nombre) {
 
 //DAR BAJA EMPLEADO
 function darDeBaja(legajoColaborador, nombre) {
+    $("#modalDarBajaColaborador").modal("show");
+
+    $("#tituloBajaColab").html(`
+        <i class="fa-solid fa-id-card me-2"></i>
+        Dar de baja a <strong>${nombre}</strong>
+    `);
+
+    $("#inputLegajoBaja").val(legajoColaborador);
+}
+
+$(document).on("submit", "#formBajaColaborador", function (e) {
+    e.preventDefault();
+
+    const legajo = $("#inputLegajoBaja").val();
+
     Swal.fire({
-        title: `¿Dar de baja a <strong>${nombre}</strong>?`,
-        text: "El colaborador quedará inactivo",
+        title: "¿Confirmar baja?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, dar de baja",
-        confirmButtonColor: "#00b18d",
         cancelButtonText: "Cancelar",
-        cancelButtonColor: "#004a7c",
+        customClass: {
+            confirmButton: "btn btn-primary",
+            cancelButton: "btn btn-secondary",
+        },
     }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: `/personal/baja/${legajoColaborador}`,
-                type: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content",
-                    ),
-                },
-                success: function (res) {
-                    if (res.success) {
-                        Swal.fire("Operación exitosa", res.mensaje, "success");
-                        tablaPersonal.ajax.reload(null, false);
-                    } else {
-                        Swal.fire("Atención", resp.mensaje, "warning");
-                    }
-                },
-            });
-        }
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/personal/baja/${legajo}`,
+            type: "POST",
+            data: {
+                fechaBaja: $("#fechaBajaColab").val(),
+                motivo: $("#selectMotivoBajaColab").val(),
+                observaciones: $("input[name='observacionesBaja']").val(),
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                if (res.success) {
+                    Swal.fire("OK", res.mensaje, "success");
+                    $("#modalDarBajaColaborador").modal("hide");
+                    tablaPersonal.ajax.reload(null, false);
+                } else {
+                    Swal.fire("Atención", res.mensaje, "warning");
+                }
+            },
+            error: function () {
+                Swal.fire("Error", "No se pudo dar de baja", "error");
+            },
+        });
     });
-}
+});
 
 //SELECTOR DE TÍTULO
 $("#select-titulo").on("change", function () {

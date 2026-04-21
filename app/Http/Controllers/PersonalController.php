@@ -387,18 +387,35 @@ class PersonalController extends Controller
         }
     }
 
-    public function bajaEmpleado($legajo)
+    public function bajaEmpleado(Request $request, $legajo)
     {
         try {
-            DB::statement("CALL SP_DAR_BAJA_EMPLEADO(?, @mensaje)", [$legajo]);
+
+            $fechaBaja = $request->fechaBaja;
+            $motivo = $request->motivo;
+            $observaciones = $request->observaciones;
+            $registrante = auth()->user()->name;
+
+            DB::statement(
+                "CALL SP_DAR_BAJA_EMPLEADO(?, ?, ?, ?, ?, @mensaje)",
+                [
+                    $legajo,
+                    $fechaBaja,
+                    $motivo,
+                    $observaciones,
+                    $registrante
+                ]
+            );
 
             $res = DB::select("SELECT @mensaje AS mensaje");
+            $mensaje = $res[0]->mensaje ?? 'Error desconocido';
 
             return response()->json([
                 'success' => true,
-                'mensaje' => $res[0]->mensaje
+                'mensaje' => $mensaje
             ]);
         } catch (\Exception $e) {
+
             return response()->json([
                 'success' => false,
                 'mensaje' => 'Error al dar de baja',

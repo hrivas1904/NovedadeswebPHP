@@ -9,7 +9,7 @@
                 <h3 class="pill-heading tituloVista">MESA DE AYUDA</h3>
                 <i class="fa-solid fa-circle-info text-primary" style="cursor: pointer;" data-bs-toggle="tooltip"
                     data-bs-placement="right"
-                    title="Desde aquí podés comunicarte con el Recursos Humanos y/o Sistemas para realizar consultas, reportar
+                    title="Desde aquí podés comunicarte con Recursos Humanos y/o Sistemas para realizar consultas, reportar
                     inconvenientes o enviar sugerencias!">
                 </i>
             </div>
