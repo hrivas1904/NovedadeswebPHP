@@ -156,6 +156,15 @@ Route::get('/personal/{legajo}/req-alimenticios', [PersonalController::class, 'o
 Route::post('/obra-social/crear', [PersonalController::class, 'registraNuevaOs'])
     ->name('obraSocial.registraNuevaOs');
 
+Route::get('/obra-social/administrarObraSociales', [PersonalController::class, 'administrarObraSociales'])
+    ->name('obraSocial.administrarObraSociales');
+
+Route::get('/obra-social/{id}', [PersonalController::class, 'verObraSocial'])
+    ->whereNumber('id');
+
+Route::post('/obra-social/editar', [PersonalController::class, 'editarObraSocial'])
+    ->name('obraSocial.editar');
+
 //RUTAS DE SP NOVEDADES
 
 Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])
@@ -226,6 +235,9 @@ Route::post('/novedades/liquidarNovedades', [NovedadesController::class, 'liquid
 
 Route::post('/novedades/crear', [NovedadesController::class, 'crearNuevoConceptoNovedad'])
     ->name('novedades.crearNuevoConceptoNovedad');
+
+Route::post('/novedades/editar', [NovedadesController::class, 'editarConceptoNovedad'])
+    ->name('novedades.editarConceptoNovedad');
 
 //mensajes
 Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');

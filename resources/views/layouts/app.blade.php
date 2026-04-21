@@ -138,12 +138,12 @@
                                         novedades</a></li>
                                 <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar
                                         usuarios</a></li>
-                                <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Obras
+                                <li><a class="dropdown-item" href="{{ route('obraSocial.administrarObraSociales') }}">Obras
                                         sociales</a></li>
-                                <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Áreas y
+                                <!--<li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Áreas y
                                         Servicios</a></li>
                                 <li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Categorías y
-                                        Roles</a></li>
+                                        Roles</a></li>-->
                             </ul>
                         </li>
                     @endif

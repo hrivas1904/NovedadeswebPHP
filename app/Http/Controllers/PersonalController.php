@@ -55,6 +55,11 @@ class PersonalController extends Controller
         return view('personal.administrarUsuarios');
     }
 
+    public function administrarObraSociales()
+    {
+        return view('personal.obrasSociales');
+    }
+
     public function listarAreas()
     {
         try {
@@ -958,11 +963,58 @@ class PersonalController extends Controller
                 'success' => true,
                 'mensaje' => 'Obra social registrada correctamente'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'mensaje' => 'Error al registrar la obra social',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function verObraSocial($id)
+    {
+        $obraSocial = DB::select(
+            'CALL SP_VER_OBRA_SOCIAL(?)',
+            [$id]
+        );
+
+        if (empty($obraSocial)) {
+            return response()->json(['error' => 'Obra social no encontrada'], 404);
+        }
+
+        return response()->json($obraSocial[0]);
+    }
+
+    public function editarObraSocial(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'idOs' => 'required|integer',
+                'nombreOsEdit' => 'required|string|max:500',
+                'codigoOsEdit' => 'required|string|max:255',
+            ]);
+
+            DB::statement('CALL SP_MODIFICAR_OBRA_SOCIAL(?, ?, ?)', [
+                $request->idOs,
+                $request->nombreOsEdit,
+                $request->codigoOsEdit
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Obra social actualizada correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            \Log::error('Error al editar obra social', [
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al actualizar la obra social',
                 'error' => $e->getMessage()
             ], 500);
         }
