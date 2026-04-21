@@ -772,7 +772,8 @@ function inicializarSelect2Fila() {
 
 // Agregar fila
 $(document).on("click", "#btnAgregarNovedad", function () {
-    let fila = `
+
+    let filaHtml = `
     <tr>
         <td>
             <select class="form-select selectNovedadRow" name="idNovedad[]">
@@ -783,10 +784,10 @@ $(document).on("click", "#btnAgregarNovedad", function () {
             <input type="text" class="form-control codigoFinnegans" readonly>
         </td>
         <td>
-            <input type="date" class="form-control" name="fechaDesde[]">
+            <input type="text" class="form-control fechaDesde" name="fechaDesde[]" placeHolder="Ingrese fecha desde">
         </td>
         <td>
-            <input type="date" class="form-control" name="fechaHasta[]">
+            <input type="text" class="form-control fechaHasta" name="fechaHasta[]" placeHolder="Ingrese fecha hasta">
         </td>
         <td>
             <input type="text" class="form-control" name="valor[]">
@@ -805,8 +806,34 @@ $(document).on("click", "#btnAgregarNovedad", function () {
     </tr>
     `;
 
-    $("#tablaNovedades tbody").append(fila);
-    inicializarSelect2Fila();
+    // 👉 insertar HTML
+    $("#tablaNovedades tbody").append(filaHtml);
+
+    // 👉 agarrar la fila REAL (igual que .node())
+    let fila = $("#tablaNovedades tbody tr").last();
+
+    // 👉 ahora sí funciona
+    flatpickr(fila.find(".fechaDesde")[0], {
+        locale: "es",
+        altInput: true,
+        altFormat: "d/m/Y",
+        dateFormat: "Y-m-d",
+        onChange: function () {
+            calcularValorFila(fila);
+        },
+    });
+
+    flatpickr(fila.find(".fechaHasta")[0], {
+        locale: "es",
+        altInput: true,
+        altFormat: "d/m/Y",
+        dateFormat: "Y-m-d",
+        onChange: function () {
+            calcularValorFila(fila);
+        },
+    });
+
+    inicializarSelect2Fila(fila);
 });
 
 $(document).on("select2:select", ".selectNovedadRow", function (e) {

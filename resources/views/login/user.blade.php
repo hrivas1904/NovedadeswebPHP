@@ -23,20 +23,37 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f8fafc;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(0, 74, 124, 0.08) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 177, 141, 0.08) 0px, transparent 50%);
+
+            background: url("{{ asset('img/background.png') }}") no-repeat center center/cover;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.2);
+            /* leve aclarado */
+            z-index: 0;
         }
 
         .card-usuario {
-            background: #ffffff;
+            position: relative;
+            z-index: 1;
+
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+
             padding: 2.5rem;
             border-radius: 20px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+
             width: 100%;
             max-width: 550px;
-            border: 1px solid rgba(226, 232, 240, 0.8);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .logo {

@@ -11,19 +11,11 @@
                     <div class="card-body">
                         <div class="row g-3 d-flex align-items-end justify-content-around align-item-center">
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                <label class="form-label">Desde</label>
-                                <input type="date" id="filtroDesde" class="form-control" />
+                                <input type="text" id="filtroDesde" class="form-control" placeholder="Desde" />
                             </div>
 
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                <label class="form-label">Hasta</label>
-                                <input type="date" id="filtroHasta" class="form-control" />
-                            </div>
-
-                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">
-                                <button id="btnAplicarFiltros" class="btn btn-primary w-100">
-                                    <i class="fa-solid fa-circle-check"></i> Aplicar filtros
-                                </button>
+                                <input type="text" id="filtroHasta" class="form-control" placeholder="Hasta" />
                             </div>
 
                             <div class="col-sm-12 col-md-6 col-lg-4 col-xl-2">

@@ -11,6 +11,15 @@ let filtrosDashboard = {
     hasta: null,
 };
 
+flatpickr("#filtroDesde, #filtroHasta", {
+    locale: "es",
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    onChange: function () {
+        recargarDashboard();
+    },
+});
 
 function formatearPesos(valor) {
     if (valor === null || valor === undefined || valor === "") return "";
@@ -916,18 +925,9 @@ function recargarDashboard() {
     
 }
 
-$("#btnAplicarFiltros").on("click", function () {
-    filtrosDashboard.desde = $("#filtroDesde").val() || null;
-    filtrosDashboard.hasta = $("#filtroHasta").val() || null;
-
-    console.log("Filtros activos:", filtrosDashboard);
-
-    recargarDashboard();
-});
-
 $("#btnLimpiarFiltros").on("click", function () {
-    $("#filtroDesde").val("");
-    $("#filtroHasta").val("");
+    document.querySelector("#filtroDesde")._flatpickr.clear();
+    document.querySelector("#filtroHasta")._flatpickr.clear();
 
     recargarDashboard();
 });

@@ -129,7 +129,7 @@
                     @endif
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                    <!--<li class="nav-item dropdown">
+                    <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                                 <i class="fa-solid fa-gear"></i> Ajustes
                             </a>
@@ -145,7 +145,7 @@
                                 <li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Categorías y
                                         Roles</a></li>
                             </ul>
-                        </li>-->
+                        </li>
                     @endif
 
                     <li class="nav-item">
