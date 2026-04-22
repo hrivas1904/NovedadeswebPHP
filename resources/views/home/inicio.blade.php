@@ -6,7 +6,7 @@
 
 <div class="container-md">
     <div class="d-flex justify-content-center py-3">
-        <h1 style="color: #1e293b;">¡Hola, <strong>{{ Auth::user()->name }}</strong>!</h1>
+        <h1 class="pill-heading" style="color: var(--color-default)">¡ Hola, <strong>{{ Auth::user()->name }}</strong>!</h1>
     </div>
 
     <div class="d-flex justify-content-between ms-auto align-item-end gap-3 my-2">
