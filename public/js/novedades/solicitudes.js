@@ -1,4 +1,5 @@
 let tablaSolicitudes = null;
+let seleccionados = new Set();
 
 flatpickr("#fechaDesde, #fechaHasta", {
     locale: "es",
@@ -11,21 +12,52 @@ flatpickr("#fechaDesde, #fechaHasta", {
 });
 
 //CHECK BOX PARA DEPOSITAR
+// check individual
+$(document).on("change", ".check-row", function () {
+    const id = parseInt($(this).attr("data-id"));
+
+    if (!isNaN(id)) {
+        if ($(this).is(":checked")) {
+            seleccionados.add(id);
+        } else {
+            seleccionados.delete(id);
+        }
+    }
+
+    actualizarCheckAll();
+});
+
+// check all
 $(document).on("change", "#checkAll", function () {
     const isChecked = $(this).is(":checked");
-    $(".check-row").prop("checked", isChecked);
+
+    $("#tb_solicitudes .check-row").each(function () {
+        const id = parseInt($(this).attr("data-id"));
+
+        if (!isNaN(id)) {
+            if (isChecked) {
+                seleccionados.add(id);
+            } else {
+                seleccionados.delete(id);
+            }
+        }
+
+        $(this).prop("checked", isChecked);
+    });
 });
 
-$(document).on("change", ".check-row", function () {
-    const total = $(".check-row").length;
-    const checked = $(".check-row:checked").length;
-
-    $("#checkAll").prop("checked", total === checked);
-});
-
+// evitar conflicto con click en fila
 $(document).on("click", ".check-row", function (event) {
     event.stopPropagation();
 });
+
+// sincroniza checkAll
+function actualizarCheckAll() {
+    const total = $("#tb_solicitudes .check-row").length;
+    const checked = $("#tb_solicitudes .check-row:checked").length;
+
+    $("#checkAll").prop("checked", total > 0 && total === checked);
+}
 
 $("#inputMonto").on("input", function () {
     let valor = parseFloat($(this).val());
@@ -377,7 +409,10 @@ $(document).ready(function () {
                 dataSrc: "data",
                 data: function (d) {
                     d.estado = $("#selectEstado").val() || null;
-                    d.depositado = $("#selectDepositado").val() || null;
+                    d.depositado =
+                        $("#selectDepositado").val() !== ""
+                            ? $("#selectDepositado").val()
+                            : null;
                     d.fechaDesde = $("#fechaDesde").val() || null;
                     d.fechaHasta = $("#fechaHasta").val() || null;
                 },
@@ -552,6 +587,7 @@ $(document).ready(function () {
                                 </div>
                             `;
                         }
+
                         return botones;
                     },
                 },
@@ -600,6 +636,18 @@ $(document).ready(function () {
                 },
             ],
         });
+
+        tablaSolicitudes.on("draw", function () {
+            $("#tb_solicitudes .check-row").each(function () {
+                const id = parseInt($(this).attr("data-id"));
+
+                if (seleccionados.has(id)) {
+                    $(this).prop("checked", true);
+                }
+            });
+
+            actualizarCheckAll();
+        });
     }
 
     $("#selectEstado").on("change", function () {
@@ -636,11 +684,9 @@ $("#btnLimpiarFiltros").on("click", function (e) {
 });
 
 $("#btnDepositarAdelantos").on("click", function () {
-    let ids = [];
+    let ids = Array.from(seleccionados);
 
-    $(".check-row:checked").each(function () {
-        ids.push($(this).data("id"));
-    });
+    console.log("IDS A ENVIAR:", ids);
 
     if (ids.length === 0) {
         Swal.fire("Atención", "Seleccioná al menos una solicitud", "warning");
@@ -661,16 +707,20 @@ $("#btnDepositarAdelantos").on("click", function () {
                 url: "/personal/depositarAdelantos",
                 type: "POST",
                 data: {
-                    ids: ids.join(","), // 🔥 clave
+                    ids: ids.join(","),
                 },
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content",
+                        "content"
                     ),
                 },
                 success: function (res) {
                     if (res.success) {
                         Swal.fire("OK", res.mensaje, "success");
+
+                        // limpiar selección
+                        seleccionados.clear();
+
                         tablaSolicitudes.ajax.reload(null, false);
                     } else {
                         Swal.fire("Error", res.mensaje, "error");

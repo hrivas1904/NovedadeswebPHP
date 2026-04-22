@@ -541,13 +541,16 @@ class PersonalController extends Controller
     public function listarSolicitudes(Request $request)
     {
         try {
-            $fechaDesde    = $request->fechaDesde ?: null;
-            $fechaHasta    = $request->fechaHasta ?: null;
-            $areaId    = $request->area_id ?: null;
-            $estado   = $request->estado ?: null;
-            $legajo   = Auth::user()->legajo ?: null;
-            $rol   = Auth::user()->rol ?: null;
-            $depositado   = $request->depositado ?: null;
+            $fechaDesde = $request->fechaDesde !== '' ? $request->fechaDesde : null;
+            $fechaHasta = $request->fechaHasta !== '' ? $request->fechaHasta : null;
+            $areaId = $request->area_id !== '' ? $request->area_id : null;
+            $estado = $request->estado !== '' ? $request->estado : null;
+            $depositado = $request->depositado !== null && $request->depositado !== ''
+                ? (int) $request->depositado
+                : null;
+
+            $legajo = Auth::user()->legajo ?? null;
+            $rol = Auth::user()->rol ?? null;
 
             $solicitudes = DB::select(
                 "CALL SP_LISTA_SOLICITUDES(?, ?, ?, ?, ?, ?, ?)",
@@ -651,14 +654,29 @@ class PersonalController extends Controller
         try {
             $ids = $request->ids;
 
-            DB::statement('CALL SP_DEPOSITAR_SOLICITUDES_ADELANTOS(?)', [$ids]);
+            if (!$ids || trim($ids) === '') {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'No se recibieron IDs válidos'
+                ]);
+            }
+
+            $result = DB::select('CALL SP_DEPOSITAR_SOLICITUDES_ADELANTOS(?)', [$ids]);
+
+            $procesados = $result[0]->procesados ?? 0;
+
+            if ($procesados == 0) {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'No se procesó ninguna solicitud'
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
-                'mensaje' => 'Adelantos depositados correctamente'
+                'mensaje' => "Se depositaron {$procesados} solicitudes correctamente"
             ]);
         } catch (\Exception $e) {
-
             return response()->json([
                 'success' => false,
                 'mensaje' => $e->getMessage()

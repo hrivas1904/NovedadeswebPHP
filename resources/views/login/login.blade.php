@@ -187,6 +187,40 @@
                 opacity: .6;
             }
         }
+
+        .dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 4px;
+            background: var(--color-default);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: blink 1.4s infinite;
+        }
+
+        .dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+
+            0%,
+            80%,
+            100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+
+            40% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
     </style>
 </head>
 
@@ -195,6 +229,10 @@
     <div id="loader" class="loader-overlay d-none">
         <div class="loader-content">
             <img src="{{ asset('img/logo_2.png') }}" class="logo-spinner" alt="Cargando...">
+            <h5 class="fw-semibold mt-5" style="color: var(--color-accent)">Iniciando sesión...</h5>
+            <div class="dots mt-3">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     </div>
 
@@ -206,28 +244,30 @@
         </div>
 
         @if ($errors->any())
-        <div class="error-message">
-            @foreach ($errors->all() as $error)
-            <div>{{ $error }}</div>
-            @endforeach
-        </div>
+            <div class="error-message">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
         @endif
 
         @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
         @endif
 
         <form action="{{ route('login.post') }}" method="POST" onsubmit="showLoader()">
             @csrf
             <div class="mb-3">
                 <label class="form-label">USUARIO/LEGAJO</label>
-                <input type="text" name="username" class="form-control" placeholder="Ingrese Usuario o Legajo" required>
+                <input type="text" name="username" class="form-control" placeholder="Ingrese Usuario o Legajo"
+                    required>
             </div>
             <div class="mb-3">
                 <label class="form-label">CONTRASEÑA</label>
-                <input id="inputPassword" type="password" name="password" class="form-control" placeholder="Ingrese Contraseña" required>
+                <input id="inputPassword" type="password" name="password" class="form-control"
+                    placeholder="Ingrese Contraseña" required>
                 <div class="row-cols d-flex justify-content-end mt-2">
                     <button type="button" id="btn-verPassword"
                         style="color: #0b3c6d; background-color: transparent; border: none" onclick="mostrarPassword()">
