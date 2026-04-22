@@ -397,9 +397,7 @@ $(document).ready(function () {
                     } else {
                         d.area_id = getAreasSeleccionadas().join(",") || null;
                     }
-
                     d.categ_id = getCategoriasSeleccionadas().join(",") || null;
-                    //d.p_regimen = $("#filtroRegimen").val() || null;
                     d.convenio = getConveniosSeleccionados().join(",") || null;
                 },
             },

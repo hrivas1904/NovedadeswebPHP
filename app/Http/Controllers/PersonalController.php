@@ -277,7 +277,7 @@ class PersonalController extends Controller
         try {
             $areaId   = $this->normalizarFiltro($request->area_id);
             $categId  = $this->normalizarFiltro($request->categ_id);
-            $convenio = $this->normalizarFiltro($request->p_convenio);
+            $convenio = $this->normalizarFiltro($request->convenio);
 
             $regimen  = $request->p_regimen !== null && $request->p_regimen !== ''
                 ? (int)$request->p_regimen
@@ -338,7 +338,7 @@ class PersonalController extends Controller
         try {
             $areaId    = $request->area_id ?: null;
             $categId   = $request->categ_id ?: null;
-            $convenio  = $request->p_convenio ?: null;
+            $convenio  = $request->convenio ?: null;
             $regimen   = $request->p_regimen ?: null;
 
             $empleados = DB::select(

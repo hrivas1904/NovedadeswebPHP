@@ -112,9 +112,9 @@ $(document).ready(function () {
                     data: "CODIGO_NOVEDAD",
                     width: "3%",
                     className: "text-start",
-                    title: "NOVEDAD",
                 },
                 { data: "NOVEDAD_NOMBRE" },
+                { data: "COLABORADOR", visible: false},
                 {
                     data: "FECHA_DESDE",
                     className: "text-end",
@@ -128,7 +128,7 @@ $(document).ready(function () {
                     render: function (data) {
                         return formatearFechaArgentina(data);
                     },
-                },                
+                },
                 {
                     data: "DURACION",
                     render: function (data, type, row) {
@@ -347,7 +347,7 @@ $(document).ready(function () {
         });
 
         $("#liquidada").on("change", function () {
-            console.log($(this).val())
+            console.log($(this).val());
             tablaControl.ajax.reload();
         });
 

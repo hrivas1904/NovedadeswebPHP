@@ -48,6 +48,7 @@
                             <th>REGISTRANTE</th>
                             <th>CODIGO</th>
                             <th>NOVEDAD</th>
+                            <th>COLABORADOR</th>
                             <th>DESDE</th>
                             <th>HASTA</th>
                             <th>VALOR</th>

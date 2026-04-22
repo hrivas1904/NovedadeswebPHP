@@ -186,8 +186,7 @@ class NovedadesController extends Controller
 
     public function listarNovedadesPorArea(Request $request)
     {
-        try {
-            $areaId = ($request->area_id && $request->area_id !== "") ? (int)$request->area_id : null;
+        try {            
             $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? (int)$request->idNovedad : null;
             $paraFinnegans = ($request->paraFinnegans === '' || $request->paraFinnegans === null) ? null : (int)$request->paraFinnegans;
             $rol = Auth::user()->rol;
@@ -195,6 +194,13 @@ class NovedadesController extends Controller
             $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
             $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
             $liquidada = 0;
+            if ($rol === 'Coordinador/a') {
+                $areaId = Auth::user()->area_id;
+            } else {
+                $areaId = ($request->area_id && $request->area_id !== "")
+                    ? (int)$request->area_id
+                    : null;
+            }
 
             $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?,?,?,?)", [
                 $areaId,
@@ -249,7 +255,6 @@ class NovedadesController extends Controller
     public function listarHistoricoNovedades(Request $request)
     {
         try {
-            $areaId = ($request->area_id && $request->area_id !== "") ? (int)$request->area_id : null;
             $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? (int)$request->idNovedad : null;
             $paraFinnegans = ($request->paraFinnegans === '' || $request->paraFinnegans === null) ? null : (int)$request->paraFinnegans;
             $rol = Auth::user()->rol;
@@ -257,6 +262,13 @@ class NovedadesController extends Controller
             $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
             $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
             $liquidada = 1;
+            if ($rol === 'Coordinador/a') {
+                $areaId = Auth::user()->area_id;
+            } else {
+                $areaId = ($request->area_id && $request->area_id !== "")
+                    ? (int)$request->area_id
+                    : null;
+            }
 
             $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?,?,?,?)", [
                 $areaId,

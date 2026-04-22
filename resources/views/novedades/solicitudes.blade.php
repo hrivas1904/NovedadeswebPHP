@@ -81,17 +81,16 @@
                         <th>BANCO</th>
                         <th>OBSERVACIONES</th>
                         <th>ESTADO</th>
-                        @if (Auth::user()->rol === 'Administrador/a')
                         <th class="text-end">
                             <div class="d-flex align-items-start justify-content-center gap-2">
                                 <span>ACCIONES</span>                                
                                 <input type="checkbox" class="form-check-input" id="checkAll">                                
                             </div>
                         </th>
-                        @endif
                     </tr>
                 </thead>
                 <tbody></tbody>
+                @if (Auth::user()->rol === 'Administrador/a')
                 <tfoot>
                     <tr>
                         <th colspan="8" style="text-align:right">Total Monto:</th>
@@ -99,6 +98,7 @@
                         <th colspan="5"></th>
                     </tr>
                 </tfoot>
+                @endif
             </table>
         </div>
     </div>

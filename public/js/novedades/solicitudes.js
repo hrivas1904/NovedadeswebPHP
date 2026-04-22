@@ -395,7 +395,7 @@ $(document).ready(function () {
                 },
                 { responsivePriority: 1, targets: 1 }, // fecha
                 { responsivePriority: 2, targets: 8 }, // monto
-                { responsivePriority: 3, targets: 11 }, // estado
+                { responsivePriority: 3, targets: 13 }, // estado
                 { responsivePriority: 100, targets: 0 }, // id
                 { responsivePriority: 100, targets: 2 }, // legajo
                 { responsivePriority: 100, targets: 3 }, // cuil
@@ -405,14 +405,14 @@ $(document).ready(function () {
                 { responsivePriority: 100, targets: 7 }, // cbu
                 { responsivePriority: 100, targets: 10 }, // comprobante
                 { responsivePriority: 100, targets: 12 }, // observaciones
-                { responsivePriority: 100, targets: 13 }, // acciones
+                { responsivePriority: 100, targets: 15 }, // acciones
                 { responsivePriority: 100, targets: 9 }, // monto export
                 {
                     targets: [3, 5, 6, 7, 9, 10],
                     visible: false,
                 },
                 {
-                    targets: [13],
+                    targets: [15],
                     visible: USER_ROLE === "Administrador/a",
                 },
             ],

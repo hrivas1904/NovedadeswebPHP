@@ -45,10 +45,6 @@
                     </select>
                 </div>
 
-                @if (Auth::user()->rol !== 'Administrador/a')
-                <input type="hidden" id="areaFija" value="{{ Auth::user()->area_id }}">
-                @endif
-
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <button type="button" id="btnLimpiarFiltros" class="btn btn-secondary w-100">
                         <i class="fa-solid fa-eraser"></i> Limpiar
