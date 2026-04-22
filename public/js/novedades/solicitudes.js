@@ -405,14 +405,14 @@ $(document).ready(function () {
                 { responsivePriority: 100, targets: 7 }, // cbu
                 { responsivePriority: 100, targets: 10 }, // comprobante
                 { responsivePriority: 100, targets: 12 }, // observaciones
-                { responsivePriority: 100, targets: 15 }, // acciones
+                { responsivePriority: 100, targets: 14 }, // acciones
                 { responsivePriority: 100, targets: 9 }, // monto export
                 {
                     targets: [3, 5, 6, 7, 9, 10],
                     visible: false,
                 },
                 {
-                    targets: [15],
+                    targets: [14],
                     visible: USER_ROLE === "Administrador/a",
                 },
             ],
@@ -511,12 +511,6 @@ $(document).ready(function () {
                     },
                 },
                 {
-                    data: "depositado",
-                    width: "25%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
                     data: null,
                     className: "text-start",
                     width: "3%",
@@ -574,7 +568,7 @@ $(document).ready(function () {
                     text: '<i class="fa-solid fa-file-excel"></i> Excel',
                     className: "btn-export-excel dt-buttons",
                     exportOptions: {
-                        columns: [2, 3, 4, 6, 7, 9, 10, 11],
+                        columns: [2, 3, 4, 6, 7, 9, 10, 11, 12],
                         format: {
                             body: function (data, row, column, node) {
                                 if (/^\d{11,}$/.test(data)) {
