@@ -547,10 +547,11 @@ class PersonalController extends Controller
             $estado   = $request->estado ?: null;
             $legajo   = Auth::user()->legajo ?: null;
             $rol   = Auth::user()->rol ?: null;
+            $depositado   = $request->depositado ?: null;
 
             $solicitudes = DB::select(
-                "CALL SP_LISTA_SOLICITUDES(?, ?, ?, ?, ?, ?)",
-                [$fechaDesde, $fechaHasta, $estado, $areaId, $legajo, $rol]
+                "CALL SP_LISTA_SOLICITUDES(?, ?, ?, ?, ?, ?, ?)",
+                [$fechaDesde, $fechaHasta, $estado, $areaId, $legajo, $rol, $depositado]
             );
 
             return response()->json([
@@ -642,6 +643,26 @@ class PersonalController extends Controller
                 'mensaje' => 'Error al anular solicitud',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function depositarAdelantos(Request $request)
+    {
+        try {
+            $ids = $request->ids;
+
+            DB::statement('CALL SP_DEPOSITAR_SOLICITUDES_ADELANTOS(?)', [$ids]);
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Adelantos depositados correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ]);
         }
     }
 

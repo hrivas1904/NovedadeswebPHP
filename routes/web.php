@@ -315,6 +315,9 @@ Route::post('/personal/rechazarSolicitud', [PersonalController::class, 'rechazar
 Route::post('/personal/anularSolicitud', [PersonalController::class, 'anularSolicitud'])
     ->name('personal.anularSolicitud');
 
+Route::post('/personal/depositarAdelantos', [PersonalController::class, 'depositarAdelantos'])
+    ->name('personal.depositarAdelantos');
+
 //tickets
 Route::post('/tickets/registrar', [TicketController::class, 'registrar'])
     ->name('tickets.registrar');

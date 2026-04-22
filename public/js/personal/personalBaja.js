@@ -1,5 +1,6 @@
 let tablaPersonal;
 let legajoActivo = null;
+let tablaHistorialNovedades = null;
 
 function verLegajo(legajoColaborador, nombre) {
     console.log("Mostrando legajo:", legajoColaborador);
@@ -65,6 +66,12 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#modalLegajoColaborador").modal("show");
 
                 // 🔑 inicializar / refrescar historial CUANDO el modal ya está visible
+                $("#modalLegajoColaborador")
+                    .off("shown.bs.modal")
+                    .on("shown.bs.modal", function () {
+                        inicializarORefrescarHistorial();
+                    });
+
                 $("#modalLegajoColaborador")
                     .off("shown.bs.modal")
                     .on("shown.bs.modal", function () {
@@ -137,20 +144,25 @@ $(document).ready(function () {
                 { data: "DNI", width: "7%", className: "text-start" },
                 { data: "AREA", width: "auto", className: "text-start" },
                 { data: "CATEGORIA", width: "auto", className: "text-start" },
-                { data: "REGIMEN", width: "5%", className: "text-center", visible:false, },
+                {
+                    data: "REGIMEN",
+                    width: "5%",
+                    className: "text-center",
+                    visible: false,
+                },
                 {
                     data: "HORAS_DIARIAS",
                     width: "5%",
                     className: "text-center",
                     width: "auto",
-                    visible:false,
+                    visible: false,
                 },
                 { data: "CONVENIO", width: "auto", className: "text-start" },
                 {
                     data: "ESTADO",
                     width: "3%",
                     orderable: false,
-                    visible:false,
+                    visible: false,
                     className: "text-center",
                     render: function (data) {
                         let clase =
@@ -168,7 +180,7 @@ $(document).ready(function () {
                 {
                     data: "MOTIVO_BAJA",
                     width: "auto",
-                    visible: false
+                    visible: false,
                 },
             ],
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mx-1' \

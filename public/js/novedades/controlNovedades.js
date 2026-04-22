@@ -90,9 +90,9 @@ $("#btnLimpiarFiltros").on("click", function () {
     tablaControl.ajax.reload();
 });
 
+//CHECK BOX PARA LIQUIDAR
 $(document).on("change", "#checkAll", function () {
     const isChecked = $(this).is(":checked");
-
     $(".check-row").prop("checked", isChecked);
 });
 
@@ -101,6 +101,10 @@ $(document).on("change", ".check-row", function () {
     const checked = $(".check-row:checked").length;
 
     $("#checkAll").prop("checked", total === checked);
+});
+
+$(document).on("click", ".check-row", function (event) {
+    event.stopPropagation();
 });
 
 function cargarAreas() {

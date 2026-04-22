@@ -10,6 +10,23 @@ flatpickr("#fechaDesde, #fechaHasta", {
     },
 });
 
+//CHECK BOX PARA DEPOSITAR
+$(document).on("change", "#checkAll", function () {
+    const isChecked = $(this).is(":checked");
+    $(".check-row").prop("checked", isChecked);
+});
+
+$(document).on("change", ".check-row", function () {
+    const total = $(".check-row").length;
+    const checked = $(".check-row:checked").length;
+
+    $("#checkAll").prop("checked", total === checked);
+});
+
+$(document).on("click", ".check-row", function (event) {
+    event.stopPropagation();
+});
+
 $("#inputMonto").on("input", function () {
     let valor = parseFloat($(this).val());
 
@@ -360,6 +377,7 @@ $(document).ready(function () {
                 dataSrc: "data",
                 data: function (d) {
                     d.estado = $("#selectEstado").val() || null;
+                    d.depositado = $("#selectDepositado").val() || null;
                     d.fechaDesde = $("#fechaDesde").val() || null;
                     d.fechaHasta = $("#fechaHasta").val() || null;
                 },
@@ -400,7 +418,7 @@ $(document).ready(function () {
             ],
             order: [[0, "desc"]],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                url: "/js/es-ES.json",
             },
             footerCallback: function (row, data, start, end, display) {
                 let api = this.api();
@@ -493,6 +511,12 @@ $(document).ready(function () {
                     },
                 },
                 {
+                    data: "depositado",
+                    width: "25%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
                     data: null,
                     className: "text-start",
                     width: "3%",
@@ -517,14 +541,21 @@ $(document).ready(function () {
 
                         if (row.estado === "APROBADA") {
                             botones += `
-                                <button
-                                    type="button"
-                                    class="btn-danger btn btn-RechazarSolicitud"
-                                    data-id="${row.id}"
-                                    data-nombre="${row.colaborador}"
-                                    title="Anular solicitud">
-                                    <i class="fa-solid fa-square-xmark fs-5"></i>
-                                </button>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <button
+                                        type="button"
+                                        class="btn-danger btn btn-RechazarSolicitud"
+                                        data-id="${row.id}"
+                                        data-nombre="${row.colaborador}"
+                                        title="Anular solicitud">
+                                        <i class="fa-solid fa-square-xmark fs-5"></i>
+                                    </button>
+                                    <div class="text-center">
+                                        <input type="checkbox" 
+                                            class="form-check-input check-row" 
+                                            data-id="${row.id}">
+                                    </div>
+                                </div>
                             `;
                         }
                         return botones;
@@ -546,11 +577,9 @@ $(document).ready(function () {
                         columns: [2, 3, 4, 6, 7, 9, 10, 11],
                         format: {
                             body: function (data, row, column, node) {
-                                // Detecta números largos (CBU, cuenta, CUIL)
                                 if (/^\d{11,}$/.test(data)) {
                                     return "'" + data;
                                 }
-
                                 return data;
                             },
                         },
@@ -568,6 +597,7 @@ $(document).ready(function () {
                 },
                 {
                     extend: "print",
+                    className: ".btn-printer dt-buttons",
                     text: '<i class="fa-solid fa-print"></i> Imprimir',
                     title: "Nómina de personal",
                     exportOptions: {
@@ -579,6 +609,10 @@ $(document).ready(function () {
     }
 
     $("#selectEstado").on("change", function () {
+        tablaSolicitudes.ajax.reload();
+    });
+
+    $("#selectDepositado").on("change", function () {
         tablaSolicitudes.ajax.reload();
     });
 
@@ -600,8 +634,58 @@ $(document).ready(function () {
 $("#btnLimpiarFiltros").on("click", function (e) {
     e.preventDefault();
     $("#selectEstado").val("");
+    $("#selectDepositado").val(0);
     document.querySelector("#fechaDesde")._flatpickr.clear();
     document.querySelector("#fechaHasta")._flatpickr.clear();
     tablaSolicitudes.search("").draw(); // opcional: limpia búsqueda global
     tablaSolicitudes.ajax.reload(null, false);
+});
+
+$("#btnDepositarAdelantos").on("click", function () {
+    let ids = [];
+
+    $(".check-row:checked").each(function () {
+        ids.push($(this).data("id"));
+    });
+
+    if (ids.length === 0) {
+        Swal.fire("Atención", "Seleccioná al menos una solicitud", "warning");
+        return;
+    }
+
+    Swal.fire({
+        title: "¿Depositar adelantos?",
+        text: `Se procesarán ${ids.length} solicitudes`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, depositar",
+        confirmButtonColor: "#00b18d",
+        cancelButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/personal/depositarAdelantos",
+                type: "POST",
+                data: {
+                    ids: ids.join(","), // 🔥 clave
+                },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
+                success: function (res) {
+                    if (res.success) {
+                        Swal.fire("OK", res.mensaje, "success");
+                        tablaSolicitudes.ajax.reload(null, false);
+                    } else {
+                        Swal.fire("Error", res.mensaje, "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error", "Ocurrió un problema", "error");
+                },
+            });
+        }
+    });
 });
