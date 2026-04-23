@@ -28,7 +28,7 @@ body[data-theme="dark"] {
     font-size: 1.4rem;
     font-weight: 600;
     color: var(--title-color);
-    font-family: 'Roboto';
+    font-family: "Roboto";
 }
 
 .pill-heading {
@@ -38,6 +38,30 @@ body[data-theme="dark"] {
     padding: 6px 14px;
     border-radius: 999px;
     background-color: rgba(0, 145, 213, 0.08);
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-default);
+    font-size: 18px;
+}
+
+.icon-box-title {
+    width: 70px;
+    height: 70px;
+    background: var(--bg-card);
+    border-radius: 50%; /* 👈 esto lo hace círculo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-default);
+    font-size: 18px;
 }
 
 .dropdown-alertas {
