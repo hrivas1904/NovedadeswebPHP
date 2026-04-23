@@ -651,35 +651,35 @@ class PersonalController extends Controller
 
     public function depositarAdelantos(Request $request)
     {
+        $ids = $request->input('ids');
+
+        if (!$ids || count($ids) == 0) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No se seleccionaron solicitudes'
+            ]);
+        }
+
+        DB::beginTransaction();
+
         try {
-            $ids = $request->ids;
-
-            if (!$ids || trim($ids) === '') {
-                return response()->json([
-                    'success' => false,
-                    'mensaje' => 'No se recibieron IDs válidos'
-                ]);
+            foreach ($ids as $id) {
+                DB::statement('CALL SP_DEPOSITAR_SOLICITUDES_ADELANTOS(?)', [$id]);
             }
 
-            $result = DB::select('CALL SP_DEPOSITAR_SOLICITUDES_ADELANTOS(?)', [$ids]);
-
-            $procesados = $result[0]->procesados ?? 0;
-
-            if ($procesados == 0) {
-                return response()->json([
-                    'success' => false,
-                    'mensaje' => 'No se procesó ninguna solicitud'
-                ]);
-            }
+            DB::commit();
 
             return response()->json([
                 'success' => true,
-                'mensaje' => "Se depositaron {$procesados} solicitudes correctamente"
+                'mensaje' => 'Depósitos realizados correctamente'
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return response()->json([
                 'success' => false,
-                'mensaje' => $e->getMessage()
+                'mensaje' => 'Error al depositar',
+                'error' => $e->getMessage()
             ]);
         }
     }

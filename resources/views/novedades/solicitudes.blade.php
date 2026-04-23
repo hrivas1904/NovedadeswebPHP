@@ -52,7 +52,7 @@
 
         @if (Auth::user()->rol === 'Administrador/a')
         <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
-            <button id="btnDepositarAdelantos" class="btn btn-primary w-100">
+            <button type="button" id="btnDepositarAdelantos" class="btn btn-primary w-100">
                 <i class="fa-solid fa-file-invoice-dollar"></i> Depositar
             </button>
         </div>
@@ -83,8 +83,8 @@
                         <th>ESTADO</th>
                         <th class="text-end">
                             <div class="d-flex align-items-start justify-content-center gap-2">
-                                <span>ACCIONES</span>                                
-                                <input type="checkbox" class="form-check-input" id="checkAll">                                
+                                <span>ACCIONES</span>
+                                <input type="checkbox" class="form-check-input" id="checkAll">
                             </div>
                         </th>
                     </tr>
@@ -171,7 +171,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secundario" onclick="cerrarModalSolicitud()">Cancelar</button>
+                <button type="button" class="btn btn-secondary" onclick="cerrarModalSolicitud()">Cancelar</button>
                 <button type="submit" class="btn btn-primary" form="formCargaSolicitud" id="btnRegistrarNovedad">
                     <i class="fa-solid fa-floppy-disk me-1"></i>
                     Registrar solicitud

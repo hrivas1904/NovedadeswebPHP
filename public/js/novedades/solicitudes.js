@@ -12,52 +12,21 @@ flatpickr("#fechaDesde, #fechaHasta", {
 });
 
 //CHECK BOX PARA DEPOSITAR
-// check individual
-$(document).on("change", ".check-row", function () {
-    const id = parseInt($(this).attr("data-id"));
-
-    if (!isNaN(id)) {
-        if ($(this).is(":checked")) {
-            seleccionados.add(id);
-        } else {
-            seleccionados.delete(id);
-        }
-    }
-
-    actualizarCheckAll();
-});
-
-// check all
 $(document).on("change", "#checkAll", function () {
     const isChecked = $(this).is(":checked");
-
-    $("#tb_solicitudes .check-row").each(function () {
-        const id = parseInt($(this).attr("data-id"));
-
-        if (!isNaN(id)) {
-            if (isChecked) {
-                seleccionados.add(id);
-            } else {
-                seleccionados.delete(id);
-            }
-        }
-
-        $(this).prop("checked", isChecked);
-    });
+    $(".check-row").prop("checked", isChecked);
 });
 
-// evitar conflicto con click en fila
+$(document).on("change", ".check-row", function () {
+    const total = $(".check-row").length;
+    const checked = $(".check-row:checked").length;
+
+    $("#checkAll").prop("checked", total === checked);
+});
+
 $(document).on("click", ".check-row", function (event) {
     event.stopPropagation();
 });
-
-// sincroniza checkAll
-function actualizarCheckAll() {
-    const total = $("#tb_solicitudes .check-row").length;
-    const checked = $("#tb_solicitudes .check-row:checked").length;
-
-    $("#checkAll").prop("checked", total > 0 && total === checked);
-}
 
 $("#inputMonto").on("input", function () {
     let valor = parseFloat($(this).val());
@@ -275,19 +244,30 @@ $("#formCargaSolicitud").on("submit", function (e) {
             if (resp.ok) {
                 Swal.fire({
                     icon: "success",
-                    title: "Solicitud registrada",
+                    title: "Operación exitosa",
                     text: resp.mensaje,
+                    confirmButtonColor: "#00b18d",
                 });
 
                 cerrarModalSolicitud();
                 $("#formCargaSolicitud")[0].reset();
                 tablaSolicitudes.ajax.reload(null, false);
             } else {
-                Swal.fire("Error", resp.mensaje, "error");
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: resp.mensaje,
+                    confirmButtonColor: "#00b18d",
+                });
             }
         },
         error: function () {
-            Swal.fire("Error", "Error servidor", "error");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Error del servidor",
+                confirmButtonColor: "#00b18d",
+            });
         },
     });
 });
@@ -318,15 +298,30 @@ function aprobarSolicitud(idSolicitud, nombre, e) {
                 },
                 success: function (resp) {
                     if (resp.ok) {
-                        Swal.fire("Aprobado", resp.mensaje, "success");
+                        Swal.fire({
+                            title: "Operación exitosa",
+                            text: resp.mensaje,
+                            icon: "success",
+                            confirmButtonColor: "#00b18d",
+                        });
                         tablaSolicitudes.ajax.reload(null, false);
                     } else {
-                        Swal.fire("Error", resp.mensaje, "error");
+                        Swal.fire({
+                            title: "Error",
+                            text: resp.mensaje,
+                            icon: "error",
+                            confirmButtonColor: "#00b18d",
+                        });
                     }
                 },
                 error: function (xhr) {
                     console.log(xhr.responseText);
-                    Swal.fire("Error", "Error servidor", "error");
+                    Swal.fire({
+                        title: "Error",
+                        text: "Error del servidor",
+                        icon: "error",
+                        confirmButtonColor: "#00b18d",
+                    });
                 },
             });
         }
@@ -343,15 +338,30 @@ function aprobarSolicitud(idSolicitud, nombre, e) {
                 },
                 success: function (resp) {
                     if (resp.ok) {
-                        Swal.fire("Rechazada", resp.mensaje, "success");
+                        Swal.fire({
+                            title: "Solicitud rechazada",
+                            text: resp.mensaje,
+                            icon: "success",
+                            confirmButtonColor: "#00b18d",
+                        });
                         tablaSolicitudes.ajax.reload(null, false);
                     } else {
-                        Swal.fire("Error", resp.mensaje, "error");
+                        Swal.fire({
+                            title: "Error",
+                            text: resp.mensaje,
+                            icon: "error",
+                            confirmButtonColor: "#00b18d",
+                        });
                     }
                 },
                 error: function (xhr) {
                     console.log(xhr.responseText);
-                    Swal.fire("Error", "Error servidor", "error");
+                    Swal.fire({
+                        title: "Error",
+                        text: "Error del servidor",
+                        icon: "error",
+                        confirmButtonColor: "#00b18d",
+                    });
                 },
             });
         }
@@ -386,15 +396,30 @@ function anularSolicitud(idSolicitud, nombre, e) {
             },
             success: function (resp) {
                 if (resp.ok) {
-                    Swal.fire("Listo", resp.mensaje, "success");
+                    Swal.fire({
+                        title: "Solicitud anulada",
+                        text: resp.mensaje,
+                        icon: "success",
+                        confirmButtonColor: "#00b18d",
+                    });
                     tablaSolicitudes.ajax.reload(null, false);
                 } else {
-                    Swal.fire("Error", resp.mensaje, "error");
+                    Swal.fire({
+                        title: "Error",
+                        text: resp.mensaje,
+                        icon: "error",
+                        confirmButtonColor: "#00b18d",
+                    });
                 }
             },
             error: function (xhr) {
                 console.log(xhr.responseText);
-                Swal.fire("Error", "Error servidor", "error");
+                Swal.fire({
+                    title: "Error",
+                    text: "Error del servidor",
+                    icon: "error",
+                    confirmButtonColor: "#00b18d",
+                });
             },
         });
     });
@@ -547,7 +572,7 @@ $(document).ready(function () {
                 },
                 {
                     data: null,
-                    className: "text-start",
+                    className: "text-center",
                     width: "3%",
                     orderable: false,
                     render: function (row) {
@@ -636,18 +661,6 @@ $(document).ready(function () {
                 },
             ],
         });
-
-        tablaSolicitudes.on("draw", function () {
-            $("#tb_solicitudes .check-row").each(function () {
-                const id = parseInt($(this).attr("data-id"));
-
-                if (seleccionados.has(id)) {
-                    $(this).prop("checked", true);
-                }
-            });
-
-            actualizarCheckAll();
-        });
     }
 
     $("#selectEstado").on("change", function () {
@@ -683,10 +696,12 @@ $("#btnLimpiarFiltros").on("click", function (e) {
     tablaSolicitudes.ajax.reload(null, false);
 });
 
-$("#btnDepositarAdelantos").on("click", function () {
-    let ids = Array.from(seleccionados);
-
-    console.log("IDS A ENVIAR:", ids);
+$(document).on("click", "#btnDepositarAdelantos", function (event) {
+    event.preventDefault();
+    let ids = [];
+    $(".check-row:checked").each(function () {
+        ids.push($(this).data("id"));
+    });
 
     if (ids.length === 0) {
         Swal.fire("Atención", "Seleccioná al menos una solicitud", "warning");
@@ -694,40 +709,53 @@ $("#btnDepositarAdelantos").on("click", function () {
     }
 
     Swal.fire({
-        title: "¿Depositar adelantos?",
-        text: `Se procesarán ${ids.length} solicitudes`,
+        title: "¿Confirmar depósito?",
+        text: `Se depositarán ${ids.length} solicitud(es)`,
         icon: "question",
         showCancelButton: true,
         confirmButtonText: "Sí, depositar",
-        confirmButtonColor: "#00b18d",
         cancelButtonText: "Cancelar",
+        confirmButtonColor: "#00b18d",
+        cancelButtonColor: "#004a7c"
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
                 url: "/personal/depositarAdelantos",
                 type: "POST",
                 data: {
-                    ids: ids.join(","),
+                    ids: ids,
                 },
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content"
+                        "content",
                     ),
                 },
                 success: function (res) {
                     if (res.success) {
-                        Swal.fire("OK", res.mensaje, "success");
-
-                        // limpiar selección
-                        seleccionados.clear();
-
+                        Swal.fire({
+                            icon: "success",
+                            title: "Operación exitosa",
+                            text: res.mensaje,
+                            confirmButtonColor: "#00b18d",
+                        });
+                        $("#checkAll").prop("checked", false);
                         tablaSolicitudes.ajax.reload(null, false);
                     } else {
-                        Swal.fire("Error", res.mensaje, "error");
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: res.mensaje,
+                            confirmButtonColor: "#00b18d",
+                        });
                     }
                 },
                 error: function () {
-                    Swal.fire("Error", "Ocurrió un problema", "error");
+                    Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Error del servidor",
+                            confirmButtonColor: "#00b18d",
+                        });
                 },
             });
         }
