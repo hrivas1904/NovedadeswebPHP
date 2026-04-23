@@ -5,6 +5,13 @@
     gap: 8px;
 }
 
+.calendar-grid-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+}
+
 /* DÍAS SEMANA */
 .calendar-weekday {
     background: var(--border-color);
@@ -169,6 +176,12 @@
 /* HOVER */
 .event-item:hover {
     filter: brightness(0.95);
+}
+
+.calendar-scroll {
+    max-height: 72vh; /* ajustable */
+    overflow-y: auto;
+    padding-right: 5px;
 }
 
 /* ANIMACIÓN */

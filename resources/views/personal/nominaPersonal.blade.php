@@ -5,17 +5,26 @@
 @section('content')
     <div class="container-fluid">
 
-        <div class="text-start mb-2">
-            <h3 class="pill-heading tituloVista">GESTIÓN DEL PERSONAL ACTIVO</h3>
+        <div class="d-flex align-items-start gap-3 my-3">
+            <div class="icon-box">
+                <i class="fa-solid fa-user-group"></i>
+            </div>
+            <div>
+                <h3 class="tituloVista mb-0">GESTIÓN DEL PERSONAL ACTIVO</h3>
+                <p class="mb-0 text-muted">Administración de Colaboradores Activos.</p>
+            </div>
         </div>
 
         <div class="row d-flex justify-content-start align-items-start">
             <div class="col-2 d-none d-xl-block">
                 <div class="card" style="border-radius:15px;">
                     <div class="card-header">
-                        <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
-                            Filtros
-                        </h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
+                                Filtros
+                            </h5>
+                            <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
+                        </div>
                     </div>
                     <div class="card-body d-flex flex-column gap-3">
                         @if (Auth::user()->rol === 'Administrador/a' || Auth::user()->rol === 'Colaborador/a L2')
@@ -962,108 +971,108 @@
                         </div>
 
                         <!--<div class="empleado-box p-3">
-                                                <div class="row g-3">
+                                                        <div class="row g-3">
 
-                                                    <div class="col-lg-3">
-                                                        <label for="" class="form-label">Novedad</label>
-                                                        <select id="selectNovedad" name="idNovedad" class="form-select selectjs" required>
-                                                            <option value="">Seleccionar novedad</option>
-                                                        </select>
-                                                    </div>
+                                                            <div class="col-lg-3">
+                                                                <label for="" class="form-label">Novedad</label>
+                                                                <select id="selectNovedad" name="idNovedad" class="form-select selectjs" required>
+                                                                    <option value="">Seleccionar novedad</option>
+                                                                </select>
+                                                            </div>
 
-                                                    <div class="col-lg-2">
-                                                        <label class="form-label">Código Novedad</label>
-                                                        <input type="text" class="form-control" id="codigoFinnegans" readonly>
-                                                    </div>
+                                                            <div class="col-lg-2">
+                                                                <label class="form-label">Código Novedad</label>
+                                                                <input type="text" class="form-control" id="codigoFinnegans" readonly>
+                                                            </div>
 
-                                                    <input type="hidden" id="idNovedad" name="idNovedad" required readonly>
+                                                            <input type="hidden" id="idNovedad" name="idNovedad" required readonly>
 
-                                                    
+                                                            
 
-                                                    <div class="col-lg-2">
-                                                        <label class="form-label">Fecha desde</label>
-                                                        <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad"
-                                                            required>
-                                                    </div>
+                                                            <div class="col-lg-2">
+                                                                <label class="form-label">Fecha desde</label>
+                                                                <input type="date" class="form-control" name="fechaDesde" id="fechaDesdeNovedad"
+                                                                    required>
+                                                            </div>
 
-                                                    <div class="col-lg-2">
-                                                        <label class="form-label">Fecha hasta</label>
-                                                        <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad"
-                                                            required>
-                                                    </div>
+                                                            <div class="col-lg-2">
+                                                                <label class="form-label">Fecha hasta</label>
+                                                                <input type="date" class="form-control" name="fechaHasta" id="fechaHastaNovedad"
+                                                                    required>
+                                                            </div>
 
-                                                    <div class="col-lg-1" id="divPeriodoDias" hidden>
-                                                        <label class="form-label">Período (días)</label>
-                                                        <input id="inputDias" name="duracionDias" type="text" class="form-control">
-                                                    </div>
+                                                            <div class="col-lg-1" id="divPeriodoDias" hidden>
+                                                                <label class="form-label">Período (días)</label>
+                                                                <input id="inputDias" name="duracionDias" type="text" class="form-control">
+                                                            </div>
 
-                                                    <div class="col-lg-1" id="divCantidadHoras" hidden>
-                                                        <label class="form-label">Horas</label>
-                                                        <input id="inputHoras" name="horas" type="text" class="form-control">
-                                                    </div>
+                                                            <div class="col-lg-1" id="divCantidadHoras" hidden>
+                                                                <label class="form-label">Horas</label>
+                                                                <input id="inputHoras" name="horas" type="text" class="form-control">
+                                                            </div>
 
-                                                    <div class="col-lg-1" id="divCantidadPesos" hidden>
-                                                        <label class="form-label">Importe</label>
-                                                        <input id="inputImporte" type="text" class="form-control text-end">
-                                                    </div>
+                                                            <div class="col-lg-1" id="divCantidadPesos" hidden>
+                                                                <label class="form-label">Importe</label>
+                                                                <input id="inputImporte" type="text" class="form-control text-end">
+                                                            </div>
 
-                                                    <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>
+                                                            <input type="hidden" name="cantidadFinal" id="cantidadFinal" required>
 
-                                                    <div class="col-lg-2 d-none" id="divSelectTipoVacaciones">
-                                                        <label class="form-label">Tipo de vacaciones</label>
-                                                        <select id="selectTipoVacaciones" name="tipoVacaciones" class="form-control"
-                                                            {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
-                                                            <option value="">Seleccione tipo de vacaciones</option>
-                                                            <option value="2">Gozadas</option>
-                                                            <option value="3" selected
-                                                                {{ Auth::user()->rol !== 'Administrador/a' ? 'selected' : '' }}>
-                                                                Gozadas pagadas
-                                                            </option>
-                                                            <option value="4">Pagadas</option>
-                                                            <option value="5">Vencidas</option>
-                                                        </select>
-                                                    </div>
+                                                            <div class="col-lg-2 d-none" id="divSelectTipoVacaciones">
+                                                                <label class="form-label">Tipo de vacaciones</label>
+                                                                <select id="selectTipoVacaciones" name="tipoVacaciones" class="form-control"
+                                                                    {{ Auth::user()->rol !== 'Administrador/a' ? 'disabled' : '' }}>
+                                                                    <option value="">Seleccione tipo de vacaciones</option>
+                                                                    <option value="2">Gozadas</option>
+                                                                    <option value="3" selected
+                                                                        {{ Auth::user()->rol !== 'Administrador/a' ? 'selected' : '' }}>
+                                                                        Gozadas pagadas
+                                                                    </option>
+                                                                    <option value="4">Pagadas</option>
+                                                                    <option value="5">Vencidas</option>
+                                                                </select>
+                                                            </div>
 
-                                                    <div class="col-lg-1 d-none" id="divSelectAnnioVacaciones">
-                                                        <label class="form-label">Año</label>
-                                                        <input type="number" class="form-control" name="annio">
-                                                    </div>
+                                                            <div class="col-lg-1 d-none" id="divSelectAnnioVacaciones">
+                                                                <label class="form-label">Año</label>
+                                                                <input type="number" class="form-control" name="annio">
+                                                            </div>
 
-                                                    <div class="col-lg-1 d-none" id="divNumeroAtencion">
-                                                        <label class="form-label">N° de atención</label>
-                                                        <input type="number" class="form-control" id="numAtencion" name="numAtencion">
-                                                    </div>
+                                                            <div class="col-lg-1 d-none" id="divNumeroAtencion">
+                                                                <label class="form-label">N° de atención</label>
+                                                                <input type="number" class="form-control" id="numAtencion" name="numAtencion">
+                                                            </div>
 
-                                                    <div class="col-lg-2 d-none" id="divIngresarPacienteAtencion">
-                                                        <label class="form-label">Paciente</label>
-                                                        <input type="text" class="form-control" id="paciente"
-                                                            name="pacienteAtencion">
-                                                    </div>
+                                                            <div class="col-lg-2 d-none" id="divIngresarPacienteAtencion">
+                                                                <label class="form-label">Paciente</label>
+                                                                <input type="text" class="form-control" id="paciente"
+                                                                    name="pacienteAtencion">
+                                                            </div>
 
-                                                    <div class="col-lg-4 d-none" id="divConceptoAtencion">
-                                                        <label class="form-label">Concepto</label>
-                                                        <input type="text" class="form-control" id="conceptoAtencion"
-                                                            name="conceptoAtencion">
-                                                    </div>
+                                                            <div class="col-lg-4 d-none" id="divConceptoAtencion">
+                                                                <label class="form-label">Concepto</label>
+                                                                <input type="text" class="form-control" id="conceptoAtencion"
+                                                                    name="conceptoAtencion">
+                                                            </div>
 
-                                                    <div class="col-lg-1 d-none" id="divCantidadCuotas">
-                                                        <label class="form-label">Cuotas</label>
-                                                        <input type="number" class="form-control" id="cantidadCuotas"
-                                                            name="cantidadCuotas">
-                                                    </div>
+                                                            <div class="col-lg-1 d-none" id="divCantidadCuotas">
+                                                                <label class="form-label">Cuotas</label>
+                                                                <input type="number" class="form-control" id="cantidadCuotas"
+                                                                    name="cantidadCuotas">
+                                                            </div>
 
-                                                    <div class="col-lg-4 d-none">
-                                                        <label class="form-label">Comprobante</label>
-                                                        <input type="file" class="form-control">
-                                                    </div>
+                                                            <div class="col-lg-4 d-none">
+                                                                <label class="form-label">Comprobante</label>
+                                                                <input type="file" class="form-control">
+                                                            </div>
 
-                                                    <div class="col-lg-4">
-                                                        <label class="form-label">Descripción/Observaciones</label>
-                                                        <input type="text" class="form-control" name="descripcion"
-                                                            placeholder="Descripción de la novedad (opcional)">
-                                                    </div>
-                                                </div>
-                                            </div>-->
+                                                            <div class="col-lg-4">
+                                                                <label class="form-label">Descripción/Observaciones</label>
+                                                                <input type="text" class="form-control" name="descripcion"
+                                                                    placeholder="Descripción de la novedad (opcional)">
+                                                            </div>
+                                                        </div>
+                                                    </div>-->
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -1185,16 +1194,18 @@
 
                 <div class="modal-body">
                     <form id="formBajaColaborador">
-                        @csrf 
+                        @csrf
                         <div class="row g-3">
                             <div class="col-12 col-md-3 col-xl-3">
                                 <label class="form-label fw-bold">FECHA DE BAJA</label>
-                                <input type="text" class="form-control" name="fechaBajaColab" id="fechaBajaColab" required>
+                                <input type="text" class="form-control" name="fechaBajaColab" id="fechaBajaColab"
+                                    required>
                                 <input type="hidden" id="inputLegajoBaja">
                             </div>
                             <div class="col-12 col-md-9 col-xl-9">
                                 <label class="form-label fw-bold">MOTIVO DE BAJA</label>
-                                <select id="selectMotivoBajaColab" name="selectMotivoBajaColab" class="form-select" required>
+                                <select id="selectMotivoBajaColab" name="selectMotivoBajaColab" class="form-select"
+                                    required>
                                     <option value="" selected disabled>
                                         Seleccione motivo de baja
                                     </option>
@@ -1216,11 +1227,14 @@
                                     <option value="Vencimiento del periodo de prueba">
                                         Vencimiento del periodo de prueba
                                     </option>
-                                    <option value="Incapacidad o inhabilidad del trabajador: Jubilación o incapacidad permanente">
+                                    <option
+                                        value="Incapacidad o inhabilidad del trabajador: Jubilación o incapacidad permanente">
                                         Incapacidad o inhabilidad del trabajador: Jubilación o incapacidad permanente
                                     </option>
-                                    <option value="Fuerza mayor o falta de trabajo: Causas imprevisibles o económicas graves de la empresa">
-                                        Fuerza mayor o falta de trabajo: Causas imprevisibles o económicas graves de la empresa
+                                    <option
+                                        value="Fuerza mayor o falta de trabajo: Causas imprevisibles o económicas graves de la empresa">
+                                        Fuerza mayor o falta de trabajo: Causas imprevisibles o económicas graves de la
+                                        empresa
                                     </option>
                                     <option value="Muerte">
                                         Muerte
@@ -1237,7 +1251,8 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="cerrarModalBaja()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" form="formBajaColaborador" id="btnBajaColaborador">
+                    <button type="submit" class="btn btn-primary" form="formBajaColaborador"
+                        id="btnBajaColaborador">
                         <i class="fa-solid fa-floppy-disk me-1"></i>
                         Dar de baja
                     </button>

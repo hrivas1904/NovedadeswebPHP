@@ -522,7 +522,7 @@ function generarCalendario(fecha) {
 
     diasSemana.forEach((dia) => {
         $("#calendarGrid").append(`
-        <div class="calendar-weekday">${dia}</div>
+        <div class="calendar-weekday calendar-grid-header">${dia}</div>
     `);
     });
 

@@ -4,18 +4,18 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="mb-3">
-
-            <div class="d-flex align-items-center gap-2">
-                <h3 class="pill-heading tituloVista mb-0">
-                    REGISTRO HISTÓRICO DE NOVEDADES MENSUALES
-                </h3>
-
-                <i class="fa-solid fa-circle-info text-primary" style="cursor: pointer;" data-bs-toggle="tooltip"
-                    data-bs-placement="right" title="En esta sección se encuentran las novedades que ya fueron liquidadas.">
-                </i>
+        <div class="text-start mb-2">
+            <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-folder-closed"></i>
+                    </div>
+                    <div>
+                        <h3 class="tituloVista mb-0">REGISTRO HISTÓRICO DE NOVEDADES MENSUALES</h3>
+                        <p class="mb-0 text-muted">Registro de novedades ya liquidadas.</p>
+                    </div>
+                </div>
             </div>
-
         </div>
 
         <div class="card" style="border-radius:15px;">

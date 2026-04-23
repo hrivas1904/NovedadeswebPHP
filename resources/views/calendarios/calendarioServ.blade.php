@@ -5,40 +5,43 @@
 @section('content')
 
     <div class="container-fluid">
+        <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
+            <div class="d-flex align-items-start gap-3">
+                <div class="icon-box">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <div>
+                    <h3 class="tituloVista mb-0">CALENDARIO DE RECEPCIÓN</h3>
+                    <p class="mb-0 text-muted">Administración de turnos y asignaciones del personal.</p>
+                </div>
+            </div>
 
-        <div class="d-flex justify-content-between ms-auto align-item-end gap-3 mt-2 mb-0">
-            <h3 class="pill-heading tituloVista">CALENDARIO DE SERVICIOS
-            </h3>
+            <button class="btn btn-secondary rounded-pill" data-bs-toggle="collapse" data-bs-target="#refs" title="Referencias">
+                <i class="fa-solid fa-circle-info"></i>
+            </button>
         </div>
 
-        <div class="empleado-box p-2 mb-2">
-            <div class="d-flex flex-column gap-2">
+        <div id="refs" class="collapse mb-3">
+            <div class="empleado-box p-2">
 
-                <!-- Título -->
-                <h6 class="mb-1">Referencias:</h6>
+                <div class="d-flex flex-column gap-2">
 
-                <!-- Turnos -->
-                <div class="d-flex flex-wrap gap-3">
-                    <span><strong>TM:</strong> Turno Mañana</span>
-                    <span><strong>TR:</strong> Turno Refuerzo</span>
-                    <span><strong>TT:</strong> Turno Tarde</span>
-                    <span><strong>TN:</strong> Turno Noche</span>
-                    <span><strong>AR:</strong> Adicional Recepción</span>
-                    <span><strong>C:</strong> Caja</span>
-                </div>
+                    <small class="text-muted">
+                        <strong>Turnos:</strong>
+                        TM (Mañana) · TR (Refuerzo) · TT (Tarde) · TN (Noche) · AR · C
+                    </small>
 
-                <!-- Horarios -->
-                <div class="d-flex flex-wrap gap-3">
-                    <span><strong>TM:</strong> 06–14 HS</span>
-                    <span><strong>TR:</strong> 10–22 HS</span>
-                    <span><strong>TT:</strong> 14–22 HS</span>
-                    <span><strong>TN:</strong> 22–06 HS</span>
+                    <small class="text-muted">
+                        <strong>Horarios:</strong>
+                        TM 06–14 · TR 10–22 · TT 14–22 · TN 22–06
+                    </small>
+
                 </div>
 
             </div>
         </div>
 
-        <div class="empleado-box p-2">
+        <div class="card p-2">
             <div class="row align-items-center g-3">
                 <div class="col-lg-5">
                     <div class="calendar-header d-flex justify-content-between align-items-center p-2 rounded">
@@ -75,7 +78,9 @@
                     </div>
                 </div>
             </div>
-            <div id="calendarGrid" class="calendar-grid m-1">
+            <div class="calendar-scroll">
+                <div id="calendarGrid" class="calendar-grid m-1">
+                </div>
             </div>
         </div>
     </div>

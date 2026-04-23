@@ -353,15 +353,36 @@ $(document).on("submit", "#formBajaColaborador", function (e) {
             },
             success: function (res) {
                 if (res.success) {
-                    Swal.fire("OK", res.mensaje, "success");
+                    Swal.fire({
+                        title: "Operación exitosa",
+                        text: res.mensaje,
+                        icon: "success",
+                        customClass: {
+                            confirmButton: "btn btn-primary",
+                        },
+                    });
                     $("#modalDarBajaColaborador").modal("hide");
                     tablaPersonal.ajax.reload(null, false);
                 } else {
-                    Swal.fire("Atención", res.mensaje, "warning");
+                    Swal.fire({
+                        title: "Atención",
+                        text: res.mensaje,
+                        icon: "warning",
+                        customClass: {
+                            confirmButton: "btn btn-primary",
+                        },
+                    });
                 }
             },
             error: function () {
-                Swal.fire("Error", "No se pudo dar de baja", "error");
+                Swal.fire({
+                    title: "Error",
+                    text: "No se pudo dar de baja",
+                    icon: "error",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                    },
+                });
             },
         });
     });

@@ -129,6 +129,9 @@ $(document).on("submit", "#formNuevaNovedad", function (e) {
                 icon: icono,
                 title: titulo,
                 text: resp.mensaje,
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
             });
 
             if (resp.ok) {
@@ -143,6 +146,9 @@ $(document).on("submit", "#formNuevaNovedad", function (e) {
                 icon: "error",
                 title: "Error",
                 text: xhr.responseJSON?.error || "Error inesperado",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
             });
         },
     });
@@ -161,11 +167,13 @@ $(document).on("submit", "#formEditNovedades", function (e) {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (resp) {
-
             Swal.fire({
                 icon: resp.ok ? "success" : "warning",
                 title: resp.ok ? "Actualizado" : "Atención",
                 text: resp.mensaje,
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
             }).then(() => {
                 if (resp.ok) {
                     cerrarModalNovedadEdit();
@@ -174,14 +182,16 @@ $(document).on("submit", "#formEditNovedades", function (e) {
             });
         },
         error: function (xhr) {
-
             console.error("ERROR:", xhr.responseJSON);
 
             Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: xhr.responseJSON?.error || "Error inesperado",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
             });
-        }
+        },
     });
 });
