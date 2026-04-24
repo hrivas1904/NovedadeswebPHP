@@ -130,10 +130,9 @@ Route::post('/actualizarMiLegajo', [PersonalController::class, 'actualizarMiLega
 
 Route::post('/personal/{legajo}/actualizar', [PersonalController::class, 'actualizarLegajoColaborador']);
 
-Route::get(
-    '/novedades/historial/{legajo}',
-    [PersonalController::class, 'historialNovedades']
-);
+Route::get('/novedades/historial/{legajo}',[PersonalController::class, 'historialNovedades']);
+
+Route::get('/novedades/historial/{legajo}',[PersonalController::class, 'historialNovedades']);
 
 Route::get('/servicios-empleados/por-area/{id}', [PersonalController::class, 'listarServiciosxArea'])
     ->name('personal.servicios');
@@ -164,6 +163,9 @@ Route::get('/obra-social/{id}', [PersonalController::class, 'verObraSocial'])
 
 Route::post('/obra-social/editar', [PersonalController::class, 'editarObraSocial'])
     ->name('obraSocial.editar');
+
+Route::get('/personal/cuentasBancarias', [PersonalController::class, 'listarCuentasBancarias'])
+    ->name('personal.cuentasBancarias');
 
 //RUTAS DE SP NOVEDADES
 

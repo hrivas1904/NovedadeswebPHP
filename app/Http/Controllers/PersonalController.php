@@ -307,6 +307,25 @@ class PersonalController extends Controller
         }
     }
 
+    public function listarCuentasBancarias(Request $request)
+    {
+        try {
+            $legajo = $request->legajo;
+
+            $cuentas = DB::select('CALL SP_LISTAR_CUENTAS_BANCARIAS(?)', [$legajo]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $cuentas
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
     public function listarCargaMasiva(Request $request)
     {
         try {

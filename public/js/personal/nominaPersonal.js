@@ -194,7 +194,8 @@ function verLegajo(legajoColaborador, nombre) {
         <i class="fa-solid fa-id-card me-2"></i>
         Legajo de <strong>${nombre}</strong>
     `);
-
+    
+    listarCuentasBancarias(legajoColaborador);
     cargarRequerimientosAlimentarios();
     cargarReqSeleccionados(legajoColaborador);
 
