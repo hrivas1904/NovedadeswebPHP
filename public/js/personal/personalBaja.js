@@ -180,7 +180,6 @@ $(document).ready(function () {
                 {
                     data: "MOTIVO_BAJA",
                     width: "auto",
-                    visible: false,
                 },
             ],
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mx-1' \

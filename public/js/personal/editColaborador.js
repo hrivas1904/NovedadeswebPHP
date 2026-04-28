@@ -154,16 +154,33 @@ $("#formEditColaborador").on("submit", function (e) {
                     icon: "success",
                     title: "Correcto",
                     text: resp.mensaje,
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                    },
                 });
                 $("#modalLegajoColaborador").modal("hide");
                 $("#tb_personal").DataTable().ajax.reload(null, false);
             } else {
-                Swal.fire("Atención", resp.mensaje, "warning");
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: resp.mensaje,
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                    },
+                });
             }
         },
         error: function (xhr) {
             console.error(xhr.responseText);
-            Swal.fire("Error", "No se pudo actualizar el legajo", "error");
+            Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "No se pudo actualizar el legajo",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                    },
+                });
         },
     });
 });

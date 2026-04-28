@@ -103,7 +103,15 @@
                             <!-- CONTRASEÑA -->
                             <div class="col-md-6">
                                 <label class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="password" required>
+
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" required>
+
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                        data-target="password">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- ROL -->
@@ -191,7 +199,12 @@
                             <!-- PASSWORD -->
                             <div class="col-md-6">
                                 <label class="form-label">Nueva contraseña</label>
-                                <input type="password" class="form-control" id="edit_password">
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="edit_password">
+                                    <button class="btn btn-primary" type="button" id="togglePassword">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- ROL -->

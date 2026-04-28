@@ -11,6 +11,34 @@ flatpickr("#fechaDesde, #fechaHasta", {
     },
 });
 
+$("#toggleEstado").on("click", function () {
+    $("#listaEstados").toggleClass("d-none");
+});
+
+$("#toggleDepositado").on("click", function () {
+    $("#listaSolicitudes").toggleClass("d-none");
+});
+
+function getEstadosSeleccionados() {
+    let estados = [];
+    $(".check-estado:checked").each(function () {
+        estados.push($(this).val());
+    });
+    return estados;
+}
+
+function getDepositoSeleccionado() {
+    return $("input[name='filtroDeposito']:checked").val() || null;
+}
+
+$(document).on("change", "input[name='filtroDeposito']", function () {
+    tablaSolicitudes.ajax.reload();
+});
+
+$(document).on("change", ".check-estado", function () {
+    tablaSolicitudes.ajax.reload();
+});
+
 //CHECK BOX PARA DEPOSITAR
 $(document).on("change", "#checkAll", function () {
     const isChecked = $(this).is(":checked");
@@ -148,7 +176,7 @@ function numeroALetras(num) {
 }
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "58vh";
+    return window.innerWidth < 768 ? "28vh" : "56vh";
 }
 
 function formatearPesos(valor) {
@@ -433,11 +461,8 @@ $(document).ready(function () {
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
-                    d.estado = $("#selectEstado").val() || null;
-                    d.depositado =
-                        $("#selectDepositado").val() !== ""
-                            ? $("#selectDepositado").val()
-                            : null;
+                    d.estado = getEstadosSeleccionados().join(",") || null;
+                    d.depositado = getDepositoSeleccionado();
                     d.fechaDesde = $("#fechaDesde").val() || null;
                     d.fechaHasta = $("#fechaHasta").val() || null;
                 },

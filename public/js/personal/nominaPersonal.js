@@ -238,9 +238,7 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#inputMatricula").val(d.MAT_PROF);
 
                 $("#inputTipoContrato").val(d.TIPO_CONTRATO);
-                $("#inputFechaIngreso").val(
-                    formatearFechaArgentina(d.FECHA_INGRESO),
-                );
+                $("#inputFechaIngreso").val(d.FECHA_INGRESO);
                 $("#inputFechaFinPrueba").val(
                     formatearFechaArgentina(d.FECHA_FIN_PRUEBA),
                 );
@@ -495,6 +493,72 @@ $(document).ready(function () {
                     visible: false,
                 },
                 {
+                    data: "CUIL",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "DOMICILIO",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "LOCALIDAD",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "ESTADO_CIVIL",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "GENERO",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "FECHA_NAC",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "OBRA_SOCIAL",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "TITULO",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "CORREO",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "TELEFONO",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
+                    data: "CONVENIO",
+                    width: "10%",
+                    className: "text-start",
+                    visible: false,
+                },
+                {
                     data: null,
                     className: "text-center acciones-nowrap",
                     width: "10%",
@@ -552,11 +616,21 @@ $(document).ready(function () {
                     extend: "excelHtml5",
                     text: '<i class="fa-solid fa-file-excel"></i> Excel',
                     className: "btn-export-excel dt-buttons",
+                    exportOptions: {
+                        columns: function (idx, data, node) {
+                            return true;
+                        }
+                    }
                 },
                 {
                     extend: "pdfHtml5",
                     text: '<i class="fa-solid fa-file-pdf"></i> PDF',
                     className: "btn-export-pdf dt-buttons",
+                    exportOptions: {
+                        columns: function (idx, data, node) {
+                            return true;
+                        }
+                    }
                 },
                 {
                     extend: "print",
@@ -564,6 +638,11 @@ $(document).ready(function () {
                     title: "Nómina de personal dt-buttons",
                     exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
                     className: "btn-printer",
+                    exportOptions: {
+                    columns: function (idx, data, node) {
+                        return true; 
+                    }
+                }
                 },
             ],
         });

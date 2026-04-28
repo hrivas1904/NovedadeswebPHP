@@ -94,6 +94,16 @@
                                         <th>ESTADO</th>
                                         <th>UTI</th>
                                         <th>NOCHE</th>
+                                        <th>CUIL</th>
+                                        <th>DOMICILIO</th>
+                                        <th>LOCALIDAD</th>
+                                        <th>ESTADO CIVIL</th>
+                                        <th>GENERO</th>
+                                        <th>FECHA NAC</th>
+                                        <th>OBRA SOCIAL</th>
+                                        <th>TITULO</th>
+                                        <th>CORREO</th>
+                                        <th>TELEFONO</th>
                                         <th>ACCIONES</th>
                                     </tr>
                                 </thead>
@@ -483,11 +493,11 @@
                                     <div class="row g-3">
                                         <div class="col-lg-3">
                                             <label class="form-label">Legajo</label>
-                                            <input type="text" id="inputLegajo" class="form-control" readonly>
+                                            <input type="text" id="inputLegajo" name="legajo" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-7">
                                             <label class="form-label">Apellido y Nombre</label>
-                                            <input type="text" id="inputNombre" class="form-control" readonly>
+                                            <input type="text" id="inputNombre" name="colaborador" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Estado</label>
@@ -495,16 +505,15 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">DNI</label>
-                                            <input type="text" id="inputDni" class="form-control" readonly>
+                                            <input type="text" id="inputDni" name="dni" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">CUIL</label>
-                                            <input type="text" id="inputCuil" class="form-control" readonly>
+                                            <input type="text" id="inputCuil" name="cuil" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Fecha nacimiento</label>
-                                            <input type="text" id="inputFechaNacimiento" class="form-control"
-                                                readonly>
+                                            <input type="text" id="inputFechaNacimiento" class="form-control" readonly>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Edad</label>
@@ -522,20 +531,19 @@
                                     <div class="row g-3">
                                         <div class="col-lg-7">
                                             <label class="form-label">Correo electrónico</label>
-                                            <input id="inputEmail" name="correo" class="form-control">
+                                            <input id="inputEmail" name="correo" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="inputTelefono" name="telefono" class="form-control">
+                                            <input id="inputTelefono" name="telefono" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-7">
                                             <label class="form-label">Domicilio</label>
-                                            <input id="inputDomicilio" name="domicilio" class="form-control">
+                                            <input id="inputDomicilio" name="domicilio" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-5">
                                             <label class="form-label">Localidad</label>
-                                            <select id="selectLocalidadEdit" name="localidad" class="form-select"
-                                                style="width:100%" required>
+                                            <select id="selectLocalidadEdit" name="localidad" class="form-select editAllowed" style="width:100%">
                                                 <option value="">Seleccionar localidad</option>
                                             </select>
                                         </div>
@@ -595,29 +603,29 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia1Edit" name="personaEmerg1" class="form-control">
+                                            <input id="personaEmergencia1Edit" name="personaEmerg1" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia1Edit" name="telefEmerg1" class="form-control">
+                                            <input id="contactoEmergencia1Edit" name="telefEmerg1" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
                                             <input id="parentescoEmergencia1Edit" name="parentesco1"
-                                                class="form-control">
+                                                class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Nombre</label>
-                                            <input id="personaEmergencia2Edit" name="personaEmerg2" class="form-control">
+                                            <input id="personaEmergencia2Edit" name="personaEmerg2" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Teléfono</label>
-                                            <input id="contactoEmergencia2Edit" name="telefEmerg2" class="form-control">
+                                            <input id="contactoEmergencia2Edit" name="telefEmerg2" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Parentesco</label>
                                             <input id="parentescoEmergencia2Edit" name="parentesco2"
-                                                class="form-control">
+                                                class="form-control editAllowed">
                                         </div>
                                     </div>
                                 </div>
@@ -668,7 +676,7 @@
 
                                         <div class="col-12 col-md-6 col-lg-3">
                                             <label class="form-label">Estado civil</label>
-                                            <select id="inputEstadoCivil" name="estado_civil" class="form-select">
+                                            <select id="inputEstadoCivil" name="estado_civil" class="form-select editAllowed">
                                                 <option value="SOLTERO/A">SOLTERO/A</option>
                                                 <option value="CASADO/A">CASADO/A</option>
                                                 <option value="DIVORCIADO/A">DIVORCIADO/A</option>
@@ -679,7 +687,7 @@
 
                                         <div class="col-12 col-md-6 col-lg-3">
                                             <label class="form-label">Género</label>
-                                            <select name="genero" id="inputGenero" class="form-select">
+                                            <select name="genero" id="inputGenero" class="form-select editAllowed">
                                                 <option value="MASCULINO">MASCULINO</option>
                                                 <option value="FEMENINO">FEMENINO</option>
                                                 <option value="NO BINARIO">NO BINARIO</option>
@@ -690,7 +698,7 @@
                                             <label class="form-label">Obra social</label>
                                             <div class="input-group flex-nowrap">
                                                 <select id="selectObraSocialEdit" name="obra_social_id"
-                                                    class="form-select">
+                                                    class="form-select editAllowed">
                                                 </select>
 
                                                 <button type="button" class="btn btn-primary" id="btnAbrirModalOs">
@@ -713,12 +721,12 @@
                                             <label class="form-label">
                                                 Descripción de Título
                                             </label>
-                                            <input id="inputDescripTitulo" name="descrip_titulo" class="form-control">
+                                            <input id="inputDescripTitulo" name="descrip_titulo" class="form-control editAllowed">
                                         </div>
 
                                         <div class="col-12 col-md-4 col-lg-2">
                                             <label class="form-label">M.P.</label>
-                                            <input id="inputMatricula" name="mat_prof" class="form-control">
+                                            <input id="inputMatricula" name="mat_prof" class="form-control editAllowed">
                                         </div>
 
                                     </div>
@@ -736,7 +744,7 @@
                                     <div class="row g-3">
                                         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Tipo de contrato</label>
-                                            <select id="inputTipoContrato" name="tipo_contrato" class="form-select">
+                                            <select id="inputTipoContrato" name="tipo_contrato" class="form-select editAllowed">
                                                 <option value="Tiempo fijo">PLAZO FIJO</option>
                                                 <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
                                                 <option value="Monotributista">MONOTRIBUTISTA</option>
@@ -746,7 +754,7 @@
                                         </div>
                                         <div class="col-xl-2 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Fecha ingreso</label>
-                                            <input type="text" id="inputFechaIngreso" class="form-control" readonly>
+                                            <input type="text" id="inputFechaIngreso" name="fechaIngreso" class="form-control editAllowed">
                                         </div>
                                         <div class="col-xl-2 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Fecha fin prueba</label>
@@ -754,7 +762,7 @@
                                         </div>
                                         <div class="col-xl-2 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Fecha egreso</label>
-                                            <input type="text" id="inputFechaEgreso" class="form-control" readonly>
+                                            <input type="text" id="inputFechaEgreso" class="form-control editAllowed">
                                         </div>
                                         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Antiguedad</label>
@@ -763,17 +771,17 @@
                                         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Área</label>
                                             <select name="area_id" id="inputArea"
-                                                class="form-select js-select-area w-100">
+                                                class="form-select js-select-area w-100 editAllowed">
                                             </select>
                                         </div>
                                         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Servicio</label>
-                                            <select name="servicio_id" id="inputServicio" class="form-select w-100">
+                                            <select name="servicio_id" id="inputServicio" class="form-select w-100 editAllowed">
                                             </select>
                                         </div>
                                         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Convenio</label>
-                                            <select name="posee_convenio" id="inputConvenio" class="form-select w-100">
+                                            <select name="posee_convenio" id="inputConvenio" class="form-select w-100 editAllowed">
                                                 <option value="SANIDAD">SANIDAD</option>
                                                 <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
                                             </select>
@@ -781,19 +789,19 @@
                                         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Categoría</label>
                                             <select name="categoria_id" id="inputCategoria"
-                                                class="form-select js-select-categoria w-100">
+                                                class="form-select js-select-categoria w-100 editAllowed">
                                                 <option value="">Seleccione categoría</option>
                                             </select>
                                         </div>
                                         <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                             <label class="form-label">Rol</label>
-                                            <select name="rol_interno_id" id="inputRol" class="form-select w-100">
+                                            <select name="rol_interno_id" id="inputRol" class="form-select w-100 editAllowed">
                                                 <option value="">Seleccione rol</option>
                                             </select>
                                         </div>
                                         <div class="col-xl-1 col-lg-3 col-md-6 col-12">
                                             <label class="form-label">Régimen</label>
-                                            <select name="regimen_horas" id="inputRegimen" class="form-select">
+                                            <select name="regimen_horas" id="inputRegimen" class="form-select editAllowed">
                                                 <option selected disabled value="">Seleccione régimen</option>
                                                 <option value="44">44</option>
                                                 <option value="40">40</option>
@@ -812,28 +820,28 @@
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">Es coordinador</label>
-                                            <select id="inputCordinador" name="es_coordinador" class="form-select">
+                                            <select id="inputCordinador" name="es_coordinador" class="form-select editAllowed">
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
                                             </select>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">Afiliado al sindicato</label>
-                                            <select id="inputAfiliado" name="es_afiliado" class="form-select">
+                                            <select id="inputAfiliado" name="es_afiliado" class="form-select editAllowed">
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
                                             </select>
                                         </div>
                                         <div class="col-xl-1 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">Noche</label>
-                                            <select id="inputNoche" name="noche" class="form-select">
+                                            <select id="inputNoche" name="noche" class="form-select editAllowed">
                                                 <option value="1">SI</option>
                                                 <option value="0">NO</option>
                                             </select>
                                         </div>
                                         <div class="col-xl-1 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">UTI</label>
-                                            <select id="inputUti" name="uti" class="form-select">
+                                            <select id="inputUti" name="uti" class="form-select editAllowed">
                                                 <option value="1">SI</option>
                                                 <option value="0">NO</option>
                                             </select>
@@ -1289,5 +1297,17 @@
     <script>
         const USER_ROLE = "{{ Auth::user()->rol }}";
         const USER_AREA_ID = "{{ Auth::user()->area_id }}";
+
+        if (USER_ROLE !== "Administrador/a") {
+            $(".editAllowed").each(function () {
+                if ($(this).is("input")) {
+                    $(this).prop("readonly", true);
+                } else if ($(this).is("select")) {
+                    $(this).prop("disabled", true);
+                } else if ($(this).is("textarea")) {
+                    $(this).prop("readonly", true);
+                }
+            });
+        }
     </script>
 @endpush

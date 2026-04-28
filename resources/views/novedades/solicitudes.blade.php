@@ -19,105 +19,154 @@
             </div>
         </div>
 
-        <div class="row align-items-end g-3 mb-3">
+        <div class="row d-flex justify-content-start align-items-start">
+            <div class="col-2 d-none d-xl-block">
+                <div class="card" style="border-radius:15px;">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
+                                Filtros
+                            </h5>
+                            <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column gap-3">
 
-            <div class="col-6 col-sm-6 col-lg-4 col-xl-2">
-                <button type="button" id="btnAbrirModalSolicitud" class="btn btn-primary w-100">
-                    Nueva solicitud
-                </button>
-            </div>
+                        <div class="filtro-box">
+                            <div class="filtro-header" id="toggleEstado">
+                                <span>Estados</span>
+                                <i class="fa fa-chevron-down"></i>
+                            </div>
+                            <div class="filtro-body" id="listaEstados">
+                                <label class="filtro-item">
+                                    <input type="checkbox" class="check-estado" value="">
+                                    <span>TODAS</span>
+                                </label>
+                                <label class="filtro-item">
+                                    <input type="checkbox" class="check-estado" value="PENDIENTE DE AUTORIZACIÓN" checked>
+                                    <span>PENDIENTES</span>
+                                </label>
+                                <label class="filtro-item">
+                                    <input type="checkbox" class="check-estado" value="APROBADA" checked>
+                                    <span>APROBADAS</span>
+                                </label>
+                                <label class="filtro-item">
+                                    <input type="checkbox" class="check-estado" value="RECHAZADA">
+                                    <span>RECHAZADAS</span>
+                                </label>
+                            </div>
+                        </div>
 
-            <div class="col-6 col-sm-6 col-lg-4 col-xl-2">
-                <select id="selectEstado" class="form-select w-100">
-                    <option value="">TODAS</option>
-                    <option value="PENDIENTE DE AUTORIZACIÓN">PENDIENTES</option>
-                    <option value="APROBADA">APROBADAS</option>
-                    <option value="RECHAZADA">RECHAZADAS</option>
-                </select>
-            </div>
-
-            @if (Auth::user()->rol === 'Administrador/a')
-                <div class="col-6 col-sm-6 col-lg-4 col-xl-2">
-                    <select id="selectDepositado" class="form-select w-100">
-                        <option value="">TODAS</option>
-                        <option value="1">DEPOSITADOS</option>
-                        <option value="0" selected>A DEPOSITAR</option>
-                    </select>
-                </div>
-            @endif
-
-            <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
-                <input type="text" id="fechaDesde" class="form-control w-100" placeholder="Desde">
-            </div>
-
-            <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
-                <input type="text" id="fechaHasta" class="form-control w-100" placeholder="Hasta">
-            </div>
-
-            <div class="col-3 col-sm-31 col-lg-2 col-xl-1 d-none d-md-block">
-                <button id="btnLimpiarFiltros" class="btn btn-secondary w-100">
-                    <i class="fa fa-eraser"></i> Limpiar
-                </button>
-            </div>
-
-            @if (Auth::user()->rol === 'Administrador/a')
-                <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
-                    <button type="button" id="btnDepositarAdelantos" class="btn btn-primary w-100">
-                        <i class="fa-solid fa-file-invoice-dollar"></i> Depositar
-                    </button>
-                </div>
-            @endif
-
-        </div>
-
-        <div class="card" style="border-radius:15px;">
-            <div class="my-2">
-            </div>
-            <div class="table-responsive px-2">
-                <table id="tb_solicitudes" class="table table-bordered table-hover align-middle nowrap">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>N°</th>
-                            <th>FECHA</th>
-                            <th>LEGAJO</th>
-                            <th>CUIL</th>
-                            <th>COLABORADOR</th>
-                            <th>ÁREA</th>
-                            <th>CUENTA</th>
-                            <th>CBU</th>
-                            <th>IMPORTE</th>
-                            <th>IMPORTE</th>
-                            <th>COMPROBANTE</th>
-                            <th>BANCO</th>
-                            <th>OBSERVACIONES</th>
-                            <th>ESTADO</th>
-                            <th class="text-end">
-                                <div class="d-flex align-items-start justify-content-center gap-2">
-                                    <span>ACCIONES</span>
-                                    <input type="checkbox" class="form-check-input" id="checkAll">
+                        @if (Auth::user()->rol === 'Administrador/a')
+                            <div class="filtro-box">
+                                <div class="filtro-header" id="toggleDepositado">
+                                    <span>Depósitos</span>
+                                    <i class="fa fa-chevron-down"></i>
                                 </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
+
+                                <div class="filtro-body" id="listaSolicitudes">
+                                    <label class="filtro-item">
+                                        <input type="radio" name="filtroDeposito" class="check-deposito" value="">
+                                        <span>TODAS</span>
+                                    </label>
+
+                                    <label class="filtro-item">
+                                        <input type="radio" name="filtroDeposito" class="check-deposito" value="1">
+                                        <span>DEPOSITADOS</span>
+                                    </label>
+
+                                    <label class="filtro-item">
+                                        <input type="radio" name="filtroDeposito" class="check-deposito" value="0"
+                                            checked>
+                                        <span>A DEPOSITAR</span>
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+                        <div class="col-12">
+                            <button id="btnLimpiarFiltros" class="btn btn-secondary w-100">
+                                <i class="fa fa-eraser"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-10 col-xxl-10">
+                <div class="row align-items-end g-3 mb-3">
+                    <div class="col-6 col-sm-6 col-lg-4 col-xl-2">
+                        <button type="button" id="btnAbrirModalSolicitud" class="btn btn-primary w-100">
+                            Nueva solicitud
+                        </button>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
+                        <input type="text" id="fechaDesde" class="form-control w-100" placeholder="Desde">
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-lg-4 col-xl-2 d-none d-md-block">
+                        <input type="text" id="fechaHasta" class="form-control w-100" placeholder="Hasta">
+                    </div>
+
                     @if (Auth::user()->rol === 'Administrador/a')
-                        <tfoot>
-                            <tr>
-                                <th colspan="8" style="text-align:right">Total Monto:</th>
-                                <th id="total_adelanto_display"></th>
-                                <th colspan="5"></th>
-                            </tr>
-                        </tfoot>
+                        <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
+                            <button type="button" id="btnDepositarAdelantos" class="btn btn-primary w-100">
+                                <i class="fa-solid fa-file-invoice-dollar"></i> Depositar
+                            </button>
+                        </div>
                     @endif
-                </table>
+
+                </div>
+                <div class="card" style="border-radius:15px;">
+                    <div class="my-2">
+                    </div>
+                    <div class="table-responsive px-2">
+                        <table id="tb_solicitudes" class="table table-bordered table-hover align-middle nowrap">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>N°</th>
+                                    <th>FECHA</th>
+                                    <th>LEGAJO</th>
+                                    <th>CUIL</th>
+                                    <th>COLABORADOR</th>
+                                    <th>ÁREA</th>
+                                    <th>CUENTA</th>
+                                    <th>CBU</th>
+                                    <th>IMPORTE</th>
+                                    <th>IMPORTE</th>
+                                    <th>COMPROBANTE</th>
+                                    <th>BANCO</th>
+                                    <th>OBSERVACIONES</th>
+                                    <th>ESTADO</th>
+                                    <th class="text-end">
+                                        <div class="d-flex align-items-start justify-content-center gap-2">
+                                            <span>ACCIONES</span>
+                                            <input type="checkbox" class="form-check-input" id="checkAll">
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            @if (Auth::user()->rol === 'Administrador/a')
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="8" style="text-align:right">Total Monto:</th>
+                                        <th id="total_adelanto_display"></th>
+                                        <th colspan="5"></th>
+                                    </tr>
+                                </tfoot>
+                            @endif
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 @endsection
 
 @push('modals')
-    <div class="modal fade" id="modalRegSolicitud" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
-        data-bs-backdrop="static">
+    <div class="modal fade" id="modalRegSolicitud" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true" data-bs-backdrop="static">
 
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">
