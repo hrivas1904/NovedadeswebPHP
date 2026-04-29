@@ -5,15 +5,9 @@
 @section('content')
 
 <div class="container-md">
-    <div class="">
-        <div class="d-inline-flex align-items-start gap-3 my-3">
-            <div class="icon-box-title">
-                <img src="{{ asset('img/hand-wave.svg') }}" style="height: 60px;" alt="Saludo">
-            </div>
-            <div>
-                <h1 class="mb-0" style="color: var(--color-default);">¡Hola, <strong>{{ Auth::user()->name }}</strong>!</h1>
-                <p class="text-muted">Bienvenido/a</p>
-            </div>
+    <div class="p-3 d-flex flex-row align-items-center justify-content-center text-center gap-3 my-3">
+        <div>
+            <h1 class="mb-0" style="color: var(--color-default);">¡Hola, <strong>{{ Auth::user()->name }}</strong>!</h1>
         </div>
     </div>
 
@@ -57,12 +51,12 @@
     @endif
 
     <div class="section-divider text-center mb-3">
-        <span>Avisos Publicados</span>
+        <span>AVISOS PUBLICADOS</span>
     </div>
 
     <div class="row mb-4">
         <div class="col-12">
-            <div id="listaNotificaciones" class="card p-3">
+            <div id="listaNotificaciones">
             </div>
         </div>
     </div>

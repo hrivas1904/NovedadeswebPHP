@@ -8,7 +8,7 @@
         <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
             <div class="d-flex align-items-start gap-3">
                 <div class="icon-box">
-                    <i class="fa-solid fa-calendar-days"></i>
+                    <img src="{{ asset('img/icons/calendario-logo.png') }}" style="height: 32px;" alt="Logo calendario recepcion">
                 </div>
                 <div>
                     <h3 class="tituloVista mb-0">CALENDARIO DE RECEPCIÓN</h3>

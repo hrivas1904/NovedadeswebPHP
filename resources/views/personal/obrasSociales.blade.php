@@ -4,62 +4,66 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="container-fluid text-start">
-        <h3 class="pill-heading tituloVista">OBRAS SOCIALES</h3>
+    <div class="d-flex align-items-start gap-3 my-3">
+        <div class="icon-box">
+            <img src="{{ asset('img/icons/logo-os.png') }}" style="height: 32px;" alt="Saludo">
+        </div>
+        <div>
+            <h3 class="tituloVista mb-0">OBRAS SOCIALES</h3>
+            <p class="mb-0 text-muted">Administración de Obras Sociales.</p>
+        </div>
     </div>
-    <div class="container-fluid pt-2">
-        <div class="row d-flex">
-            <div class="col-xl-6 col-12 mb-3">
-                <div class="card" style="border-radius:15px;">
-                    <div class="card-body">
-                        <table id="tb_obraSocial" class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>OBRA SOCIAL</th>
-                                    <th>CÓDIGO OS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+    <div class="row d-flex">
+        <div class="col-xl-6 col-12 mb-3">
+            <div class="card" style="border-radius:15px;">
+                <div class="card-body">
+                    <table id="tb_obraSocial" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>OBRA SOCIAL</th>
+                                <th>CÓDIGO OS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
 
-            <div class="col-xl-6 col-12">
-                <div class="card" style="border-radius:15px;">
-                    <div class="card-body">
+        <div class="col-xl-6 col-12">
+            <div class="card" style="border-radius:15px;">
+                <div class="card-body">
 
-                        <div class="col-12 mb-4">
-                            <div class="section-divider">
-                                <span>Crear nueva obra social</span>
+                    <div class="col-12 mb-4">
+                        <div class="section-divider">
+                            <span>Crear nueva obra social</span>
+                        </div>
+                    </div>
+                    <form id="formNuevaObraSocial">
+                        @csrf
+
+                        <div class="row g-3 mb-3">
+
+                            <div class="col-12 col-md-3 col-xl-3">
+                                <label class="form-label">CÓDIGO</label>
+                                <input type="text" class="form-control" name="codigoOs" required />
+                            </div>
+
+                            <div class="col-12 col-md-9 col-xl-9">
+                                <label class="form-label">OBRA SOCIAL</label>
+                                <input type="text" class="form-control" name="nombreOs" required />
+                            </div>
+
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary" id="btnCrearOs">
+                                    <i class="fa-solid fa-plus me-1"></i>
+                                    Crear nueva OS
+                                </button>
                             </div>
                         </div>
-                        <form id="formNuevaObraSocial">
-                            @csrf
-
-                            <div class="row g-3 mb-3">
-
-                                <div class="col-12 col-md-3 col-xl-3">
-                                    <label class="form-label">CÓDIGO</label>
-                                    <input type="text" class="form-control" name="codigoOs" required />
-                                </div>
-
-                                <div class="col-12 col-md-9 col-xl-9">
-                                    <label class="form-label">OBRA SOCIAL</label>
-                                    <input type="text" class="form-control" name="nombreOs" required />
-                                </div>
-
-                                <div class="col-12 text-end">
-                                    <button type="submit" class="btn btn-primary" id="btnCrearOs">
-                                        <i class="fa-solid fa-plus me-1"></i>
-                                        Crear nueva OS
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -96,7 +100,7 @@
                                     <div class="col-lg-8 col-12">
                                         <label class="form-label">CONCEPTO</label>
                                         <input type="text" id="nombreOsEdit" name="nombreOsEdit" class="form-control">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
                         </div>

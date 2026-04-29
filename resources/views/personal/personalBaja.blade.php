@@ -7,7 +7,7 @@
 
         <div class="d-flex align-items-start gap-3 my-3">
             <div class="icon-box">
-                <i class="fa-solid fa-user-group"></i>
+                <img src="{{ asset('img/icons/personal-logo.png') }}" style="height: 32px;" alt="Logo personal de baja">
             </div>
             <div>
                 <h3 class="tituloVista mb-0">GESTIÓN DEL PERSONAL DE BAJA</h3>

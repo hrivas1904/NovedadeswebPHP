@@ -80,14 +80,51 @@ function cargarNotificaciones() {
                     }
 
                     contenedor.append(`
-                        <div class="border-bottom pb-2 mb-3">
-                            <small class="text-muted">Publicado por <strong>${n.name}</strong></small>
-                            <small class="text-muted float-end">${n.fecha_publicacion}</small>
-                            <h4 style="color: #0b3c6d;"><strong>${n.titulo}</strong></h4>                                                        
-                            <h5 style="color: #1e293b; white-space: pre-line;">
-                                ${n.contenido}
-                            </h5>                            
-                            ${botones}                                                        
+                        <div class="card mb-3 p-3 d-flex flex-row align-items-start gap-3" style="border-radius: 12px;">
+
+                            <!-- Icono -->
+                            <div class="icon-box d-flex align-items-center justify-content-center" style="
+                                width: 50px;
+                                height: 50px;
+                                border-radius: 50%;
+                                background: rgba(0, 145, 213, 0.1);
+                                color: var(--color-second);
+                                flex-shrink: 0;
+                            ">
+                                <i class="fa-solid fa-bullhorn"></i>
+                            </div>
+
+                            <!-- Contenido -->
+                            <div class="flex-grow-1">
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fa-regular fa-user"></i> Publicado por <strong>${n.name}</strong>
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="fa-regular fa-calendar"></i> ${n.fecha_publicacion}
+                                    </small>
+                                </div>
+
+                                <hr/>
+                                
+                                <h4 class="fw-bold mt-1" style="color: #0b3c6d;">
+                                    ${n.titulo}
+                                </h4>
+
+                                <p style="white-space: pre-line; color: #1e293b;">
+                                    ${n.contenido}
+                                </p>
+
+                                ${USER_ROLE === "Administrador/a" ? `
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-sm text-danger btn-Eliminar" data-id="${n.id_notificacion}">
+                                            <i class="fa-regular fa-trash-can"></i> Eliminar
+                                        </button>
+                                    </div>
+                                ` : ''}
+
+                            </div>
                         </div>
                     `);
                 });

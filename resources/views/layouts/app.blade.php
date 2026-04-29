@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssFiltroEcommerce.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssNavbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssDivAvisos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
 </head>
 
@@ -66,7 +67,7 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bx bx-user"></i> Personal
+                            <i class="bx bx-user"></i> Colaboradores
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('miLegajo') }}">Mi legajo</a></li>
@@ -74,18 +75,17 @@
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
                             Auth::user()->rol === 'Administrador/a' ||
                             Auth::user()->rol === 'Coordinador/a')
-                            <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Personal activo</a></li>
-                            <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Personal de baja</a></li>
+                            <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Colaboradores activos</a></li>
+                            <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Colaboradores de baja</a></li>
+                            @endif
+
+                            @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
+                            <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
                             <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>-->
-                            @endif
-
-                            @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                            <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario
-                                    servicios</a></li>
-                            @endif
+                            @endif                            
 
                             @if (Auth::user()->rol === 'Administrador/a')
                             <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>-->
@@ -99,17 +99,12 @@
                             <i class="bx bx-folder"></i> Novedades
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis novedades</a>
-                            </li>
-
+                            <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis novedades</a></li> 
                             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
-                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de
-                                    novedades</a></li>
-                            <li><a class="dropdown-item"
-                                    href="{{ route('novedades.historico') }}">Histórico novedades</a></li>
+                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de novedades</a></li>
+                            <li><a class="dropdown-item" href="{{ route('novedades.historico') }}">Histórico novedades</a></li>
                             @endif
-                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto
-                                    sueldo</a></li>
+                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
                         </ul>
                     </li>
 
