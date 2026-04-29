@@ -8,7 +8,7 @@
             <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
                 <div class="d-flex align-items-start gap-3">
                     <div class="icon-box">
-                        <i class="fa-solid fa-folder-closed"></i>
+                        <img src="{{ asset('img/icons/historico-novedades-logo.png') }}" style="height: 32px;" alt="Logo novedades">
                     </div>
                     <div>
                         <h3 class="tituloVista mb-0">REGISTRO HISTÓRICO DE NOVEDADES MENSUALES</h3>

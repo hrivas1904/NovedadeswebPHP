@@ -9,7 +9,7 @@
             <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
                 <div class="d-flex align-items-start gap-3">
                     <div class="icon-box">
-                        <i class="fa-solid fa-money-check-dollar"></i>
+                        <img src="{{ asset('img/icons/adelantos-logo.png') }}" style="height: 32px;" alt="Logo adelantos">
                     </div>
                     <div>
                         <h3 class="tituloVista mb-0">ADELANTOS DE SUELDOS</h3>

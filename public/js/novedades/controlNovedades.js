@@ -469,7 +469,7 @@ $(document).ready(function () {
                                 );
                             } else {
                                 return [
-                                    5, 6, 8, 9, 10, 11, 13, 14, 16, 20, 21,
+                                    0,2,5, 6, 8, 9, 10, 11, 13, 14, 16, 20, 21,
                                 ].includes(idx);
                             }
                         },
@@ -556,6 +556,8 @@ $(document).ready(function () {
                                   "TIPO",
                               ]
                             : [
+                                  "ID",
+                                  "AREA",
                                   "LEGAJO",
                                   "NOVEDAD",
                                   "CENTROCOSTO",
@@ -566,7 +568,7 @@ $(document).ready(function () {
                                   "FECHAHASTA",
                                   "DESCRIPCION",
                                   "COLABORADOR",
-                                  "CONCEPTO_NOVEDAD",
+                                  "CONCEPTO_NOVEDAD",                                  
                               ];
 
                         row.each(function (i) {
