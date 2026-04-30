@@ -62,6 +62,7 @@
                                 <th>HASTA</th>
                                 <th>VALOR</th>
                                 <th>DESCRIPCION</th>
+                                <th></th>
                             </tr>
                         </thead>
                     </table>
@@ -237,6 +238,7 @@
 @endpush
 
 @push('scripts')
+<script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
     <script src="{{ asset('js/novedades/historicoNovedades.js') }}"></script>
     <script>
         const USER_ROLE = "{{ Auth::user()->rol }}";

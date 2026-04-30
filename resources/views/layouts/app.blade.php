@@ -35,13 +35,13 @@
     <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
     <link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssFiltroEcommerce.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/componentes/cssNavbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssNavbarGlass.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssDivAvisos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm"
+    <nav class="navbar navbar-expand-xl navbar-dark fixed-top shadow-sm"
         style="background-color: var(--color-default);">
         <div class="container-fluid">
 
@@ -58,11 +58,11 @@
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">
-                            <i class="bx bx-grid-alt"></i> Dashboard
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard') }}">
+                                <i class="bx bx-grid-alt"></i> Dashboard
+                            </a>
+                        </li>
                     @endif
 
                     <li class="nav-item dropdown">
@@ -73,22 +73,25 @@
                             <li><a class="dropdown-item" href="{{ route('miLegajo') }}">Mi legajo</a></li>
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
-                            Auth::user()->rol === 'Administrador/a' ||
-                            Auth::user()->rol === 'Coordinador/a')
-                            <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Colaboradores activos</a></li>
-                            <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Colaboradores de baja</a></li>
+                                    Auth::user()->rol === 'Administrador/a' ||
+                                    Auth::user()->rol === 'Coordinador/a')
+                                <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Colaboradores
+                                        activos</a></li>
+                                <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Colaboradores de
+                                        baja</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                            <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
+                                <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario
+                                        recepción</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                            <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>-->
-                            @endif                            
+                                <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>-->
+                            @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                            <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>-->
+                                <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>-->
                             @endif
 
                         </ul>
@@ -99,33 +102,37 @@
                             <i class="bx bx-folder"></i> Novedades
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis novedades</a></li> 
+                            <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis
+                                    novedades</a></li>
                             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
-                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de novedades</a></li>
-                            <li><a class="dropdown-item" href="{{ route('novedades.historico') }}">Histórico novedades</a></li>
+                                <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de
+                                        novedades</a></li>
+                                <li><a class="dropdown-item" href="{{ route('novedades.historico') }}">Histórico
+                                        novedades</a></li>
                             @endif
-                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
+                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud
+                                    adelanto sueldo</a></li>
                         </ul>
                     </li>
 
                     @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-award"></i> Calidad
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar
-                                    encuestas</a></li>
-                            <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a>
-                            </li>
-                            <!--<li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-award"></i> Calidad
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar
+                                        encuestas</a></li>
+                                <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a>
+                                </li>
+                                <!--<li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
                                 </li>-->
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
                     @endif
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-item dropdown">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                                 <i class="fa-solid fa-gear"></i> Ajustes
                             </a>
@@ -134,7 +141,8 @@
                                         novedades</a></li>
                                 <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar
                                         usuarios</a></li>
-                                <li><a class="dropdown-item" href="{{ route('obraSocial.administrarObraSociales') }}">Obras
+                                <li><a class="dropdown-item"
+                                        href="{{ route('obraSocial.administrarObraSociales') }}">Obras
                                         sociales</a></li>
                                 <!--<li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Áreas y
                                         Servicios</a></li>
@@ -160,9 +168,23 @@
 
                 <div class="d-flex align-items-center gap-3">
 
-                    <div class="text-end text-white small">
-                        <div><strong>{{ Auth::user()->name }}</strong></div>
-                        <div>{{ Auth::user()->rol }}</div>
+                    <div class="user-chip text-white">
+
+                        <div class="user-avatar">
+                            @if (Auth::user()->foto)
+                                <img src="{{ asset('storage/' . Auth::user()->foto) }}" alt="Perfil">
+                            @else
+                                <span class="avatar-initial">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="user-info text-end small">
+                            <div><strong>{{ Auth::user()->name }}</strong></div>
+                            <div class="user-role">{{ Auth::user()->rol }}</div>
+                        </div>
+
                     </div>
 
                     <button class="btn btn-light position-relative" id="btnAlertas">

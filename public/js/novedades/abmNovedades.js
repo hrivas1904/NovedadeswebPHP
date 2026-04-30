@@ -227,8 +227,6 @@ function resetearNovedades() {
 
 $("#formCargaNovedad").on("submit", function (e) {
     e.preventDefault();
-
-    // 🔥 LIMPIAR VALORES PESOS ANTES DE SERIALIZAR
     $("#tablaNovedades tbody tr").each(function () {
         let row = $(this);
 
@@ -254,7 +252,6 @@ $("#formCargaNovedad").on("submit", function (e) {
         }
     });
 
-    // 🚀 TU AJAX (igual que antes)
     $.ajax({
         url: "/novedades/registrar",
         type: "POST",
@@ -312,9 +309,9 @@ function anularNovedad(idRegistro) {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, anular",
-        confirmButtonColor: "#004a7c",
+        confirmButtonColor: "#00b18d",
         cancelButtonText: "Cancelar",
-        cancelButtonColor: "#00b18d",
+        cancelButtonColor: "#004a7c",
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
@@ -335,19 +332,30 @@ function anularNovedad(idRegistro) {
                             icon: "success",
                             title: "Correcto",
                             text: response.mensaje,
+                            confirmButtonColor: "#00b18d",
                         });
 
                         if (tablaControl) {
                             tablaControl.ajax.reload(null, false);
                         }
                     } else {
-                        Swal.fire("Atención", response.mensaje, "warning");
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: response.mensaje,
+                            confirmButtonColor: "#00b18d",
+                        });
                     }
                 },
 
                 error: function (xhr) {
                     console.error(xhr.responseText);
-                    Swal.fire("Error", "No se pudo anular la novedad", "error");
+                    Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "No se pudo anular la novedad",
+                            confirmButtonColor: "#00b18d",
+                        });
                 },
             });
         }

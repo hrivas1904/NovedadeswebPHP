@@ -14,22 +14,6 @@ flatpickr("#filtroDesde, #filtroHasta", {
     },
 });
 
-function formatearFechaArgentina(fecha) {
-    if (!fecha) return "";
-    const partes = fecha.split("-"); // yyyy-mm-dd
-    if (partes.length !== 3) return fecha;
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-}
-
-function formatearPesos(valor) {
-    if (valor === null || valor === undefined || valor === "") return "";
-    return new Intl.NumberFormat("es-AR", {
-        style: "currency",
-        currency: "ARS",
-        minimumFractionDigits: 2,
-    }).format(valor);
-}
-
 function calcularHorasHabiles() {
     const fechaDesde = document.getElementById("inputFechaDesde").value;
     const fechaHasta = document.getElementById("inputFechaHasta").value;
@@ -175,7 +159,21 @@ $(document).ready(function () {
                         return data;
                     },
                 },
-                { data: "DESCRIPCION", width: "auto" },
+                { data: "DESCRIPCION", width: "auto" },                
+                { data: null,
+                    orderable: false,
+                    className: "text-center",
+                    render: function(data, type, row){
+                        if (USER_ROLE==='Administrador/a'){
+                            return(
+                                `<button class="btn btn-danger btn-eliminar" data-id="${row.REGISTRO}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>`
+                            );
+                        };
+                        return "";
+                    },                    
+                },
             ],
             scrollX: true,
             paging: false,
@@ -349,16 +347,22 @@ $(document).ready(function () {
 
         $(document).on("click", "#tb_control tbody tr", function (event) {
             event.preventDefault();
-
+            event.stopPropagation();
+            if ($(event.target).closest(".btn-eliminar").length) return;
             const tabla = $("#tb_control").DataTable();
             const data = tabla.row(this).data();
-
             if (!data) return;
-
             const idRegistro = data.REGISTRO;
-
             console.log("Id registro recibido:", idRegistro);
             verDetalleNovedad(idRegistro);
+        });
+
+        $(document).on("click", ".btn-eliminar", function (evento){
+            event.preventDefault();
+            event.stopPropagation();
+            const idRegistro=$(this).data("id");
+            console.log("Id recibido: "+idRegistro)
+            anularNovedad(idRegistro);
         });
     }
 });
@@ -440,4 +444,4 @@ function verDetalleNovedad(idRegistro) {
             alert("No se pudo conectar con el servidor");
         },
     });
-}
+};
