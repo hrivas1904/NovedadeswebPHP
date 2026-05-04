@@ -326,6 +326,184 @@ class PersonalController extends Controller
         }
     }
 
+    public function actualizarDatosCuentasBancarias(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'id' => 'required|integer',
+                'cbu' => 'nullable|digits:22',
+                'numero_cuenta' => 'nullable|string|max:300'
+            ]);
+
+            $id = $request->id;
+            $cbu = $request->cbu;
+            $numeroCuenta = $request->numero_cuenta;
+
+            $resultado = DB::select(
+                'CALL SP_EDITAR_DATOS_CUENTAS_BANCARIAS(?, ?, ?)',
+                [$id, $numeroCuenta, $cbu]
+            );
+
+            if (!empty($resultado)) {
+                return response()->json([
+                    'success' => $resultado[0]->success,
+                    'mensaje' => $resultado[0]->mensaje
+                ]);
+            }
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => 'No se obtuvo respuesta del servidor'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => 'Error interno del servidor',
+                'error' => $e->getMessage() // opcional (solo debug)
+            ], 500);
+        }
+    }
+
+    public function eliminarCuentaBancaria(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|integer'
+            ]);
+
+            $id = $request->id;
+
+            $resultado = DB::select(
+                'CALL SP_ELIMINAR_CUENTA_BANCARIA(?)',
+                [$id]
+            );
+
+            if (!empty($resultado)) {
+                return response()->json([
+                    'success' => $resultado[0]->success,
+                    'mensaje' => $resultado[0]->mensaje
+                ]);
+            }
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => 'No se obtuvo respuesta del servidor'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => 'Error interno del servidor',
+                'error' => $e->getMessage() // opcional debug
+            ], 500);
+        }
+    }
+
+    public function crearCuentaBancaria(Request $request)
+    {
+        try {
+            $request->validate([
+                'legajo' => 'required|integer',
+                'numero_cuenta' => 'required|string|max:300',
+                'cbu' => 'required|digits:22',
+                'banco' => 'required|string|max:100'
+            ]);
+
+            $res = DB::select(
+                'CALL SP_CREAR_CUENTA_BANCARIA(?, ?, ?, ?)',
+                [
+                    $request->legajo,
+                    $request->numero_cuenta,
+                    $request->cbu,
+                    $request->banco
+                ]
+            );
+
+            if (!empty($res)) {
+                return response()->json([
+                    'success' => $res[0]->success,
+                    'mensaje' => $res[0]->mensaje
+                ]);
+            }
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => 'No se obtuvo respuesta del servidor'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => 'Error interno del servidor',
+                'error' => $e->getMessage() // opcional debug
+            ], 500);
+        }
+    }
+
+    public function priorizarCuentaBancaria(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'id' => 'required|integer',
+                'legajo' => 'required|integer'
+            ]);
+            
+            $res = DB::select(
+                'CALL SP_PRIORIZAR_CUENTA_BANCARIA(?, ?)',
+                [
+                    $request->id,
+                    $request->legajo
+                ]
+            );
+
+            if (!empty($res)) {
+                return response()->json([
+                    'success' => $res[0]->success,
+                    'mensaje' => $res[0]->mensaje
+                ]);
+            }
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => 'No se obtuvo respuesta del servidor'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => 0,
+                'mensaje' => 'Error interno del servidor',
+                'error' => $e->getMessage() // opcional debug
+            ], 500);
+        }
+    }
+
     public function listarCargaMasiva(Request $request)
     {
         try {

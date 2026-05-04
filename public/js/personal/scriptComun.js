@@ -337,7 +337,7 @@ function inicializarORefrescarHistorial() {
         searching: true,
         ordering: true,
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+            url: "/js/es-ES.json",
         },
         dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
                     <'d-flex flex-column flex-sm-row gap-2'B> \

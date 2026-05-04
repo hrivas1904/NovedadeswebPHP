@@ -167,6 +167,13 @@ Route::post('/obra-social/editar', [PersonalController::class, 'editarObraSocial
 Route::get('/personal/cuentasBancarias', [PersonalController::class, 'listarCuentasBancarias'])
     ->name('personal.cuentasBancarias');
 
+Route::post('/cuentas/actualizar', [PersonalController::class, 'actualizarDatosCuentasBancarias']);
+
+Route::post('/cuentas/eliminar', [PersonalController::class, 'eliminarCuentaBancaria']);
+
+Route::post('/cuentas/crear', [PersonalController::class, 'crearCuentaBancaria']);
+
+Route::post('/cuentas/priorizar', [PersonalController::class, 'priorizarCuentaBancaria']);
 //RUTAS DE SP NOVEDADES
 
 Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])

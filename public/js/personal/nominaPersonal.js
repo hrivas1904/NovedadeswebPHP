@@ -440,7 +440,7 @@ $(document).ready(function () {
                 { responsivePriority: 100, targets: 7 },
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                url: "/js/es-ES.json",
             },
             columns: [
                 {
