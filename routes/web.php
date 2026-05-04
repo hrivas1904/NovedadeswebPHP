@@ -106,8 +106,13 @@ Route::get('/obra-social/lista', [PersonalController::class, 'listarObraSocial']
 Route::post('/personal/guardar', [PersonalController::class, 'store'])
     ->name('personal.store');
 
+Route::get('/personal/exportarListaColabDatatable', [PersonalController::class, 'exportarListaColabDatatable']);
+
 Route::get('/personal/listar', [PersonalController::class, 'listar'])
     ->name('personal.listar');
+
+Route::get('/personal/listarColaboradoresDatatable', [PersonalController::class, 'listarColaboradoresDatatable'])
+    ->name('personal.listarColaboradoresDatatable');
 
 Route::get('/personal/listarCargaMasiva', [PersonalController::class, 'listarCargaMasiva'])
     ->name('personal.listarCargaMasiva');

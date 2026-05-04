@@ -51,6 +51,58 @@
     background-color: #b02a37;
 }
 
+/* =========================
+   PRIMARY OUTLINE
+========================= */
+
+.btn-outline-primary {
+    color: var(--color-accent-green);
+    border: 1px solid var(--color-accent-green);
+    background-color: transparent;
+    transition: all 0.25s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--color-accent-green);
+    color: #fff;
+    border-color: var(--color-accent-green);
+}
+
+
+/* =========================
+   SECONDARY OUTLINE
+========================= */
+
+.btn-outline-secondary {
+    color: var(--color-default);
+    border: 1px solid var(--color-default);
+    background-color: transparent;
+    transition: all 0.25s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--color-default);
+    color: #fff;
+    border-color: var(--color-default);
+}
+
+
+/* =========================
+   DANGER OUTLINE
+========================= */
+
+.btn-outline-danger {
+    color: var(--color-accent-red);
+    border: 1px solid var(--color-accent-red);
+    background-color: transparent;
+    transition: all 0.25s ease;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--color-accent-red);
+    color: #fff;
+    border-color: var(--color-accent-red);
+}
 
 /* ============================ */
 /* VARIANTES CUSTOM */

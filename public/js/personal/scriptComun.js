@@ -8,6 +8,25 @@ function getScrollY() {
     return window.innerWidth < 768 ? "28vh" : "58vh";
 }
 
+$("#btnExportExcel").on("click", function () {
+    let filtros = {
+        area_id: $("#filtroArea").val() || null,
+        categ_id: $("#filtroCategoria").val() || null,
+        p_convenio: $("#filtroConvenio").val() || null,
+        p_regimen: $("#filtroRegimen").val() || null,
+        p_uti: $("#filtroUti").val() || null,
+        p_noche: $("#filtroNoche").val() || null,
+    };
+
+    Object.keys(filtros).forEach((key) => {
+        if (!filtros[key]) filtros[key] = null;
+    });
+
+    let query = $.param(filtros);
+
+    window.open("/personal/exportarListaColabDatatable?" + query, "_blank");
+});
+
 //CALCULAR EDAD
 function calcularEdad(fecha) {
     if (!fecha) return "";

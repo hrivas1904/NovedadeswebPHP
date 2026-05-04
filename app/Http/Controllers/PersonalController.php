@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\Storage;
 
 class PersonalController extends Controller
@@ -307,6 +309,128 @@ class PersonalController extends Controller
         }
     }
 
+    public function listarColaboradoresDatatable(Request $request)
+    {
+        try {
+            $areaId   = $this->normalizarFiltro($request->area_id);
+            $categId  = $this->normalizarFiltro($request->categ_id);
+            $convenio = $this->normalizarFiltro($request->convenio);
+
+            $regimen  = $request->p_regimen !== null && $request->p_regimen !== ''
+                ? (int)$request->p_regimen
+                : null;
+
+            $uti = $request->p_uti !== null && $request->p_uti !== ''
+                ? (int)$request->p_uti
+                : null;
+
+            $noche = $request->p_noche !== null && $request->p_noche !== ''
+                ? (int)$request->p_noche
+                : null;
+
+            $empleados = DB::select(
+                "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?)",
+                [$areaId, $categId, $convenio, $regimen, $uti, $noche]
+            );
+
+            return response()->json([
+                'data' => $empleados
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function exportarListaColabDatatable(Request $request)
+    {
+        $data = DB::select('CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?)', [
+            $request->area_id,
+            $request->categ_id,
+            $request->p_convenio,
+            $request->p_regimen,
+            $request->p_uti,
+            $request->p_noche
+        ]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // 🔹 Encabezados
+        $headers = [
+            'LEGAJO',
+            'COLABORADOR',
+            'DNI',
+            'FECHA INGRESO',
+            'AREA',
+            'CATEGORIA',
+            'REGIMEN',
+            'HORAS',
+            'CONVENIO',
+            'ESTADO',
+            'UTI',
+            'NOCHE',
+            'CUIL',
+            'DOMICILIO',
+            'LOCALIDAD',
+            'ESTADO CIVIL',
+            'GENERO',
+            'FECHA NAC',
+            'OBRA SOCIAL',
+            'TITULO',
+            'CORREO',
+            'TELEFONO'
+        ];
+
+        $sheet->fromArray($headers, NULL, 'A1');
+
+        // 🔹 Datos
+        $row = 2;
+        foreach ($data as $item) {
+            $sheet->setCellValue("A$row", $item->LEGAJO);
+            $sheet->setCellValue("B$row", $item->COLABORADOR);
+            $sheet->setCellValue("C$row", $item->DNI);
+            $sheet->setCellValue("D$row", $item->FECHA_INGRESO);
+            $sheet->setCellValue("E$row", $item->AREA);
+            $sheet->setCellValue("F$row", $item->CATEGORIA);
+            $sheet->setCellValue("G$row", $item->REGIMEN);
+            $sheet->setCellValue("H$row", $item->HORAS_DIARIAS);
+            $sheet->setCellValue("I$row", $item->CONVENIO);
+            $sheet->setCellValue("J$row", $item->ESTADO);
+            $sheet->setCellValue("K$row", $item->UTI);
+            $sheet->setCellValue("L$row", $item->NOCHE);
+            $sheet->setCellValue("M$row", $item->CUIL);
+            $sheet->setCellValue("N$row", $item->DOMICILIO);
+            $sheet->setCellValue("O$row", $item->LOCALIDAD);
+            $sheet->setCellValue("P$row", $item->ESTADO_CIVIL);
+            $sheet->setCellValue("Q$row", $item->GENERO);
+            $sheet->setCellValue("R$row", $item->FECHA_NAC);
+            $sheet->setCellValue("S$row", $item->OBRA_SOCIAL);
+            $sheet->setCellValue("T$row", $item->TITULO);
+            $sheet->setCellValue("U$row", $item->CORREO);
+            $sheet->setCellValue("V$row", $item->TELEFONO);
+
+            $row++;
+        }
+
+        foreach (range('A', 'V') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $fileName = 'colaboradores_activos_' . date('Ymd_His') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$fileName\"");
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+
+        exit;
+    }
+
     public function listarCuentasBancarias(Request $request)
     {
         try {
@@ -468,7 +592,7 @@ class PersonalController extends Controller
                 'id' => 'required|integer',
                 'legajo' => 'required|integer'
             ]);
-            
+
             $res = DB::select(
                 'CALL SP_PRIORIZAR_CUENTA_BANCARIA(?, ?)',
                 [

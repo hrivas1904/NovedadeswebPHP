@@ -405,7 +405,7 @@ $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
         tablaPersonal = $("#tb_personal").DataTable({
             ajax: {
-                url: "/personal/listar",
+                url: "/personal/listarColaboradoresDatatable",
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
@@ -431,13 +431,10 @@ $(document).ready(function () {
                 { responsivePriority: 1, targets: 1 },
                 { responsivePriority: 2, targets: 0 },
                 { responsivePriority: 3, targets: 2 },
-                { responsivePriority: 4, targets: 9 },
-                { responsivePriority: 100, targets: 8 },
-                { responsivePriority: 100, targets: 3 },
-                { responsivePriority: 100, targets: 4 },
+                { responsivePriority: 4, targets: 7 },
                 { responsivePriority: 100, targets: 5 },
                 { responsivePriority: 100, targets: 6 },
-                { responsivePriority: 100, targets: 7 },
+                { responsivePriority: 100, targets: 4 },
             ],
             language: {
                 url: "/js/es-ES.json",
@@ -455,18 +452,6 @@ $(document).ready(function () {
                 { data: "DNI", width: "5%", className: "text-start" },
                 { data: "AREA", width: "auto", className: "text-start" },
                 { data: "CATEGORIA", width: "auto", className: "text-start" },
-                {
-                    data: "REGIMEN",
-                    width: "5%",
-                    className: "text-center",
-                    visible: false,
-                },
-                {
-                    data: "HORAS_DIARIAS",
-                    width: "3%",
-                    className: "text-center",
-                    visible: false,
-                },
                 { data: "CONVENIO", width: "auto", className: "text-start" },
                 {
                     data: "ESTADO",
@@ -479,85 +464,7 @@ $(document).ready(function () {
 
                         return `<span class="badge ${clase}">${data}</span>`;
                     },
-                },
-                {
-                    data: "UTI",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "NOCHE",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "CUIL",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "DOMICILIO",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "LOCALIDAD",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "ESTADO_CIVIL",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "GENERO",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "FECHA_NAC",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "OBRA_SOCIAL",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "TITULO",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "CORREO",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "TELEFONO",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
-                {
-                    data: "CONVENIO",
-                    width: "10%",
-                    className: "text-start",
-                    visible: false,
-                },
+                },                
                 {
                     data: null,
                     className: "text-center acciones-nowrap",
@@ -606,45 +513,11 @@ $(document).ready(function () {
                 },
             ],
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2' \
-                    <'d-flex flex-column flex-sm-row gap-2'B> \
+                    <'d-flex flex-column flex-sm-row gap-2'> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
                 > \
                 <'my-2'rt> \
                 <'d-bottom d-flex justify-content-center'i>",
-            buttons: [
-                {
-                    extend: "excelHtml5",
-                    text: '<i class="fa-solid fa-file-excel"></i> Excel',
-                    className: "btn-export-excel dt-buttons",
-                    exportOptions: {
-                        columns: function (idx, data, node) {
-                            return true;
-                        }
-                    }
-                },
-                {
-                    extend: "pdfHtml5",
-                    text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                    className: "btn-export-pdf dt-buttons",
-                    exportOptions: {
-                        columns: function (idx, data, node) {
-                            return true;
-                        }
-                    }
-                },
-                {
-                    extend: "print",
-                    text: '<i class="fa-solid fa-print"></i> Imprimir',
-                    title: "Nómina de personal dt-buttons",
-                    exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                    className: "btn-printer",
-                    exportOptions: {
-                    columns: function (idx, data, node) {
-                        return true; 
-                    }
-                }
-                },
-            ],
         });
 
         $(document).on(
