@@ -170,7 +170,7 @@
 
                     <div class="user-chip text-white">
 
-                        <div class="user-avatar">
+                        <!--<div class="user-avatar">
                             @if (Auth::user()->foto)
                                 <img src="{{ asset('storage/' . Auth::user()->foto) }}" alt="Perfil">
                             @else
@@ -178,7 +178,7 @@
                                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                 </span>
                             @endif
-                        </div>
+                        </div> -->
 
                         <div class="user-info text-end small">
                             <div><strong>{{ Auth::user()->name }}</strong></div>

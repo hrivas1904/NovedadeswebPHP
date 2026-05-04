@@ -136,7 +136,7 @@ $(document).on("submit", "#formNuevaNovedad", function (e) {
 
             if (resp.ok) {
                 form[0].reset();
-                $("#tb_configuracion").ajax.reload(null, false);
+                $("#tb_configuracion").DataTable().ajax.reload(null, false);
             }
         },
         error: function (xhr) {

@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="d-flex align-items-start gap-3 my-2">
             <div class="icon-box">
-                <i class="fa-solid fa-user-group"></i>
+                <img src="{{ asset('img/icons/admin-users-logo.png') }}" style="height: 32px;" alt="Logo administración usuarios">
             </div>
             <div>
                 <h3 class="tituloVista mb-0">GESTIÓN DE USUARIOS</h3>
