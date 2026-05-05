@@ -174,13 +174,49 @@ $("#formEditColaborador").on("submit", function (e) {
         error: function (xhr) {
             console.error(xhr.responseText);
             Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "No se pudo actualizar el legajo",
-                    customClass: {
-                        confirmButton: "btn btn-primary",
-                    },
-                });
+                icon: "error",
+                title: "Error",
+                text: "No se pudo actualizar el legajo",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+            });
         },
     });
+});
+
+$("#btnAgregarHijoLegajo").on("click", function (e) {
+    e.preventDefault();
+
+    $("#divHijosLegajo").removeAttr('hidden');
+
+    let index = $("#divHijosLegajo .fila-hijo").length;
+
+    const html = `
+        <div class="row d-flex mb-2 fila-hijo"> 
+            <div class="col-lg-4 col-12">
+                <label class="form-label">Nombre y Apellido</label>
+                <input type="text" name="hijosEdit[${index}][nombre]" class="form-control" required>
+            </div>
+            <div class="col-lg-3 col-12">
+                <label class="form-label">DNI</label>
+                <input type="number" name="hijosEdit[${index}][dni]" class="form-control">
+            </div>
+            <div class="col-lg-3 col-12">
+                <label class="form-label">Fecha nacimiento</label>
+                <input type="date" name="hijosEdit[${index}][fechaNacimiento]" class="form-control">
+            </div>
+            <div class="col-lg-2 col-12 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btnQuitarHijo">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    $("#divHijosLegajo").append(html);
+});
+
+$(document).on("click", ".btnQuitarHijo", function () {
+    $(this).closest(".fila-hijo").remove();
 });

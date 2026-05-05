@@ -1152,6 +1152,20 @@ class PersonalController extends Controller
                 $request->noche
             ]);
 
+            if ($request->has('hijosEdit')) {
+
+                foreach ($request->hijosEdit as $hijo) {
+
+                    DB::statement("CALL SP_INSERTAR_FAMILIAR(?,?,?,?,?)", [
+                        $legajo,
+                        $hijo['nombre'],
+                        'HIJO/A',
+                        $hijo['dni'],
+                        $hijo['fechaNacimiento']
+                    ]);
+                }
+            }
+
             DB::statement("CALL SP_LIMPIAR_REQ_ALIMENTICIOS(?)", [
                 $legajo
             ]);

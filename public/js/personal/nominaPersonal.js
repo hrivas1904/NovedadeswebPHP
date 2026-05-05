@@ -269,7 +269,7 @@ function verLegajo(legajoColaborador, nombre) {
 
                 const familiares = response.familiares;
 
-                const $contenedor = $("#divHijosEdit");
+                const $contenedor = $("#divHijosLegajo");
 
                 $contenedor.empty().removeAttr("hidden");
 
@@ -278,14 +278,16 @@ function verLegajo(legajoColaborador, nombre) {
                 if (familiares && familiares.length > 0) {
                     familiares.forEach((f) => {
                         const htmlFamiliar = `
-                            <div class="col-lg-6">
+                            <div class="col-lg-8 mb-2">
                                 <div class="p-2 border rounded bg-light d-flex justify-content-between">
-                                    <span><strong>${f.nombre}</strong></span>
+                                    <span>Nombre: <strong>${f.nombre}</strong></span>
+                                    <span>DNI: <strong>${f.dni}</strong></span>
+                                    <span>Fecha nacimiento: <strong>${formatearFechaArgentina(f.fechaNacimiento)}</strong></span>
                                     <span class="badge bg-primary">${f.parentesco}</span>
                                 </div>
                             </div>
                         `;
-                        $("#divHijosEdit").append(htmlFamiliar);
+                        $("#divHijosLegajo").append(htmlFamiliar);
                     });
                 } else {
                     $contenedor.append(`

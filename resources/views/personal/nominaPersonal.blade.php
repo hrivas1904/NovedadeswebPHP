@@ -723,12 +723,12 @@
 
                                         <div class="col-lg-2 d-flex flex-column">
                                             <label class="form-label">Agregar hijo/a</label>
-                                            <button id="btnAgregarHijo" class="btn btn-primary">
+                                            <button id="btnAgregarHijoLegajo" class="btn btn-primary">
                                                 <i class="fa-solid fa-plus"></i> Hijo/a
                                             </button>
                                         </div>
 
-                                        <div id="divHijosEdit" class="col-lg-12 empleado-box p-3" hidden>
+                                        <div id="divHijosLegajo" class="col-lg-8 col-12 empleado-box p-3" hidden>
 
                                         </div>
 
