@@ -183,32 +183,21 @@ $(document).ready(function () {
                 },
             ],
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mx-1' \
-                    <'d-flex flex-column flex-sm-row gap-2'B> \
-                    <'ms-md-auto mt-2 mt-md-0'f> \
+                    <'d-flex flex-column flex-sm-row gap-2'> \
+                    <'ms-md-auto mt-2 mt-md-0'> \
                 > \
                 <'my-2'rt> \
                 <'d-bottom d-flex justify-content-center'i>",
-            buttons: [
-                {
-                    extend: "excelHtml5",
-                    text: '<i class="fa-solid fa-file-excel"></i> Excel',
-                    className: "btn-export-excel dt-buttons",
-                    exportOptions: { columns: ":visible" },
-                },
-                {
-                    extend: "pdfHtml5",
-                    text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                    className: "btn-export-pdf dt-buttons",
-                    exportOptions: { columns: ":visible" },
-                },
-                {
-                    extend: "print",
-                    text: '<i class="fa-solid fa-print"></i> Imprimir',
-                    title: "Nómina de personal",
-                    exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                    className: "btn-printer dt-buttons",
-                },
-            ],
+        });
+
+        $("#searchPersonal").on("keyup", function () {
+            let valor = $(this).val();
+            tablaPersonal.search(valor).draw();
+        });
+
+        $("#btnClearSearch").on("click", function () {
+            $("#searchPersonal").val("");
+            tablaPersonal.search("").draw();
         });
 
         $(document).on(

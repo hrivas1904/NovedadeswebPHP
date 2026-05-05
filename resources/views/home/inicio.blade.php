@@ -51,7 +51,7 @@
     @endif
 
     <div class="section-divider text-center mb-3">
-        <span>AVISOS PUBLICADOS</span>
+        <span>AVISOS</span>
     </div>
 
     <div class="row mb-4">

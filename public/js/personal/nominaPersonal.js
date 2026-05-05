@@ -516,7 +516,7 @@ $(document).ready(function () {
             ],
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2' \
                     <'d-flex flex-column flex-sm-row gap-2'> \
-                    <'ms-md-auto mt-2 mt-md-0'f> \
+                    <'ms-md-auto mt-2 mt-md-0'> \
                 > \
                 <'my-2'rt> \
                 <'d-bottom d-flex justify-content-center'i>",
@@ -547,6 +547,16 @@ $(document).ready(function () {
                 tablaPersonal.ajax.reload();
             }
         }, 500);
+
+        $("#searchPersonal").on("keyup", function () {
+            let valor = $(this).val();
+            tablaPersonal.search(valor).draw();
+        });
+
+        $("#btnClearSearch").on("click", function () {
+            $("#searchPersonal").val("");
+            tablaPersonal.search("").draw();
+        });
 
         $(document).on("click", "#tb_personal tbody tr", function () {
             const tabla = $("#tb_personal").DataTable();

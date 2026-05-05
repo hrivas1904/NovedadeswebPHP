@@ -64,7 +64,21 @@
             <div class="col-12 col-xl-10 col-xxl-10">
                 <div class="card" style="border-radius:15px;">
                     <div class="card-header">
-                        <div class="row d-flex align-item-center">
+                        <div class="d-flex justify-content-end align-items-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" id="btnExportExcel" class="btn btn-primary">
+                                    <i class="fa-regular fa-file-excel"></i> Excel
+                                </button>
+                                <div class="input-group" style="max-width: 750px;">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                                    </span>
+                                    <input type="text" id="searchPersonal" class="form-control" placeholder="Buscar colaborador...">
+                                    <button class="btn btn-secondary" id="btnClearSearch" type="button">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </div>                            
                         </div>
                     </div>
                     <div class="card-body">
