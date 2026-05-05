@@ -182,11 +182,7 @@ $(document).ready(function () {
                     width: "auto",
                 },
             ],
-            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mx-1' \
-                    <'d-flex flex-column flex-sm-row gap-2'> \
-                    <'ms-md-auto mt-2 mt-md-0'> \
-                > \
-                <'my-2'rt> \
+            dom: "<'my-2'rt> \
                 <'d-bottom d-flex justify-content-center'i>",
         });
 

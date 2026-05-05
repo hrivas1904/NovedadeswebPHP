@@ -514,18 +514,11 @@ $(document).ready(function () {
                     },
                 },
             ],
-            dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2' \
-                    <'d-flex flex-column flex-sm-row gap-2'> \
-                    <'ms-md-auto mt-2 mt-md-0'> \
-                > \
-                <'my-2'rt> \
+            dom: "<'my-2'rt> \
                 <'d-bottom d-flex justify-content-center'i>",
         });
 
-        $(document).on(
-            "change",
-            ".check-area, .check-categ, .check-convenio",
-            function () {
+        $(document).on("change",".check-area, .check-categ, .check-convenio",function () {
                 tablaPersonal.ajax.reload();
             },
         );
