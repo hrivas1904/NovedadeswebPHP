@@ -94,7 +94,7 @@ $("#btnAgregarHijoEdit").on("click", function (e) {
     $("#divHijosEdit").removeAttr("hidden");
 
     const html = `
-        <div class="row d-flex mb-2 fila-hijo"> 
+        <div class="row g-3 fila-hijo"> 
             <div class="col-lg-4">
                 <label class="form-label">Nombre y Apellido</label>
                 <input type="text" name="hijosEdit[0][nombre]" class="form-control" required>
@@ -272,27 +272,9 @@ function cargarMiLegajo() {
                 $("#padreColaboradorEdit").val(d.PADRE);
                 $("#madreColaboradorEdit").val(d.MADRE);
 
-                const familiares = response.familiares;
-
-                $("#divHijosEdit").empty().removeAttr("hidden");
-
-                if (familiares && familiares.length > 0) {
-                    familiares.forEach((f) => {
-                        const htmlFamiliar = `
-                            <div class="col-lg-6">
-                                <div class="p-2 border rounded bg-light d-flex justify-content-between">
-                                    <span><strong>${f.nombre}</strong></span>
-                                    <span class="badge bg-primary">${f.parentesco}</span>
-                                </div>
-                            </div>
-                        `;
-                        $("#divHijosEdit").append(htmlFamiliar);
-                    });
-                }
-
+                cargarHijoColab(d.LEGAJO);
+    
                 console.log("RESPONSE COMPLETA:", response);
-                console.log("FAMILIARES:", response.familiares);
-                console.log($("#contenedorHijosVisualizacion").length);
             } else {
                 Swal.fire("Error", response.mensaje, "error");
             }

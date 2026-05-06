@@ -682,10 +682,7 @@ class PersonalController extends Controller
     {
         try {
             $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
-            DB::statement("SET @dummy = 1"); // 🔥 importante para liberar resultados
-
-            $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
-            DB::statement("SET @dummy2 = 1");
+            DB::statement("SET @dummy = 1");
 
             if (empty($empleadoData)) {
                 return response()->json([
@@ -696,13 +693,31 @@ class PersonalController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $empleadoData[0],
-                'familiares' => $familiares // 🔥 ACÁ ESTÁ LA CLAVE
+                'data' => $empleadoData[0]
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'mensaje' => 'Error al obtener el legajo',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function listarFamiliares(Request $request){
+        try {
+            $legajo=$request->legajo;
+            $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $familiares
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al obtener los hijos del colaborador',
                 'error' => $e->getMessage()
             ], 500);
         }

@@ -122,33 +122,46 @@
                             <div class="section-divider mb-3">
                                 <span>Contactos de emergencia</span>
                             </div>
-                            <div class="empleado-box p-3">
-                                <div class="row g-3">
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Nombre</label>
-                                        <input id="personaEmergencia1Edit" name="personaEmerg1" class="form-control">
+                            <div class="row g-4">
+                                <div class="col-lg-6 col-12 p-2">
+                                    <div class="card p-2">
+                                        <h6>Contacto de Emergencia 1</h6>
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <label class="form-label">Nombre</label>
+                                                <input id="personaEmergencia1Edit" name="personaEmerg1" class="form-control">
+                                            </div>
+                                            <div class="col-lg-6 col-12">
+                                                <label class="form-label">Teléfono</label>
+                                                <input id="contactoEmergencia1Edit" name="telefEmerg1" class="form-control" type="number">
+                                            </div>
+                                            <div class="col-lg-6 col-12">
+                                                <label class="form-label">Parentesco</label>
+                                                <input id="parentescoEmergencia1Edit" name="parentesco1" class="form-control">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Teléfono</label>
-                                        <input id="contactoEmergencia1Edit" name="telefEmerg1" class="form-control"
-                                            type="number">
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Parentesco</label>
-                                        <input id="parentescoEmergencia1Edit" name="parentesco1" class="form-control">
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Nombre</label>
-                                        <input id="personaEmergencia2Edit" name="personaEmerg2" class="form-control">
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Teléfono</label>
-                                        <input id="contactoEmergencia2Edit" name="telefEmerg2" class="form-control"
-                                            type="number">
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Parentesco</label>
-                                        <input id="parentescoEmergencia2Edit" name="parentesco2" class="form-control">
+                                </div>
+                                
+                                
+                                <div class="col-lg-6 col-12 p-2">
+                                    <div class="card p-2">
+                                        <h6>Contacto de Emergencia 2</h6>
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <label class="form-label">Nombre</label>
+                                                <input id="personaEmergencia2Edit" name="personaEmerg2" class="form-control">
+                                            </div>
+                                            <div class="col-lg-6 col-12">
+                                                <label class="form-label">Teléfono</label>
+                                                <input id="contactoEmergencia2Edit" name="telefEmerg2" class="form-control"
+                                                    type="number">
+                                            </div>
+                                            <div class="col-lg-6 col-12">
+                                                <label class="form-label">Parentesco</label>
+                                                <input id="parentescoEmergencia2Edit" name="parentesco2" class="form-control">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -175,8 +188,10 @@
                                         <button id="btnAgregarHijoEdit" class="btn btn-primary">
                                             <i class="fa-solid fa-plus"></i> Hijo/a
                                         </button>
-                                    </div>
-                                    <div id="divHijosEdit" class="col-lg-12 empleado-box p-3" hidden>
+                                    </div>                                    
+                                </div>
+                                <div class="row g-3">
+                                    <div id="divHijosEdit" class="row g-3" hidden>
 
                                     </div>
                                 </div>
@@ -311,5 +326,6 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('js/personal/administrarHijosColab.js') }}"></script>
     <script src="{{ asset('js/personal/miLegajo.js') }}"></script>
 @endpush
