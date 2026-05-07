@@ -124,6 +124,10 @@ Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLega
 
 Route::get('/personal/listarFamiliares', [PersonalController::class, 'listarFamiliares']);
 
+Route::get('/personal/editarFamiliares', [PersonalController::class, 'editarFamiliares']);
+
+Route::post('/personal/quitarFamiliares', [PersonalController::class, 'quitarFamiliares']);
+
 Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado'])
     ->name('personal.baja');
 

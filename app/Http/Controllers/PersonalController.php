@@ -723,6 +723,47 @@ class PersonalController extends Controller
         }
     }
 
+    public function editarFamiliares(Request $request){
+        try {
+            $idHijo=$request->idHijo;
+            $legajo=$request->legajo;
+            $nombre=$request->nombre;
+            $dni=$request->dni;
+            $fechaNacimiento=$request->fechaNacimiento;
+
+            DB::statement("CALL SP_EDITAR_HIJOS(?,?,?,?,?)", [$idHijo, $legajo, $nombre, $dni, $fechaNacimiento]);
+
+            return response()->json([
+                'success' => true
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function quitarFamiliares(Request $request){
+        try {
+            $idHijo=$request->idHijo;
+            $legajo=$request->legajo;
+
+            DB::statement("CALL SP_QUITAR_HIJOS(?,?)", [$idHijo, $legajo]);
+
+            return response()->json([
+                'success' => true
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function bajaEmpleado(Request $request, $legajo)
     {
         try {

@@ -205,7 +205,6 @@ function cargarMiLegajo() {
     $.ajax({
         url: "/verMiLegajo",
         type: "GET",
-
         success: function (response) {
             if (response.success) {
                 const d = response.data;
