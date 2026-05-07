@@ -89,34 +89,6 @@ $("#obraSocial").on("select2:clear", function () {
     $("#codigoOS").val("");
 });
 
-$("#btnAgregarHijoEdit").on("click", function (e) {
-    e.preventDefault();
-    $("#divHijosEdit").removeAttr("hidden");
-
-    const html = `
-        <div class="row g-3 fila-hijo"> 
-            <div class="col-lg-4">
-                <label class="form-label">Nombre y Apellido</label>
-                <input type="text" name="hijosEdit[0][nombre]" class="form-control" required>
-            </div>
-            <div class="col-lg-3">
-                <label class="form-label">DNI</label>
-                <input type="text" name="hijosEdit[0][dni]" class="form-control">
-            </div>
-            <div class="col-lg-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger btnQuitarHijo">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `;
-    $("#divHijosEdit").append(html);
-});
-
-$(document).on("click", ".btnQuitarHijo", function () {
-    $(this).closest(".fila-hijo").remove();
-});
-
 $(function () {
     $("#selectLocalidad").select2({
         language: {

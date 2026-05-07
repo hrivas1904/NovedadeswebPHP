@@ -764,6 +764,28 @@ class PersonalController extends Controller
         }
     }
 
+    public function agregarFamiliares(Request $request){
+        try {
+            $legajo=$request->legajo;
+            $nombre=$request->nombre;            
+            $parentesco='HIJO/A';
+            $dni=$request->dni;
+            $fechaNacimiento=$request->fechaNacimiento;
+
+            DB::statement("CALL SP_INSERTAR_FAMILIAR(?,?,?,?,?)", [$legajo, $nombre, $parentesco, $dni, $fechaNacimiento]);
+
+            return response()->json([
+                'success' => true
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function bajaEmpleado(Request $request, $legajo)
     {
         try {
@@ -1076,8 +1098,6 @@ class PersonalController extends Controller
             $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
             DB::statement("SET @dummy = 1");
 
-            $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
-            DB::statement("SET @dummy2 = 1");
 
             if (empty($empleadoData)) {
                 return response()->json([
@@ -1088,8 +1108,7 @@ class PersonalController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $empleadoData[0],
-                'familiares' => $familiares
+                'data' => $empleadoData[0]
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -1125,18 +1144,6 @@ class PersonalController extends Controller
                 $request->padre,
                 $request->madre
             ]);
-
-            if ($request->hijosEdit) {
-
-                foreach ($request->hijosEdit as $hijo) {
-
-                    DB::statement("CALL SP_INSERTAR_FAMILIAR(?,?,?)", [
-                        $legajo,
-                        $hijo['nombre'],
-                        'HIJO/A'
-                    ]);
-                }
-            }
 
             DB::statement("CALL SP_LIMPIAR_REQ_ALIMENTICIOS(?)", [
                 $legajo
@@ -1207,20 +1214,6 @@ class PersonalController extends Controller
                 $request->uti,
                 $request->noche
             ]);
-
-            if ($request->has('hijosEdit')) {
-
-                foreach ($request->hijosEdit as $hijo) {
-
-                    DB::statement("CALL SP_INSERTAR_FAMILIAR(?,?,?,?,?)", [
-                        $legajo,
-                        $hijo['nombre'],
-                        'HIJO/A',
-                        $hijo['dni'],
-                        $hijo['fechaNacimiento']
-                    ]);
-                }
-            }
 
             DB::statement("CALL SP_LIMPIAR_REQ_ALIMENTICIOS(?)", [
                 $legajo

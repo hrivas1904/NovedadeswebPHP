@@ -128,6 +128,8 @@ Route::get('/personal/editarFamiliares', [PersonalController::class, 'editarFami
 
 Route::post('/personal/quitarFamiliares', [PersonalController::class, 'quitarFamiliares']);
 
+Route::post('/personal/agregarFamiliares', [PersonalController::class, 'agregarFamiliares']);
+
 Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado'])
     ->name('personal.baja');
 
