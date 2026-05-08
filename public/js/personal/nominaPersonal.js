@@ -111,7 +111,7 @@ function subirComprobantes(files) {
     }
 
     $.ajax({
-        url: "/novedades/subir-comprobante", // 👈 TU RUTA
+        url: "/novedades/subir-comprobante",
         method: "POST",
         data: formData,
         processData: false,
@@ -198,6 +198,7 @@ function verLegajo(legajoColaborador, nombre) {
     listarCuentasBancarias(legajoColaborador);
     cargarRequerimientosAlimentarios();
     cargarReqSeleccionados(legajoColaborador);
+    cargarHijoColab(legajoColaborador);        
 
     $.ajax({
         url: `/personal/ver-legajo/${legajoColaborador}`,
@@ -267,37 +268,8 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#inputNoche").val(d.NOCHE);
                 $("#inputUti").val(d.UTI);
 
-                const familiares = response.familiares;
-
-                const $contenedor = $("#divHijosLegajo");
-
-                $contenedor.empty().removeAttr("hidden");
-
-                console.log("FAMILIARES:", response.familiares);
-
-                if (familiares && familiares.length > 0) {
-                    familiares.forEach((f) => {
-                        const htmlFamiliar = `
-                            <div class="col-lg-8 mb-2">
-                                <div class="p-2 border rounded bg-light d-flex justify-content-between">
-                                    <span>Nombre: <strong>${f.nombre}</strong></span>
-                                    <span>DNI: <strong>${f.dni}</strong></span>
-                                    <span>Fecha nacimiento: <strong>${formatearFechaArgentina(f.fechaNacimiento)}</strong></span>
-                                    <span class="badge bg-primary">${f.parentesco}</span>
-                                </div>
-                            </div>
-                        `;
-                        $("#divHijosLegajo").append(htmlFamiliar);
-                    });
-                } else {
-                    $contenedor.append(`
-                        <div class="text-muted">No hay familiares cargados</div>
-                    `);
-                }
-
                 $("#modalLegajoColaborador").modal("show");
 
-                // 🔑 inicializar / refrescar historial CUANDO el modal ya está visible
                 $("#modalLegajoColaborador")
                     .off("shown.bs.modal")
                     .on("shown.bs.modal", function () {
@@ -789,36 +761,6 @@ document.addEventListener("DOMContentLoaded", () => {
             inputHorasEdit.value = "";
         }
     });
-});
-
-//AGREGAR HIJOS
-$("#btnAgregarHijo").on("click", function (e) {
-    e.preventDefault();
-    $("#divHijos").removeAttr("hidden");
-
-    // Es importante usar el nombre hijos[] para que Laravel lo reciba como un array
-    const html = `
-        <div class="row d-flex mb-2 fila-hijo"> 
-            <div class="col-lg-4">
-                <label class="form-label">Nombre y Apellido</label>
-                <input type="text" name="hijos[0][nombre]" class="form-control" required>
-            </div>
-            <div class="col-lg-3">
-                <label class="form-label">DNI</label>
-                <input type="text" name="hijos[0][dni]" class="form-control">
-            </div>
-            <div class="col-lg-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger btnQuitarHijo">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `;
-    $("#divHijos").append(html);
-});
-
-$(document).on("click", ".btnQuitarHijo", function () {
-    $(this).closest(".fila-hijo").remove();
 });
 
 //API GEOREST

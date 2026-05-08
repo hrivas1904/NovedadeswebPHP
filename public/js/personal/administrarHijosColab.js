@@ -1,4 +1,4 @@
-let card;
+let div;
 let idHijo;
 let nombre;
 let dni;
@@ -13,10 +13,10 @@ function cargarHijoColab(legajo) {
 
         success: function (res) {
             if (res.success) {
-                const familiares = res.data;
-                $("#divHijosEdit").empty().removeAttr("hidden");
+                const familiares = res.data;              
 
                 if (familiares && familiares.length > 0) {
+                    $("#divHijosEdit").empty().removeAttr("hidden");
                     familiares.forEach((f) => {
                         const htmlFamiliar = `
                             <div class="col-lg-4 col-12">
@@ -84,19 +84,19 @@ function cargarHijoColab(legajo) {
 }
 
 $(document).on("click", ".btn-edit-hijo", function () {
-    card = $(this).closest(".cardHijos");
-    card.find(".inputNombre, .inputDni, .inputFechaNacimiento").prop("readonly",false);
+    div = $(this).closest(".cardHijos");
+    div.find(".inputNombre, .inputDni, .inputFechaNacimiento").prop("readonly",false);
     $(this).addClass("d-none");
-    card.find(".btn-update-hijo").removeClass("d-none");
+    div.find(".btn-update-hijo").removeClass("d-none");
 });
 
 $(document).on("click", ".btn-update-hijo", function () {
-    card=$(this).closest(".cardHijos");
-    idHijo=card.find(".inputId").val();
-    dni=card.find(".inputDni").val();
-    fechaNacimiento=card.find(".inputFechaNacimiento").val();
-    nombre=card.find(".inputNombre").val();
-    legajo=card.find(".inputLegajo").val();
+    div=$(this).closest(".cardHijos");
+    idHijo=div.find(".inputId").val();
+    dni=div.find(".inputDni").val();
+    fechaNacimiento=div.find(".inputFechaNacimiento").val();
+    nombre=div.find(".inputNombre").val();
+    legajo=div.find(".inputLegajo").val();
 
     if (!nombre || !dni || !fechaNacimiento) {
         Swal.fire({
@@ -147,9 +147,9 @@ $(document).on("click", ".btn-update-hijo", function () {
                     buttonsStyling: false,
                 });
 
-                card.find(".inputNombre, .inputDni, .inputFechaNacimiento").prop("readonly",true,);
-                card.find(".btn-update-hijo").addClass("d-none");
-                card.find(".btn-edit-hijo").removeClass("d-none");
+                div.find(".inputNombre, .inputDni, .inputFechaNacimiento").prop("readonly",true);
+                div.find(".btn-update-hijo").addClass("d-none");
+                div.find(".btn-edit-hijo").removeClass("d-none");
             }
             else {
                 Swal.fire({
@@ -178,9 +178,9 @@ $(document).on("click", ".btn-update-hijo", function () {
 });
 
 $(document).on("click",".btn-eliminar-hijo",function(){
-    card=$(this).closest(".cardHijos");
-    idHijo=card.find(".inputId").val();
-    legajo=card.find(".inputLegajo").val();
+    div=$(this).closest(".cardHijos");
+    idHijo=div.find(".inputId").val();
+    legajo=div.find(".inputLegajo").val();
 
     Swal.fire({
         title: "¿Quitar familiar?",
@@ -213,7 +213,7 @@ $(document).on("click",".btn-eliminar-hijo",function(){
                                 confirmButton: "btn btn-primary",
                             },
                         });
-                        card.closest(".col-lg-3").remove();
+                        div.closest(".col-lg-3").remove();
                         cargarHijoColab(legajo);
                     } else {
                         Swal.fire("Atención", res.mensaje, "warning");
@@ -234,6 +234,7 @@ $(document).on("click",".btn-eliminar-hijo",function(){
 
 $("#btnAgregarHijoEdit").on("click", function (e) {
     e.preventDefault();
+    e.stopPropagation();
     $("#divHijosEdit").removeAttr("hidden");
 
     const html = `
@@ -264,10 +265,11 @@ $("#btnAgregarHijoEdit").on("click", function (e) {
 });
 
 $(document).on("click",".btnGuardarHijo",function(){
-    card=$(this).closest(".fila-hijo");
-    nombre=card.find(".inputNombreGuardar").val();
-    dni=card.find(".inputDniGuardar").val();
-    fechaNacimiento=card.find(".inputFechaNacGuardar").val();
+    div=$(this).closest(".fila-hijo");
+    nombre=div.find(".inputNombreGuardar").val();
+    dni=div.find(".inputDniGuardar").val();
+    fechaNacimiento=div.find(".inputFechaNacGuardar").val();
+    legajo=$(".cardHijos").find(".inputLegajo").val();
 
     if (!nombre || !dni || !fechaNacimiento) {
         Swal.fire({
@@ -300,13 +302,29 @@ $(document).on("click",".btnGuardarHijo",function(){
             nombre:nombre,
             dni:dni,
             fechaNacimiento:fechaNacimiento,
+            legajo:legajo,
         },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success:function(res){
             if(res.success){
-                
+                Swal.fire({
+                    title: "Operación exitosa",
+                    text: "El familiar ha sido agregado correctamente.",
+                    icon: "success",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                    },
+                    buttonsStyling: false,
+                });
+
+                div.fadeOut(400, function() { 
+                    $(this).remove();
+                });
+
+                cargarHijoColab(legajo);
+
             }
             else{
                 Swal.fire({

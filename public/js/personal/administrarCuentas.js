@@ -1,3 +1,10 @@
+let card;
+let cbu;
+let cuenta;
+let id;
+let banco;
+let numeroCuenta;
+
 $.ajaxSetup({
     headers: {
         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -36,7 +43,10 @@ function listarCuentasBancarias(legajo) {
                                             <input type="text"
                                                 class="form-control form-control-sm input-cbu"
                                                 value="${r.cbu ?? ""}"
-                                                disabled>
+                                                readonly>
+                                            <input type="text"
+                                                class="form-control form-control-sm input-legajo d-none"
+                                                value="${r.legajo ?? ""}">
                                         </div>
 
                                         <div class="mt-2">
@@ -44,19 +54,19 @@ function listarCuentasBancarias(legajo) {
                                             <input type="text"
                                                 class="form-control form-control-sm input-cuenta"
                                                 value="${r.numero_cuenta ?? ""}"
-                                                disabled>
+                                                readonly>
                                         </div>
 
                                     </div>
 
                                     <div class="col-lg-4 col-12 text-end">
-                                        <button type="button" class="btn btn-primary btn-editar-cuenta" title="Editar cuenta">
+                                        <button type="button" class="btn btn-sm btn-primary btn-editar-cuenta" title="Editar cuenta">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button type="button"  class="btn btn-primary btn-guardar-cuenta d-none" title="Guardar">
+                                        <button type="button"  class="btn btn-sm btn-primary btn-guardar-cuenta d-none" title="Guardar">
                                             <i class="fa-regular fa-floppy-disk"></i>
                                         </button>
-                                        <button type="button"  class="btn btn-danger btn-eliminar-cuenta" title="Eliminar cuenta">
+                                        <button type="button"  class="btn btn-sm btn-danger btn-eliminar-cuenta" title="Eliminar cuenta">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
@@ -75,107 +85,112 @@ function listarCuentasBancarias(legajo) {
             Swal.fire("Error", error, "error");
         },
     });
+}
 
-    $(document).on("click", ".btn-editar-cuenta", function () {
-        let card = $(this).closest(".req-card");
+$(document).on("click", ".btn-editar-cuenta", function () {
+    card = $(this).closest(".req-card");
+    card.find(".input-cbu, .input-cuenta").prop("readonly", false);
+    card.find(".btn-guardar-cuenta").removeClass("d-none");
+    $(this).addClass("d-none");
+});
 
-        // habilitar inputs
-        card.find(".input-cbu, .input-cuenta").prop("disabled", false);
+$(document).on("click", ".btn-guardar-cuenta", function () {
+    card = $(this).closest(".req-card");
+    cbu = card.find(".input-cbu").val();
+    cuenta = card.find(".input-cuenta").val();
+    id = card.find("input[type=radio]").val();
+    legajo=card.find(".input-legajo").val();
 
-        // mostrar botón guardar
-        card.find(".btn-guardar-cuenta").removeClass("d-none");
-
-        // ocultar botón editar
-        $(this).addClass("d-none");
-    });
-
-    $(document).on("click", ".btn-guardar-cuenta", function () {
-        let card = $(this).closest(".req-card");
-
-        let cbu = card.find(".input-cbu").val();
-        let cuenta = card.find(".input-cuenta").val();
-
-        let id = card.find("input[type=radio]").val();
-
-        $.ajax({
-            url: "/cuentas/actualizar",
-            type: "POST",
-            data: {
-                id: id,
-                cbu: cbu,
-                numero_cuenta: cuenta,
-            },
-            success: function (res) {
-                if (res.success == 1) {
-                    Swal.fire({
-                        title: "Operación exitosa",
-                        text: res.mensaje,
-                        icon: "success",
-                        customClass: {
-                            confirmButton: "btn btn-primary",
-                        },
-                    });
-
-                    card.find(".input-cbu, .input-cuenta").prop(
-                        "disabled",
-                        true,
-                    );
-
-                    card.find(".btn-editar-cuenta").removeClass("d-none");
-                    card.find(".btn-guardar-cuenta").addClass("d-none");
-                } else {
-                    Swal.fire({
-                        title: "Error",
-                        text: res.mensaje,
-                        icon: "error",
-                        customClass: {
-                            confirmButton: "btn btn-primary",
-                        },
-                    });
-                }
-            },
-        });
-    });
-
-    $(document).on("click", ".btn-eliminar-cuenta", function () {
-        let card = $(this).closest(".req-card");
-        let id = card.find("input[type=radio]").val();
-
-        Swal.fire({
-            title: "¿Eliminar cuenta?",
-            text: "Esta acción no se puede deshacer",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Sí, eliminar",
-            confirmButtonColor: "#00b18d",
-            cancelButtonText: "Cancelar",
-            cancelButtonColor: "#004a7c",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "/cuentas/eliminar",
-                    type: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                            "content",
-                        ),
+    $.ajax({
+        url: "/cuentas/actualizar",
+        type: "POST",
+        data: {
+            id: id,
+            cbu: cbu,
+            numero_cuenta: cuenta,
+        },
+        success: function (res) {
+            if (res.success == 1) {
+                Swal.fire({
+                    title: "Operación exitosa",
+                    text: res.mensaje,
+                    icon: "success",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
                     },
-                    data: { id: id },
+                });
+                card.find(".input-cbu, .input-cuenta").prop("readonly",true,);
+                card.find(".btn-editar-cuenta").removeClass("d-none");
+                card.find(".btn-guardar-cuenta").addClass("d-none");
 
-                    success: function (res) {
-                        if (res.success == 1) {
-                            Swal.fire("OK", res.mensaje, "success");
+                listarCuentasBancarias(legajo)
 
-                            card.closest(".col-lg-3").remove();
-                        } else {
-                            Swal.fire("Atención", res.mensaje, "warning");
-                        }
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: res.mensaje,
+                    icon: "error",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
                     },
                 });
             }
-        });
+        },
     });
-}
+});
+
+$(document).on("click", ".btn-eliminar-cuenta", function () {
+    card = $(this).closest(".req-card");
+    id = card.find("input[type=radio]").val();
+    legajo=card.find(".input-legajo").val();
+
+    Swal.fire({
+        title: "¿Eliminar cuenta?",
+        text: "Esta acción no se puede deshacer",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        confirmButtonColor: "#00b18d",
+        cancelButtonText: "Cancelar",
+        cancelButtonColor: "#004a7c",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/cuentas/eliminar",
+                type: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
+                data: { id: id },
+
+                success: function (res) {
+                    if (res.success == 1) {
+                        Swal.fire({
+                            title: "Operación exitosa",
+                            text: res.mensaje,
+                            icon: "success",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                            },
+                        });
+                        listarCuentasBancarias(legajo)
+                    } else {
+                        Swal.fire({
+                            title: "Atención",
+                            text: res.mensaje,
+                            icon: "warning",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                            },
+                        });
+                    }
+                },
+            });
+        }
+    });
+});
 
 $("#btnMostraDivNuevaCuenta").on("click", function () {
     const div = $("#divCrearCuentaBancariaColab");
@@ -191,18 +206,32 @@ $("#btnOcultarDivCuentaNueva").on("click", function () {
 });
 
 $(document).on("click", "#btnGuardarCuenta", function () {
-    let banco = $("#selectBanco").val();
-    let numeroCuenta = $("#inputNumeroCuenta").val();
-    let cbu = $("#inputCbu").val();
-    let legajo = $("#inputLegajo").val();
+    banco = $("#selectBanco").val();
+    numeroCuenta = $("#inputNumeroCuenta").val();
+    cbu = $("#inputCbu").val();
+    legajo = $("#inputLegajo").val();
 
-    if (!banco || !numeroCuenta || !cbu) {
-        Swal.fire("Atención", "Completá todos los campos", "warning");
+    if (!banco || !cbu) {
+        Swal.fire({
+            title: "Atención",
+            icon: "warning",
+            text: "Debe completar Banco y CBU.",
+            customClass: {
+                confirmButton: "btn btn-primary",
+            },
+        });
         return;
     }
 
     if (cbu.length !== 22) {
-        Swal.fire("Atención", "El CBU debe tener 22 dígitos", "warning");
+        Swal.fire({
+            title: "Atención",
+            icon: "warning",
+            text: "El CBU debe tener 22 dígitos.",
+            customClass: {
+                confirmButton: "btn btn-primary",
+            },
+        });
         return;
     }
 
@@ -234,7 +263,7 @@ $(document).on("click", "#btnGuardarCuenta", function () {
 
                 $("#divCrearCuentaBancariaColab").addClass("d-none");
 
-                cargarCuentasBancarias(legajo);
+                listarCuentasBancarias(legajo);
             } else {
                 Swal.fire({
                     title: "Atencion",
@@ -261,8 +290,8 @@ $(document).on("click", "#btnGuardarCuenta", function () {
 });
 
 $(document).on("change", "input[type=radio][name^='cuenta_']", function () {
-    let id = $(this).val();
-    let legajo = $("#inputLegajo").val();
+    id = $(this).val();
+    legajo = $("#inputLegajo").val();
 
     $.ajax({
         url: "/cuentas/priorizar",

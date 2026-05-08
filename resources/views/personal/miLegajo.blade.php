@@ -125,7 +125,7 @@
                             <div class="row g-4">
                                 <div class="col-lg-6 col-12 p-2">
                                     <div class="card p-2">
-                                        <h6>Contacto de Emergencia 1</h6>
+                                        <h6 class="mb-3 text-muted">Contacto de emergencia 1</h6>
                                         <div class="row g-3">
                                             <div class="col-12">
                                                 <label class="form-label">Nombre</label>
@@ -146,7 +146,7 @@
                                 
                                 <div class="col-lg-6 col-12 p-2">
                                     <div class="card p-2">
-                                        <h6>Contacto de Emergencia 2</h6>
+                                        <h6 class="mb-3 text-muted">Contacto de emergencia 1</h6>
                                         <div class="row g-3">
                                             <div class="col-12">
                                                 <label class="form-label">Nombre</label>
