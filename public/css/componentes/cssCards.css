@@ -1,0 +1,32 @@
+.card-hover-radial {
+    position: relative;
+    overflow: hidden; /* Crucial para que la expansión no se salga del card */
+    transition: color 0.4s ease;
+    z-index: 1;
+    background-color: white; /* Estado inicial */
+    cursor: pointer;
+}
+
+.card-hover-radial::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, var(--color-default) 0%, var(--color-second) 100%);
+    border-radius: 50%; /* Esto crea el efecto radial (círculo) */
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+    z-index: -1; /* Se expande por detrás del texto */
+}
+
+/* Estado al pasar el cursor */
+.card-hover-radial:hover {
+    color: white !important; /* El texto cambia a blanco para resaltar */
+}
+
+.card-hover-radial:hover::before {
+    width: 300%; /* Crece lo suficiente para cubrir toda la tarjeta */
+    height: 600%; 
+}

@@ -41,6 +41,10 @@ $("#btnImportar").click(function () {
             icon: "warning",
             title: "Atención",
             text: "Debe seleccionar un archivo",
+            customClass: {
+                confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
         });
         return;
     }
@@ -50,6 +54,10 @@ $("#btnImportar").click(function () {
             icon: "warning",
             title: "Atención",
             text: "Debe seleccionar un tipo de encuesta",
+            customClass: {
+                confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
         });
         return;
     }
@@ -61,7 +69,6 @@ $("#btnImportar").click(function () {
 
     console.log("Enviando tipo:", tipo);
 
-    // 🔥 spinner mientras procesa
     Swal.fire({
         title: "Procesando archivo...",
         text: "Leyendo Excel",
@@ -89,6 +96,10 @@ $("#btnImportar").click(function () {
                 icon: "success",
                 title: "Archivo procesado",
                 text: "Preprocesamiento correcto",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
             });
         },
 
@@ -100,6 +111,10 @@ $("#btnImportar").click(function () {
                 icon: "error",
                 title: "Error",
                 text: err.responseJSON?.mensaje ?? "Error procesando archivo",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
             });
         },
     });
@@ -143,6 +158,10 @@ $("#btnAnalizar").click(function (e) {
             icon: "warning",
             title: "Atención",
             text: "Debe seleccionar un archivo",
+            customClass: {
+                confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
         });
         return;
     }
@@ -152,6 +171,10 @@ $("#btnAnalizar").click(function (e) {
             icon: "warning",
             title: "Atención",
             text: "Debe seleccionar un tipo de encuesta",
+            customClass: {
+                confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
         });
         return;
     }
@@ -181,9 +204,12 @@ $("#btnAnalizar").click(function (e) {
                 icon: "success",
                 title: "Datos procesados",
                 text: `Se insertaron ${res.registrosInsertados} registros`,
-                confirmButtonText: "OK",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
             }).then(() => {
-                location.reload();
+                window.location.href = "/dashboardCalidad";
             });
         },
         error: function (err) {
@@ -194,6 +220,10 @@ $("#btnAnalizar").click(function (e) {
                 icon: "error",
                 title: "Error",
                 text: err.responseJSON?.detalle ?? "Error procesando archivo",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
             });
         },
     });

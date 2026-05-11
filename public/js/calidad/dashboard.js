@@ -51,6 +51,7 @@ function cargarDashboard() {
     });
 }
 
+//EXPECTATIAS
 function renderTablaGuardias(data) {
     if ($.fn.DataTable.isDataTable("#tablaGuardias")) {
         $("#tablaGuardias").DataTable().destroy();
@@ -70,7 +71,6 @@ function renderTablaGuardias(data) {
             { title: "Tipo", data: "tipoEncuesta" },
             { title: "Positivas", data: "positivas" },
             { title: "Negativas", data: "negativas" },
-            { title: "No Aplica", data: "no_aplica" },
             {
                 title: "% Positivas",
                 data: "porc_positivas",
@@ -104,7 +104,6 @@ function renderTablaAreas(data) {
             { title: "Área", data: "area_grupo" },
             { title: "Positivas", data: "positivas" },
             { title: "Negativas", data: "negativas" },
-            { title: "No Aplica", data: "no_aplica" },
             {
                 title: "% Positivas",
                 data: "porc_positivas",
@@ -138,7 +137,6 @@ function renderTablaUti(data) {
             { title: "Tipo UTI", data: "tipo_uti" },
             { title: "Positivas", data: "positivas" },
             { title: "Negativas", data: "negativas" },
-            { title: "No Aplica", data: "no_aplica" },
             {
                 title: "% Positivas",
                 data: "porc_positivas",
