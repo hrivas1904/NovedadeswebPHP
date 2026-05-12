@@ -37,6 +37,10 @@ function cargarDashboard() {
                 let satisfaccion = res.kpi[0].satisfaccion ?? 0;
                 let total = res.kpi[0].total_encuestas ?? 0;
 
+                if (satisfaccion>=95){
+
+                }
+
                 $("#kpiSatisfaccion").text(satisfaccion + "%");
                 $("#kpiEncuestas").text(total);
             }
@@ -46,7 +50,9 @@ function cargarDashboard() {
             renderTablaUti(res.uti);
             renderTablaInternacion(res.internacion);
             renderTablaGuardiaPreguntas(res.guardia_adulto_preguntas);
+            renderTablaGuardiaPediatricaPreguntas(res.guardia_pediatrica_preguntas);
             renderTablaInternacionPreguntas(res.internacion_preguntas);
+            renderTablaInternacionAmb(res.internacion_amb_preguntas);
         },
     });
 }
@@ -76,8 +82,20 @@ function renderTablaGuardias(data) {
                 data: "porc_positivas",
                 render: function (data) {
                     let color =
-                        data >= 80 ? "green" : data >= 60 ? "orange" : "red";
-                    return `<span style="color:${color}; font-weight:bold">${data}%</span>`;
+                        data >= 95 ? "#00b18d" : data >= 90 ? "#ffc107" : "#d64545";
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid white;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${data}%
+                        </span>
+                    `;
                 },
             },
         ],
@@ -109,8 +127,20 @@ function renderTablaAreas(data) {
                 data: "porc_positivas",
                 render: function (data) {
                     let color =
-                        data >= 80 ? "green" : data >= 60 ? "orange" : "red";
-                    return `<span style="color:${color}; font-weight:bold">${data}%</span>`;
+                        data >= 95 ? "#00b18d" : data >= 90 ? "#ffc107" : "#d64545";
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${data}%
+                        </span>
+                    `;
                 },
             },
         ],
@@ -142,8 +172,20 @@ function renderTablaUti(data) {
                 data: "porc_positivas",
                 render: function (data) {
                     let color =
-                        data >= 80 ? "green" : data >= 60 ? "orange" : "red";
-                    return `<span style="color:${color}; font-weight:bold">${data}%</span>`;
+                        data >= 95 ? "#00b18d" : data >= 90 ? "#ffc107" : "#d64545";
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${data}%
+                        </span>
+                    `;
                 },
             },
         ],
@@ -185,6 +227,8 @@ function renderTablaInternacion(data) {
     });
 }
 
+//RESULTADOS POR TIPO DE ENCUESTAS
+
 function renderTablaGuardiaPreguntas(data) {
     if ($.fn.DataTable.isDataTable("#tablaGuardia")) {
         $("#tablaGuardia").DataTable().destroy();
@@ -205,7 +249,7 @@ function renderTablaGuardiaPreguntas(data) {
             { title: "Pregunta", data: "pregunta" },
 
             {
-                title: "Positivos",
+                title: "Positivas",
                 data: "positivos",
                 render: function (data) {
                     return `<span style="color:green;font-weight:bold">${data}</span>`;
@@ -213,7 +257,7 @@ function renderTablaGuardiaPreguntas(data) {
             },
 
             {
-                title: "Negativos",
+                title: "Negativas",
                 data: "negativos",
                 render: function (data) {
                     return `<span style="color:red;font-weight:bold">${data}</span>`;
@@ -231,7 +275,7 @@ function renderTablaGuardiaPreguntas(data) {
             },
 
             {
-                title: "% Positivos",
+                title: "%Positivas",
                 data: null,
                 render: function (row) {
                     let total = row.total_respuestas;
@@ -241,13 +285,106 @@ function renderTablaGuardiaPreguntas(data) {
                         total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
 
                     let color =
-                        porcentaje >= 80
-                            ? "green"
-                            : porcentaje >= 60
-                              ? "orange"
-                              : "red";
+                        porcentaje >= 95
+                            ? "#00b18d"
+                            : porcentaje >= 90
+                              ? "#ffc107"
+                              : "#d64545";
 
-                    return `<span style="color:${color}; font-weight:bold">${porcentaje}%</span>`;
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${porcentaje}%
+                        </span>
+                    `;
+                },
+            },
+        ],
+    });
+}
+
+function renderTablaGuardiaPediatricaPreguntas(data) {
+    if ($.fn.DataTable.isDataTable("#tablaGuardiaPediatrica")) {
+        $("#tablaGuardiaPediatrica").DataTable().destroy();
+    }
+
+    $("#tablaGuardiaPediatrica").DataTable({
+        data: data,
+        autoWidth: false,
+        scrollX: false,
+        paging: false,
+        scrollCollapse: true,
+        scrollY: getScrollY(),
+        responsive: true,
+        searching: false,
+        info: false,
+
+        columns: [
+            { title: "Pregunta", data: "pregunta" },
+
+            {
+                title: "Positivas",
+                data: "positivos",
+                render: function (data) {
+                    return `<span style="color:green;font-weight:bold">${data}</span>`;
+                },
+            },
+
+            {
+                title: "Negativas",
+                data: "negativos",
+                render: function (data) {
+                    return `<span style="color:red;font-weight:bold">${data}</span>`;
+                },
+            },
+
+            {
+                title: "No Aplica",
+                data: "no_aplica",
+            },
+
+            {
+                title: "Total",
+                data: "total_respuestas",
+            },
+
+            {
+                title: "%Positivas",
+                data: null,
+                render: function (row) {
+                    let total = row.total_respuestas;
+                    let positivos = row.positivos;
+
+                    let porcentaje =
+                        total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
+
+                    let color =
+                        porcentaje >= 95
+                            ? "#00b18d"
+                            : porcentaje >= 90
+                              ? "#ffc107"
+                              : "#d64545";
+
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${porcentaje}%
+                        </span>
+                    `;
                 },
             },
         ],
@@ -271,54 +408,156 @@ function renderTablaInternacionPreguntas(data) {
         info: false,
 
         columns: [
-            { title: "Área", data: "area" },
+            { title: "Área", data: "area_grupo" },
 
             { title: "Pregunta", data: "pregunta" },
 
             {
-                title: "Positivos",
+                title: "Positivas",
                 data: "positivos",
-                render: d => `<span style="color:green;font-weight:bold">${d}</span>`
+                render: (d) =>
+                    `<span style="color:green;font-weight:bold">${d}</span>`,
             },
 
             {
-                title: "Negativos",
+                title: "Negativas",
                 data: "negativos",
-                render: d => `<span style="color:red;font-weight:bold">${d}</span>`
+                render: (d) =>
+                    `<span style="color:red;font-weight:bold">${d}</span>`,
             },
 
             {
                 title: "No Aplica",
-                data: "no_aplica"
+                data: "no_aplica",
             },
 
             {
                 title: "Total",
-                data: "total_respuestas"
+                data: "total_respuestas",
             },
 
             {
-                title: "% Positivos",
+                title: "% Positivas",
                 data: null,
                 render: function (row) {
                     let total = row.total_respuestas;
                     let positivos = row.positivos;
 
-                    let porcentaje = total > 0
-                        ? (positivos * 100 / total).toFixed(1)
-                        : 0;
+                    let porcentaje =
+                        total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
 
                     let color =
-                        porcentaje >= 80 ? "green" :
-                        porcentaje >= 60 ? "orange" :
-                        "red";
+                        porcentaje >= 95
+                            ? "#00b18d"
+                            : porcentaje >= 90
+                              ? "#ffc107"
+                              : "#d64545";
 
-                    return `<span style="color:${color}; font-weight:bold">${porcentaje}%</span>`;
-                }
-            }
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${porcentaje}%
+                        </span>
+                    `;
+                },
+            },
         ],
 
-        order: [[0, 'asc'], [6, 'asc']] // primero área, después peor %
+        order: [
+            [0, "asc"],
+            [6, "asc"],
+        ], // primero área, después peor %
+    });
+}
+
+function renderTablaInternacionAmb(data) {
+    if ($.fn.DataTable.isDataTable("#tablaInternacionAmbPreguntas")) {
+        $("#tablaInternacionAmbPregunta").DataTable().destroy();
+    }
+
+    $("#tablaInternacionAmbPregunta").DataTable({
+        data: data,
+        autoWidth: false,
+        scrollX: false,
+        paging: false,
+        scrollCollapse: true,
+        scrollY: getScrollY(),
+        responsive: true,
+        searching: false,
+        info: false,
+
+        columns: [
+            { title: "Pregunta", data: "pregunta" },
+
+            {
+                title: "Positivas",
+                data: "positivos",
+                render: (d) =>
+                    `<span style="color:green;font-weight:bold">${d}</span>`,
+            },
+
+            {
+                title: "Negativas",
+                data: "negativos",
+                render: (d) =>
+                    `<span style="color:red;font-weight:bold">${d}</span>`,
+            },
+
+            {
+                title: "No Aplica",
+                data: "no_aplica",
+            },
+
+            {
+                title: "Total",
+                data: "total_respuestas",
+            },
+
+            {
+                title: "% Positivas",
+                data: null,
+                render: function (row) {
+                    let total = row.total_respuestas;
+                    let positivos = row.positivos;
+
+                    let porcentaje =
+                        total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
+
+                    let color =
+                        porcentaje >= 95
+                            ? "#00b18d"
+                            : porcentaje >= 90
+                              ? "#ffc107"
+                              : "#d64545";
+
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${porcentaje}%
+                        </span>
+                    `;
+                },
+            },
+        ],
+
+        order: [
+            [0, "asc"],
+            [6, "asc"],
+        ], // primero área, después peor %
     });
 }
 
@@ -446,3 +685,9 @@ function renderGrafico(data) {
         },
     });
 }
+
+$("#btnKpiPromedioGuardias").on("click",function(){
+    $('html, body').animate({
+        scrollTop: $("#sectionResultadosGuardias").offset().top - 80
+    }, 500);
+});

@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="col-md-6 col-lg-3 col-12">
-                        <div class="card card-hover-radial text-center">
+                        <div class="card card-hover-radial text-center" id="btnKpiPromedioGuardias">
                             <div class="card-body">
                                 <h5>Promedio General Guardias</h5>
                                 <h2 id="kpiEncuestas">0</h2>
@@ -128,27 +128,32 @@
                     </span>
                 </div>
 
-                <div class="card p-2" id="cardGuardiaAdulto">
-                    <h5>RESULTADOS GUARDIA ADULTO</h5>
+                <section id="sectionResultadosGuardias">
+                    <div class="card p-2 mb-4" id="cardGuardiaAdulto">
+                        <h5>RESULTADOS GUARDIA ADULTO</h5>
+                        <table id="tablaGuardia" class="table table-striped table-bordered w-100"></table>
+                    </div>
+                    <div class="card p-2" id="cardGuardiaPediatrica">
+                        <h5>RESULTADOS GUARDIA PEDIÁTRICA</h5>
+                        <table id="tablaGuardiaPediatrica" class="table table-striped table-bordered w-100"></table>
+                    </div>
+                </section>
 
-                    <table id="tablaGuardia" class="table table-striped table-bordered w-100">
-                        <thead>
-                            <tr>
-                                <th>Pregunta</th>
-                                <th>Positivos</th>
-                                <th>Negativos</th>
-                                <th>No aplica</th>
-                                <th>Total</th>
-                                <th>% Positivos</th>
-                            </tr>
-                        </thead>
-                    </table>
+                <div class="card p-2 mt-4">
+                    <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
+                    <table id="tablaInternacionPreguntas" class="table table-bordered w-100"></table>
                 </div>
 
                 <div class="card p-2 mt-4">
                     <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
                     <table id="tablaInternacionPreguntas" class="table table-bordered w-100"></table>
                 </div>
+
+                <div class="card p-2 mt-4">
+                    <h5>RESULTADOS INTERNACIÓN AMBULATORIA</h5>
+                    <table id="tablaInternacionAmbPregunta" class="table table-bordered w-100"></table>
+                </div>
+                
             </div>
         </div>
     </div>
