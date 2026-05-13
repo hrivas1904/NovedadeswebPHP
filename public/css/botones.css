@@ -290,3 +290,21 @@
 .flatpickr-day.today {
     border-color: #00b18d;
 }
+
+#btn-back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display:block !important;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+}
+
+#btn-back-to-top:hover {
+  transform: scale(1.1);
+  background-color: var(--color-default);
+  border-color: var(--color-default);
+}

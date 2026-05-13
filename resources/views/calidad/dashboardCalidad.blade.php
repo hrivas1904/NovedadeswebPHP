@@ -52,6 +52,7 @@
                         <div class="card card-hover-radial text-center">
                             <div class="card-body">
                                 <h5>Promedio General Expectativas</h5>
+                                <p class="text-muted">Sin distinción de encuestas</p>
                                 <h2 id="kpiSatisfaccion">0%</h2>
                             </div>
                         </div>
@@ -61,25 +62,28 @@
                         <div class="card card-hover-radial text-center" id="btnKpiPromedioGuardias">
                             <div class="card-body">
                                 <h5>Promedio General Guardias</h5>
-                                <h2 id="kpiEncuestas">0</h2>
+                                <p class="text-muted">Expectativas de las Guardias (A-P)</p>
+                                <h2 id="kpiGuardiaGeneral">0%</h2>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-6 col-lg-3 col-12">
-                        <div class="card card-hover-radial text-center">
+                        <div class="card card-hover-radial text-center" id="btnKpiPromedioInternacion">
                             <div class="card-body">
-                                <h5>Promedio General Internación</h5>
-                                <h2 id="kpiEncuestas">0</h2>
+                                <h5>Promedio General Internación con Estadía</h5>
+                                <p class="text-muted">Expectativas Internación con Estadía</p>
+                                <h2 id="kpiInternacionGeneral">0%</h2>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-6 col-lg-3 col-12">
-                        <div class="card card-hover-radial text-center">
+                        <div class="card card-hover-radial text-center" id="btnKpiPromedioAmbulatoria">
                             <div class="card-body">
-                                <h5>Promedio General Ambulatoria</h5>
-                                <h2 id="kpiEncuestas">0</h2>
+                                <h5>Promedio General Int Ambulatoria</h5>
+                                <p class="text-muted">Expectativas de Internación Ambulatoria</p>
+                                <h2 id="kpiInternacionAmbulatoria">0%</h2>
                             </div>
                         </div>
                     </div>
@@ -100,7 +104,7 @@
                         <h3 class="tituloVista">EXPECTATIVAS</h3>
                     </span>
                 </div>
-                
+
                 <div class="row g-3">
                     <div class="col-xl-4 col-lg-6 col-12">
                         <div class="card p-2">
@@ -110,17 +114,17 @@
                     </div>
                     <div class="col-xl-4 col-lg-6 col-12">
                         <div class="card p-2">
-                            <h5>Internación por Área</h5>
+                            <h5>Internación Estadía (Standard-Design-UTI)</h5>
                             <table id="tablaAreas" class="table table-bordered"></table>
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-6 col-12">
                         <div class="card p-2">
-                            <h5>UTI Detalle</h5>
-                            <table id="tablaUti" class="table table-bordered"></table>
+                            <h5>Internación Ambulatoria</h5>
+                            <table id="tablaExpAmb" class="table table-bordered"></table>
                         </div>
                     </div>
-                </div>            
+                </div>
 
                 <div class="section-divider text-center">
                     <span>
@@ -139,24 +143,32 @@
                     </div>
                 </section>
 
-                <div class="card p-2 mt-4">
-                    <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
-                    <table id="tablaInternacionPreguntas" class="table table-bordered w-100"></table>
-                </div>
+                <section id="sectionResultadosInternacionEstadia">
+                    <div class="card p-2 mt-4">
+                        <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
+                        <table id="tablaInternacionPreguntas" class="table table-bordered w-100"></table>
+                    </div>
 
-                <div class="card p-2 mt-4">
-                    <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
-                    <table id="tablaInternacionPreguntas" class="table table-bordered w-100"></table>
-                </div>
+                    <div class="card p-2 mt-4">
+                        <h5>RESULTADOS INTERNACIÓN CON ESTADÍA - GENERAL</h5>
+                        <table id="tablaInternacionPreguntasGeneral" class="table table-bordered w-100"></table>
+                    </div>
+                </section>
 
-                <div class="card p-2 mt-4">
-                    <h5>RESULTADOS INTERNACIÓN AMBULATORIA</h5>
-                    <table id="tablaInternacionAmbPregunta" class="table table-bordered w-100"></table>
-                </div>
-                
+                <section id="sectionResultadosInternacionAmbulatoria">
+                    <div class="card p-2 mt-4">
+                        <h5>RESULTADOS INTERNACIÓN AMBULATORIA</h5>
+                        <table id="tablaInternacionAmbPregunta" class="table table-bordered w-100"></table>
+                    </div>
+                </section>
+
             </div>
         </div>
     </div>
+
+    <button type="button" class="btn btn-primary btn-floating shadow-lg" id="btn-back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
 @endsection
 

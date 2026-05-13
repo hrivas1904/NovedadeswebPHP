@@ -354,6 +354,21 @@ class CalidadController extends Controller
                     [$desde, $hasta, $tipo]
                 ),
 
+                'kpiGuardiaGeneral' => DB::select(
+                    'CALL SP_KPI_PROMEDIO_GUARDIAS(?, ?)',
+                    [$desde, $hasta]
+                ),
+
+                'kpiInternacionGeneral' => DB::select(
+                    'CALL SP_KPI_PROMEDIO_INTERNACION(?, ?)',
+                    [$desde, $hasta]
+                ),
+
+                'kpiInternacionAmbulatoria' => DB::select(
+                    'CALL SP_KPI_PROMEDIO_AMBULATORIAS(?, ?)',
+                    [$desde, $hasta]
+                ),
+
                 // Guardia adulto / pediatrica
                 'guardias' => DB::select(
                     'CALL SP_TABLA_GUARDIAS(?, ?, ?)',
@@ -363,6 +378,12 @@ class CalidadController extends Controller
                 // Internación por área
                 'areas' => DB::select(
                     'CALL SP_TABLA_AREAS(?, ?, ?)',
+                    [$desde, $hasta, $tipo]
+                ),
+
+                // Expectivas UTI's
+                'expectativasAmbulatoria' => DB::select(
+                    'CALL SP_TABLA_AMBULATORIA(?, ?, ?)',
                     [$desde, $hasta, $tipo]
                 ),
 
@@ -390,6 +411,11 @@ class CalidadController extends Controller
 
                 'internacion_preguntas' => DB::select(
                     'CALL SP_ANALISIS_INTERNACION_EST_PREGUNTAS(?, ?)',
+                    [$desde, $hasta]
+                ),
+
+                'internacion_preguntas_general' => DB::select(
+                    'CALL SP_ANALISIS_INTERNACION_EST_PREGUNTAS_GENERAL(?, ?)',
                     [$desde, $hasta]
                 ),
 

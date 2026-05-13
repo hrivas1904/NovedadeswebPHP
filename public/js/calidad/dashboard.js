@@ -1,3 +1,26 @@
+let satisfaccion;
+
+$(document).ready(function () {
+    let mybutton = $("#btn-back-to-top");
+
+    $(window).on("scroll", function () {
+        if ($(window).scrollTop() > 100) {
+            mybutton.fadeIn();
+        } else {
+            mybutton.fadeOut();
+        }
+    });
+
+    mybutton.on("click", function () {
+        $("html, body").animate(
+            {
+                scrollTop: 0,
+            },
+            500,
+        );
+    });
+});
+
 function getScrollY() {
     return window.innerWidth < 768 ? "40vh" : "60vh";
 }
@@ -34,24 +57,54 @@ function cargarDashboard() {
             dashboardData = res;
 
             if (res.kpi && res.kpi.length > 0) {
-                let satisfaccion = res.kpi[0].satisfaccion ?? 0;
-                let total = res.kpi[0].total_encuestas ?? 0;
+                satisfaccion = res.kpi[0].satisfaccion ?? 0;
 
-                if (satisfaccion>=95){
-
+                if (satisfaccion >= 95) {
                 }
 
                 $("#kpiSatisfaccion").text(satisfaccion + "%");
-                $("#kpiEncuestas").text(total);
+            }
+
+            if (res.kpiGuardiaGeneral && res.kpiGuardiaGeneral.length > 0) {
+                satisfaccion = res.kpiGuardiaGeneral[0].satisfaccion ?? 0;
+
+                if (satisfaccion >= 95) {
+                }
+                $("#kpiGuardiaGeneral").text(satisfaccion + "%");
+            }
+
+            if (
+                res.kpiInternacionGeneral &&
+                res.kpiInternacionGeneral.length > 0
+            ) {
+                satisfaccion = res.kpiInternacionGeneral[0].satisfaccion ?? 0;
+
+                if (satisfaccion >= 95) {
+                }
+                $("#kpiInternacionGeneral").text(satisfaccion + "%");
+            }
+
+            if (
+                res.kpiInternacionAmbulatoria &&
+                res.kpiInternacionAmbulatoria.length > 0
+            ) {
+                satisfaccion =
+                    res.kpiInternacionAmbulatoria[0].satisfaccion ?? 0;
+
+                if (satisfaccion >= 95) {
+                }
+                $("#kpiInternacionAmbulatoria").text(satisfaccion + "%");
             }
 
             renderTablaGuardias(res.guardias);
             renderTablaAreas(res.areas);
+            renderTablaExpectativasAmbulatoria(res.expectativasAmbulatoria);
             renderTablaUti(res.uti);
             renderTablaInternacion(res.internacion);
             renderTablaGuardiaPreguntas(res.guardia_adulto_preguntas);
-            renderTablaGuardiaPediatricaPreguntas(res.guardia_pediatrica_preguntas);
+            renderTablaGuardiaPediatricaPreguntas(res.guardia_pediatrica_preguntas,);
             renderTablaInternacionPreguntas(res.internacion_preguntas);
+            renderTablaInternacionPreguntasGeneral(res.internacion_preguntas_general);
             renderTablaInternacionAmb(res.internacion_amb_preguntas);
         },
     });
@@ -82,7 +135,11 @@ function renderTablaGuardias(data) {
                 data: "porc_positivas",
                 render: function (data) {
                     let color =
-                        data >= 95 ? "#00b18d" : data >= 90 ? "#ffc107" : "#d64545";
+                        data >= 95
+                            ? "#00b18d"
+                            : data >= 90
+                              ? "#ffc107"
+                              : "#d64545";
                     return `
                         <span class="badge px-3 py-2"
                             style="
@@ -127,7 +184,59 @@ function renderTablaAreas(data) {
                 data: "porc_positivas",
                 render: function (data) {
                     let color =
-                        data >= 95 ? "#00b18d" : data >= 90 ? "#ffc107" : "#d64545";
+                        data >= 95
+                            ? "#00b18d"
+                            : data >= 90
+                              ? "#ffc107"
+                              : "#d64545";
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${data}%
+                        </span>
+                    `;
+                },
+            },
+        ],
+        pageLength: 5,
+    });
+}
+
+function renderTablaExpectativasAmbulatoria(data) {
+    if ($.fn.DataTable.isDataTable("#tablaExpAmb")) {
+        $("#tablaExpAmb").DataTable().destroy();
+    }
+
+    $("#tablaExpAmb").DataTable({
+        data: data,
+        autoWidth: false,
+        scrollX: false,
+        paging: false,
+        scrollCollapse: true,
+        scrollY: getScrollY(),
+        responsive: true,
+        searching: false,
+        info: false,
+        columns: [
+            { title: "Positivas", data: "positivas" },
+            { title: "Negativas", data: "negativas" },
+            {
+                title: "% Positivas",
+                data: "porc_positivas",
+                render: function (data) {
+                    let color =
+                        data >= 95
+                            ? "#00b18d"
+                            : data >= 90
+                              ? "#ffc107"
+                              : "#d64545";
                     return `
                         <span class="badge px-3 py-2"
                             style="
@@ -172,7 +281,11 @@ function renderTablaUti(data) {
                 data: "porc_positivas",
                 render: function (data) {
                     let color =
-                        data >= 95 ? "#00b18d" : data >= 90 ? "#ffc107" : "#d64545";
+                        data >= 95
+                            ? "#00b18d"
+                            : data >= 90
+                              ? "#ffc107"
+                              : "#d64545";
                     return `
                         <span class="badge px-3 py-2"
                             style="
@@ -280,9 +393,10 @@ function renderTablaGuardiaPreguntas(data) {
                 render: function (row) {
                     let total = row.total_respuestas;
                     let positivos = row.positivos;
+                    let noAplica=row.no_aplica;
 
                     let porcentaje =
-                        total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
+                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(1) : 0;
 
                     let color =
                         porcentaje >= 95
@@ -361,9 +475,10 @@ function renderTablaGuardiaPediatricaPreguntas(data) {
                 render: function (row) {
                     let total = row.total_respuestas;
                     let positivos = row.positivos;
+                    let noAplica=row.no_aplica;
 
                     let porcentaje =
-                        total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
+                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(1) : 0;
 
                     let color =
                         porcentaje >= 95
@@ -442,9 +557,96 @@ function renderTablaInternacionPreguntas(data) {
                 render: function (row) {
                     let total = row.total_respuestas;
                     let positivos = row.positivos;
+                    let noAplica=row.no_aplica;
 
                     let porcentaje =
-                        total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
+                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(1) : 0;
+
+                    let color =
+                        porcentaje >= 95
+                            ? "#00b18d"
+                            : porcentaje >= 90
+                              ? "#ffc107"
+                              : "#d64545";
+
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${porcentaje}%
+                        </span>
+                    `;
+                },
+            },
+        ],
+
+        order: [
+            [0, "asc"],
+            [6, "asc"],
+        ], // primero área, después peor %
+    });
+}
+
+function renderTablaInternacionPreguntasGeneral(data) {
+    if ($.fn.DataTable.isDataTable("#tablaInternacionPreguntasGeneral")) {
+        $("#tablaInternacionPreguntasGeneral").DataTable().destroy();
+    }
+
+    $("#tablaInternacionPreguntasGeneral").DataTable({
+        data: data,
+        autoWidth: false,
+        scrollX: false,
+        paging: false,
+        scrollCollapse: true,
+        scrollY: getScrollY(),
+        responsive: true,
+        searching: false,
+        info: false,
+
+        columns: [
+            { title: "Pregunta", data: "pregunta" },
+
+            {
+                title: "Positivas",
+                data: "positivos",
+                render: (d) =>
+                    `<span style="color:green;font-weight:bold">${d}</span>`,
+            },
+
+            {
+                title: "Negativas",
+                data: "negativos",
+                render: (d) =>
+                    `<span style="color:red;font-weight:bold">${d}</span>`,
+            },
+
+            {
+                title: "No Aplica",
+                data: "no_aplica",
+            },
+
+            {
+                title: "Total",
+                data: "total_respuestas",
+            },
+
+            {
+                title: "% Positivas",
+                data: null,
+                render: function (row) {
+                    let total = row.total_respuestas;
+                    let positivos = row.positivos;
+                    let noAplica=row.no_aplica;
+
+                    let porcentaje =
+                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(1) : 0;
+                    
 
                     let color =
                         porcentaje >= 95
@@ -526,9 +728,10 @@ function renderTablaInternacionAmb(data) {
                 render: function (row) {
                     let total = row.total_respuestas;
                     let positivos = row.positivos;
+                    let noAplica=row.no_aplica;
 
                     let porcentaje =
-                        total > 0 ? ((positivos * 100) / total).toFixed(1) : 0;
+                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(1) : 0;
 
                     let color =
                         porcentaje >= 95
@@ -686,8 +889,31 @@ function renderGrafico(data) {
     });
 }
 
-$("#btnKpiPromedioGuardias").on("click",function(){
-    $('html, body').animate({
-        scrollTop: $("#sectionResultadosGuardias").offset().top - 80
-    }, 500);
+$("#btnKpiPromedioGuardias").on("click", function () {
+    $("html, body").animate(
+        {
+            scrollTop: $("#sectionResultadosGuardias").offset().top - 80,
+        },
+        500,
+    );
+});
+
+$("#btnKpiPromedioInternacion").on("click", function () {
+    $("html, body").animate(
+        {
+            scrollTop:
+                $("#sectionResultadosInternacionEstadia").offset().top - 80,
+        },
+        500,
+    );
+});
+
+$("#btnKpiPromedioAmbulatoria").on("click", function () {
+    $("html, body").animate(
+        {
+            scrollTop:
+                $("#sectionResultadosInternacionAmbulatoria").offset().top - 80,
+        },
+        500,
+    );
 });

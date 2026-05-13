@@ -928,14 +928,14 @@
                                         </div>
                                         <div class="col-xl-1 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">Noche</label>
-                                            <select id="inputNoche" name="noche" class="form-select editAllowed">
+                                            <select id="inputNoche" name="noche" class="form-select">
                                                 <option value="1">SI</option>
                                                 <option value="0">NO</option>
                                             </select>
                                         </div>
                                         <div class="col-xl-1 col-lg-2 col-md-6 col-12">
                                             <label class="form-label">UTI</label>
-                                            <select id="inputUti" name="uti" class="form-select editAllowed">
+                                            <select id="inputUti" name="uti" class="form-select">
                                                 <option value="1">SI</option>
                                                 <option value="0">NO</option>
                                             </select>
