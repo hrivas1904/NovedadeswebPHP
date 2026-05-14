@@ -35,7 +35,7 @@
                 <div class="col-md-2">
                     <button id="btnLimpiar" class="btn btn-secondary w-100">
                         <i class="fa-solid fa-eraser"></i>
-                        Limpiar filtros
+                        Limpiar
                     </button>
                 </div>
                 <div class="col-md-2">
@@ -52,7 +52,7 @@
                         <div class="card card-hover-radial text-center">
                             <div class="card-body">
                                 <h5>Promedio General Expectativas</h5>
-                                <p class="text-muted">Sin distinción de encuestas</p>
+                                <p class="text-small">Sin distinción de encuestas</p>
                                 <h2 id="kpiSatisfaccion">0%</h2>
                             </div>
                         </div>
@@ -62,7 +62,7 @@
                         <div class="card card-hover-radial text-center" id="btnKpiPromedioGuardias">
                             <div class="card-body">
                                 <h5>Promedio General Guardias</h5>
-                                <p class="text-muted">Expectativas de las Guardias (A-P)</p>
+                                <p class="text-small">Expectativas de las Guardias (A-P)</p>
                                 <h2 id="kpiGuardiaGeneral">0%</h2>
                             </div>
                         </div>
@@ -72,7 +72,7 @@
                         <div class="card card-hover-radial text-center" id="btnKpiPromedioInternacion">
                             <div class="card-body">
                                 <h5>Promedio General Internación con Estadía</h5>
-                                <p class="text-muted">Expectativas Internación con Estadía</p>
+                                <p class="text-small">Expectativas Internación con Estadía</p>
                                 <h2 id="kpiInternacionGeneral">0%</h2>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                         <div class="card card-hover-radial text-center" id="btnKpiPromedioAmbulatoria">
                             <div class="card-body">
                                 <h5>Promedio General Int Ambulatoria</h5>
-                                <p class="text-muted">Expectativas de Internación Ambulatoria</p>
+                                <p class="text-small">Expectativas de Internación Ambulatoria</p>
                                 <h2 id="kpiInternacionAmbulatoria">0%</h2>
                             </div>
                         </div>

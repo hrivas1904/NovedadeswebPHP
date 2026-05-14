@@ -23,7 +23,8 @@
 
 /* Estado al pasar el cursor */
 .card-hover-radial:hover {
-    color: white !important; /* El texto cambia a blanco para resaltar */
+    color: white !important;
+        
 }
 
 .card-hover-radial:hover::before {

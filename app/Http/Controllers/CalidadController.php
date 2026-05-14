@@ -104,150 +104,271 @@ class CalidadController extends Controller
 
     public function procesarExcel(Request $request)
     {
+        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '1024M');
+
         $file = $request->file('excel');
         $idTipoEncuesta = (int) $request->input('idTipoEncuesta');
 
-        $spreadsheet = IOFactory::load($file->getPathname());
-        $sheet = $spreadsheet->getActiveSheet();
-        $rows = $sheet->toArray();
-
-        if (count($rows) < 2) {
-            return response()->json([
-                'error' => true,
-                'mensaje' => 'El archivo no contiene datos suficientes'
-            ], 422);
-        }
-
-        // 🔎 Obtener tipo encuesta (para saber si es guardia o internacion)
-        $tipoEncuesta = DB::table('tipos_encuestas')
-            ->where('idTipoEncuesta', $idTipoEncuesta)
-            ->first();
-
-        if (!$tipoEncuesta) {
-            return response()->json([
-                'error' => true,
-                'mensaje' => 'Tipo de encuesta inválido'
-            ], 422);
-        }
-
-        $headers = array_values(array_map(fn($h) => strtoupper(trim((string)$h)), $rows[0]));
-
-        $esInternacion = $tipoEncuesta->grupo === 'INTERNACION';
-
-        // Buscar automáticamente dónde empieza P1
-        $colInicioPreguntas = array_search('P1', $headers, true);
-
-        if ($colInicioPreguntas === false) {
-            return response()->json([
-                'error' => true,
-                'mensaje' => 'No se encontró la columna P1 en el archivo'
-            ], 422);
-        }
-
-        // 📌 Obtener preguntas BD
-        $preguntasDB = DB::table('preguntas_encuestas')
-            ->where('idTipoEncuesta', $idTipoEncuesta)
-            ->orderBy('orden')
-            ->get()
-            ->values();
-
-        if ($preguntasDB->count() === 0) {
-            return response()->json([
-                'error' => true,
-                'mensaje' => 'No hay preguntas configuradas'
-            ], 422);
-        }
-
-        foreach ($preguntasDB as $i => $preg) {
-            $esperado = 'P' . ($i + 1);
-            if (($headers[$colInicioPreguntas + $i] ?? '') !== $esperado) {
-                return response()->json([
-                    'error' => true,
-                    'mensaje' => "Se esperaba columna $esperado"
-                ], 422);
-            }
-        }
-
-        DB::beginTransaction();
-
         try {
 
-            //CREAR BLOQUE DE IMPORTACION DE ENCABEZADO+DETALLE DE LA ENCUESTA
-            DB::statement("CALL SP_GUARDAR_ENCUESTAS_IMPORTACION(?,?,?,?,@idImportacion)", [
-                $idTipoEncuesta,
-                $file->getClientOriginalName(),
-                auth()->id() ?? null,
-                0
-            ]);
+            // =========================
+            // LEER EXCEL
+            // =========================
 
-            $idImportacion = DB::select("SELECT @idImportacion as id")[0]->id;
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+
+            if (count($rows) < 2) {
+                return response()->json([
+                    'error' => true,
+                    'mensaje' => 'El archivo no contiene datos suficientes'
+                ], 422);
+            }
+
+            // =========================
+            // VALIDAR TIPO ENCUESTA
+            // =========================
+
+            $tipoEncuesta = DB::table('tipos_encuestas')
+                ->where('idTipoEncuesta', $idTipoEncuesta)
+                ->first();
+
+            if (!$tipoEncuesta) {
+                return response()->json([
+                    'error' => true,
+                    'mensaje' => 'Tipo de encuesta inválido'
+                ], 422);
+            }
+
+            $headers = array_values(
+                array_map(
+                    fn($h) => strtoupper(trim((string)$h)),
+                    $rows[0]
+                )
+            );
+
+            $esInternacion = $tipoEncuesta->grupo === 'INTERNACION';
+
+            // =========================
+            // BUSCAR P1
+            // =========================
+
+            $colInicioPreguntas = array_search('P1', $headers, true);
+
+            if ($colInicioPreguntas === false) {
+                return response()->json([
+                    'error' => true,
+                    'mensaje' => 'No se encontró la columna P1 en el archivo'
+                ], 422);
+            }
+
+            // =========================
+            // OBTENER PREGUNTAS
+            // =========================
+
+            $preguntasDB = DB::table('preguntas_encuestas')
+                ->where('idTipoEncuesta', $idTipoEncuesta)
+                ->orderBy('orden')
+                ->get()
+                ->values();
+
+            if ($preguntasDB->count() === 0) {
+                return response()->json([
+                    'error' => true,
+                    'mensaje' => 'No hay preguntas configuradas'
+                ], 422);
+            }
+
+            // =========================
+            // VALIDAR COLUMNAS P1..Pn
+            // =========================
+
+            foreach ($preguntasDB as $i => $preg) {
+
+                $esperado = 'P' . ($i + 1);
+
+                if (($headers[$colInicioPreguntas + $i] ?? '') !== $esperado) {
+
+                    return response()->json([
+                        'error' => true,
+                        'mensaje' => "Se esperaba columna $esperado"
+                    ], 422);
+                }
+            }
+
+            // =========================
+            // TRANSACCION
+            // =========================
+
+            DB::beginTransaction();
+
+            // =========================
+            // CREAR IMPORTACION
+            // =========================
+
+            DB::statement(
+                "CALL SP_GUARDAR_ENCUESTAS_IMPORTACION(?,?,?,?,@idImportacion)",
+                [
+                    $idTipoEncuesta,
+                    $file->getClientOriginalName(),
+                    auth()->id() ?? null,
+                    0
+                ]
+            );
+
+            $idImportacion = DB::select(
+                "SELECT @idImportacion as id"
+            )[0]->id;
 
             $registrosInsertados = 0;
+            $filasProcesadas = 0;
 
-            //RECORRER FILAS DEL DATATABLE DE PREVIEW
+            // BATCH DE RESPUESTAS
+            $respuestasBatch = [];
+
+            // =========================
+            // RECORRER FILAS
+            // =========================
+
             for ($i = 1; $i < count($rows); $i++) {
 
                 $fila = $rows[$i];
-                if (empty(array_filter($fila))) continue;
+
+                // SALTAR FILAS VACIAS
+                if (empty(array_filter($fila))) {
+                    continue;
+                }
+
+                // =========================
+                // DATOS ENCABEZADO
+                // =========================
 
                 $numeroAtencion = $fila[0] ?? null;
-                $fechaAtencion = $this->parseFecha($fila[1] ?? null);
-                $fechaEncuesta = $this->parseFecha($fila[2] ?? null);
+
+                $fechaAtencion = $this->parseFecha(
+                    $fila[1] ?? null
+                );
+
+                $fechaEncuesta = $this->parseFecha(
+                    $fila[2] ?? null
+                );
+
                 $paciente = $fila[3] ?? null;
                 $os = $fila[4] ?? null;
                 $plan = $fila[5] ?? null;
 
-                $area = $esInternacion ? ($fila[6] ?? null) : null;
-                $cama = $esInternacion ? ($fila[7] ?? null) : null;
-                $tipoInternacion = $esInternacion ? ($fila[8] ?? null) : null;
+                $area = $esInternacion
+                    ? ($fila[6] ?? null)
+                    : null;
 
-                //INSERT ENCABEZADO DE LA ENCUESTA
-                DB::statement("CALL SP_GUARDAR_ENCUESTAS_ENC(?,?,?,?,?,?,?,?,?,?,?,?,@idEncuesta)", [
-                    $idImportacion,
-                    $idTipoEncuesta,
-                    $numeroAtencion,
-                    $fechaAtencion,
-                    $fechaEncuesta,
-                    $paciente,
-                    $os,
-                    $plan,
-                    $area,
-                    $cama,
-                    $tipoInternacion,
-                    null
-                ]);
+                $cama = $esInternacion
+                    ? ($fila[7] ?? null)
+                    : null;
 
-                $idEncuesta = DB::select("SELECT @idEncuesta as id")[0]->id;
+                $tipoInternacion = $esInternacion
+                    ? ($fila[8] ?? null)
+                    : null;
 
-                //INSERTAR DETALLE DE LA ENCUESTA --> RESPUESTAS
+                // =========================
+                // INSERT ENCABEZADO
+                // =========================
+
+                DB::statement(
+                    "CALL SP_GUARDAR_ENCUESTAS_ENC(
+                    ?,?,?,?,?,?,?,?,?,?,?,?,@idEncuesta
+                )",
+                    [
+                        $idImportacion,
+                        $idTipoEncuesta,
+                        $numeroAtencion,
+                        $fechaAtencion,
+                        $fechaEncuesta,
+                        $paciente,
+                        $os,
+                        $plan,
+                        $area,
+                        $cama,
+                        $tipoInternacion,
+                        null
+                    ]
+                );
+
+                $idEncuesta = DB::select(
+                    "SELECT @idEncuesta as id"
+                )[0]->id;
+
+                // =========================
+                // ARMAR RESPUESTAS
+                // =========================
+
                 foreach ($preguntasDB as $idx => $preg) {
 
                     $colIndex = $colInicioPreguntas + $idx;
-                    $valorRaw = trim((string)($fila[$colIndex] ?? ''));
+
+                    $valorRaw = trim(
+                        (string)($fila[$colIndex] ?? '')
+                    );
 
                     $valorNumerico = null;
                     $valorTexto = null;
 
-                    if ($preg->tipoRespuesta === 'NUMERICA' && is_numeric($valorRaw)) {
+                    // NUMERICA
+                    if (
+                        $preg->tipoRespuesta === 'NUMERICA'
+                        && is_numeric($valorRaw)
+                    ) {
+
                         $valorNumerico = (int)$valorRaw;
                     }
 
+                    // SI/NO
                     if ($preg->tipoRespuesta === 'SI_NO') {
+
                         $valorTexto = strtoupper($valorRaw);
                     }
 
-                    DB::statement("CALL SP_GUARDAR_ENCUESTAS_DET(?,?,?,?)", [
-                        $idEncuesta,
-                        $preg->idPregunta,
-                        $valorNumerico,
-                        $valorTexto
-                    ]);
+                    // AGREGAR AL BATCH
+                    $respuestasBatch[] = [
+                        'idEncabezadoEncuesta' => $idEncuesta,
+                        'idPregunta' => $preg->idPregunta,
+                        'valorNumerico' => $valorNumerico,
+                        'valorTexto' => $valorTexto
+                    ];
 
                     $registrosInsertados++;
                 }
+
+                // =========================
+                // INSERT MASIVO CADA 1000
+                // =========================
+
+                if (count($respuestasBatch) >= 1000) {
+
+                    DB::table('respuestas_encuestas')
+                        ->insert($respuestasBatch);
+
+                    $respuestasBatch = [];
+                }
+
+                $filasProcesadas++;
             }
 
-            //ACTUALIZAR CANTIDAD DE REGISTROS IMPORTADOS
+            // =========================
+            // INSERT FINAL
+            // =========================
+
+            if (!empty($respuestasBatch)) {
+
+                DB::table('respuestas_encuestas')
+                    ->insert($respuestasBatch);
+            }
+
+            // =========================
+            // ACTUALIZAR IMPORTACION
+            // =========================
+
             DB::table('importaciones_encuestas')
                 ->where('idImportacion', $idImportacion)
                 ->update([
@@ -259,21 +380,18 @@ class CalidadController extends Controller
             return response()->json([
                 'ok' => true,
                 'idImportacion' => $idImportacion,
-                'filasProcesadas' => count($rows) - 1,
+                'filasProcesadas' => $filasProcesadas,
                 'registrosInsertados' => $registrosInsertados
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
 
             DB::rollBack();
 
-            return response()->json([
-                'error' => true,
-                'mensaje' => 'Error al procesar archivo',
-                'detalle' => $e->getMessage()
-            ], 500);
-        } catch (\Exception $e) {
-
-            DB::rollBack();
+            Log::error('ERROR IMPORTANDO ENCUESTAS', [
+                'mensaje' => $e->getMessage(),
+                'linea' => $e->getLine(),
+                'archivo' => $e->getFile()
+            ]);
 
             return response()->json([
                 'error' => true,

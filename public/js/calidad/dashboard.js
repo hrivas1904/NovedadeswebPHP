@@ -157,6 +157,9 @@ function renderTablaGuardias(data) {
             },
         ],
         pageLength: 5,
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -206,6 +209,9 @@ function renderTablaAreas(data) {
             },
         ],
         pageLength: 5,
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -254,6 +260,9 @@ function renderTablaExpectativasAmbulatoria(data) {
             },
         ],
         pageLength: 5,
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -303,6 +312,9 @@ function renderTablaUti(data) {
             },
         ],
         pageLength: 5,
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -337,6 +349,9 @@ function renderTablaInternacion(data) {
             },
         ],
         pageLength: 5,
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -421,6 +436,9 @@ function renderTablaGuardiaPreguntas(data) {
                 },
             },
         ],
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -503,6 +521,9 @@ function renderTablaGuardiaPediatricaPreguntas(data) {
                 },
             },
         ],
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -589,7 +610,10 @@ function renderTablaInternacionPreguntas(data) {
         order: [
             [0, "asc"],
             [6, "asc"],
-        ], // primero área, después peor %
+        ],
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -675,7 +699,10 @@ function renderTablaInternacionPreguntasGeneral(data) {
         order: [
             [0, "asc"],
             [6, "asc"],
-        ], // primero área, después peor %
+        ],
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
@@ -760,7 +787,10 @@ function renderTablaInternacionAmb(data) {
         order: [
             [0, "asc"],
             [6, "asc"],
-        ], // primero área, después peor %
+        ],
+        language:{
+            url:"/js/es-ES.json",
+        }
     });
 }
 
