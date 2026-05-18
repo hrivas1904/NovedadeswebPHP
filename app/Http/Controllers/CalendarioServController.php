@@ -151,7 +151,6 @@ class CalendarioServController extends Controller
                 $hasta
             ]);
 
-            // 🔥 Crear Excel
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
 
@@ -160,10 +159,13 @@ class CalendarioServController extends Controller
                 [
                     'Legajo',
                     'Colaborador',
+                    'Regimen',
                     'Desde',
                     'Hasta',
                     'Días',
-                    'Horas',
+                    'Horas Totales',
+                    'Horas Normales',
+                    'Horas Extras',
                     'Caja',
                     'Turno'
                 ]
@@ -171,15 +173,20 @@ class CalendarioServController extends Controller
 
             // Datos
             $fila = 2;
+
             foreach ($data as $row) {
+
                 $sheet->setCellValue("A{$fila}", $row->legajo);
                 $sheet->setCellValue("B{$fila}", $row->colaborador);
-                $sheet->setCellValue("C{$fila}", $row->fechaDesde);
-                $sheet->setCellValue("D{$fila}", $row->fechaHasta);
-                $sheet->setCellValue("E{$fila}", $row->cantidad_dias);
-                $sheet->setCellValue("F{$fila}", $row->horas);
-                $sheet->setCellValue("G{$fila}", $row->caja ? 'SI' : 'NO');
-                $sheet->setCellValue("H{$fila}", $row->turno);
+                $sheet->setCellValue("C{$fila}", $row->regimen);
+                $sheet->setCellValue("D{$fila}", $row->fechaDesde);
+                $sheet->setCellValue("E{$fila}", $row->fechaHasta);
+                $sheet->setCellValue("F{$fila}", $row->dias);
+                $sheet->setCellValue("G{$fila}", $row->horas_totales);
+                $sheet->setCellValue("H{$fila}", $row->horas_normales);
+                $sheet->setCellValue("I{$fila}", $row->horas_extras);
+                $sheet->setCellValue("J{$fila}", $row->caja ? 'SI' : 'NO');
+                $sheet->setCellValue("K{$fila}", $row->turno);
                 $fila++;
             }
 
@@ -187,9 +194,10 @@ class CalendarioServController extends Controller
             $fileName = 'reporte_calendario.xlsx';
             $temp_file = tempnam(sys_get_temp_dir(), $fileName);
             $writer->save($temp_file);
-
-            return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
+            return response()->download($temp_file, $fileName)
+                ->deleteFileAfterSend(true);
         } catch (\Exception $e) {
+
             return response()->json([
                 'error' => true,
                 'message' => $e->getMessage()
