@@ -307,31 +307,43 @@ function inicializarORefrescarHistorial() {
             { data: "REGISTRO" },
             {
                 data: "FECHA_REGISTRO",
-                width: "6%",
+                width: "7%",
                 render: function (data) {
                     return formatearFechaArgentina(data);
                 },
             },
-            { data: "NOVEDAD_NOMBRE" },
+            { 
+                data: "NOVEDAD_NOMBRE",
+                width: "35%"
+            },
             {
                 data: "FECHA_DESDE",
+                width:"3%",
                 render: function (data) {
                     return formatearFechaArgentina(data);
                 },
             },
             {
                 data: "FECHA_HASTA",
+                width:"3%",
                 render: function (data) {
                     return formatearFechaArgentina(data);
                 },
             },
             {
                 data: "DURACION",
+                width:"7%",
                 className: "text-start",
                 render: (d) => d ?? "-",
             },
             {
+                data:"DESCRIPCION",
+                width: "40%",
+                className: "text-wrap"
+            },
+            {
                 data: "REGISTRO",
+                width:"5%",
                 orderable: false,
                 searchable: false,
                 className: "text-center",

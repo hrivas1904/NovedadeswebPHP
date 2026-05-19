@@ -963,6 +963,7 @@
                                                 <th>DESDE</th>
                                                 <th>HASTA</th>
                                                 <th>VALOR</th>
+                                                <th>DESCRIPCIÓN</th>
                                                 <th>COMPROBANTES</th>
                                             </tr>
                                         </thead>
