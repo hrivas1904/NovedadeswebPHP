@@ -431,6 +431,70 @@ class PersonalController extends Controller
         exit;
     }
 
+    public function exportarListaColabBajaDatatable(Request $request)
+    {
+        $data = DB::select('CALL SP_LISTA_EMPLEADOS_BAJA(?, ?, ?, ?)', [
+            $request->area_id,
+            $request->categ_id,
+            $request->p_convenio,
+            $request->p_regimen
+        ]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headers = [
+            'LEGAJO',
+            'COLABORADOR',
+            'DNI',
+            'FECHA INGRESO',
+            'AREA',
+            'CATEGORIA',
+            'REGIMEN',
+            'HORAS DIARIAS',
+            'CONVENIO',
+            'ESTADO',
+            'FECHA EGRESO',   // Extraído del SP
+            'MOTIVO BAJA'     // Extraído del SP
+        ];
+
+        $sheet->fromArray($headers, NULL, 'A1');
+
+        // 🔹 Datos
+        $row = 2;
+        foreach ($data as $item) {
+            $sheet->setCellValue("A$row", $item->LEGAJO);
+            $sheet->setCellValue("B$row", $item->COLABORADOR);
+            $sheet->setCellValue("C$row", $item->DNI);
+            $sheet->setCellValue("D$row", $item->FECHA_INGRESO);
+            $sheet->setCellValue("E$row", $item->AREA);
+            $sheet->setCellValue("F$row", $item->CATEGORIA);
+            $sheet->setCellValue("G$row", $item->REGIMEN);
+            $sheet->setCellValue("H$row", $item->HORAS_DIARIAS);
+            $sheet->setCellValue("I$row", $item->CONVENIO);
+            $sheet->setCellValue("J$row", $item->ESTADO);
+            $sheet->setCellValue("K$row", $item->FECHA_EGRESO);
+            $sheet->setCellValue("L$row", $item->MOTIVO_BAJA);
+
+            $row++;
+        }
+
+        foreach (range('A', 'L') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $fileName = 'colaboradores_baja_' . date('Ymd_His') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$fileName\"");
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+
+        exit;
+    }
+
     public function listarCuentasBancarias(Request $request)
     {
         try {
@@ -704,16 +768,16 @@ class PersonalController extends Controller
         }
     }
 
-    public function listarFamiliares(Request $request){
+    public function listarFamiliares(Request $request)
+    {
         try {
-            $legajo=$request->legajo;
+            $legajo = $request->legajo;
             $familiares = DB::select("CALL SP_LISTAR_FAMILIARES(?)", [$legajo]);
 
             return response()->json([
                 'success' => true,
                 'data' => $familiares
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -723,20 +787,20 @@ class PersonalController extends Controller
         }
     }
 
-    public function editarFamiliares(Request $request){
+    public function editarFamiliares(Request $request)
+    {
         try {
-            $idHijo=$request->idHijo;
-            $legajo=$request->legajo;
-            $nombre=$request->nombre;
-            $dni=$request->dni;
-            $fechaNacimiento=$request->fechaNacimiento;
+            $idHijo = $request->idHijo;
+            $legajo = $request->legajo;
+            $nombre = $request->nombre;
+            $dni = $request->dni;
+            $fechaNacimiento = $request->fechaNacimiento;
 
             DB::statement("CALL SP_EDITAR_HIJOS(?,?,?,?,?)", [$idHijo, $legajo, $nombre, $dni, $fechaNacimiento]);
 
             return response()->json([
                 'success' => true
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -745,17 +809,17 @@ class PersonalController extends Controller
         }
     }
 
-    public function quitarFamiliares(Request $request){
+    public function quitarFamiliares(Request $request)
+    {
         try {
-            $idHijo=$request->idHijo;
-            $legajo=$request->legajo;
+            $idHijo = $request->idHijo;
+            $legajo = $request->legajo;
 
             DB::statement("CALL SP_QUITAR_HIJOS(?,?)", [$idHijo, $legajo]);
 
             return response()->json([
                 'success' => true
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -764,20 +828,20 @@ class PersonalController extends Controller
         }
     }
 
-    public function agregarFamiliares(Request $request){
+    public function agregarFamiliares(Request $request)
+    {
         try {
-            $legajo=$request->legajo;
-            $nombre=$request->nombre;            
-            $parentesco='HIJO/A';
-            $dni=$request->dni;
-            $fechaNacimiento=$request->fechaNacimiento;
+            $legajo = $request->legajo;
+            $nombre = $request->nombre;
+            $parentesco = 'HIJO/A';
+            $dni = $request->dni;
+            $fechaNacimiento = $request->fechaNacimiento;
 
             DB::statement("CALL SP_INSERTAR_FAMILIAR(?,?,?,?,?)", [$legajo, $nombre, $parentesco, $dni, $fechaNacimiento]);
 
             return response()->json([
                 'success' => true
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -923,8 +987,10 @@ class PersonalController extends Controller
 
             $mensaje = DB::selectOne("SELECT @p_mensaje as mensaje");
 
+            $ok = $mensaje->mensaje === 'Solicitud registrada correctamente';
+
             return response()->json([
-                'ok' => true,
+                'ok' => $ok,
                 'mensaje' => $mensaje->mensaje
             ]);
         } catch (\Exception $e) {
@@ -933,7 +999,7 @@ class PersonalController extends Controller
                 'ok' => false,
                 'mensaje' => 'Error al registrar solicitud',
                 'error' => $e->getMessage()
-            ]);
+            ], 500);
         }
     }
 

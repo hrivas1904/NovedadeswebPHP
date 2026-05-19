@@ -43,7 +43,7 @@
                                     <span>TODAS</span>
                                 </label>
                                 <label class="filtro-item">
-                                    <input type="checkbox" class="check-estado" value="PENDIENTE DE AUTORIZACIÓN" checked>
+                                    <input type="checkbox" class="check-estado" value="PENDIENTE" checked>
                                     <span>PENDIENTES</span>
                                 </label>
                                 <label class="filtro-item">

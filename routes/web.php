@@ -108,6 +108,8 @@ Route::post('/personal/guardar', [PersonalController::class, 'store'])
 
 Route::get('/personal/exportarListaColabDatatable', [PersonalController::class, 'exportarListaColabDatatable']);
 
+Route::get('/personal/exportarListaColabBajaDatatable', [PersonalController::class, 'exportarListaColabBajaDatatable']);
+
 Route::get('/personal/listar', [PersonalController::class, 'listar'])
     ->name('personal.listar');
 

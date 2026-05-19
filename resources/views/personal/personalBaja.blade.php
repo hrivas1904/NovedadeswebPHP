@@ -66,7 +66,7 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-end align-items-center">
                             <div class="d-flex align-items-center gap-2">
-                                <button type="button" id="btnExportExcel" class="btn btn-primary">
+                                <button type="button" id="btnExportExcelBaja" class="btn btn-primary">
                                     <i class="fa-regular fa-file-excel"></i> Excel
                                 </button>
                                 <div class="input-group" style="max-width: 750px;">

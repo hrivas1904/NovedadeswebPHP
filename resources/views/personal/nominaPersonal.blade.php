@@ -79,13 +79,14 @@
                                     <span class="input-group-text bg-white">
                                         <i class="fa-solid fa-magnifying-glass text-muted"></i>
                                     </span>
-                                    <input type="text" id="searchPersonal" class="form-control" placeholder="Buscar colaborador...">
+                                    <input type="text" id="searchPersonal" class="form-control"
+                                        placeholder="Buscar colaborador...">
                                     <button class="btn btn-secondary" id="btnClearSearch" type="button">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="card-body">
@@ -238,7 +239,7 @@
                                                         <input id="parentescoEmergencia1Edit" name="parentesco1"
                                                             class="form-control editAllowed">
                                                     </div>
-                                                </div>                                                
+                                                </div>
                                             </div>
                                         </div>
 
@@ -577,59 +578,61 @@
                         </div>
 
                         @if (Auth::user()->rol === 'Administrador/a')
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="section-divider mb-3">
-                                    <span>Información bancaria del colaborador</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <button type="button" id="btnMostraDivNuevaCuenta" class="btn btn-primary">
-                                        <i class="fa-solid fa-square-plus"></i>
-                                        Agregar cuenta
-                                    </button>
-                                    <div id="divCrearCuentaBancariaColab" class="row g-1 my-2 d-none">
-                                        <div class="empleado-box p-3">
-                                            <div class="row align-items-center mb-2">
-                                                <div class="col">
-                                                    <h5 class="mb-0">Crear nueva cuenta</h5>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <button type="button" class="btn" id="btnOcultarDivCuentaNueva">
-                                                        <i class="fa-solid fa-x"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="row g-2 mb-2">
-                                                <div class="col-lg-4 col-md-6 col-12">
-                                                    <label class="form-label">Banco</label>
-                                                    <select class="form-select" id="selectBanco" name="banco">
-                                                        <option selected value="">Seleccione banco</option>
-                                                        <option value="Macro">Macro</option>
-                                                        <option value="Francés">Francés</option>
-                                                        <option value="Nación">Nación</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-12">
-                                                    <label class="form-label">Cuenta N°</label>
-                                                    <input name="numero_cuenta" type="number" id="inputNumeroCuenta"
-                                                        class="form-control" />
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-12">
-                                                    <label class="form-label">CBU</label>
-                                                    <input name="cbu" type="number" id="inputCbu"
-                                                        class="form-control" />
-                                                </div>
-                                            </div>
-                                            <button class="btn btn-primary" type="button" id="btnGuardarCuenta">Crear
-                                                cuenta
-                                            </button>
-                                        </div>
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="section-divider mb-3">
+                                        <span>Información bancaria del colaborador</span>
                                     </div>
-                                    <div id="contenedorCuentasBancarias" class="row g-1 my-2">
+                                    <div class="empleado-box p-3">
+                                        <button type="button" id="btnMostraDivNuevaCuenta" class="btn btn-primary">
+                                            <i class="fa-solid fa-square-plus"></i>
+                                            Agregar cuenta
+                                        </button>
+                                        <div id="divCrearCuentaBancariaColab" class="row g-1 my-2 d-none">
+                                            <div class="empleado-box p-3">
+                                                <div class="row align-items-center mb-2">
+                                                    <div class="col">
+                                                        <h5 class="mb-0">Crear nueva cuenta</h5>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <button type="button" class="btn"
+                                                            id="btnOcultarDivCuentaNueva">
+                                                            <i class="fa-solid fa-x"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-2 mb-2">
+                                                    <div class="col-lg-4 col-md-6 col-12">
+                                                        <label class="form-label">Banco</label>
+                                                        <select class="form-select" id="selectBanco" name="banco">
+                                                            <option selected value="">Seleccione banco</option>
+                                                            <option value="Macro">Macro</option>
+                                                            <option value="Francés">Francés</option>
+                                                            <option value="Nación">Nación</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6 col-12">
+                                                        <label class="form-label">Cuenta N°</label>
+                                                        <input name="numero_cuenta" type="number" id="inputNumeroCuenta"
+                                                            class="form-control" />
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6 col-12">
+                                                        <label class="form-label">CBU</label>
+                                                        <input name="cbu" type="number" id="inputCbu"
+                                                            class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-primary" type="button"
+                                                    id="btnGuardarCuenta">Crear
+                                                    cuenta
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="contenedorCuentasBancarias" class="row g-1 my-2">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         @endif
 
                         <div class="row mb-4">
@@ -1154,8 +1157,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalNuevaOs" tabindex="-1" aria-labelledby="staticBackdropLabel"
-        aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal fade" id="modalNuevaOs" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
+        data-bs-backdrop="static">
 
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -1281,7 +1284,7 @@
 @push('scripts')
     <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
     <script src="{{ asset('js/personal/administrarHijosColab.js') }}"></script>
-    <script src="{{ asset('js/personal/administrarCuentas.js') }}"></script>    
+    <script src="{{ asset('js/personal/administrarCuentas.js') }}"></script>
     <script src="{{ asset('js/personal/scriptComun.js') }}"></script>
     <script src="{{ asset('js/personal/editColaborador.js') }}"></script>
     <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
@@ -1296,6 +1299,11 @@
                     $(this).prop("readonly", true);
                 } else if ($(this).is("select")) {
                     $(this).prop("disabled", true);
+                    let name = $(this).attr("name");
+                    let val = $(this).val();
+                    if (name) {
+                        $(this).after(`<input type="hidden" name="${name}" value="${val}">`);
+                    }
                 } else if ($(this).is("textarea")) {
                     $(this).prop("readonly", true);
                 }

@@ -1,6 +1,24 @@
 let tablaSolicitudes = null;
 let seleccionados = new Set();
 
+function formatearFechaHora(fechaInput) {
+    const fecha = fechaInput ? new Date(fechaInput) : new Date();
+
+    if (isNaN(fecha.getTime())) {
+        console.error("HP3C SOFT Error: La fecha proporcionada no es válida.");
+        return "Fecha inválida";
+    }
+
+    const pad = (num) => String(num).padStart(2, "0");
+    const dia = pad(fecha.getDate());
+    const mes = pad(fecha.getMonth() + 1);
+    const año = fecha.getFullYear();
+    const horas = pad(fecha.getHours());
+    const minutos = pad(fecha.getMinutes());
+
+    return `${dia}/${mes}/${año} ${horas}:${minutos}`;
+}
+
 flatpickr("#fechaDesde, #fechaHasta", {
     locale: "es",
     altInput: true,
@@ -219,6 +237,13 @@ $("#inputMonto").on("change", function () {
         numeroALetras($("#inputMontoEnviar").val()).toUpperCase() + " PESOS",
     );
     console.log($("#inputDescripMonto").val());
+});
+
+$("#inputMonto").on("keydown", function (e) {
+    const teclasBloqueadas = [190, 188, 186, 110];
+    if (teclasBloqueadas.includes(e.which)) {
+        e.preventDefault();
+    }
 });
 
 function abrirSolicitud() {
@@ -522,7 +547,14 @@ $(document).ready(function () {
                     className: "text-start",
                     orderable: true,
                 },
-                { data: "fecha", width: "6%", className: "text-start" },
+                {
+                    data: "fecha",
+                    width: "6%",
+                    className: "text-start",
+                    render: function (data) {
+                        return formatearFechaHora(data);
+                    },
+                },
                 {
                     data: "legajo",
                     width: "4%",
@@ -588,8 +620,7 @@ $(document).ready(function () {
                     className: "text-start",
                     render: function (data) {
                         let clase = "bg-secondary";
-                        if (data === "PENDIENTE DE AUTORIZACIÓN")
-                            clase = "bg-warning";
+                        if (data === "PENDIENTE") clase = "bg-warning";
                         if (data === "APROBADA") clase = "bg-success";
                         if (data === "RECHAZADA") clase = "bg-danger";
                         return `<span style="font-size:.80rem" class="badge ${clase}">${data}</span>`;
@@ -605,7 +636,7 @@ $(document).ready(function () {
 
                         let botones = "";
 
-                        if (row.estado === "PENDIENTE DE AUTORIZACIÓN") {
+                        if (row.estado === "PENDIENTE") {
                             botones += `
                                 <button
                                     type="button"
@@ -665,25 +696,6 @@ $(document).ready(function () {
                         },
                     },
                 },
-                {
-                    extend: "pdfHtml5",
-                    text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                    className: "btn-export-pdf dt-buttons",
-                    orientation: "landscape",
-                    pageSize: "A4",
-                    exportOptions: {
-                        columns: [2, 3, 4, 6, 7, 9, 10, 11],
-                    },
-                },
-                {
-                    extend: "print",
-                    className: ".btn-printer dt-buttons",
-                    text: '<i class="fa-solid fa-print"></i> Imprimir',
-                    title: "Nómina de personal",
-                    exportOptions: {
-                        columns: [2, 3, 4, 6, 7, 9, 10, 11],
-                    },
-                },
             ],
         });
     }
@@ -741,7 +753,7 @@ $(document).on("click", "#btnDepositarAdelantos", function (event) {
         confirmButtonText: "Sí, depositar",
         cancelButtonText: "Cancelar",
         confirmButtonColor: "#00b18d",
-        cancelButtonColor: "#004a7c"
+        cancelButtonColor: "#004a7c",
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
@@ -776,11 +788,11 @@ $(document).on("click", "#btnDepositarAdelantos", function (event) {
                 },
                 error: function () {
                     Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "Error del servidor",
-                            confirmButtonColor: "#00b18d",
-                        });
+                        icon: "error",
+                        title: "Error",
+                        text: "Error del servidor",
+                        confirmButtonColor: "#00b18d",
+                    });
                 },
             });
         }
