@@ -380,7 +380,7 @@ function inicializarORefrescarHistorial() {
                 },
             },
         ],
-        scrollX: true,
+        scrollX: false,
         paging: false,
         scrollCollapse: true,
         scrollY: "40vh",
@@ -407,13 +407,6 @@ function inicializarORefrescarHistorial() {
                 text: '<i class="fa-solid fa-file-pdf"></i> PDF',
                 className: "btn-export-pdf",
                 exportOptions: { columns: ":visible" },
-            },
-            {
-                extend: "print",
-                text: '<i class="fa-solid fa-print"></i> Imprimir',
-                title: "Productos en sucursal",
-                exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                className: "btn-printer",
             },
         ],
     });

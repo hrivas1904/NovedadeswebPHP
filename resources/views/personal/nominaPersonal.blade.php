@@ -110,6 +110,7 @@
                 </div>
             </div>
         </div>
+        <div id="contenedorConstancia" class="d-none"></div>
     </div>
 @endsection
 
@@ -978,6 +979,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <button class="btn btn-tertiary" type="button" id="btnGenerarConstancia">
+                        Generar constancia de trabajo
+                    </button>
                     <button class="btn btn-primary" type="submit" form="formEditColaborador">
                         Guardar cambios
                     </button>
@@ -1282,12 +1286,19 @@
 @endpush
 
 @push('scripts')
+
+    <script>
+        const logoHp3c="{{ asset('img/logo_2.png') }}";
+        const firma="{{ asset('img/ffernandez-firma.png') }}"
+    </script>
+
     <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
     <script src="{{ asset('js/personal/administrarHijosColab.js') }}"></script>
     <script src="{{ asset('js/personal/administrarCuentas.js') }}"></script>
     <script src="{{ asset('js/personal/scriptComun.js') }}"></script>
     <script src="{{ asset('js/personal/editColaborador.js') }}"></script>
     <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
+    <script src="{{ asset('js/personal/generarConstanciaPdf.js') }}"></script>
 
     <script>
         const USER_ROLE = "{{ Auth::user()->rol }}";

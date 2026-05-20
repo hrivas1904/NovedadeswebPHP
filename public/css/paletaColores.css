@@ -13,10 +13,16 @@
     --nav-text: #ffffff;
     --nav-hover: #00b18d;
 
+    --color-default: #00558C;
+    --color-second: #0089C7;
+    --color-accent-green: #1DAC8A;
+    --color-accent-red: #d64545;
+
+    /*
     --color-default: #004a7c;
     --color-second: #0091d5;
     --color-accent-green: #00b18d;
-    --color-accent-red: #d64545;
+    */
 
     --color-white: #ffffff;
     --color-body: #f4f7fa;

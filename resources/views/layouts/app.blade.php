@@ -47,7 +47,7 @@
         <div class="container-fluid">
 
             <a class="navbar-brand d-flex align-items-center" href="{{ route('index') }}">
-                <img src="{{ asset('img/logo_2.png') }}" height="40" class="me-2 logo-navbar">
+                <img src="{{ asset('img/logo-hp3c-white.png') }}" height="40" class="me-2 logo-navbar">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">

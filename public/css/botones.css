@@ -42,6 +42,18 @@
     border-color: #0b3c6d;
 }
 
+.btn.btn-tertiary {
+    background-color: var(--color-second);
+    border-color: var(--color-second);
+    color: white;
+}
+
+.btn.btn-tertiary:hover {
+    background-color: #0091d5;
+    border-color: #0091d5;
+    color: white;
+}
+
 .btn.btn-danger {
     background-color: var(--color-accent-red);
     border-color: var(--color-accent-red);
