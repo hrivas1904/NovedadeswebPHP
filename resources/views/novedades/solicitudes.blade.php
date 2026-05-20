@@ -114,6 +114,16 @@
                                 <i class="fa-solid fa-file-invoice-dollar"></i> Depositar
                             </button>
                         </div>
+                        <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
+                            <button type="button" id="btnAprobarSolicitudes" class="btn btn-primary w-100">
+                                <i class="fa-solid fa-file-invoice-dollar"></i> Aprobar
+                            </button>
+                        </div>
+                        <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
+                            <button type="button" id="btnRechazarAdelantos" class="btn btn-danger w-100">
+                                <i class="fa-solid fa-square-xmark"></i> Rechazar
+                            </button>
+                        </div>
                     @endif
 
                 </div>
@@ -140,7 +150,6 @@
                                     <th>ESTADO</th>
                                     <th class="text-end">
                                         <div class="d-flex align-items-start justify-content-center gap-2">
-                                            <span>ACCIONES</span>
                                             <input type="checkbox" class="form-check-input" id="checkAll">
                                         </div>
                                     </th>

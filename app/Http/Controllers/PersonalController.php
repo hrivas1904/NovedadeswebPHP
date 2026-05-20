@@ -1037,27 +1037,34 @@ class PersonalController extends Controller
     {
         try {
 
-            $idUser = Auth::user()->id;
+            DB::beginTransaction();
 
-            $request->validate([
-                'idSolicitud' => 'required|integer'
-            ]);
+            foreach ($request->ids as $idSolicitud) {
 
-            $idSolicitud = $request->idSolicitud;
+                DB::statement(
+                    "CALL SP_APROBAR_SOLICITUD(?, ?, @p_msj)",
+                    [
+                        $idSolicitud,
+                        auth()->id()
+                    ]
+                );
+            }
 
-            DB::statement("CALL SP_APROBAR_SOLICITUD(?, ?, @p_msj)", [$idSolicitud, $idUser]);
-            $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
+            DB::commit();
 
             return response()->json([
-                'ok' => true,
-                'mensaje' => $mensaje->mensaje
+                'success' => true,
+                'mensaje' => 'Solicitudes aprobadas correctamente'
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
             return response()->json([
-                'ok' => false,
-                'mensaje' => 'Error al aprobar solicitud',
+                'success' => false,
+                'mensaje' => 'Error al aprobar solicitudes',
                 'error' => $e->getMessage()
-            ], 500);
+            ]);
         }
     }
 

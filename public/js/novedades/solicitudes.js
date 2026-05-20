@@ -15,8 +15,7 @@ function formatearFechaHora(fechaInput) {
     const año = fecha.getFullYear();
     const horas = pad(fecha.getHours());
     const minutos = pad(fecha.getMinutes());
-
-    return `${dia}/${mes}/${año} ${horas}:${minutos}`;
+    return `${año}-${mes}-${dia} ${horas}:${minutos}`;
 }
 
 flatpickr("#fechaDesde, #fechaHasta", {
@@ -325,101 +324,81 @@ $("#formCargaSolicitud").on("submit", function (e) {
     });
 });
 
-function aprobarSolicitud(idSolicitud, nombre, e) {
-    e.preventDefault();
+$(document).on("click", "#btnAprobarSolicitudes", function (event) {
+    event.preventDefault();
+
+    let ids = [];
+
+    $(".check-row:checked").each(function () {
+        ids.push($(this).data("id"));
+    });
+
+    if (ids.length === 0) {
+        Swal.fire("Atención", "Seleccioná al menos una solicitud", "warning");
+
+        return;
+    }
 
     Swal.fire({
-        title: `¿Aprobar la solicitud N° ${idSolicitud}?`,
-        text: `Colaborador: ${nombre}`,
+        title: "¿Confirmar aprobación?",
+        text: `Se aprobarán ${ids.length} solicitud(es)`,
         icon: "question",
         showCancelButton: true,
-        confirmButtonText: "Aprobar",
-        cancelButtonText: "Rechazar",
+        confirmButtonText: "Sí, aprobar",
+        cancelButtonText: "Cancelar",
         confirmButtonColor: "#00b18d",
         cancelButtonColor: "#004a7c",
-        reverseButtons: true,
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
                 url: "/personal/aprobarSolicitud",
-                method: "POST",
-                data: { idSolicitud: idSolicitud },
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content",
-                    ),
-                },
-                success: function (resp) {
-                    if (resp.ok) {
-                        Swal.fire({
-                            title: "Operación exitosa",
-                            text: resp.mensaje,
-                            icon: "success",
-                            confirmButtonColor: "#00b18d",
-                        });
-                        tablaSolicitudes.ajax.reload(null, false);
-                    } else {
-                        Swal.fire({
-                            title: "Error",
-                            text: resp.mensaje,
-                            icon: "error",
-                            confirmButtonColor: "#00b18d",
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    console.log(xhr.responseText);
-                    Swal.fire({
-                        title: "Error",
-                        text: "Error del servidor",
-                        icon: "error",
-                        confirmButtonColor: "#00b18d",
-                    });
-                },
-            });
-        }
 
-        if (result.dismiss === Swal.DismissReason.cancel) {
-            $.ajax({
-                url: "/personal/rechazarSolicitud",
-                method: "POST",
-                data: { idSolicitud: idSolicitud },
+                type: "POST",
+
+                data: {
+                    ids: ids,
+                },
+
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                         "content",
                     ),
                 },
-                success: function (resp) {
-                    if (resp.ok) {
+
+                success: function (res) {
+                    if (res.success) {
                         Swal.fire({
-                            title: "Solicitud rechazada",
-                            text: resp.mensaje,
                             icon: "success",
+                            title: "Operación exitosa",
+                            text: res.mensaje,
                             confirmButtonColor: "#00b18d",
                         });
+
+                        $("#checkAll").prop("checked", false);
+
                         tablaSolicitudes.ajax.reload(null, false);
                     } else {
                         Swal.fire({
-                            title: "Error",
-                            text: resp.mensaje,
                             icon: "error",
+                            title: "Error",
+                            text: res.mensaje,
                             confirmButtonColor: "#00b18d",
                         });
                     }
                 },
-                error: function (xhr) {
-                    console.log(xhr.responseText);
+
+                error: function () {
                     Swal.fire({
+                        icon: "error",
                         title: "Error",
                         text: "Error del servidor",
-                        icon: "error",
                         confirmButtonColor: "#00b18d",
                     });
                 },
             });
         }
     });
-}
+});
 
 function anularSolicitud(idSolicitud, nombre, e) {
     if (e) {
@@ -628,48 +607,16 @@ $(document).ready(function () {
                 },
                 {
                     data: null,
-                    className: "text-center",
                     width: "3%",
                     orderable: false,
-                    render: function (row) {
-                        if (USER_ROLE !== "Administrador/a") return "";
-
-                        let botones = "";
-
-                        if (row.estado === "PENDIENTE") {
-                            botones += `
-                                <button
-                                    type="button"
-                                    class="btn btn-primary btn-AprobarSolicitud"
-                                    data-id="${row.id}"
-                                    data-nombre="${row.colaborador}"
-                                    title="Aprobar solicitud">
-                                    <i class="fa-solid fa-file-circle-question"></i>
-                                </button>
-                            `;
-                        }
-
-                        if (row.estado === "APROBADA") {
-                            botones += `
-                                <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <button
-                                        type="button"
-                                        class="btn-danger btn btn-RechazarSolicitud"
-                                        data-id="${row.id}"
-                                        data-nombre="${row.colaborador}"
-                                        title="Anular solicitud">
-                                        <i class="fa-solid fa-square-xmark fs-5"></i>
-                                    </button>
-                                    <div class="text-center">
-                                        <input type="checkbox" 
-                                            class="form-check-input check-row" 
-                                            data-id="${row.id}">
-                                    </div>
-                                </div>
-                            `;
-                        }
-
-                        return botones;
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        return `
+                            <input 
+                                type="checkbox"
+                                class="form-check-input check-row"
+                                data-id="${row.id}">
+                        `;
                     },
                 },
             ],
@@ -706,20 +653,6 @@ $(document).ready(function () {
 
     $("#selectDepositado").on("change", function () {
         tablaSolicitudes.ajax.reload();
-    });
-
-    $(document).on("click", ".btn-AprobarSolicitud", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        const idSolicitud = $(this).data("id");
-        const nombre = $(this).data("nombre");
-        aprobarSolicitud(idSolicitud, nombre, event);
-    });
-
-    $(document).on("click", ".btn-RechazarSolicitud", function (event) {
-        const idSolicitud = $(this).data("id");
-        const nombre = $(this).data("nombre");
-        anularSolicitud(idSolicitud, nombre, event);
     });
 });
 
