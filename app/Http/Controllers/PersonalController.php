@@ -1071,27 +1071,34 @@ class PersonalController extends Controller
     public function rechazarSolicitud(Request $request)
     {
         try {
-            $request->validate([
-                'idSolicitud' => 'required|integer'
-            ]);
 
-            $idSolicitud = $request->idSolicitud;
-            $idUser = Auth::user()->id;
+            DB::beginTransaction();
 
-            DB::statement("CALL SP_RECHAZAR_SOLICITUD(?, ?, @p_msj)", [$idSolicitud, $idUser]);
+            foreach ($request->ids as $idSolicitud) {
 
-            $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
+                DB::statement(
+                    "CALL SP_RECHAZAR_SOLICITUD(?, @p_msj)",
+                    [
+                        $idSolicitud
+                    ]
+                );
+            }
+
+            DB::commit();
 
             return response()->json([
-                'ok' => true,
-                'mensaje' => $mensaje->mensaje
+                'success' => true,
+                'mensaje' => 'Solicitudes rechazadas correctamente'
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
             return response()->json([
-                'ok' => false,
-                'mensaje' => 'Error al rechazar solicitud',
+                'success' => false,
+                'mensaje' => 'Error al rechazar solicitudes',
                 'error' => $e->getMessage()
-            ], 500);
+            ]);
         }
     }
 

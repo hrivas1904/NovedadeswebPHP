@@ -56,22 +56,48 @@ $(document).on("change", ".check-estado", function () {
     tablaSolicitudes.ajax.reload();
 });
 
-//CHECK BOX PARA DEPOSITAR
+//CHECK BOX PARA SELECCIONAR SOLICITUDES
 $(document).on("change", "#checkAll", function () {
     const isChecked = $(this).is(":checked");
     $(".check-row").prop("checked", isChecked);
+    actualizarBotonesMasivos();
 });
 
 $(document).on("change", ".check-row", function () {
     const total = $(".check-row").length;
     const checked = $(".check-row:checked").length;
-
     $("#checkAll").prop("checked", total === checked);
+    actualizarBotonesMasivos();
 });
 
 $(document).on("click", ".check-row", function (event) {
     event.stopPropagation();
 });
+
+function obtenerEstadosSeleccionados() {
+    let estados = [];
+    $(".check-row:checked").each(function () {
+        estados.push($(this).data("estado"));
+    });
+    return estados;
+}
+
+function actualizarBotonesMasivos() {
+    let estados = obtenerEstadosSeleccionados();
+
+    let todosPendientes =
+        estados.length > 0 && estados.every((e) => e === "PENDIENTE");
+
+    let todosAprobadas =
+        estados.length > 0 && estados.every((e) => e === "APROBADA");
+
+    let todosRechazadas =
+        estados.length > 0 && estados.every((e) => e === "RECHAZADA");
+
+    $("#btnAprobarSolicitudes").prop("disabled", !todosPendientes);
+    $("#btnDepositarAdelantos").prop("disabled", !todosAprobadas);
+    $("#btnRechazarSolicitudes").prop("disabled", !todosAprobadas);
+}
 
 $("#inputMonto").on("input", function () {
     let valor = parseFloat($(this).val());
@@ -173,7 +199,6 @@ function numeroALetras(num) {
         );
     }
 
-    // 🔥 miles
     if (num < 1000000) {
         const miles = Math.floor(num / 1000);
         const resto = num % 1000;
@@ -334,8 +359,12 @@ $(document).on("click", "#btnAprobarSolicitudes", function (event) {
     });
 
     if (ids.length === 0) {
-        Swal.fire("Atención", "Seleccioná al menos una solicitud", "warning");
-
+        Swal.fire({
+            title: "Atención",
+            text: "Seleccione al menos una solicitud",
+            icon: "warning",
+            confirmButtonColor: "#1DAC8A",
+        });
         return;
     }
 
@@ -615,7 +644,8 @@ $(document).ready(function () {
                             <input 
                                 type="checkbox"
                                 class="form-check-input check-row"
-                                data-id="${row.id}">
+                                data-id="${row.id}"
+                                data-estado="${row.estado}">
                         `;
                     },
                 },
@@ -674,7 +704,12 @@ $(document).on("click", "#btnDepositarAdelantos", function (event) {
     });
 
     if (ids.length === 0) {
-        Swal.fire("Atención", "Seleccioná al menos una solicitud", "warning");
+        Swal.fire({
+            title: "Atención",
+            text: "Seleccione al menos una solicitud",
+            icon: "warning",
+            confirmButtonColor: "#1DAC8A",
+        });
         return;
     }
 
@@ -724,6 +759,86 @@ $(document).on("click", "#btnDepositarAdelantos", function (event) {
                         icon: "error",
                         title: "Error",
                         text: "Error del servidor",
+                        confirmButtonColor: "#00b18d",
+                    });
+                },
+            });
+        }
+    });
+});
+
+$(document).on("click", "#btnRechazarAdelantos", function (event) {
+    event.preventDefault();
+
+    let ids = [];
+
+    $(".check-row:checked").each(function () {
+        ids.push($(this).data("id"));
+    });
+
+    if (ids.length === 0) {
+        Swal.fire({
+            title: "Atención",
+            text: "Seleccione al menos una solicitud",
+            icon: "warning",
+            confirmButtonColor: "#1DAC8A",
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: "¿Confirmar rechazo?",
+        text: `Se rechazarán ${ids.length} solicitud(es)`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, rechazar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#1DAC8A",
+        cancelButtonColor: "#004a7c",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/personal/rechazarSolicitud",
+
+                type: "POST",
+
+                data: {
+                    ids: ids,
+                },
+
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
+
+                success: function (res) {
+                    if (res.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Operación exitosa",
+                            text: res.mensaje,
+                            confirmButtonColor: "#00b18d",
+                        });
+
+                        $("#checkAll").prop("checked", false);
+
+                        tablaSolicitudes.ajax.reload(null, false);
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: res.mensaje,
+                            confirmButtonColor: "#00b18d",
+                        });
+                    }
+                },
+
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: xhr.responseJSON?.error || "Error del servidor",
                         confirmButtonColor: "#00b18d",
                     });
                 },

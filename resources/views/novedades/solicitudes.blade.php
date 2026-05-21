@@ -116,7 +116,7 @@
                         </div>
                         <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
                             <button type="button" id="btnAprobarSolicitudes" class="btn btn-primary w-100">
-                                <i class="fa-solid fa-file-invoice-dollar"></i> Aprobar
+                                <i class="fa-solid fa-square-check"></i> Aprobar
                             </button>
                         </div>
                         <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
