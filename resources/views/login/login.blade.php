@@ -279,6 +279,9 @@
             <a href="{{ route('usuario') }}" class="btn-Usuario text-center d-block" style="text-decoration: none;">
                 CREAR USUARIO
             </a>
+            <a href="{{ route('usuario') }}" class="text-center d-block mt-2" style="color: #0b3c6d; background-color: transparent; border: none; text-decoration:none;">
+                Olvidé mi contraseña
+            </a>
         </form>
 
     </div>

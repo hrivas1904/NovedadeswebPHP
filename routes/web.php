@@ -25,343 +25,339 @@ Route::post('/usuario/guardar', [HomeController::class, 'guardar'])->name('usuar
 Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
 
-Route::get('/dashboard', [HomeController::class, 'dashboard'])
-    ->name('dashboard');
-
-Route::get('/nomina', [PersonalController::class, 'nominaPersonal'])
-    ->name('nominaPersonal');
-
-Route::get('/nominaPersonalBaja', [PersonalController::class, 'nominaPersonalBaja'])
-    ->name('nominaPersonalBaja');
-
-Route::get('/cronograma', [PersonalController::class, 'cronogramaPersonal'])
-    ->name('cronogramaPersonal');
-
-Route::get('/registroAsistencia', [PersonalController::class, 'registroAsistencia'])
-    ->name('registroAsistencia');
-
-Route::get('/controlAsistencia', [PersonalController::class, 'controlAsistencia'])
-    ->name('controlAsistencia');
-
-Route::get('/configuraciones', [PersonalController::class, 'configuraciones'])
-    ->name('configuraciones');
-
-Route::get('/administrarUsuarios', [PersonalController::class, 'administrarUsuarios'])
-    ->name('administrarUsuarios');
-
-Route::get('/solicitudes', [PersonalController::class, 'solicitudes'])
-    ->name('personal.solicitudes');
-
-
-Route::get('/registroNovedades', [NovedadesController::class, 'registroNovedades'])
-    ->name('registroNovedades');
-
-Route::get('/controlNovedades', [NovedadesController::class, 'controlNovedades'])
-    ->name('controlNovedades');
-
-Route::get('/configNovedades', [NovedadesController::class, 'configNovedades'])
-    ->name('configNovedades');
-
-
-
-Route::get('/ajustes', [AjustesController::class, 'ajustes'])
-    ->name('ajustes');
-
-Route::get('/configPerfil', [AjustesController::class, 'configPerfil'])
-    ->name('configPerfil');
-
-Route::get('/ayuda', [HomeController::class, 'ayuda'])
-    ->name('ayuda');
-
-
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/ingresar', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/calendario-servicios', [CalendarioServController::class, 'calendarioServicios'])
-    ->name('calendarioServicios');
+Route::middleware(['auth'])->group(function () {
 
-//RUTAS DE SP PERSONAL
-Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
-    ->name('areas.lista');
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])
+        ->name('dashboard');
 
-Route::get('/categorias-empleados/lista', [PersonalController::class, 'listarCategorias'])
-    ->name('categorias.lista');
+    Route::get('/nomina', [PersonalController::class, 'nominaPersonal'])
+        ->name('nominaPersonal');
 
-Route::get('/convenios/lista', [PersonalController::class, 'listarTipoConvenio'])
-    ->name('convenios.lista');
+    Route::get('/nominaPersonalBaja', [PersonalController::class, 'nominaPersonalBaja'])
+        ->name('nominaPersonalBaja');
 
-Route::get('/regimenes/lista', [PersonalController::class, 'listarRegimenes'])
-    ->name('regimenes.lista');
+    Route::get('/cronograma', [PersonalController::class, 'cronogramaPersonal'])
+        ->name('cronogramaPersonal');
 
-Route::get('/estados/lista', [PersonalController::class, 'listarEstados'])
-    ->name('estados.lista');
+    Route::get('/registroAsistencia', [PersonalController::class, 'registroAsistencia'])
+        ->name('registroAsistencia');
 
-Route::get('/roles-empleados/por-categoria/{id}', [PersonalController::class, 'listarRolesXCategoria'])
-    ->name('roles.lista');
+    Route::get('/controlAsistencia', [PersonalController::class, 'controlAsistencia'])
+        ->name('controlAsistencia');
 
-Route::get('/obra-social/lista', [PersonalController::class, 'listarObraSocial'])
-    ->name('obraSocial.lista');
+    Route::get('/configuraciones', [PersonalController::class, 'configuraciones'])
+        ->name('configuraciones');
 
-Route::post('/personal/guardar', [PersonalController::class, 'store'])
-    ->name('personal.store');
+    Route::get('/administrarUsuarios', [PersonalController::class, 'administrarUsuarios'])
+        ->name('administrarUsuarios');
 
-Route::get('/personal/exportarListaColabDatatable', [PersonalController::class, 'exportarListaColabDatatable']);
+    Route::get('/solicitudes', [PersonalController::class, 'solicitudes'])
+        ->name('personal.solicitudes');
 
-Route::get('/personal/exportarListaColabBajaDatatable', [PersonalController::class, 'exportarListaColabBajaDatatable']);
 
-Route::get('/personal/listar', [PersonalController::class, 'listar'])
-    ->name('personal.listar');
+    Route::get('/registroNovedades', [NovedadesController::class, 'registroNovedades'])
+        ->name('registroNovedades');
 
-Route::get('/personal/listarColaboradoresDatatable', [PersonalController::class, 'listarColaboradoresDatatable'])
-    ->name('personal.listarColaboradoresDatatable');
+    Route::get('/controlNovedades', [NovedadesController::class, 'controlNovedades'])
+        ->name('controlNovedades');
 
-Route::get('/personal/listarCargaMasiva', [PersonalController::class, 'listarCargaMasiva'])
-    ->name('personal.listarCargaMasiva');
+    Route::get('/configNovedades', [NovedadesController::class, 'configNovedades'])
+        ->name('configNovedades');
 
-Route::get('/personal/listarPersonalBaja', [PersonalController::class, 'listarPersonalBaja'])
-    ->name('personal.listarPersonalBaja');
 
-Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLegajo']);
 
-Route::get('/personal/listarFamiliares', [PersonalController::class, 'listarFamiliares']);
+    Route::get('/ajustes', [AjustesController::class, 'ajustes'])
+        ->name('ajustes');
 
-Route::get('/personal/editarFamiliares', [PersonalController::class, 'editarFamiliares']);
+    Route::get('/configPerfil', [AjustesController::class, 'configPerfil'])
+        ->name('configPerfil');
 
-Route::post('/personal/quitarFamiliares', [PersonalController::class, 'quitarFamiliares']);
+    Route::get('/ayuda', [HomeController::class, 'ayuda'])
+        ->name('ayuda');
 
-Route::post('/personal/agregarFamiliares', [PersonalController::class, 'agregarFamiliares']);
+    Route::get('/calendario-servicios', [CalendarioServController::class, 'calendarioServicios'])
+        ->name('calendarioServicios');
 
-Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado'])
-    ->name('personal.baja');
+    //RUTAS DE SP PERSONAL
+    Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
+        ->name('areas.lista');
 
-Route::get('/personal/miLegajo', [PersonalController::class, 'miLegajo'])
-    ->name('miLegajo');
+    Route::get('/categorias-empleados/lista', [PersonalController::class, 'listarCategorias'])
+        ->name('categorias.lista');
 
-Route::get('/verMiLegajo', [PersonalController::class, 'verMiLegajo'])->middleware('auth');
+    Route::get('/convenios/lista', [PersonalController::class, 'listarTipoConvenio'])
+        ->name('convenios.lista');
 
-Route::post('/actualizarMiLegajo', [PersonalController::class, 'actualizarMiLegajo'])
-    ->middleware('auth');
+    Route::get('/regimenes/lista', [PersonalController::class, 'listarRegimenes'])
+        ->name('regimenes.lista');
 
-Route::post('/personal/{legajo}/actualizar', [PersonalController::class, 'actualizarLegajoColaborador']);
+    Route::get('/estados/lista', [PersonalController::class, 'listarEstados'])
+        ->name('estados.lista');
 
-Route::get('/novedades/historial/{legajo}',[PersonalController::class, 'historialNovedades']);
+    Route::get('/roles-empleados/por-categoria/{id}', [PersonalController::class, 'listarRolesXCategoria'])
+        ->name('roles.lista');
 
-Route::get('/novedades/historial/{legajo}',[PersonalController::class, 'historialNovedades']);
+    Route::get('/obra-social/lista', [PersonalController::class, 'listarObraSocial'])
+        ->name('obraSocial.lista');
 
-Route::get('/servicios-empleados/por-area/{id}', [PersonalController::class, 'listarServiciosxArea'])
-    ->name('personal.servicios');
+    Route::post('/personal/guardar', [PersonalController::class, 'store'])
+        ->name('personal.store');
 
-Route::put('/personal/{legajo}', [PersonalController::class, 'update']);
+    Route::get('/personal/exportarListaColabDatatable', [PersonalController::class, 'exportarListaColabDatatable']);
 
-Route::get('/usuarios/listar', [PersonalController::class, 'listarUsuarios']);
+    Route::get('/personal/exportarListaColabBajaDatatable', [PersonalController::class, 'exportarListaColabBajaDatatable']);
 
-Route::post('/usuarios/crear', [PersonalController::class, 'crearUsuario']);
+    Route::get('/personal/listar', [PersonalController::class, 'listar'])
+        ->name('personal.listar');
 
-Route::get('/usuarios/obtener/{legajo}', [PersonalController::class, 'obtener']);
-Route::post('/usuarios/actualizar', [PersonalController::class, 'actualizar']);
+    Route::get('/personal/listarColaboradoresDatatable', [PersonalController::class, 'listarColaboradoresDatatable'])
+        ->name('personal.listarColaboradoresDatatable');
 
-Route::post('/usuarios/baja', [PersonalController::class, 'baja']);
+    Route::get('/personal/listarCargaMasiva', [PersonalController::class, 'listarCargaMasiva'])
+        ->name('personal.listarCargaMasiva');
 
-Route::get('/requerimientos-alimentarios', [PersonalController::class, 'listaRequerimientos']);
+    Route::get('/personal/listarPersonalBaja', [PersonalController::class, 'listarPersonalBaja'])
+        ->name('personal.listarPersonalBaja');
 
-Route::get('/personal/{legajo}/req-alimenticios', [PersonalController::class, 'obtenerReqAlimenticios']);
+    Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLegajo']);
 
-Route::post('/obra-social/crear', [PersonalController::class, 'registraNuevaOs'])
-    ->name('obraSocial.registraNuevaOs');
+    Route::get('/personal/listarFamiliares', [PersonalController::class, 'listarFamiliares']);
 
-Route::get('/obra-social/administrarObraSociales', [PersonalController::class, 'administrarObraSociales'])
-    ->name('obraSocial.administrarObraSociales');
+    Route::get('/personal/editarFamiliares', [PersonalController::class, 'editarFamiliares']);
 
-Route::get('/obra-social/{id}', [PersonalController::class, 'verObraSocial'])
-    ->whereNumber('id');
+    Route::post('/personal/quitarFamiliares', [PersonalController::class, 'quitarFamiliares']);
 
-Route::post('/obra-social/editar', [PersonalController::class, 'editarObraSocial'])
-    ->name('obraSocial.editar');
+    Route::post('/personal/agregarFamiliares', [PersonalController::class, 'agregarFamiliares']);
 
-Route::get('/personal/cuentasBancarias', [PersonalController::class, 'listarCuentasBancarias'])
-    ->name('personal.cuentasBancarias');
+    Route::post('/personal/baja/{legajo}', [PersonalController::class, 'bajaEmpleado'])
+        ->name('personal.baja');
 
-Route::post('/cuentas/actualizar', [PersonalController::class, 'actualizarDatosCuentasBancarias']);
+    Route::get('/personal/miLegajo', [PersonalController::class, 'miLegajo'])
+        ->name('miLegajo');
 
-Route::post('/cuentas/eliminar', [PersonalController::class, 'eliminarCuentaBancaria']);
+    Route::get('/verMiLegajo', [PersonalController::class, 'verMiLegajo'])->middleware('auth');
 
-Route::post('/cuentas/crear', [PersonalController::class, 'crearCuentaBancaria']);
+    Route::post('/actualizarMiLegajo', [PersonalController::class, 'actualizarMiLegajo'])
+        ->middleware('auth');
 
-Route::post('/cuentas/priorizar', [PersonalController::class, 'priorizarCuentaBancaria']);
-//RUTAS DE SP NOVEDADES
+    Route::post('/personal/{legajo}/actualizar', [PersonalController::class, 'actualizarLegajoColaborador']);
 
-Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])
-    ->name('novedades.lista');
+    Route::get('/novedades/historial/{legajo}', [PersonalController::class, 'historialNovedades']);
 
-Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
-    ->name('novedades.data');
+    Route::get('/novedades/historial/{legajo}', [PersonalController::class, 'historialNovedades']);
 
-Route::post('/novedades/registrar', [NovedadesController::class, 'registrarNovedad'])->name('novedades.store');
+    Route::get('/servicios-empleados/por-area/{id}', [PersonalController::class, 'listarServiciosxArea'])
+        ->name('personal.servicios');
 
+    Route::put('/personal/{legajo}', [PersonalController::class, 'update']);
 
-Route::get('/novedades/listarNovedadesPorArea', [NovedadesController::class, 'listarNovedadesPorArea'])
-    ->name('novedades.listarNovedadesPorArea');
+    Route::get('/usuarios/listar', [PersonalController::class, 'listarUsuarios']);
 
-Route::get('/novedades/historico', [NovedadesController::class, 'vistaHistorico'])
-    ->name('novedades.historico');
+    Route::post('/usuarios/crear', [PersonalController::class, 'crearUsuario']);
 
-Route::get('/novedades/historicoNovedades', [NovedadesController::class, 'listarHistoricoNovedades'])
-    ->name('novedades.historicoNovedades');
+    Route::get('/usuarios/obtener/{legajo}', [PersonalController::class, 'obtener']);
+    Route::post('/usuarios/actualizar', [PersonalController::class, 'actualizar']);
 
-Route::get('/novedades/listarMisNovedades', [NovedadesController::class, 'listarMisNovedades'])
-    ->name('novedades.listarMisNovedades');
+    Route::post('/usuarios/baja', [PersonalController::class, 'baja']);
 
-Route::get(
-    '/personal/info/{legajo}',
-    [PersonalController::class, 'infoMinimaEmpleado']
-)->name('personal.info');
+    Route::get('/requerimientos-alimentarios', [PersonalController::class, 'listaRequerimientos']);
 
-Route::get('/novedades/{codigo}', [NovedadesController::class, 'verNovedad'])
-    ->whereNumber('codigo');
+    Route::get('/personal/{legajo}/req-alimenticios', [PersonalController::class, 'obtenerReqAlimenticios']);
 
+    Route::post('/obra-social/crear', [PersonalController::class, 'registraNuevaOs'])
+        ->name('obraSocial.registraNuevaOs');
 
-Route::post('/novedades/alta-novedad', [NovedadesController::class, 'altaNuevaNovedad']);
+    Route::get('/obra-social/administrarObraSociales', [PersonalController::class, 'administrarObraSociales'])
+        ->name('obraSocial.administrarObraSociales');
 
-Route::post(
-    '/novedades/subir-comprobante',
-    [NovedadesController::class, 'subirComprobante']
-)->name('novedades.subirComprobante');
+    Route::get('/obra-social/{id}', [PersonalController::class, 'verObraSocial'])
+        ->whereNumber('id');
 
-Route::get(
-    '/novedades/{id}/comprobantes',
-    [NovedadesController::class, 'listarComprobantes']
-);
+    Route::post('/obra-social/editar', [PersonalController::class, 'editarObraSocial'])
+        ->name('obraSocial.editar');
 
-Route::get(
-    '/comprobantes/{id}/ver',
-    [NovedadesController::class, 'verComprobante']
-);
+    Route::get('/personal/cuentasBancarias', [PersonalController::class, 'listarCuentasBancarias'])
+        ->name('personal.cuentasBancarias');
 
-Route::get('/novedades/selector', [NovedadesController::class, 'listarNovedadesSelector']);
+    Route::post('/cuentas/actualizar', [PersonalController::class, 'actualizarDatosCuentasBancarias']);
 
-Route::get('/novedades/lista', [NovedadesController::class, 'listar']);
+    Route::post('/cuentas/eliminar', [PersonalController::class, 'eliminarCuentaBancaria']);
 
-Route::post('/novedades/registrar-masivo', [NovedadesController::class, 'registrarNovedadMasiva']);
+    Route::post('/cuentas/crear', [PersonalController::class, 'crearCuentaBancaria']);
 
-Route::get('/novedades/verDetalleRegistroNovedad/{idRegistro}', [NovedadesController::class, 'verDetalleRegistroNovedad']);
+    Route::post('/cuentas/priorizar', [PersonalController::class, 'priorizarCuentaBancaria']);
+    //RUTAS DE SP NOVEDADES
 
-Route::post('/novedades/anular', [NovedadesController::class, 'anular'])
-    ->name('novedades.anular');
+    Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])
+        ->name('novedades.lista');
 
-Route::post('/novedades/actualizar', [NovedadesController::class, 'actualizar'])
-    ->name('novedades.actualizar');
+    Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
+        ->name('novedades.data');
 
-Route::get('/novedades/misNovedades', [NovedadesController::class, 'misNovedades'])
-    ->name('novedades.misNovedades');
+    Route::post('/novedades/registrar', [NovedadesController::class, 'registrarNovedad'])->name('novedades.store');
 
-Route::post('/novedades/liquidarNovedades', [NovedadesController::class, 'liquidarNovedades']);
 
-Route::post('/novedades/crear', [NovedadesController::class, 'crearNuevoConceptoNovedad'])
-    ->name('novedades.crearNuevoConceptoNovedad');
+    Route::get('/novedades/listarNovedadesPorArea', [NovedadesController::class, 'listarNovedadesPorArea'])
+        ->name('novedades.listarNovedadesPorArea');
 
-Route::post('/novedades/editar', [NovedadesController::class, 'editarConceptoNovedad'])
-    ->name('novedades.editarConceptoNovedad');
+    Route::get('/novedades/historico', [NovedadesController::class, 'vistaHistorico'])
+        ->name('novedades.historico');
 
-//mensajes
-Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');
-Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->middleware('auth')->name('notificaciones.lista');
-Route::post('/notificaciones/borrar', [NotificacionController::class, 'eliminarNotificacion']);
+    Route::get('/novedades/historicoNovedades', [NovedadesController::class, 'listarHistoricoNovedades'])
+        ->name('novedades.historicoNovedades');
 
-//calidad
-Route::get('/encuestasCalidad', [CalidadController::class, 'encuestasCalidad'])
-    ->name('encuestasCalidad');
+    Route::get('/novedades/listarMisNovedades', [NovedadesController::class, 'listarMisNovedades'])
+        ->name('novedades.listarMisNovedades');
 
-Route::get('/dashboardCalidad', [CalidadController::class, 'dashboardCalidad'])
-    ->name('dashboardCalidad');
+    Route::get(
+        '/personal/info/{legajo}',
+        [PersonalController::class, 'infoMinimaEmpleado']
+    )->name('personal.info');
 
-Route::get('/cmiCalidad', [CalidadController::class, 'cmiCalidad'])
-    ->name('cmiCalidad');
+    Route::get('/novedades/{codigo}', [NovedadesController::class, 'verNovedad'])
+        ->whereNumber('codigo');
 
-Route::get('/encuestas/tipos', [CalidadController::class, 'listarTiposEncuestas']);
 
-Route::post('/encuestas/importar', [CalidadController::class, 'importarExcel']);
-Route::post('/encuestas/procesar', [CalidadController::class, 'procesarExcel']);
+    Route::post('/novedades/alta-novedad', [NovedadesController::class, 'altaNuevaNovedad']);
 
-Route::get('/encuestas/resultados/{idImportacion}', [CalidadController::class, 'resultados']);
+    Route::post(
+        '/novedades/subir-comprobante',
+        [NovedadesController::class, 'subirComprobante']
+    )->name('novedades.subirComprobante');
 
-Route::get('/dashboard/resultados', [CalidadController::class, 'dashboardResultados']);
+    Route::get(
+        '/novedades/{id}/comprobantes',
+        [NovedadesController::class, 'listarComprobantes']
+    );
 
-Route::get('/dashboard/completo', [CalidadController::class, 'dashboardCompleto']);
+    Route::get(
+        '/comprobantes/{id}/ver',
+        [NovedadesController::class, 'verComprobante']
+    );
 
-Route::get('/respuestasEncuestas', [CalidadController::class, 'respuestasEncuestas'])
-    ->name('respuestasEncuestas');
+    Route::get('/novedades/selector', [NovedadesController::class, 'listarNovedadesSelector']);
 
-Route::get('/encuestas/guardia-adulto/data', [CalidadController::class, 'dataGuardiaAdulto']);
+    Route::get('/novedades/lista', [NovedadesController::class, 'listar']);
 
+    Route::post('/novedades/registrar-masivo', [NovedadesController::class, 'registrarNovedadMasiva']);
 
-//cronograma
-Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);
-Route::post('/calendario/guardar', [CalendarioServController::class, 'guardarEvento']);
-Route::get('/calendario/eventos/{idArea}', [CalendarioServController::class, 'obtenerEventos']);
-Route::post('/eventos/modificar', [CalendarioServController::class, 'modificarEvento']);
-Route::post('/calendario/reporte/exportar', [CalendarioServController::class, 'exportarReporte']);
+    Route::get('/novedades/verDetalleRegistroNovedad/{idRegistro}', [NovedadesController::class, 'verDetalleRegistroNovedad']);
 
-//dashboard
-Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);
-Route::get('/dashboard/colaboradores-activos', [DashboardController::class, 'colaboradoresActivos']);
-Route::get('/dashboard/colaboradores-baja', [DashboardController::class, 'colaboradoresBaja']);
-Route::get('/dashboard/novedades-historicos', [DashboardController::class, 'historicoNovedades']);
-Route::get('/dashboard/novedades-mes-actual', [DashboardController::class, 'novedadesMesActual']);
-Route::get('/dashboard/novedades-mas-frec', [DashboardController::class, 'novedadesMasFrecuente']);
-Route::get('/dashboard/novedades-menos-frec', [DashboardController::class, 'novedadesMenosFrecuente']);
-Route::get('/dashboard/area-mas-novedades', [DashboardController::class, 'areaMasNovedades']);
-Route::get('/dashboard/area-menos-novedades', [DashboardController::class, 'areaMenosNovedades']);
-Route::get('/dashboard/novedades-por-area', [DashboardController::class, 'novedadesPorArea']);
-Route::get('/dashboard/novedades-por-mes', [DashboardController::class, 'novedadesPorMes']);
-Route::get('/dashboard/top-empleados-novedades', [DashboardController::class, 'topEmpleadosNovedades']);
-Route::get('/dashboard/historico-colaboradores', [DashboardController::class, 'historicoColaboradores']);
-Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotacional']);
-Route::get('/dashboard/totalAdelantosSueldos', [DashboardController::class, 'totalAdelantosSueldos']);
-Route::get('/dashboard/adelantosPorMes', [DashboardController::class, 'adelantosPorMes']);
+    Route::post('/novedades/anular', [NovedadesController::class, 'anular'])
+        ->name('novedades.anular');
 
-//API GEO
-Route::get('/geo/localidades', [GeoController::class, 'buscarLocalidades']);
+    Route::post('/novedades/actualizar', [NovedadesController::class, 'actualizar'])
+        ->name('novedades.actualizar');
 
-//solicitudes
-Route::post('/solicitudes/registrar', [PersonalController::class, 'registrarSolicitud'])
-    ->name('solicitudes.registrar');
+    Route::get('/novedades/misNovedades', [NovedadesController::class, 'misNovedades'])
+        ->name('novedades.misNovedades');
 
-Route::get('/personal/listarSolicitudes', [PersonalController::class, 'listarSolicitudes'])
-    ->name('personal.listarSolicitudes');
+    Route::post('/novedades/liquidarNovedades', [NovedadesController::class, 'liquidarNovedades']);
 
-Route::post('/personal/aprobarSolicitud', [PersonalController::class, 'aprobarSolicitud'])
-    ->name('personal.aprobarSolicitud');
+    Route::post('/novedades/crear', [NovedadesController::class, 'crearNuevoConceptoNovedad'])
+        ->name('novedades.crearNuevoConceptoNovedad');
 
-Route::post('/personal/rechazarSolicitud', [PersonalController::class, 'rechazarSolicitud'])
-    ->name('personal.rechazarSolicitud');
+    Route::post('/novedades/editar', [NovedadesController::class, 'editarConceptoNovedad'])
+        ->name('novedades.editarConceptoNovedad');
 
-Route::post('/personal/anularSolicitud', [PersonalController::class, 'anularSolicitud'])
-    ->name('personal.anularSolicitud');
+    //mensajes
+    Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');
+    Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->middleware('auth')->name('notificaciones.lista');
+    Route::post('/notificaciones/borrar', [NotificacionController::class, 'eliminarNotificacion']);
 
-Route::post('/personal/depositarAdelantos', [PersonalController::class, 'depositarAdelantos']);
+    //calidad
+    Route::get('/encuestasCalidad', [CalidadController::class, 'encuestasCalidad'])
+        ->name('encuestasCalidad');
 
-//tickets
-Route::post('/tickets/registrar', [TicketController::class, 'registrar'])
-    ->name('tickets.registrar');
+    Route::get('/dashboardCalidad', [CalidadController::class, 'dashboardCalidad'])
+        ->name('dashboardCalidad');
 
-Route::get('/tickets/lista', [TicketController::class, 'listar'])
-    ->name('tickets.lista');
+    Route::get('/cmiCalidad', [CalidadController::class, 'cmiCalidad'])
+        ->name('cmiCalidad');
 
-Route::post('/tickets/resolver', [TicketController::class, 'resolver'])
-    ->name('tickets.resolver');
+    Route::get('/encuestas/tipos', [CalidadController::class, 'listarTiposEncuestas']);
 
-Route::get('/tickets/verChat', [TicketController::class, 'verChat']);
+    Route::post('/encuestas/importar', [CalidadController::class, 'importarExcel']);
+    Route::post('/encuestas/procesar', [CalidadController::class, 'procesarExcel']);
 
-Route::post('/tickets/responder', [TicketController::class, 'responderTicket']);
+    Route::get('/encuestas/resultados/{idImportacion}', [CalidadController::class, 'resultados']);
 
-//alertas
-Route::get('/alertas/listar', [AlertasController::class, 'listar']);
-Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
-Route::post('/alertas/limpiar', [AlertasController::class, 'limpiarTodas']);
+    Route::get('/dashboard/resultados', [CalidadController::class, 'dashboardResultados']);
 
-//test libería excel
-Route::get('/test-excel', function () {
-    new Spreadsheet();
-    return 'OK';
+    Route::get('/dashboard/completo', [CalidadController::class, 'dashboardCompleto']);
+
+    Route::get('/respuestasEncuestas', [CalidadController::class, 'respuestasEncuestas'])
+        ->name('respuestasEncuestas');
+
+    Route::get('/encuestas/guardia-adulto/data', [CalidadController::class, 'dataGuardiaAdulto']);
+
+
+    //cronograma
+    Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);
+    Route::post('/calendario/guardar', [CalendarioServController::class, 'guardarEvento']);
+    Route::get('/calendario/eventos/{idArea}', [CalendarioServController::class, 'obtenerEventos']);
+    Route::post('/eventos/modificar', [CalendarioServController::class, 'modificarEvento']);
+    Route::post('/calendario/reporte/exportar', [CalendarioServController::class, 'exportarReporte']);
+
+    //dashboard
+    Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);
+    Route::get('/dashboard/colaboradores-activos', [DashboardController::class, 'colaboradoresActivos']);
+    Route::get('/dashboard/colaboradores-baja', [DashboardController::class, 'colaboradoresBaja']);
+    Route::get('/dashboard/novedades-historicos', [DashboardController::class, 'historicoNovedades']);
+    Route::get('/dashboard/novedades-mes-actual', [DashboardController::class, 'novedadesMesActual']);
+    Route::get('/dashboard/novedades-mas-frec', [DashboardController::class, 'novedadesMasFrecuente']);
+    Route::get('/dashboard/novedades-menos-frec', [DashboardController::class, 'novedadesMenosFrecuente']);
+    Route::get('/dashboard/area-mas-novedades', [DashboardController::class, 'areaMasNovedades']);
+    Route::get('/dashboard/area-menos-novedades', [DashboardController::class, 'areaMenosNovedades']);
+    Route::get('/dashboard/novedades-por-area', [DashboardController::class, 'novedadesPorArea']);
+    Route::get('/dashboard/novedades-por-mes', [DashboardController::class, 'novedadesPorMes']);
+    Route::get('/dashboard/top-empleados-novedades', [DashboardController::class, 'topEmpleadosNovedades']);
+    Route::get('/dashboard/historico-colaboradores', [DashboardController::class, 'historicoColaboradores']);
+    Route::get('/dashboard/tasa-rotacional', [DashboardController::class, 'tasaRotacional']);
+    Route::get('/dashboard/totalAdelantosSueldos', [DashboardController::class, 'totalAdelantosSueldos']);
+    Route::get('/dashboard/adelantosPorMes', [DashboardController::class, 'adelantosPorMes']);
+
+    //API GEO
+    Route::get('/geo/localidades', [GeoController::class, 'buscarLocalidades']);
+
+    //solicitudes
+    Route::post('/solicitudes/registrar', [PersonalController::class, 'registrarSolicitud'])
+        ->name('solicitudes.registrar');
+
+    Route::get('/personal/listarSolicitudes', [PersonalController::class, 'listarSolicitudes'])
+        ->name('personal.listarSolicitudes');
+
+    Route::post('/personal/aprobarSolicitud', [PersonalController::class, 'aprobarSolicitud'])
+        ->name('personal.aprobarSolicitud');
+
+    Route::post('/personal/rechazarSolicitud', [PersonalController::class, 'rechazarSolicitud'])
+        ->name('personal.rechazarSolicitud');
+
+    Route::post('/personal/anularSolicitud', [PersonalController::class, 'anularSolicitud'])
+        ->name('personal.anularSolicitud');
+
+    Route::post('/personal/depositarAdelantos', [PersonalController::class, 'depositarAdelantos']);
+
+    //tickets
+    Route::post('/tickets/registrar', [TicketController::class, 'registrar'])
+        ->name('tickets.registrar');
+
+    Route::get('/tickets/lista', [TicketController::class, 'listar'])
+        ->name('tickets.lista');
+
+    Route::post('/tickets/resolver', [TicketController::class, 'resolver'])
+        ->name('tickets.resolver');
+
+    Route::get('/tickets/verChat', [TicketController::class, 'verChat']);
+
+    Route::post('/tickets/responder', [TicketController::class, 'responderTicket']);
+
+    //alertas
+    Route::get('/alertas/listar', [AlertasController::class, 'listar']);
+    Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
+    Route::post('/alertas/limpiar', [AlertasController::class, 'limpiarTodas']);
 });

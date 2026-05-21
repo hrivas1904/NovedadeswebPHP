@@ -92,7 +92,7 @@
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                                <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>-->
+                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>
                             @endif
 
                         </ul>
@@ -100,7 +100,7 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bx bx-folder"></i> Novedades
+                            <i class="fa-solid fa-folder-open"></i> Novedades
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis
@@ -169,7 +169,12 @@
 
                 <div class="d-flex align-items-center gap-3">
 
-                    <div class="user-chip text-white">
+                    <div class="user-chip text-white">                       
+
+                        <div class="user-info text-end small">
+                            <div><strong>{{ Auth::user()->name }}</strong></div>
+                            <div class="user-role">{{ Auth::user()->rol }}</div>
+                        </div>
 
                         <!--<div class="user-avatar">
                             @if (Auth::user()->foto)
@@ -179,12 +184,7 @@
                                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                 </span>
                             @endif
-                        </div> -->
-
-                        <div class="user-info text-end small">
-                            <div><strong>{{ Auth::user()->name }}</strong></div>
-                            <div class="user-role">{{ Auth::user()->rol }}</div>
-                        </div>
+                        </div>-->
 
                     </div>
 
