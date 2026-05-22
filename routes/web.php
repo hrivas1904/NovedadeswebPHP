@@ -68,8 +68,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/configNovedades', [NovedadesController::class, 'configNovedades'])
         ->name('configNovedades');
 
-
-
     Route::get('/ajustes', [AjustesController::class, 'ajustes'])
         ->name('ajustes');
 
@@ -221,7 +219,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/novedades/{codigo}', [NovedadesController::class, 'verNovedad'])
         ->whereNumber('codigo');
 
-
     Route::post('/novedades/alta-novedad', [NovedadesController::class, 'altaNuevaNovedad']);
 
     Route::post(
@@ -268,6 +265,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');
     Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->middleware('auth')->name('notificaciones.lista');
     Route::post('/notificaciones/borrar', [NotificacionController::class, 'eliminarNotificacion']);
+    Route::get('/feriados/lista', [NotificacionController::class, 'obtenerFeriados']);
 
     //calidad
     Route::get('/encuestasCalidad', [CalidadController::class, 'encuestasCalidad'])

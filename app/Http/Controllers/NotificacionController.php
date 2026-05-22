@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
 class NotificacionController extends Controller
 {
@@ -111,5 +112,26 @@ class NotificacionController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function obtenerFeriados()
+    {
+        $year = now()->year;
+
+        $response = Http::get(
+            "https://date.nager.at/api/v3/PublicHolidays/$year/AR"
+        );
+
+        if ($response->successful()) {
+
+            return response()->json([
+                'success' => true,
+                'data' => $response->json()
+            ]);
+        }
+
+        return response()->json([
+            'success' => false
+        ], 500);
     }
 }

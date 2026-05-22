@@ -1,3 +1,93 @@
+function formatearFechaLarga(fecha) {
+    const meses = [
+        "enero",
+        "febrero",
+        "marzo",
+        "abril",
+        "mayo",
+        "junio",
+        "julio",
+        "agosto",
+        "septiembre",
+        "octubre",
+        "noviembre",
+        "diciembre",
+    ];
+
+    const [anio, mes, dia] = fecha.split("-");
+
+    return `${parseInt(dia)} de ${meses[parseInt(mes) - 1]} de ${anio}`;
+}
+
+function obtenerDia(fecha) {
+    return parseInt(fecha.split("-")[2]);
+}
+
+function obtenerMes(fecha) {
+    const meses = [
+        "ENE",
+        "FEB",
+        "MAR",
+        "ABR",
+        "MAY",
+        "JUN",
+        "JUL",
+        "AGO",
+        "SEP",
+        "OCT",
+        "NOV",
+        "DIC",
+    ];
+
+    return meses[parseInt(fecha.split("-")[1]) - 1];
+}
+
+function obtenerFeriados() {
+    $.ajax({
+        url: "/feriados/lista",
+        type: "GET",
+        success: function (res) {
+            if (res.success) {
+                let html = ``;
+                res.data.forEach(function (res) {
+                    html += `
+                        <div class="d-flex align-items-start gap-2 mb-2">
+                            <div>
+                                <div style="width:60px; background-color:#1DAC8A; color:white;" class="border border-radius rounded-2 d-flex flex-column text-center justify-content-center align-items-center">
+                                    <h2 class="fw-bolder mb-0">${obtenerDia(res.date)}</h2>
+                                    <h6>${obtenerMes(res.date)}</h6>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 style="color: var(--color-default)" class="fw-bolder">${res.localName}</h6>
+                                <p class="text-muted">${formatearFechaLarga(res.date)}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                $("#divCardFeriado").html(html);
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: "Error de conexión",
+                    icon: "error",
+                    confirmButtonColor: "#1DAC8A",
+                });
+            }
+            console.log(res.data);
+        },
+        error: function () {
+            Swal.fire({
+                title: "Error",
+                text: "Error de conexión",
+                icon: "error",
+                confirmButtonColor: "#1DAC8A",
+            });
+        },
+    });
+}
+
 $("#btnRedactarComunicado").click(function () {
     let contenido = $("#txtNotificacion").val().trim();
     let titulo = $("#txtNotificacionTitulo").val().trim();
@@ -39,10 +129,6 @@ $("#btnRedactarComunicado").click(function () {
             Swal.fire("Error", "Error del servidor", "error");
         },
     });
-});
-
-$(document).ready(function () {
-    cargarNotificaciones();
 });
 
 function cargarNotificaciones() {
@@ -116,13 +202,17 @@ function cargarNotificaciones() {
                                     ${n.contenido}
                                 </p>
 
-                                ${USER_ROLE === "Administrador/a" ? `
+                                ${
+                                    USER_ROLE === "Administrador/a"
+                                        ? `
                                     <div class="d-flex justify-content-end">
                                         <button type="button" class="btn btn-sm text-danger btn-Eliminar" data-id="${n.id_notificacion}">
                                             <i class="fa-regular fa-trash-can"></i> Eliminar
                                         </button>
                                     </div>
-                                ` : ''}
+                                `
+                                        : ""
+                                }
 
                             </div>
                         </div>
@@ -183,3 +273,8 @@ function eliminarNotificacion(idNotificacion) {
         }
     });
 }
+
+$(document).ready(function () {
+    cargarNotificaciones();
+    obtenerFeriados();
+});

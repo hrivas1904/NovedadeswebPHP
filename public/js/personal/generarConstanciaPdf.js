@@ -65,7 +65,7 @@ function generarConstanciaTrabajo(datos) {
                 <img src="${firma}" height="60" alt="Firma de Recursos Humanos">
                 <p class="justify-content-center">
                     Francisco Fernández Ovide <br/>
-                    Jefe de Recursos Humananos
+                    Jefe de Recursos Humanos
                 </p>             
             </div>
         </div>
