@@ -19,7 +19,13 @@
                             <div class="col-lg-2 col-md-3">
                                 <label class="form-label">Fecha</label>
                                 <input type="text" class="form-control"
-                                    value="{{ now()->format('Y-m-d') }}" readonly>
+                                    value="{{ now()->format('d/m/Y') }}" readonly>
+                            </div>
+                            <div class="col-lg-1 col-md-3">
+                                <label class="form-label">Horario</label>
+                                <input type="text"
+                                    class="form-control"
+                                    value="{{ now()->format('H:i:s') }}">
                             </div>
                         </div>
 
@@ -56,8 +62,7 @@
                                 </div>
 
                                 <div class="col-lg-1 col-md-3">
-                                    <label class="form-label">Hs diarias</label>
-                                    <input type="text" class="form-control" name="HorasDiarias" readonly>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -78,15 +83,8 @@
                                     </select>
                                 </div>
 
-                                <div class="col-lg-1 col-md-3">
-                                    <label class="form-label">Horario</label>
-                                    <input type="text"
-                                        class="form-control"
-                                        value="{{ now()->format('H:i') }}">
-                                </div>
-
-                                <div class="col-lg-3 col-md-3 text-end">
-                                    <button type="submit" class="btn btn-primario mt-4">
+                                <div class="col-lg-3 col-md-3">
+                                    <button type="submit" class="btn btn-primary mt-4">
                                         <i class="fa-solid fa-clock me-1"></i> Marcar asistencia
                                     </button>
                                 </div>

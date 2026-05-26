@@ -251,12 +251,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
+                    <div class="row g-3">
                         <div class="col-xl-5 col-md-6 col-12">
                             <label for="inputFechaEvento" class="form-label">Fecha del evento</label>
                             <input class="form-control" id="inputFechaEvento" name="fechaEvento" type="date">
                         </div>
-                        <div class="col-7 col-md-6 col-12">
+                        <div class="col-xl-7 col-md-6 col-12">
                             <label for="selectTipoEvento" class="form-label">Tipo de evento</label>
                             <select class="form-select w-100" id="selectTipoEvento" name="tipoEvento">
                                 <option selected disabled value="">Seleccione evento</option>
@@ -266,13 +266,13 @@
                             </select>
                         </div>
                         <div class="col-12">
-                            <label for="inputDescripEvento" class="form-label">Descripción del evento</label>
-                            <input class="form-control" id="inputDescripEvento" name="descripEvento" type="text">
-                        </div>
-                        <div class="col-12">
                             <label for="inputTituloEvento" class="form-label">Título del evento</label>
                             <input class="form-control" id="inputTituloEvento" name="tituloEvento" type="text">
                         </div>
+                        <div class="col-12">
+                            <label for="inputDescripEvento" class="form-label">Descripción del evento</label>
+                            <input class="form-control" id="inputDescripEvento" name="descripEvento" type="text">
+                        </div>                        
                     </div>
                 </div>
                 <div class="modal-footer">

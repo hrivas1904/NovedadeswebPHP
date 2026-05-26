@@ -88,10 +88,10 @@
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                                <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>-->
-                            @endif
+                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>
 
-                            @if (Auth::user()->rol === 'Administrador/a')
+                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Médicos</a></li>
+
                                 <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>
                             @endif
 

@@ -340,7 +340,7 @@ $(document).ready(function () {
                         tipoValorNov = row.TIPO_VALOR;
 
                         if (tipoValorNov === "Pesos") {
-                            return ("$", data);
+                            return "$" + data;
                         } else {
                             return parseInt(data);
                         }
@@ -462,6 +462,7 @@ $(document).ready(function () {
                     exportOptions: {
                         modifier: { order: "index" },
                         orthogonal: "export",
+
                         columns: function (idx) {
                             if (esLicenciaAnual()) {
                                 return [12, 13, 14, 15, 17, 18, 19].includes(
@@ -469,9 +470,15 @@ $(document).ready(function () {
                                 );
                             } else {
                                 return [
-                                    0,2,5, 6, 8, 9, 10, 11, 13, 14, 16, 20, 21,
+                                    0, 2, 5, 6, 8, 9, 10, 11, 13, 14, 16, 20, 21
                                 ].includes(idx);
                             }
+                        },
+
+                        format: {
+                            body: function (data, row, column, node) {
+                                return $("<div>").html(data).text().trim();
+                            },
                         },
                     },
 
@@ -568,11 +575,13 @@ $(document).ready(function () {
                                   "FECHAHASTA",
                                   "DESCRIPCION",
                                   "COLABORADOR",
-                                  "CONCEPTO_NOVEDAD",                                  
+                                  "CONCEPTO_NOVEDAD",
                               ];
 
                         row.each(function (i) {
-                            $("is t", this).text(headers[i]);
+                            if (headers[i]) {
+                                $("is t", this).text(headers[i]);
+                            }
                         });
                     },
                 },

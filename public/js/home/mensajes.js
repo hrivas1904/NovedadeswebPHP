@@ -51,16 +51,22 @@ function obtenerFeriados() {
                 let html = ``;
                 res.data.forEach(function (res) {
                     html += `
-                        <div class="d-flex align-items-start gap-2 mb-2">
+                        <div class="d-flex align-items-start gap-2 mb-2 empleado-box p-1">
                             <div>
-                                <div style="width:60px; background-color:#1DAC8A; color:white;" class="border border-radius rounded-2 d-flex flex-column text-center justify-content-center align-items-center">
+                                <div style="width:60px; background-color:#1DAC8A; color:white;" class="border border-radius rounded-2 d-flex flex-column text-center justify-content-center align-items-center py-2">
                                     <h2 class="fw-bolder mb-0">${obtenerDia(res.date)}</h2>
                                     <h6>${obtenerMes(res.date)}</h6>
                                 </div>
                             </div>
-                            <div>
+                            <div class="flex-grow-1">
                                 <h6 style="color: var(--color-default)" class="fw-bolder">${res.localName}</h6>
                                 <p class="text-muted">${formatearFechaLarga(res.date)}</p>
+                                <button type="button" class="btn text-muted">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn text-muted">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
                             </div>
                         </div>
                     `;
