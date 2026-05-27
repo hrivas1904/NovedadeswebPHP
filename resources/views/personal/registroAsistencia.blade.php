@@ -16,54 +16,13 @@
                     <form id="formNuevaNovedad">
 
                         <div class="row g-3 mb-4">
-                            <div class="col-lg-2 col-md-3">
+                            <div class="col-lg-2 col-6">
                                 <label class="form-label">Fecha</label>
-                                <input type="text" class="form-control"
-                                    value="{{ now()->format('d/m/Y') }}" readonly>
+                                <input type="text" class="form-control" value="{{ now()->format('d/m/Y') }}" readonly>
                             </div>
-                            <div class="col-lg-1 col-md-3">
+                            <div class="col-lg-1 col-6">
                                 <label class="form-label">Horario</label>
-                                <input type="text"
-                                    class="form-control"
-                                    value="{{ now()->format('H:i:s') }}">
-                            </div>
-                        </div>
-
-                        <div class="section-divider mb-3">
-                            <span>Información del empleado</span>
-                        </div>
-
-                        <div class="empleado-box p-3 mb-4">
-                            <div class="row g-3">
-
-                                <div class="col-lg-1 col-md-3">
-                                    <label class="form-label">Legajo</label>
-                                    <input type="text" class="form-control" name="Legajo">
-                                </div>
-
-                                <div class="col-lg-3 col-md-4">
-                                    <label class="form-label">Empleado</label>
-                                    <input type="text" class="form-control" name="Empleado" readonly>
-                                </div>
-
-                                <div class="col-lg-3 col-md-4">
-                                    <label class="form-label">DNI</label>
-                                    <input type="text" class="form-control" name="DNI" readonly>
-                                </div>
-
-                                <div class="col-lg-3 col-md-4">
-                                    <label class="form-label">Servicio</label>
-                                    <input type="text" class="form-control" name="Servicio" readonly>
-                                </div>
-
-                                <div class="col-lg-1 col-md-3">
-                                    <label class="form-label">Régimen</label>
-                                    <input type="text" class="form-control" name="Regimen" readonly>
-                                </div>
-
-                                <div class="col-lg-1 col-md-3">
-                                    
-                                </div>
+                                <input type="text" class="form-control" value="{{ now()->format('H:i') }}" readonly>
                             </div>
                         </div>
 
@@ -74,19 +33,17 @@
                         <div class="empleado-box p-3">
                             <div class="row g-3 align-items-end">
 
-                                <div class="col-lg-3 col-md-4">
-                                    <label class="form-label">Acción</label>
-                                    <select class="form-select" required>
-                                        <option value="">Seleccionar acción</option>
-                                        <option value="Ingreso">Ingreso</option>
-                                        <option value="Egreso">Egreso</option>
-                                    </select>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                    <label class="form-check-label" for="radioDefault1">
+                                        Default radio
+                                    </label>
                                 </div>
-
-                                <div class="col-lg-3 col-md-3">
-                                    <button type="submit" class="btn btn-primary mt-4">
-                                        <i class="fa-solid fa-clock me-1"></i> Marcar asistencia
-                                    </button>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2" checked>
+                                    <label class="form-check-label" for="radioDefault2">
+                                        Default checked radio
+                                    </label>
                                 </div>
 
                             </div>

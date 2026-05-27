@@ -279,3 +279,14 @@ table.dataTable tbody tr:hover {
 .req-card input[type="checkbox"] {
     transform: scale(1.2);
 }
+
+.buscador-personal {
+    width: 100%;
+    max-width: 750px;
+}
+
+@media (min-width: 768px) {
+    .buscador-personal {
+        width: 750px;
+    }
+}
