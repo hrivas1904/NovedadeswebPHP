@@ -14,7 +14,7 @@
                 <div class="card" style="border-radius:15px;">
                     <div class="card-body">
                         <form id="formRegistrarAsistencia">
-                            <div class="row g-3 mb-4">
+                            <!--<div class="row g-3 mb-4">
                                 <div class="col-lg-6 col-6">
                                     <label class="form-label">Fecha</label>
                                     <input type="text" class="form-control" value="{{ now()->format('d/m/Y') }}" readonly>
@@ -23,35 +23,35 @@
                                     <label class="form-label">Hora</label>
                                     <input type="text" class="form-control" value="{{ now()->format('H:i') }}" readonly>
                                 </div>
-                            </div>
+                            </div>-->
 
                             <div class="section-divider mb-3">
                                 <span>Registro de asistencia</span>
                             </div>
 
                             <div class="card p-3 gap-3 mb-3">
-                                <label class="form-check-label" for="radioDefault1">
+                                <label class="form-check-label">
                                     SELECCIONAR TURNO
                                 </label>
                                 <div class="row d-flex">
                                     <div class="form-check col-lg-4 col-12">
-                                        <input class="form-check-input" type="radio" name="radioDefault"
-                                            id="radioDefault1">
-                                        <label class="form-check-label" for="radioDefault1">
+                                        <input class="form-check-input" type="radio" name="radioTurno"
+                                            id="turnoManana">
+                                        <label class="form-check-label" for="turnoManana">
                                             Mañana
                                         </label>
                                     </div>
                                     <div class="form-check col-lg-4 col-12">
-                                        <input class="form-check-input" type="radio" name="radioDefault"
-                                            id="radioDefault2" checked>
-                                        <label class="form-check-label" for="radioDefault2">
+                                        <input class="form-check-input" type="radio" name="radioTurno"
+                                            id="turnoTarde">
+                                        <label class="form-check-label" for="turnoTarde">
                                             Tarde
                                         </label>
                                     </div>
                                     <div class="form-check col-lg-4 col-12">
-                                        <input class="form-check-input" type="radio" name="radioDefault"
-                                            id="radioDefault2" checked>
-                                        <label class="form-check-label" for="radioDefault2">
+                                        <input class="form-check-input" type="radio" name="radioTurno"
+                                            id="turnoNoche">
+                                        <label class="form-check-label" for="turnoNoche">
                                             Noche
                                         </label>
                                     </div>
@@ -62,38 +62,38 @@
                                 <label class="form-check-label" for="radioDefault1">
                                     SELECCIONAR SERVICIO
                                 </label>
-                                <div class="row d-flex gap-3">
+                                <div class="row d-flex g-3">
                                     <div class="form-check col-lg-4 col-12">
-                                        <input class="form-check-input" type="radio" name="servicio"
+                                        <input class="form-check-input" type="radio" name="radioServicio"
                                             id="servicioGuardiaAd">
                                         <label class="form-check-label" for="servicioGuardiaAd">
                                             Guardia adulto
                                         </label>
                                     </div>
                                     <div class="form-check col-lg-6 col-12">
-                                        <input class="form-check-input" type="radio" name="servicio"
+                                        <input class="form-check-input" type="radio" name="radioServicio"
                                             id="servicioGuardiaPed">
                                         <label class="form-check-label" for="servicioGuardiaPed">
                                             Guardia pediátrica
                                         </label>
                                     </div>
                                     <div class="form-check col-lg-4 col-12">
-                                        <input class="form-check-input" type="radio" name="servicio"
-                                            id="servicioUtiAd" checked>
+                                        <input class="form-check-input" type="radio" name="radioServicio"
+                                            id="servicioUtiAd">
                                         <label class="form-check-label" for="servicioUtiAd">
                                             UTI Adulto
                                         </label>
                                     </div>
                                     <div class="form-check col-lg-4 col-12">
-                                        <input class="form-check-input" type="radio" name="servicio"
-                                            id="servicioUtiPed" checked>
+                                        <input class="form-check-input" type="radio" name="radioServicio"
+                                            id="servicioUtiPed">
                                         <label class="form-check-label" for="servicioUtiPed">
                                             UTI Pediátrica
                                         </label>
                                     </div>
                                     <div class="form-check col-lg-4 col-12">
-                                        <input class="form-check-input" type="radio" name="servicio"
-                                            id="servicioUtiNeo" checked>
+                                        <input class="form-check-input" type="radio" name="radioServicio"
+                                            id="servicioUtiNeo">
                                         <label class="form-check-label" for="servicioUtiNeo">
                                             UTI Neo
                                         </label>

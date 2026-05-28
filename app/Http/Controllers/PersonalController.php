@@ -62,6 +62,11 @@ class PersonalController extends Controller
         return view('personal.obrasSociales');
     }
 
+    public function controlTarjas()
+    {
+        return view('personal.tarjas');
+    }
+
     public function listarAreas()
     {
         try {
@@ -1540,6 +1545,88 @@ class PersonalController extends Controller
                 'success' => false,
                 'mensaje' => 'Error al actualizar la obra social',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function enviarIngresoAsistencia(Request $request){
+        try{
+            $fechaHora = now();
+
+            $request->validate([
+                'turno' => 'required|string|max:20',
+                'servicio' => 'required|string|max:100',
+                'latitud' => 'required',
+                'longitud' => 'required',
+            ]);
+
+            DB::statement("CALL SP_INGRESO_ASISTENCIA(?,?,?,?,?,?,?, @p_msj)",[
+                Auth::user()->id,
+                $request->turno,
+                $request->servicio,
+                $request->latitud,
+                $request->longitud,
+                $request->ip(),
+                $fechaHora->format('Y-m-d H:i:s'),
+            ]);
+
+            $mensaje = DB::selectOne(
+                "SELECT @p_msj as mensaje"
+            );
+
+            $success = $mensaje->mensaje === 'Ingreso marcado correctamente.';
+
+            return response()->json([
+                'success' => $success,
+                'message' => $mensaje->mensaje,
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'success'=>false,
+                'message'=>'Error al registrar el ingreso.',
+                'error'=>$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function enviarEgresoAsistencia(Request $request){
+        try{
+            $fechaHora = now();
+
+            $request->validate([
+                'turno' => 'required|string|max:20',
+                'servicio' => 'required|string|max:100',
+                'latitud' => 'required',
+                'longitud' => 'required'
+            ]);
+
+            DB::statement("CALL SP_EGRESO_ASISTENCIA(?,?,?,?,?,?,?,@p_msj)",[
+                Auth::user()->id,
+                $request->turno,
+                $request->servicio,
+                $request->latitud,
+                $request->longitud,
+                $request->ip(),
+                $fechaHora->format('Y-m-d H:i:s'),
+            ]);
+
+            $mensaje = DB::selectOne(
+                "SELECT @p_msj as mensaje"
+            );
+
+            $success = $mensaje->mensaje === 'Egreso marcado correctamente.';
+
+            return response()->json([
+                'success' => $success,
+                'message' => $mensaje->mensaje,
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'success'=>false,
+                'message'=>'Error al registrar el egreso.',
+                'error'=>$e->getMessage(),
             ], 500);
         }
     }

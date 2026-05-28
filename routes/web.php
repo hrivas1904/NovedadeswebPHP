@@ -14,6 +14,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AlertasController;
 use App\Http\Controllers\PushController;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Illuminate\Support\Facades\Route;
 
 Route::post('/push/subscribe', [PushController::class, 'subscribe']);
 
@@ -358,4 +359,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/alertas/listar', [AlertasController::class, 'listar']);
     Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
     Route::post('/alertas/limpiar', [AlertasController::class, 'limpiarTodas']);
+
+
+    //marcación de asistencia
+    Route::get('/asistencia/tarja', [PersonalController::class, 'controlTarjas'])->name('controlTarjas');
+    Route::post('/asistencia/ingreso', [PersonalController::class, 'enviarIngresoAsistencia']);
+    Route::post('/asistencia/egreso', [PersonalController::class, 'enviarEgresoAsistencia']);
 });

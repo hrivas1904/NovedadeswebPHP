@@ -92,7 +92,9 @@
 
                                 <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Médicos</a></li>
 
-                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Asistencia</a></li>
+                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Marcar asistencia</a></li>
+
+                                <li><a class="dropdown-item" href="{{ route('controlTarjas') }}">Tarjas</a></li>
                             @endif
 
                         </ul>
