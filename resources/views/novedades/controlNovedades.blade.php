@@ -350,13 +350,13 @@
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha desde</label>
                                             <input type="text" class="form-control" name="fechaDesde"
-                                                id="fechaDesdeNovedad" required>
+                                                id="fechaDesdeNovedad" placeholder="Fecha desde" required>
                                         </div>
 
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha hasta</label>
                                             <input type="text" class="form-control" name="fechaHasta"
-                                                id="fechaHastaNovedad" required>
+                                                id="fechaHastaNovedad" placeholder="Fecha hasta" required>
                                         </div>
 
                                         <div class="col-lg-2" id="divPeriodoDias" hidden>
@@ -426,9 +426,9 @@
                                             <input type="file" class="form-control">
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-6    ">
                                             <label class="form-label">Descripción/Observaciones</label>
-                                            <input type="text" class="form-control" name="descripcion"
+                                            <input type="text" class="form-control" name="descripcionCargaMasiva"
                                                 placeholder="Descripción de la novedad (opcional)">
                                         </div>
                                     </div>

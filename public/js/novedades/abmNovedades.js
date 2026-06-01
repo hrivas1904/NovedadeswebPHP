@@ -567,7 +567,7 @@ $("#btnRegistrarMasivo").on("click", function () {
             fechaHasta: $("#fechaHastaNovedad").val(),
             fechaAplicacion: $("input[name='fechaAplicacion']").val(),
             cantidadFinal: valorFinal,
-            descripcion: $("input[name='descripcion']").val(),
+            descripcion: $("input[name='descripcionCargaMasiva']").val(),
             annio: $("input[name='annio']").val(),
             tipoVacaciones: $("#selectTipoVacaciones").val(),
             numAtencion: $("#numAtencion").val(),
@@ -576,6 +576,8 @@ $("#btnRegistrarMasivo").on("click", function () {
             cantidadCuotas: $("#cantidadCuotas").val(),
             legajos: legajos, // Array directo
         };
+
+        console.log(data);
 
         $.ajax({
             url: "/novedades/registrar-masivo",
