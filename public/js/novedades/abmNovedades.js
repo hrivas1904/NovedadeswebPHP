@@ -6,9 +6,7 @@ flatpickr("#fechaDesdeNovedad, #fechaHastaNovedad", {
     altInput: true,
     altFormat: "d/m/Y",
     dateFormat: "Y-m-d",
-    onChange: function () {
-        
-    },
+    onChange: function () {},
 });
 
 function formatearFechaArgentina(fecha) {
@@ -351,11 +349,11 @@ function anularNovedad(idRegistro) {
                 error: function (xhr) {
                     console.error(xhr.responseText);
                     Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "No se pudo anular la novedad",
-                            confirmButtonColor: "#00b18d",
-                        });
+                        icon: "error",
+                        title: "Error",
+                        text: "No se pudo anular la novedad",
+                        confirmButtonColor: "#00b18d",
+                    });
                 },
             });
         }
@@ -602,9 +600,9 @@ $("#btnRegistrarMasivo").on("click", function () {
                     }).then(() => {
                         tablaDetalle.clear().draw();
                         $("#formCargaMasiva")[0].reset();
-                        $('#selectNovedad').val(null).trigger('change');   
+                        $("#selectNovedad").val(null).trigger("change");
                         $("#modalCargaMasivaNovedad").modal("hide");
-                        $('#selectNovedad').val(null).trigger('change'); 
+                        $("#selectNovedad").val(null).trigger("change");
                         tablaControl.ajax.reload();
                     });
                 } else {
@@ -647,9 +645,23 @@ $("#btnAbrirSeleccionColabs").on("click", function () {
 });
 
 $("#btnHabilitarEdicion").on("click", function () {
-    $("#formDetalleNovedad .editable")
-        .prop("readonly", false)
-        .prop("disabled", false);
+    $("#formDetalleNovedad .editable").prop("readonly", false).prop("disabled", false);
+
+    if (USER_ROLE === "Administrador/a") {
+        $("#inputNovedad").prop("disabled", false).trigger("change");
+    } else {
+        $("#inputNovedad").prop("disabled", true).trigger("change");
+    }
+
+    $("#inputValor").on("focus", function() {
+        let valor = $(this).val();        
+        if (valor) {
+            let limpio = valor.replace(/[\$\s\.]/g, '');             
+            limpio = limpio.split(',')[0];             
+            $(this).val(limpio);            
+            setTimeout(() => { $(this).select(); }, 50);
+        }
+    });
 
     $("#btnGuardarCambios").removeClass("d-none");
     $(this).addClass("d-none");
@@ -667,7 +679,10 @@ $("#btnGuardarCambios").on("click", function () {
         concepto: $("#inputConcepto").val(),
         cuotas: $("#inputCuotas").val(),
         annio: $("#inputAnnioVacaciones").val(),
+        idNovedad: $("#inputIdNovedad").val(),
     };
+
+    console.log(data);
 
     $.ajax({
         url: "/novedades/actualizar",
@@ -691,6 +706,8 @@ $("#btnGuardarCambios").on("click", function () {
 
                 $("#btnGuardarCambios").addClass("d-none");
                 $("#btnHabilitarEdicion").removeClass("d-none");
+                $("#inputNovedad").val(null).trigger("change");
+                $("#inputNovedad").prop("disabled", true).trigger("change");
                 cerrarModalDetalleNovedad();
                 tablaControl.ajax.reload(null, false);
             } else {
@@ -794,7 +811,6 @@ function inicializarSelect2Fila() {
 
 // Agregar fila
 $(document).on("click", "#btnAgregarNovedad", function () {
-
     let filaHtml = `
     <tr>
         <td>
@@ -913,4 +929,36 @@ $(document).on("blur", "input[name='valor[]']", function () {
 
 $(document).on("click", ".btnEliminarRow", function () {
     $(this).closest("tr").remove();
+});
+
+$(document).ready(function () {
+    const $select = $("#inputNovedad");
+
+    $.ajax({
+        url: "/novedades/selector",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            $select.select2({
+                data: data,
+                placeholder: "Seleccione una novedad",
+                allowClear: true,
+                width: "100%",
+                dropdownParent: $("#modalDetalleNovedad"),
+            });
+        },
+        error: function (err) {
+            console.error("Error al cargar novedades:", err);
+        },
+    });
+
+    // Event handler para capturar el código
+    $select.on("select2:select", function (e) {
+        const data = e.params.data;
+        console.log("Seleccionado:", data);
+
+        const novedad = data;
+        $("#inputCodigo").val(novedad.codigo || "");
+        $("#inputIdNovedad").val(data.id);
+    });
 });

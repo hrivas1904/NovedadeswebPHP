@@ -230,7 +230,8 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <label class="form-label">Novedad</label>
-                                            <input type="text" id="inputNovedad" class="form-control" readonly>
+                                            <select class="form-select" id="inputNovedad" disabled></select>
+                                            <input hidden id="inputIdNovedad">
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label">Descripción</label>

@@ -509,9 +509,10 @@ class NovedadesController extends Controller
             $concepto = $request->concepto;
             $cuotas = $request->cuotas;
             $annio = $request->annio;
+            $idNovedad = $request->idNovedad;
 
             DB::statement(
-                "CALL SP_ACTUALIZAR_NOVEDAD(?,?,?,?,?,?,?,?,?,?,@p_mensaje)",
+                "CALL SP_ACTUALIZAR_NOVEDAD(?,?,?,?,?,?,?,?,?,?,?,@p_mensaje)",
                 [
                     $idRegistro,
                     $fechaDesde,
@@ -522,7 +523,8 @@ class NovedadesController extends Controller
                     $paciente,
                     $concepto,
                     $cuotas,
-                    $annio
+                    $annio,
+                    $idNovedad
                 ]
             );
 

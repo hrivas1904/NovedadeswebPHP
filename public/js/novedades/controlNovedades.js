@@ -237,10 +237,11 @@ function verDetalleNovedad(idRegistro) {
 
                 if (tipo_valor === "Horas") {
                     calcularHorasHabiles();
-                }
+                }                
 
                 $("#inputCodigo").val(d.codigo_novedad);
-                $("#inputNovedad").val(d.novedad);
+                $("#inputNovedad").val(d.novedad).trigger('change');
+                $("#inputIdNovedad").val(d.novedad);
                 $("#inputDescripcion").val(d.DESCRIPCION);
 
                 $("#inputTipoVacaciones").val(d.TIPO);
