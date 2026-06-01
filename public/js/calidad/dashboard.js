@@ -707,8 +707,10 @@ function renderTablaInternacionPreguntasGeneral(data) {
 }
 
 function renderTablaInternacionAmb(data) {
-    if ($.fn.DataTable.isDataTable("#tablaInternacionAmbPreguntas")) {
+
+    if ($.fn.DataTable.isDataTable("#tablaInternacionAmbPregunta")) {
         $("#tablaInternacionAmbPregunta").DataTable().destroy();
+        $("#tablaInternacionAmbPregunta tbody").empty();
     }
 
     $("#tablaInternacionAmbPregunta").DataTable({
@@ -723,52 +725,61 @@ function renderTablaInternacionAmb(data) {
         info: false,
 
         columns: [
-            { title: "Pregunta", data: "pregunta" },
+            {
+                title: "Pregunta",
+                data: "pregunta"
+            },
 
             {
                 title: "Positivas",
                 data: "positivos",
                 render: (d) =>
-                    `<span style="color:green;font-weight:bold">${d}</span>`,
+                    `<span style="color:green;font-weight:bold">${d}</span>`
             },
 
             {
                 title: "Negativas",
                 data: "negativos",
                 render: (d) =>
-                    `<span style="color:red;font-weight:bold">${d}</span>`,
+                    `<span style="color:red;font-weight:bold">${d}</span>`
             },
 
             {
                 title: "No Aplica",
-                data: "no_aplica",
+                data: "no_aplica"
             },
 
             {
                 title: "Total",
-                data: "total_respuestas",
+                data: "total_respuestas"
             },
 
             {
                 title: "% Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
+                render: function (data, type, row) {
+
+                    let total = parseInt(row.total_respuestas) || 0;
+                    let positivos = parseInt(row.positivos) || 0;
+                    let noAplica = parseInt(row.no_aplica) || 0;
+
+                    let base = total - noAplica;
 
                     let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(1) : 0;
+                        base > 0
+                            ? ((positivos * 100) / base).toFixed(1)
+                            : 0;
 
                     let color =
                         porcentaje >= 95
                             ? "#00b18d"
                             : porcentaje >= 90
-                              ? "#ffc107"
-                              : "#d64545";
+                                ? "#ffc107"
+                                : "#d64545";
 
                     return `
-                        <span class="badge px-3 py-2"
+                        <span
+                            class="badge px-3 py-2"
                             style="
                                 background:${color};
                                 color:white;
@@ -780,16 +791,14 @@ function renderTablaInternacionAmb(data) {
                             ${porcentaje}%
                         </span>
                     `;
-                },
-            },
+                }
+            }
         ],
 
-        order: [
-            [0, "asc"],
-            [6, "asc"],
-        ],
-        language:{
-            url:"/js/es-ES.json",
+        order: [[0, "asc"]],
+
+        language: {
+            url: "/js/es-ES.json"
         }
     });
 }
