@@ -21,27 +21,27 @@
         <div class="card" style="border-radius:15px;">
             <div class="card-header">
                 <div class="row align-items-end g-3">
-                    <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                    <div class="col-6 col-sm-12 col-md-6 col-lg-1">
                         <input id="filtroDesde" class="form-control" type="text" placeholder="Desde" required>
                     </div>
 
-                    <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                    <div class="col-6 col-sm-12 col-md-6 col-lg-1">
                         <input id="filtroHasta" class="form-control" type="text" placeholder="Hasta" required>
                     </div>
 
-                    <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
+                    <div class="col-6 col-sm-12 col-md-6 col-lg-2 d-none d-md-block">
                         @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
                             <select id="area" name="area" class="form-select js-select-area w-100">
                             </select>
                         @endif
                     </div>
 
-                    <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
+                    <div class="col-6 col-sm-12 col-md-6 col-lg-3 d-none d-md-block">
                         <select id="idNovedad" name="idNovedad" class="form-select js-select-novedadFiltro w-100">
                         </select>
                     </div>
 
-                    <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
+                    <div class="col-6 col-sm-12 col-md-6 col-lg-1 d-none d-md-block">
                         <select id="paraFinnegans" name="paraFinnegans"
                             class="form-select js-select-novedadFinnegans w-100">
                             <option value="">Todas</option>
@@ -50,7 +50,7 @@
                         </select>
                     </div>
 
-                    <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                    <div class="col-6 col-sm-12 col-md-6 col-lg-1 col-xl-auto">
                         <button type="button" id="btnLimpiarFiltros" class="btn btn-secondary w-100">
                             <i class="fa-solid fa-eraser"></i> Limpiar
                         </button>
@@ -59,7 +59,7 @@
                     @if (Auth::user()->rol == 'Administrador/a' ||
                             Auth::user()->rol == 'Coordinador/a' ||
                             Auth::user()->rol == 'Coordinador/a L2')
-                        <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <div class="col-6 col-sm-12 col-md-6 col-lg-1 col-xl-auto">
                             <button type="button" id="btnCargaMasiva" class="btn btn-primary w-100">
                                 <i class="fa-solid fa-database"></i> Carga masiva
                             </button>
@@ -67,9 +67,15 @@
                     @endif
 
                     @if (Auth::user()->rol == 'Administrador/a')
-                        <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
+                        <div class="col-6 col-sm-12 col-md-6 col-lg-1 col-xl-auto">
                             <button type="button" id="btnLiquidarNovedadesSelec" class="btn btn-primary w-100">
                                 <i class="fa-solid fa-file-invoice-dollar"></i> Liquidar
+                            </button>
+                        </div>                    
+                    
+                        <div class="col-6 col-sm-12 col-md-6 col-lg-1 col-xl-auto">
+                            <button type="button" id="btnExportExcel" class="btn btn-primary">
+                                <i class="fa-solid fa-file-excel"></i> Excel
                             </button>
                         </div>
                     @endif

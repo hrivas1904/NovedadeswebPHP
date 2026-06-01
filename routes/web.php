@@ -66,6 +66,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/controlNovedades', [NovedadesController::class, 'controlNovedades'])
         ->name('controlNovedades');
 
+    Route::get(
+        '/novedades/exportarExcel',
+        [NovedadesController::class, 'exportarExcel']
+    )->name('novedades.exportarExcel');
+
     Route::get('/configNovedades', [NovedadesController::class, 'configNovedades'])
         ->name('configNovedades');
 

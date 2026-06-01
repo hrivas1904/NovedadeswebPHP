@@ -447,8 +447,8 @@ $(document).ready(function () {
             },
             autoWidth: false,
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
-                    <'d-flex flex-column flex-sm-row gap-2'B> \
-                    <'ms-md-auto mt-2 mt-md-0'f> \
+                    <'d-flex flex-column flex-sm-row gap-2'> \
+                    <'ms-md-auto mt-2 mt-md-0'> \
                 > \
                 <'my-2't> \
                 <'d-bottom d-flex justify-content-center'i>",
@@ -470,7 +470,8 @@ $(document).ready(function () {
                                 );
                             } else {
                                 return [
-                                    0, 2, 5, 6, 8, 9, 10, 11, 13, 14, 16, 20, 21
+                                    0, 2, 5, 6, 8, 9, 10, 11, 13, 14, 16, 20,
+                                    21,
                                 ].includes(idx);
                             }
                         },
@@ -652,6 +653,18 @@ $(document).ready(function () {
             anularNovedad(idRegistro);
         });
     }
+});
+
+$(document).on("click", "#btnExportExcel", function () {
+    let params = new URLSearchParams({
+        area_id: $("#area").val(),
+        idNovedad: $("#idNovedad").val(),
+        paraFinnegans: $("#paraFinnegans").val(),
+        desde: $("#filtroDesde").val(),
+        hasta: $("#filtroHasta").val(),
+    });
+
+    window.location.href = "/novedades/exportarExcel?" + params.toString();
 });
 
 //selector novedad
