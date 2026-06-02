@@ -131,7 +131,7 @@ $(document).ready(function () {
                     className: "text-start",
                     title: "NOVEDAD",
                 },
-                { data: "NOVEDAD_NOMBRE" },
+                { data: "NOVEDAD_NOMBRE", className: "text-wrap" },
                 {
                     data: "FECHA_DESDE",
                     className: "text-end",
@@ -159,7 +159,7 @@ $(document).ready(function () {
                         return data;
                     },
                 },
-                { data: "DESCRIPCION", width: "auto" },                
+                { data: "DESCRIPCION", width: "auto", className: "text-wrap" },                
                 { data: null,
                     orderable: false,
                     className: "text-center",
@@ -175,7 +175,7 @@ $(document).ready(function () {
                     },                    
                 },
             ],
-            scrollX: true,
+
             paging: false,
             scrollCollapse: true,
             scrollY: getScrollY(),
@@ -189,7 +189,6 @@ $(document).ready(function () {
                     last: ">>",
                 },
             },
-            autoWidth: false,
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
                     <'d-flex flex-column flex-sm-row gap-2'B> \
                     <'ms-md-auto mt-2 mt-md-0'f> \
