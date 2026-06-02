@@ -215,9 +215,7 @@ function verDetalleNovedad(idRegistro) {
                 $("#inputDni").val(d.dni);
                 $("#inputArea").val(d.area);
 
-                $("#inputFechaAplicacion").val(
-                    formatearFechaArgentina(d.FECHA_APLICACION),
-                );
+                $("#inputFechaAplicacion").val(d.FECHA_APLICACION);
                 $("#inputFechaDesde").val(d.FECHA_DESDE);
                 $("#inputFechaHasta").val(d.FECHA_HASTA);
 

@@ -205,8 +205,7 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha aplicación</label>
-                                            <input type="text" id="inputFechaAplicacion" class="form-control"
-                                                readonly>
+                                            <input type="date" id="inputFechaAplicacion" class="form-control editable" readonly>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha desde</label>

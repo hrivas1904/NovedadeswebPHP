@@ -680,6 +680,7 @@ $("#btnGuardarCambios").on("click", function () {
         cuotas: $("#inputCuotas").val(),
         annio: $("#inputAnnioVacaciones").val(),
         idNovedad: $("#inputIdNovedad").val(),
+        fechaAplicacion: $("#inputFechaAplicacion").val(),
     };
 
     console.log(data);
