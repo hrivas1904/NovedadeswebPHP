@@ -109,19 +109,43 @@
                     <div class="col-xl-4 col-lg-6 col-12">
                         <div class="card p-2">
                             <h5>Guardia (Adulto - Pediátrica)</h5>
-                            <table id="tablaGuardias" class="table table-bordered"></table>
+                            <table id="tablaGuardias" class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="5"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-6 col-12">
                         <div class="card p-2">
-                            <h5>Internación Estadía (Standard-Design-UTI)</h5>
-                            <table id="tablaAreas" class="table table-bordered"></table>
+                            <h5>Internación Estadía (Standard-Design-UTI's)</h5>
+                            <table id="tablaAreas" class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="5"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-6 col-12">
                         <div class="card p-2">
                             <h5>Internación Ambulatoria</h5>
-                            <table id="tablaExpAmb" class="table table-bordered"></table>
+                            <table id="tablaExpAmb" class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="5"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>

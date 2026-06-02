@@ -130,6 +130,7 @@ function renderTablaGuardias(data) {
             { title: "Tipo", data: "tipoEncuesta" },
             { title: "Positivas", data: "positivas" },
             { title: "Negativas", data: "negativas" },
+            { title: "Total", data: "total_respuestas" },
             {
                 title: "% Positivas",
                 data: "porc_positivas",
@@ -159,7 +160,19 @@ function renderTablaGuardias(data) {
         pageLength: 5,
         language:{
             url:"/js/es-ES.json",
-        }
+        },
+        footerCallback: function (row, data) {
+            let totalGeneral = data.reduce((acc, item) => {
+                return acc + (parseInt(item.total_respuestas) || 0);
+            }, 0);
+            $(this.api().table().footer()).html(`
+                <tr>
+                    <th colspan="6" class="text-end">
+                        Total de respuestas: ${totalGeneral}
+                    </th>
+                </tr>
+            `);
+        },
     });
 }
 
@@ -182,6 +195,7 @@ function renderTablaAreas(data) {
             { title: "Área", data: "area_grupo" },
             { title: "Positivas", data: "positivas" },
             { title: "Negativas", data: "negativas" },
+            { title: "Total", data: "total_respuestas" },
             {
                 title: "% Positivas",
                 data: "porc_positivas",
@@ -211,7 +225,20 @@ function renderTablaAreas(data) {
         pageLength: 5,
         language:{
             url:"/js/es-ES.json",
-        }
+        },
+
+        footerCallback: function (row, data) {
+            let totalGeneral = data.reduce((acc, item) => {
+                return acc + (parseInt(item.total_respuestas) || 0);
+            }, 0);
+            $(this.api().table().footer()).html(`
+                <tr>
+                    <th colspan="6" class="text-end">
+                        Total de respuestas: ${totalGeneral}
+                    </th>
+                </tr>
+            `);
+        },
     });
 }
 
@@ -233,6 +260,7 @@ function renderTablaExpectativasAmbulatoria(data) {
         columns: [
             { title: "Positivas", data: "positivas" },
             { title: "Negativas", data: "negativas" },
+            { title: "Total", data: "total_respuestas" },
             {
                 title: "% Positivas",
                 data: "porc_positivas",
@@ -262,7 +290,19 @@ function renderTablaExpectativasAmbulatoria(data) {
         pageLength: 5,
         language:{
             url:"/js/es-ES.json",
-        }
+        },
+        footerCallback: function (row, data) {
+            let totalGeneral = data.reduce((acc, item) => {
+                return acc + (parseInt(item.total_respuestas) || 0);
+            }, 0);
+            $(this.api().table().footer()).html(`
+                <tr>
+                    <th colspan="6" class="text-end">
+                        Total de respuestas: ${totalGeneral}
+                    </th>
+                </tr>
+            `);
+        },
     });
 }
 
@@ -346,12 +386,12 @@ function renderTablaInternacion(data) {
                         data >= 80 ? "green" : data >= 60 ? "orange" : "red";
                     return `<span style="color:${color}; font-weight:bold">${data}%</span>`;
                 },
-            },
+            },            
         ],
         pageLength: 5,
         language:{
             url:"/js/es-ES.json",
-        }
+        },
     });
 }
 
