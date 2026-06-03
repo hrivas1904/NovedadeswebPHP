@@ -87,6 +87,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('calendarioServicios');
 
     //RUTAS DE SP PERSONAL
+    Route::get('/home/dashboardDiario', [HomeController::class, 'cargarDashboardDiario']);
+
+    Route::get('/home/misOperaciones', [HomeController::class, 'cargarMisOperaciones']);
+    
     Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
         ->name('areas.lista');
 

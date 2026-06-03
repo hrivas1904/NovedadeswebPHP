@@ -20,53 +20,53 @@
             @if (Auth::user()->rol == 'Administrador/a')
                 <div class="row g-3 mb-3">
                     <div class="col-xl-3 col-md-6 col-12">
-                        <div class="card p-2">
+                        <div class="card card-hover-radial p-2" id="cardKpiColabActivos" style="cursor: pointer;">
                             <div class="d-flex gap-3">
                                 <div class="icon-box" style="background: var(--color-accent-green); color: var(--bg-card);">
                                     <i class="fa-solid fa-users"></i>
                                 </div>
                                 <div>
-                                    <h6 style="color: var(--color-default)" class="mb-0">COLABORADORES ACTIVOS</h6>
-                                    <h2 style="color: var(--color-default)" class="mb-0">0</h2>
+                                    <h6 class="mb-0">COLABORADORES ACTIVOS</h6>
+                                    <h2 id="lblColabsActivos" class="mb-0">0</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 col-12">
-                        <div class="card p-2">
+                        <div class="card card-hover-radial p-2" id="cardKpiNovMes" style="cursor: pointer;">
                             <div class="d-flex gap-3">
                                 <div class="icon-box" style="background: var(--color-accent-green); color: var(--bg-card);">
                                     <i class="fa-solid fa-folder-open"></i>
                                 </div>
                                 <div>
-                                    <h6 style="color: var(--color-default)" class="mb-0">NOVEDADES DEL DÍA</h6>
-                                    <h2 style="color: var(--color-default)" class="mb-0">0</h2>
+                                    <h6 class="mb-0">NOVEDADES DEL MES</h6>
+                                    <h2 id="lblNovedadesMes" class="mb-0">0</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 col-12">
-                        <div class="card p-2">
+                        <div class="card card-hover-radial p-2" id="cardKpiAdPendientes" style="cursor: pointer;">
                             <div class="d-flex gap-3">
                                 <div class="icon-box" style="background: var(--color-accent-green); color: var(--bg-card);">
                                     <i class="fa-solid fa-file-invoice-dollar"></i>
                                 </div>
                                 <div>
-                                    <h6 style="color: var(--color-default)" class="mb-0">ADELANTOS PENDIENTES</h6>
-                                    <h2 style="color: var(--color-default)" class="mb-0">0</h2>
+                                    <h6 class="mb-0">ADELANTOS PENDIENTES</h6>
+                                    <h2 id="lblAdelantosPend" class="mb-0">0</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 col-12">
-                        <div class="card p-2">
+                        <div class="card card-hover-radial p-2" id="cardKpiTicketAbiertos" style="cursor: pointer;">
                             <div class="d-flex gap-3">
                                 <div class="icon-box" style="background: var(--color-accent-green); color: var(--bg-card);">
                                     <i class="fa-solid fa-ticket"></i>
                                 </div>
                                 <div>
-                                    <h6 style="color: var(--color-default)" class="mb-0">TICKETS ABIERTOS</h6>
-                                    <h2 style="color: var(--color-default)" class="mb-0">0</h2>
+                                    <h6 class="mb-0">TICKETS ABIERTOS</h6>
+                                    <h2 id="lblTicketsAbiertos" class="mb-0">0</h2>
                                 </div>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
                             </div>
                         </div>
                         <div class="card-body" style="height: 400px">
-                            <div class="d-flex gap-3 align-items-start my-2">
+                            <div class="d-flex gap-3 align-items-start my-2" id="kpiMisNovedades" style="cursor: pointer;">
                                 <div class="icon-box d-flex align-items-center justify-content-center"
                                     style="
                                     width: 50px;
@@ -163,10 +163,10 @@
                                 </div>
                                 <div>
                                     <h6 class="fw-bold mt-1" style="color: var(--color-default)">Mis novedades</h6>
-                                    <p class="text-muted">0</p>
+                                    <p id="lblMisNovedades" class="text-muted">0</p>
                                 </div>
                             </div>
-                            <div class="d-flex gap-3 align-items-center my-2">
+                            <div class="d-flex gap-3 align-items-center my-2" id="kpiMisSolicitudes" style="cursor: pointer;">
                                 <div class="icon-box d-flex align-items-center justify-content-center"
                                     style="
                                     width: 50px;
@@ -179,10 +179,10 @@
                                 </div>
                                 <div>
                                     <h6 class="fw-bold mt-1" style="color: var(--color-default)">Mis solicitudes</h6>
-                                    <p class="text-muted">0</p>
+                                    <p id="lblMisSolicitudes" class="text-muted">0</p>
                                 </div>
                             </div>
-                            <div class="d-flex gap-3 align-items-center my-2">
+                            <div class="d-flex gap-3 align-items-center my-2" id="kpiMisTickets" style="cursor: pointer;">
                                 <div class="icon-box d-flex align-items-center justify-content-center"
                                     style="
                                     width: 50px;
@@ -195,7 +195,7 @@
                                 </div>
                                 <div>
                                     <h6 class="fw-bold mt-1" style="color: var(--color-default)">Mis tickets</h6>
-                                    <p class="text-muted">0</p>
+                                    <p id="lblMisTickets" class="text-muted">0</p>
                                 </div>
                             </div>
                         </div>

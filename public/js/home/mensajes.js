@@ -280,7 +280,87 @@ function eliminarNotificacion(idNotificacion) {
     });
 }
 
+function cargarDashboardDiario() {
+    $.ajax({
+        url: "/home/dashboardDiario",
+        type: "GET",
+        success: function (res) {
+            dashboardData = res;
+
+            if (res.totalColabActivos && res.totalColabActivos.length > 0) {
+                total = res.totalColabActivos[0].total ?? 0;
+                $("#lblColabsActivos").text(total);
+            }
+
+            if (res.totalNovMes && res.totalNovMes.length > 0) {
+                total = res.totalNovMes[0].total ?? 0;
+                $("#lblNovedadesMes").text(total);
+            }
+
+            if (res.totalAdPendiente && res.totalAdPendiente.length > 0) {
+                total = res.totalAdPendiente[0].total ?? 0;
+                $("#lblAdelantosPend").text(total);
+            }
+
+            if (
+                res.totalTicketsAbiertos &&
+                res.totalTicketsAbiertos.length > 0
+            ) {
+                total = res.totalTicketsAbiertos[0].total ?? 0;
+                $("#lblTicketsAbiertos").text(total);
+            }
+        },
+    });
+}
+
+function cargarMisOperaciones() {
+    $.ajax({
+        url: "/home/misOperaciones",
+        type: "GET",
+        success: function (res) {
+            dashboardData = res;
+
+            if (res.misNovedades && res.misNovedades.length > 0) {
+                total = res.misNovedades[0].total ?? 0;
+                $("#lblMisNovedades").text(total);
+            }
+
+            if (res.misAdelantos && res.misAdelantos.length > 0) {
+                total = res.misAdelantos[0].total ?? 0;
+                $("#lblMisAdelantos").text(total);
+            }
+
+            if (res.misTickets && res.misTickets.length > 0) {
+                total = res.misTickets[0].total ?? 0;
+                $("#lblMisTickets").text(total);
+            }
+        },
+    });
+}
+
 $(document).ready(function () {
     cargarNotificaciones();
     obtenerFeriados();
+    cargarDashboardDiario();
+    cargarMisOperaciones();
+});
+
+$("#cardKpiColabActivos").on("click", function () {
+    window.location.href = "/nomina";
+});
+
+$("#cardKpiNovMes").on("click", function () {
+    window.location.href = "/controlNovedades";
+});
+
+$("#kpiMisNovedades").on("click", function () {
+    window.location.href = "/novedades/misNovedades";
+});
+
+$("#cardKpiAdPendientes, #kpiMisSolicitudes").on("click", function () {
+    window.location.href = "/solicitudes";
+});
+
+$("#cardKpiTicketAbiertos, #kpiMisTickets").on("click", function () {
+    window.location.href = "/ayuda";
 });

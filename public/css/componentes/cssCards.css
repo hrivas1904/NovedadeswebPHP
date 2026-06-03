@@ -5,6 +5,7 @@
     z-index: 1;
     background-color: white; /* Estado inicial */
     cursor: pointer;
+    color: var(--color-default);
 }
 
 .card-hover-radial::before {

@@ -99,4 +99,45 @@ class HomeController extends Controller
         return redirect()->route('login')
             ->with('success', 'Usuario creado correctamente');
     }
+
+    public function cargarDashboardDiario(Request $requests){
+        try{
+            return response()->json([
+                
+                'totalColabActivos'=>DB::select('CALL SP_COLAB_ACTIVOS_ACTUALES()'),
+                'totalNovMes'=>DB::select('CALL SP_NOVEDADES_ACTUALES()'),
+                'totalAdPendiente'=>DB::select(('CALL SP_ADELANTOS_PENDIENTES()')),
+                'totalTicketsAbiertos'=>DB::select('CALL SP_CANT_TICKET_ABIERTOS()'),
+            ]);
+        }
+        catch (\Exception $e) {
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error en dashboard',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function cargarMisOperaciones(Request $requests){
+
+        $legajo=auth()->user()->legajo;
+
+        try{
+            return response()->json([                
+                'misNovedades'=>DB::select('CALL SP_CANT_MIS_NOVEDADES(?)',[$legajo]),
+                'misAdelantos'=>DB::select('CALL SP_CANT_MIS_ADELANTOS(?)',[$legajo]),
+                'misTickets'=>DB::select(('CALL SP_CANT_MIS_TICKET(?)'),[$legajo]),
+            ]);
+        }
+        catch (\Exception $e) {
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error en dashboard',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

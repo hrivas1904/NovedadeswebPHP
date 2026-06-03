@@ -334,7 +334,7 @@ class PersonalController extends Controller
                 : null;
 
             $empleados = DB::select(
-                "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?)",
+                "CALL SP_LISTA_EMPLEADOS_DATATABLE(?, ?, ?, ?, ?, ?)",
                 [$areaId, $categId, $convenio, $regimen, $uti, $noche]
             );
 
@@ -386,7 +386,10 @@ class PersonalController extends Controller
             'OBRA SOCIAL',
             'TITULO',
             'CORREO',
-            'TELEFONO'
+            'TELEFONO',
+            'numero_cuenta', 
+            'cbu', 
+            'banco',
         ];
 
         $sheet->fromArray($headers, NULL, 'A1');
@@ -416,6 +419,9 @@ class PersonalController extends Controller
             $sheet->setCellValue("T$row", $item->TITULO);
             $sheet->setCellValue("U$row", $item->CORREO);
             $sheet->setCellValue("V$row", $item->TELEFONO);
+            $sheet->setCellValueExplicit("W$row", $item->numero_cuenta, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit("X$row", $item->cbu, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue("Y$row", $item->banco);
 
             $row++;
         }
