@@ -45,12 +45,12 @@ function cargarDashboard() {
     let tipoEncuesta = null;
 
     $.ajax({
-        url: "/dashboard/completo",
+        url: `/dashboard/completo/${DASHBOARD_TOKEN}`,
         method: "GET",
         data: {
-            desde: desde,
-            hasta: hasta,
-            tipo: tipoEncuesta,
+            desde: null,
+            hasta: null,
+            tipo: null,
         },
 
         success: function (res) {

@@ -375,3 +375,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/asistencia/ingreso', [PersonalController::class, 'enviarIngresoAsistencia']);
     Route::post('/asistencia/egreso', [PersonalController::class, 'enviarEgresoAsistencia']);
 });
+
+
+//calidad - enlaces públicos
+Route::middleware(['dashboard.publico'])->group(function () {
+
+    Route::get(
+        '/dashboardCalidadPublico/{token}',
+        [CalidadController::class, 'dashboardCalidadPublico']
+    )->name('dashboardCalidadPublico');
+
+    Route::get(
+        '/dashboard/completo/{token}',
+        [CalidadController::class, 'dashboardCompleto']
+    );
+
+});

@@ -1,15 +1,41 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title', 'Dashboard de Calidad')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-@section('content')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.min.css">
 
+    <link rel="stylesheet" href="{{ asset('css/paletaColores.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/botones.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styleDt.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modales.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cronograma.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssFiltroEcommerce.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssNavbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssDivAvisos.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssCards.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
+    <title>DASHBOARD DE CALIDAD</title>
+</head>
+
+<body>
     <div class="container-fluid">
 
         <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
             <div class="d-flex align-items-start gap-3">
                 <div class="icon-box">
-                    <img src="{{ asset('img/icons/dash-calidad-logo.png') }}" style="height: 32px;" alt="Logo subir encuestas">
+                    <img src="{{ asset('img/icons/dash-calidad-logo.png') }}" style="height: 32px;"
+                        alt="Logo subir encuestas">
                 </div>
                 <div>
                     <h3 class="tituloVista mb-0">DASHBOARD DE CALIDAD</h3>
@@ -19,7 +45,7 @@
         </div>
 
         <div class="card p-3">
-            <div class="row mb-3 g-3">
+            <div class="row mb-3 g-3 d-none">
                 <div class="col-md-3">
                     <input type="date" id="fechaDesde" class="form-control">
                 </div>
@@ -194,12 +220,19 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-@endsection
-
-@push('scripts')
-    <script src="{{ asset('js/calidad/analisisEncuestas.js') }}"></script>
-    <script src="{{ asset('js/calidad/dashboard.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
-        const USER_ROLE = "{{ Auth::user()->rol }}";
+        const DASHBOARD_TOKEN = "{{ request()->route('token') }}";
     </script>
-@endpush
+    <script src="{{ asset('js/calidad/dashboardPublico.js') }}"></script>
+
+</body>
+
+</html>

@@ -19,6 +19,11 @@ class CalidadController extends Controller
         return view('calidad.dashboardCalidad');
     }
 
+    public function dashboardCalidadPublico()
+    {
+        return view('calidad.dashboardPublico');
+    }
+
     public function cmiCalidad()
     {
         return view('calidad.cmi');

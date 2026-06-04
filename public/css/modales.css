@@ -54,6 +54,9 @@
 .section-divider {
     position: relative;
     margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .section-divider span {
@@ -73,6 +76,10 @@
     height: 1px;
     background-color: var(--color-light);
     z-index: 1;
+}
+
+.section-divider h3 {
+    margin: 0;
 }
 
 /* Caja de datos */
