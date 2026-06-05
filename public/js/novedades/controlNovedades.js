@@ -296,7 +296,7 @@ $(document).ready(function () {
                     d.paraFinnegans = $("#paraFinnegans").val();
                     d.desde = $("#filtroDesde").val();
                     d.hasta = $("#filtroHasta").val();
-                    console.log("Filtro area:", d.area);
+                    
                 },
             },
             columnDefs: [

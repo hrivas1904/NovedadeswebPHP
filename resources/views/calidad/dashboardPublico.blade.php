@@ -89,7 +89,7 @@
                                         </div>
                                     </div>
                                     <div class="col-10">
-                                        <h4>Promedio General Expectativas</h5>
+                                        <h5>Promedio General Expectativas</h5>
                                             <p class="text-small">Sin distinción de encuestas</p>
                                     </div>
                                 </div>

@@ -412,6 +412,7 @@ function renderTablaGuardiaPreguntas(data) {
         responsive: true,
         searching: false,
         info: false,
+        ordering: false,
 
         columns: [
             { title: "Pregunta", data: "pregunta" },
@@ -497,6 +498,7 @@ function renderTablaGuardiaPediatricaPreguntas(data) {
         responsive: true,
         searching: false,
         info: false,
+        ordering: false,
 
         columns: [
             { title: "Pregunta", data: "pregunta" },
@@ -582,6 +584,7 @@ function renderTablaInternacionPreguntas(data) {
         responsive: true,
         searching: false,
         info: false,
+        ordering: false,
 
         columns: [
             { title: "Área", data: "area_grupo" },
@@ -672,6 +675,7 @@ function renderTablaInternacionPreguntasGeneral(data) {
         responsive: true,
         searching: false,
         info: false,
+        ordering: false,
 
         columns: [
             { title: "Pregunta", data: "pregunta" },
@@ -763,6 +767,7 @@ function renderTablaInternacionAmb(data) {
         responsive: true,
         searching: false,
         info: false,
+        ordering: false,
 
         columns: [
             {
