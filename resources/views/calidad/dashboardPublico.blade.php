@@ -25,26 +25,31 @@
     <link rel="stylesheet" href="{{ asset('css/componentes/cssDivAvisos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssCards.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssDashboardCalidad.css') }}">
     <title>DASHBOARD DE CALIDAD</title>
 </head>
 
-<body>
+<body style="background:#f5f9ff;">
     <div class="container-fluid">
 
-        <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
-            <div class="d-flex align-items-start gap-3">
-                <div class="icon-box">
-                    <img src="{{ asset('img/icons/dash-calidad-logo.png') }}" style="height: 32px;"
-                        alt="Logo subir encuestas">
+        <div class="dashboard-header">
+            <div class="dashboard-header-content">
+                <div class="header-info text-end">
+                    <h1 class="dashboard-title">
+                        DASHBOARD SGC
+                    </h1>
+                    <p class="dashboard-subtitle">
+                        Estadísticas de encuestas de atención al paciente
+                    </p>
                 </div>
-                <div>
-                    <h3 class="tituloVista mb-0">DASHBOARD DE CALIDAD</h3>
-                    <p class="mb-0 text-muted">Estadísticas de encuestas de atención al paciente.</p>
+                <div class="header-divider"></div>
+                <div class="header-brand">
+                    <img src="{{ asset('img/logo-hp3c-white.png') }}" class="logo-navbar" alt="HP3C">
                 </div>
             </div>
         </div>
 
-        <div class="card p-3">
+        <div class="p-3">
             <div class="row mb-3 g-3 d-none">
                 <div class="col-md-3">
                     <input type="date" id="fechaDesde" class="form-control">
@@ -75,54 +80,112 @@
             <div class="justify-content-center">
                 <div class="row mb-4 g-3">
                     <div class="col-md-6 col-lg-3 col-12">
-                        <div class="card card-hover-radial text-center">
+                        <div class="glass-section card-hover-radial text-center">
                             <div class="card-body">
-                                <h5>Promedio General Expectativas</h5>
-                                <p class="text-small">Sin distinción de encuestas</p>
-                                <h2 id="kpiSatisfaccion">0%</h2>
+                                <div class="d-flex align-items-start gap-2">
+                                    <div class="col-2">
+                                        <div class="icon-kpi">
+                                            <i class="fa-solid fa-chart-line" style="font-size: 2.5rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-10">
+                                        <h4>Promedio General Expectativas</h5>
+                                            <p class="text-small">Sin distinción de encuestas</p>
+                                    </div>
+                                </div>
+                                <p style="font-family:'Franklin Gothic Medium'; font-size:3rem" id="kpiSatisfaccion">0%
+                                </p>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-6 col-lg-3 col-12">
-                        <div class="card card-hover-radial text-center" id="btnKpiPromedioGuardias">
+                        <div class="glass-section card-hover-radial text-center" id="btnKpiPromedioGuardias">
                             <div class="card-body">
-                                <h5>Promedio General Guardias</h5>
-                                <p class="text-small">Expectativas de las Guardias (A-P)</p>
-                                <h2 id="kpiGuardiaGeneral">0%</h2>
+                                <div class="d-flex align-items-start gap-2">
+                                    <div class="col-2">
+                                        <div class="icon-kpi">
+                                            <i class="fa-solid fa-user-doctor" style="font-size: 2.5rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-10">
+                                        <h5>Promedio General Guardias</h5>
+                                        <p class="text-small">Expectativas de las Guardias (A-P)</p>
+                                    </div>
+                                </div>
+                                <p style="font-family:'Franklin Gothic Medium'; font-size:3rem"
+                                    id="kpiGuardiaGeneral">0%</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-6 col-lg-3 col-12">
-                        <div class="card card-hover-radial text-center" id="btnKpiPromedioInternacion">
+                        <div class="glass-section card-hover-radial text-center" id="btnKpiPromedioInternacion">
                             <div class="card-body">
-                                <h5>Promedio General Internación con Estadía</h5>
-                                <p class="text-small">Expectativas Internación con Estadía</p>
-                                <h2 id="kpiInternacionGeneral">0%</h2>
+                                <div class="d-flex align-items-start gap-2">
+                                    <div class="col-2">
+                                        <div class="icon-kpi">
+                                            <i class="fa-solid fa-bed-pulse" style="font-size: 2.5rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-10">
+                                        <h5>Promedio Gral Internación Estadía</h5>
+                                        <p class="text-small">Expectativas Internación con Estadía</p>
+                                    </div>
+                                </div>
+                                <p style="font-family:'Franklin Gothic Medium'; font-size:3rem"
+                                    id="kpiInternacionGeneral">0%</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-6 col-lg-3 col-12">
-                        <div class="card card-hover-radial text-center" id="btnKpiPromedioAmbulatoria">
+                        <div class="glass-section card-hover-radial text-center" id="btnKpiPromedioAmbulatoria">
                             <div class="card-body">
-                                <h5>Promedio General Int Ambulatoria</h5>
-                                <p class="text-small">Expectativas de Internación Ambulatoria</p>
-                                <h2 id="kpiInternacionAmbulatoria">0%</h2>
+                                <div class="d-flex align-items-start gap-2">
+                                    <div class="col-2">
+                                        <div class="icon-kpi">
+                                            <i class="fa-solid fa-clipboard-list" style="font-size: 2.5rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-10">
+                                        <h5>Promedio General Int Ambulatoria</h5>
+                                        <p class="text-small">Expectativas de Internación Ambulatoria</p>
+                                    </div>
+                                </div>
+                                <p style="font-family:'Franklin Gothic Medium'; font-size:3rem"
+                                    id="kpiInternacionAmbulatoria">0%</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card p-2 d-inline-block shadow-sm">
-                    <div class="leyenda-resultados d-flex flex-wrap align-items-center gap-3">
-                        <h5 class="fw-bold">Referencias: </h5>
-                        <span class="badge bg-success fs-6">≥95%: Meta cumplida</span>
-                        <span class="badge bg-warning text-white fs-6">≥90%- <95: Meta próxima a cumplir</span>
-                                <span class="badge bg-danger fs-6">
-                                    <90%: Meta incumplida</span>
+                <div class="quality-legend">
+
+                    <div class="legend-title">
+                        <i class="fa-solid fa-chart-pie me-2"></i>
+                        Referencias
                     </div>
+
+                    <div class="legend-items">
+
+                        <div class="legend-item success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>≥95% Meta Cumplida</span>
+                        </div>
+
+                        <div class="legend-item warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span> ≥90% - <95% Próxima a Cumplir</span>
+                        </div>
+
+                        <div class="legend-item danger">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                            <span>&lt;90% Meta Incumplida</span>
+                        </div>
+
+                    </div>
+
                 </div>
 
                 <div class="section-divider text-center mt-4">
@@ -133,9 +196,9 @@
 
                 <div class="row g-3">
                     <div class="col-xl-4 col-lg-6 col-12">
-                        <div class="card p-2">
+                        <div class="glass-section p-2">
                             <h5>Guardia (Adulto - Pediátrica)</h5>
-                            <table id="tablaGuardias" class="table table-bordered">
+                            <table id="tablaGuardias" class="table table-bordered table-wrapper">
                                 <thead></thead>
                                 <tbody></tbody>
                                 <tfoot>
@@ -147,9 +210,9 @@
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-6 col-12">
-                        <div class="card p-2">
+                        <div class="glass-section p-2">
                             <h5>Internación Estadía (Standard-Design-UTI's)</h5>
-                            <table id="tablaAreas" class="table table-bordered">
+                            <table id="tablaAreas" class="table table-bordered table-wrapper">
                                 <thead></thead>
                                 <tbody></tbody>
                                 <tfoot>
@@ -161,9 +224,9 @@
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-6 col-12">
-                        <div class="card p-2">
+                        <div class="glass-section p-2">
                             <h5>Internación Ambulatoria</h5>
-                            <table id="tablaExpAmb" class="table table-bordered">
+                            <table id="tablaExpAmb" class="table table-bordered table-wrapper">
                                 <thead></thead>
                                 <tbody></tbody>
                                 <tfoot>
@@ -183,20 +246,23 @@
                 </div>
 
                 <section id="sectionResultadosGuardias">
-                    <div class="card p-2 mb-4" id="cardGuardiaAdulto">
+                    <div class="card glass-section p-2 mb-4" id="cardGuardiaAdulto">
                         <h5>RESULTADOS GUARDIA ADULTO</h5>
-                        <table id="tablaGuardia" class="table table-striped table-bordered w-100"></table>
+                        <table id="tablaGuardia" class="table table-striped table-bordered table-wrapper w-100">
+                        </table>
                     </div>
                     <div class="card p-2" id="cardGuardiaPediatrica">
                         <h5>RESULTADOS GUARDIA PEDIÁTRICA</h5>
-                        <table id="tablaGuardiaPediatrica" class="table table-striped table-bordered w-100"></table>
+                        <table id="tablaGuardiaPediatrica"
+                            class="table table-striped table-bordered table-wrapper w-100"></table>
                     </div>
                 </section>
 
                 <section id="sectionResultadosInternacionEstadia">
                     <div class="card p-2 mt-4">
                         <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
-                        <table id="tablaInternacionPreguntas" class="table table-bordered w-100"></table>
+                        <table id="tablaInternacionPreguntas" class="table table-bordered table-wrapper w-100">
+                        </table>
                     </div>
 
                     <div class="card p-2 mt-4">
@@ -208,7 +274,8 @@
                 <section id="sectionResultadosInternacionAmbulatoria">
                     <div class="card p-2 mt-4">
                         <h5>RESULTADOS INTERNACIÓN AMBULATORIA</h5>
-                        <table id="tablaInternacionAmbPregunta" class="table table-bordered w-100"></table>
+                        <table id="tablaInternacionAmbPregunta" class="table table-bordered table-wrapper w-100">
+                        </table>
                     </div>
                 </section>
 

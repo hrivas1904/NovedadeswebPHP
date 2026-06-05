@@ -1,0 +1,278 @@
+.glass-section{
+    background: rgba(255,255,255,.75);
+
+    backdrop-filter: blur(10px);
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.05);
+
+    margin-bottom: 20px;
+}
+
+.icon-kpi{
+    width: 72px;
+    height: 72px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:22px;
+
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #eef5ff
+    );
+
+    border: 1px solid #d9e7ff;
+
+    box-shadow:
+        0 8px 20px rgba(13,110,253,.08),
+        inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.icon-kpi i {
+    font-size: 2rem;
+    color: var(--color-default);
+}
+
+.kpi-card:hover .icon-kpi {
+    transform: translateY(-3px);
+    box-shadow:
+        0 12px 25px rgba(13,110,253,.15);
+}
+
+.table-wrapper{
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #dbe8ff;
+    box-shadow: 0 4px 15px rgba(13,110,253,.05);
+}
+
+.table thead th{
+    background: #edf5ff;
+    color: #1e3a5f;
+    border-bottom: 1px solid #dbe8ff;
+}
+
+.dashboard-header {
+    position: relative;
+
+    background: linear-gradient(
+        135deg,
+        #0b4f8a 0%,
+        #0d6efd 50%,
+        #4b8dff 100%
+    );
+
+    border-radius: 28px;
+
+    padding: 1.75rem 2rem;
+
+    margin-bottom: 2rem;
+
+    margin-top: 2rem;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 15px 40px rgba(13, 110, 253, .18);
+}
+
+/* Decoración de fondo */
+
+.dashboard-header::before {
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.05);
+
+    top: -140px;
+    right: -100px;
+}
+
+.dashboard-header::after {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.04);
+
+    bottom: -110px;
+    left: -80px;
+}
+
+.dashboard-header-content {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 24px;
+}
+
+/* Logo Calidad */
+
+.header-logo {
+    width: 80px;
+    height: 80px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 22px;
+
+    background: rgba(255,255,255,.12);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+.header-logo img {
+    height: 42px;
+}
+
+/* Texto */
+
+.header-info {
+    text-align: left;
+}
+
+.dashboard-title {
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.dashboard-subtitle {
+    color: rgba(255,255,255,.85);
+    margin: 0;
+    font-size: .95rem;
+}
+
+/* Separador */
+
+.header-divider {
+    width: 1px;
+    height: 60px;
+    background: rgba(255,255,255,.2);
+}
+
+/* HP3C */
+
+.logo-navbar {
+    height: 42px;
+    opacity: .95;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+    .dashboard-header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header-info {
+        text-align: center;
+    }
+
+    .header-divider {
+        width: 60px;
+        height: 1px;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+}
+
+.quality-legend{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+
+    padding:16px 24px;
+
+    margin:20px auto;
+
+    background: rgba(255,255,255,.8);
+
+    backdrop-filter: blur(10px);
+
+    border:1px solid #dce8f7;
+
+    border-radius:20px;
+
+    box-shadow:
+        0 8px 25px rgba(13,110,253,.06);
+}
+
+.legend-title{
+    font-weight:700;
+    color:#1e3a5f;
+    font-size:1.2rem;
+}
+
+.legend-items{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    font-weight:600;
+
+    font-size:1.2rem;
+}
+
+.legend-item.success{
+    background:#e8f8ef;
+    color:#198754;
+}
+
+.legend-item.warning{
+    background:#fff3cd;
+    color:#b76b00;
+}
+
+.legend-item.danger{
+    background:#fdeaea;
+    color:#dc3545;
+}
