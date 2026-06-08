@@ -620,6 +620,10 @@ $(document).ready(function () {
                     data: "observaciones",
                     width: "25%",
                     className: "text-start",
+                    render: function (data) {
+                        const texto = data ?? "";
+                        return `<span title="${texto}" style="display:block;white-space:normal;word-break:break-word;">${texto}</span>`;
+                    },
                 },
                 {
                     data: "estado",
