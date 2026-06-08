@@ -1,7 +1,7 @@
 let tablaControl;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "58vh";
+    return window.innerWidth < 768 ? "28vh" : "60vh";
 }
 
 flatpickr("#filtroDesde, #filtroHasta", {
@@ -46,58 +46,12 @@ function calcularHorasHabiles() {
     document.getElementById("inputValor").value = horas;
 }
 
-function cargarFiltroNovedad() {
-    const select = $(".js-select-novedadFiltro");
-    select.prop("disabled", true);
-    $.ajax({
-        url: "/novedades/lista",
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            console.log("Novedades:", data);
-            select.empty();
-            select.append(
-                $("<option>", {
-                    value: "",
-                    text: "Seleccione novedad",
-                }),
-            );
-            data.forEach((novedad) => {
-                select.append(
-                    $("<option>", {
-                        value: novedad.ID_NOVEDAD,
-                        text: novedad.NOMBRE,
-                    }),
-                );
-            });
-            select.prop("disabled", false);
-            select.trigger("change");
-        },
-        error: function (xhr) {
-            console.error("Error AJAX:", xhr.responseText);
-            alert("Error cargando novedades");
-        },
-    });
-}
-
 function cerrarModalDetalleNovedad() {
     $("#formDetalleNovedad")[0].reset();
     $("#btnGuardarCambios").addClass("d-none");
     $("#btnHabilitarEdicion").removeClass("d-none");
     $("#modalDetalleNovedad").modal("hide");
 }
-
-$(document).ready(function () {
-    cargarFiltroNovedad();
-});
-
-$("#btnLimpiarFiltros").on("click", function () {
-    document.querySelector("#filtroDesde")._flatpickr.clear();
-    document.querySelector("#filtroHasta")._flatpickr.clear();
-    $("#idNovedad").val(null);
-    $("#liquidada").val(0);
-    tablaControl.ajax.reload();
-});
 
 //carga dt novedades
 $(document).ready(function () {
@@ -108,10 +62,11 @@ $(document).ready(function () {
                 url: "/novedades/historicoNovedades",
                 type: "GET",
                 data: function (d) {
-                    d.idNovedad = $("#idNovedad").val();
+                    d.area_id = getAreasSeleccionadas().join(",") || null;
+                    d.idNovedad = getNovedadesSeleccionadas().join(",") || null;
+                    d.paraFinnegans = getFinnegansSeleccionadas().join(",") || null;
                     d.desde = $("#filtroDesde").val();
                     d.hasta = $("#filtroHasta").val();
-                    d.liquidada = $("#liquidada").val();
                 },
             },
             order: [[0, "desc"]],
@@ -123,6 +78,7 @@ $(document).ready(function () {
                         return formatearFechaArgentina(data);
                     },
                 },
+                { data: "AREA" },
                 { data: "REGISTRANTE" },
                 { data: "COLABORADOR" },
                 {
@@ -130,6 +86,7 @@ $(document).ready(function () {
                     width: "3%",
                     className: "text-start",
                     title: "NOVEDAD",
+                    visible: false,
                 },
                 { data: "NOVEDAD_NOMBRE", className: "text-wrap" },
                 {
@@ -190,8 +147,8 @@ $(document).ready(function () {
                 },
             },
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
-                    <'d-flex flex-column flex-sm-row gap-2'B> \
-                    <'ms-md-auto mt-2 mt-md-0'f> \
+                    <'d-flex flex-column flex-sm-row gap-2'> \
+                    <'ms-md-auto mt-2 mt-md-0'> \
                 > \
                 <'my-2'rt> \
                 <'d-bottom d-flex justify-content-center'i>",
@@ -335,14 +292,40 @@ $(document).ready(function () {
             ],
         });
 
-        $("#idNovedad").on("change", function () {
+        $(document).on("change",".check-area, .check-nov, .check-Finnegans",function () {
+              tablaControl.ajax.reload();
+            },
+        );
+
+        $("#btn-limpiar-filtros").on("click", function () {
+            $(".check-area, .check-nov, .check-Finnegans").prop(
+                "checked",
+                false,
+            );
+            document.querySelector("#filtroDesde")._flatpickr.clear();
+            document.querySelector("#filtroHasta")._flatpickr.clear();
+            $("#toggleAreas span").text("Áreas");
+            $("#toggleNov span").text("Novedades");
+            $("#toggleFinnegans span").text("Finnegans");
+            tablaControl.search("").draw();
             tablaControl.ajax.reload();
         });
 
-        $("#liquidada").on("change", function () {
-            console.log($(this).val());
-            tablaControl.ajax.reload();
+        $("#searchRegistro").on("keyup", function () {
+            let valor = $(this).val();
+            tablaControl.search(valor).draw();
         });
+
+        $("#btnClearSearch").on("click", function () {
+            $("#searchRegistro").val("");
+            tablaControl.search("").draw();
+        });
+
+        setTimeout(function () {
+            if ($("#area").val() !== "" && $("#area").val() !== null) {
+                tablaControl.ajax.reload();
+            }
+        }, 500);
 
         $(document).on("click", "#tb_control tbody tr", function (event) {
             event.preventDefault();

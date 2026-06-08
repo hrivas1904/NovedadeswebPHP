@@ -41,35 +41,37 @@
                             </div>
                         @endif
                         <div class="filtro-box">
-                            <div class="filtro-header" id="toggleCateg">
+                            <div class="filtro-header" id="toggleNov">
                                 <span>Novedades</span>
                                 <i class="fa fa-chevron-down"></i>
                             </div>
-                            <div class="filtro-body d-none" id="listaCateg">
+                            <div class="filtro-body d-none" id="listaNov">
                             </div>
                         </div>
-                        <div class="filtro-box">
-                            <div class="filtro-header" id="toggleConvenios">
-                                <span>Tipos</span>
-                                <i class="fa fa-chevron-down"></i>
+                        @if (Auth::user()->rol == 'Administrador/a')
+                            <div class="filtro-box">
+                                <div class="filtro-header" id="toggleFinnegans">
+                                    <span>Tipos</span>
+                                    <i class="fa fa-chevron-down"></i>
+                                </div>
+                                <div class="filtro-body d-none" id="listaFinnegas">
+                                    <label class="filtro-item">
+                                        <input type="checkbox" class="check-Finnegans" value="Todas">
+                                        Todas
+                                    </label>
+                                    <label class="filtro-item">
+                                        <input type="checkbox" class="check-Finnegans" value="Informativas">
+                                        Informativas
+                                    </label>
+                                    <label class="filtro-item">
+                                        <input type="checkbox" class="check-Finnegans" value="Para Finnegans">
+                                        Para Finnegans
+                                    </label>
+                                </div>
                             </div>
-                            <div class="filtro-body d-none" id="listaConvenios">
-                                <label class="filtro-item">
-                                    <input type="checkbox" class="check-convenio" value="Todas">
-                                    Todas
-                                </label>
-                                <label class="filtro-item">
-                                    <input type="checkbox" class="check-convenio" value="Informativas">
-                                    Informativas
-                                </label>
-                                <label class="filtro-item">
-                                    <input type="checkbox" class="check-convenio" value="Para Finnegans">
-                                    Para Finnegans
-                                </label>
-                            </div>
-                        </div>
+                        @endif
                         <div class="col-12">
-                            <button type="button" id="btnLimpiarFiltros" class="btn btn-secondary w-100">
+                            <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
                                 <i class="fa-solid fa-eraser"></i> Limpiar
                             </button>
                         </div>
@@ -119,8 +121,8 @@
                                         <i class="fa-solid fa-magnifying-glass text-muted"></i>
                                     </span>
 
-                                    <input type="text" id="searchPersonal" class="form-control"
-                                        placeholder="Buscar colaborador...">
+                                    <input type="text" id="searchRegistro" class="form-control"
+                                        placeholder="Buscar registro...">
 
                                     <button class="btn btn-secondary" id="btnClearSearch" type="button">
                                         <i class="fa-solid fa-xmark"></i>

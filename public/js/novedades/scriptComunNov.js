@@ -1,35 +1,39 @@
+
+$(document).ready(function () {
+    cargarAreas();
+    cargarNovedades();
+});
+
 $("#toggleAreas").on("click", function () {
     $("#listaAreas").toggleClass("d-none");
 });
 
-$("#toggleCateg").on("click", function () {
-    $("#listaCateg").toggleClass("d-none");
+$("#toggleNov").on("click", function () {
+    $("#listaNov").toggleClass("d-none");
 });
 
-$("#toggleConvenios").on("click", function () {
-    $("#listaConvenios").toggleClass("d-none");
+$("#toggleFinnegans").on("click", function () {
+    $("#listaFinnegas").toggleClass("d-none");
 });
 
 function cargarAreas() {
     $.ajax({
         url: "/areas/lista",
         method: "GET",
+        dataType:'json',
         success: function (data) {
             const container = $("#listaAreas");
 
             container.empty();
 
-            data.forEach((area) => {
-                const checked = areaFija == area.id_area ? "checked" : "";
-                const disabled = areaFija ? "disabled" : "";
+            data.forEach((areas) => {
 
                 container.append(`
                     <label class="filtro-item">
                         <input type="checkbox" 
                                class="check-area" 
-                               value="${area.id_area}" 
-                               ${checked} ${disabled}>
-                        ${area.nombre}
+                               value="${areas.id_area}">
+                        ${areas.nombre}
                     </label>
                 `);
             });
@@ -37,6 +41,51 @@ function cargarAreas() {
     });
 }
 
-$(document).ready(function () {
-    cargarAreas();
-});
+function cargarNovedades() {
+    $.ajax({
+        url: "/novedades/lista",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            const container = $("#listaNov");
+
+            container.empty();
+
+            data.forEach((novedad) => {
+
+                container.append(`
+                    <label class="filtro-item">
+                        <input type="checkbox" 
+                               class="check-nov" 
+                               value="${novedad.ID_NOVEDAD}">
+                        ${novedad.NOMBRE}
+                    </label>
+                `);
+            });
+        },
+    });
+}
+
+function getAreasSeleccionadas() {
+    return $(".check-area:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}
+
+function getNovedadesSeleccionadas() {
+    return $(".check-nov:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}
+
+function getFinnegansSeleccionadas() {
+    return $(".check-Finnegans:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}

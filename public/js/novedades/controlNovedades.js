@@ -12,7 +12,7 @@ flatpickr("#filtroDesde, #filtroHasta", {
 });
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "58vh";
+    return window.innerWidth < 768 ? "28vh" : "62vh";
 }
 
 function formatearFechaArgentina(fecha) {
@@ -76,18 +76,7 @@ function calcularHorasHabiles() {
 
 //sp para cargar selector areas
 $(document).ready(function () {
-    cargarAreas();
-    cargarFiltroNovedad();
     setFechaAplicacionUltimoDiaMes();
-});
-
-$("#btnLimpiarFiltros").on("click", function () {
-    document.querySelector("#filtroDesde")._flatpickr.clear();
-    document.querySelector("#filtroHasta")._flatpickr.clear();
-    $("#area").val("");
-    $("#idNovedad").val("");
-    $("#paraFinnegans").val("");
-    tablaControl.ajax.reload();
 });
 
 //CHECK BOX PARA LIQUIDAR
@@ -106,84 +95,6 @@ $(document).on("change", ".check-row", function () {
 $(document).on("click", ".check-row", function (event) {
     event.stopPropagation();
 });
-
-function cargarAreas() {
-    $.ajax({
-        url: "/areas/lista",
-        method: "GET",
-        success: function (data) {
-            const select = $(".js-select-area");
-            const areaFija = $("#areaFija").val(); // puede ser undefined
-
-            select.empty();
-            select.append('<option value="">Seleccione área</option>');
-
-            data.forEach((area) => {
-                select.append(`
-                    <option value="${area.id_area}">
-                        ${area.nombre}
-                    </option>
-                `);
-            });
-
-            // 👉 LÓGICA CORRECTA
-            if (areaFija) {
-                select.val(areaFija);
-                select.prop("disabled", true);
-            } else {
-                select.prop("disabled", false);
-            }
-        },
-        error: function () {
-            console.error("Error cargando áreas");
-        },
-    });
-}
-
-function cargarFiltroNovedad() {
-    const select = $(".js-select-novedadFiltro");
-
-    select.prop("disabled", true);
-
-    $.ajax({
-        url: "/novedades/lista",
-        type: "GET",
-        dataType: "json",
-
-        success: function (data) {
-            console.log("Novedades:", data);
-
-            select.empty();
-
-            select.append(
-                $("<option>", {
-                    value: "",
-                    text: "Seleccione novedad",
-                }),
-            );
-
-            data.forEach((novedad) => {
-                select.append(
-                    $("<option>", {
-                        value: novedad.ID_NOVEDAD,
-                        text: novedad.NOMBRE,
-                    }),
-                );
-            });
-
-            select.prop("disabled", false);
-
-            // Si usás Select2
-            select.trigger("change");
-        },
-
-        error: function (xhr) {
-            console.error("Error AJAX:", xhr.responseText);
-
-            alert("Error cargando novedades");
-        },
-    });
-}
 
 function esLicenciaAnual() {
     return $("#idNovedad").val() == "3";
@@ -291,12 +202,11 @@ $(document).ready(function () {
                 url: "/novedades/listarNovedadesPorArea",
                 type: "GET",
                 data: function (d) {
-                    d.area_id = $("#area").val();
-                    d.idNovedad = $("#idNovedad").val();
-                    d.paraFinnegans = $("#paraFinnegans").val();
+                    d.area_id = getAreasSeleccionadas().join(",") || null;
+                    d.idNovedad = getNovedadesSeleccionadas().join(",") || null;
+                    d.paraFinnegans = getFinnegansSeleccionadas().join(",") || null;
                     d.desde = $("#filtroDesde").val();
                     d.hasta = $("#filtroHasta").val();
-                    
                 },
             },
             columnDefs: [
@@ -603,17 +513,33 @@ $(document).ready(function () {
             ],
         });
 
-        $(document).on("change", "#area", function () {
-            console.log("Cambio de área");
+        $(document).on("change",".check-area, .check-nov, .check-Finnegans",function () {
+              tablaControl.ajax.reload();
+            },
+        );
+
+        $("#btn-limpiar-filtros").on("click", function () {
+            $(".check-area, .check-nov, .check-Finnegans").prop(
+                "checked",
+                false,
+            );
+            document.querySelector("#filtroDesde")._flatpickr.clear();
+            document.querySelector("#filtroHasta")._flatpickr.clear();
+            $("#toggleAreas span").text("Áreas");
+            $("#toggleNov span").text("Novedades");
+            $("#toggleFinnegans span").text("Finnegans");
+            tablaControl.search("").draw();
             tablaControl.ajax.reload();
         });
 
-        $("#idNovedad").on("change", function () {
-            tablaControl.ajax.reload();
+        $("#searchRegistro").on("keyup", function () {
+            let valor = $(this).val();
+            tablaControl.search(valor).draw();
         });
 
-        $("#paraFinnegans").on("change", function () {
-            tablaControl.ajax.reload();
+        $("#btnClearSearch").on("click", function () {
+            $("#searchRegistro").val("");
+            tablaControl.search("").draw();
         });
 
         setTimeout(function () {
@@ -630,7 +556,7 @@ $(document).ready(function () {
 
             if (!data) return;
 
-            const idRegistro = data.REGISTRO; // 🔥 correcto
+            const idRegistro = data.REGISTRO;
 
             console.log("Id registro recibido:", idRegistro);
             verDetalleNovedad(idRegistro);
@@ -656,9 +582,9 @@ $(document).ready(function () {
 
 $(document).on("click", "#btnExportExcel", function () {
     let params = new URLSearchParams({
-        area_id: $("#area").val(),
-        idNovedad: $("#idNovedad").val(),
-        paraFinnegans: $("#paraFinnegans").val(),
+        area_id: getAreasSeleccionadas().join(",") || "",
+        idNovedad: getNovedadesSeleccionadas().join(",") || "",
+        paraFinnegans: getFinnegansSeleccionadas().join(",") || "",
         desde: $("#filtroDesde").val(),
         hasta: $("#filtroHasta").val(),
     });
