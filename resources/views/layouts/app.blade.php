@@ -147,10 +147,7 @@
                                 <li><a class="dropdown-item"
                                         href="{{ route('obraSocial.administrarObraSociales') }}">Obras
                                         sociales</a></li>
-                                <!--<li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Áreas y
-                                        Servicios</a></li>
-                                <li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Categorías y
-                                        Roles</a></li>-->
+                                <li><a class="dropdown-item" href="{{ route('parametrizacionesGenerales') }}">Parámetros generales</a></li>
                             </ul>
                         </li>
                     @endif

@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeoController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AlertasController;
+use App\Http\Controllers\ParametrosController;
 use App\Http\Controllers\PushController;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Illuminate\Support\Facades\Route;
@@ -374,6 +375,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/asistencia/tarja', [PersonalController::class, 'controlTarjas'])->name('controlTarjas');
     Route::post('/asistencia/ingreso', [PersonalController::class, 'enviarIngresoAsistencia']);
     Route::post('/asistencia/egreso', [PersonalController::class, 'enviarEgresoAsistencia']);
+
+    //parametrizaciones generales
+    Route::get('/ajustes/parametrización', [ParametrosController::class, 'configParametrosGenerales'])->name('parametrizacionesGenerales');
+    Route::get('/servicios/listar', [ParametrosController::class, 'listarServiciosColab']);
 });
 
 
