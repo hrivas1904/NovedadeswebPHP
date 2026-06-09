@@ -554,8 +554,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Fecha nacimiento</label>
-                                            <input type="text" id="inputFechaNacimiento" class="form-control"
-                                                readonly>
+                                            <input type="date" id="inputFechaNacimiento" name="fechaNacimiento" class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Edad</label>

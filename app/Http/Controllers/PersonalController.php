@@ -1269,7 +1269,7 @@ class PersonalController extends Controller
 
         try {
 
-            DB::statement("CALL SP_ACTUALIZAR_LEGAJO_COLABORADOR(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
+            DB::statement("CALL SP_ACTUALIZAR_LEGAJO_COLABORADOR(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
                 $legajo,
                 $request->dni,
                 $request->cuil,
@@ -1303,7 +1303,8 @@ class PersonalController extends Controller
                 $request->es_coordinador,
                 $request->es_afiliado,
                 $request->uti,
-                $request->noche
+                $request->noche,
+                $request->fechaNacimiento
             ]);
 
             DB::statement("CALL SP_LIMPIAR_REQ_ALIMENTICIOS(?)", [

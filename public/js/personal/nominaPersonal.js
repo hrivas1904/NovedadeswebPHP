@@ -212,10 +212,7 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#inputEstado").val(d.ESTADO);
                 $("#inputDni").val(d.DNI);
                 $("#inputCuil").val(d.CUIL);
-                $("#inputFechaNacimiento").val(
-                    formatearFechaArgentina(d.FECHA_NAC),
-                );
-
+                $("#inputFechaNacimiento").val(d.FECHA_NAC),
                 $("#inputEdad").val(calcularEdad(d.FECHA_NAC));
                 $("#inputEmail").val(d.CORREO);
                 $("#inputTelefono").val(d.TELEFONO);
