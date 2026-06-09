@@ -1,6 +1,6 @@
-$(document).ready(function(){
+$(document).ready(function () {
     cargarAreasServicios();
-})
+});
 
 $(document).ready(function () {
     new DataTable("#tb_areas", {
@@ -56,9 +56,9 @@ $(document).ready(function () {
 
         columns: [
             { data: "id_servicios" },
-            { data: "nombre" },
+            { data: "servicio" },
             { data: "id_area", visible: false },
-            { data: "nombre" },
+            { data: "area" },
         ],
 
         paging: false,
@@ -83,7 +83,7 @@ function cargarAreasServicios() {
             select.append('<option value="">-- Seleccioná un área --</option>');
             data.forEach(function (area) {
                 select.append(
-                    `<option value="${area.id_area}">${area.nombre}</option>`
+                    `<option value="${area.id_area}">${area.nombre}</option>`,
                 );
             });
             select.select2({
@@ -93,3 +93,56 @@ function cargarAreasServicios() {
         },
     });
 }
+
+$("#formNuevaArea").on("submit", function (e) {
+    e.preventDefault();
+
+    const formData = $(this).serialize();
+
+    $.ajax({
+        url: "/areas/crear",
+        method: "POST",
+        data: formData,
+
+        beforeSend: function () {
+            $("#btnCrearArea").prop("disabled", true).html(`
+                    <span class="spinner-border spinner-border-sm me-1"></span>
+                    Guardando...
+                `);
+        },
+
+        success: function (response) {
+            Swal.fire({
+                icon: "success",
+                title: "Éxito",
+                text: response.message,
+            });
+
+            $("#formNuevaArea")[0].reset();
+
+            // Recargar listado
+            cargarAreas();
+        },
+
+        error: function (xhr) {
+            let mensaje = "Ocurrió un error.";
+
+            if (xhr.responseJSON?.message) {
+                mensaje = xhr.responseJSON.message;
+            }
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: mensaje,
+            });
+        },
+
+        complete: function () {
+            $("#btnCrearArea").prop("disabled", false).html(`
+                    <i class="fa-solid fa-plus me-1"></i>
+                    Crear nueva área
+                `);
+        },
+    });
+});

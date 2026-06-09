@@ -44,20 +44,20 @@
                                             <span>Crear nueva área</span>
                                         </div>
                                     </div>
-                                    <form id="formNuevaObraSocial">
+                                    <form id="formNuevaArea">
                                         @csrf
 
                                         <div class="row g-3 mb-3">
 
                                             <div class="col-12">
                                                 <label class="form-label">ÁREA</label>
-                                                <input type="text" class="form-control" name="nombreOs" required />
+                                                <input type="text" class="form-control" name="nombreArea" required />
                                             </div>
 
                                             <div class="col-12 text-end">
-                                                <button type="submit" class="btn btn-primary" id="btnCrearOs">
+                                                <button type="submit" class="btn btn-primary" id="btnCrearArea">
                                                     <i class="fa-solid fa-plus me-1"></i>
-                                                    Crear nueva OS
+                                                    Crear nueva área
                                                 </button>
                                             </div>
                                         </div>
