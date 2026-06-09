@@ -379,7 +379,10 @@ Route::middleware(['auth'])->group(function () {
     //parametrizaciones generales
     Route::get('/ajustes/parametrización', [ParametrosController::class, 'configParametrosGenerales'])->name('parametrizacionesGenerales');
     Route::get('/servicios/listar', [ParametrosController::class, 'listarServiciosColab']);
+
     Route::post('/areas/crear', [ParametrosController::class, 'crearArea']);
+    Route::get('/parametrizacion/verArea', [ParametrosController::class, 'verDetalleArea']);
+    Route::post('/parametrizacion/editarArea', [ParametrosController::class, 'editarArea']);
 });
 
 

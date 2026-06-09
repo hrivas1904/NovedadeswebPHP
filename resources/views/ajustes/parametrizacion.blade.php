@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Obras Sociales')
+@section('title', 'Parametrización')
 
 @section('content')
     <div class="container-fluid">
         <div class="d-flex align-items-start gap-3 my-3">
             <div class="icon-box">
-                <img src="{{ asset('img/icons/logo-os.png') }}" style="height: 32px;" alt="Saludo">
+                <img src="{{ asset('img/icons/ajustes.png') }}" style="height: 32px;" alt="Logo ajustes">
             </div>
             <div>
                 <h3 class="tituloVista mb-0">PARAMETRIZACIÓN</h3>
@@ -188,36 +188,33 @@
 @endsection
 
 @push('modals')
-    <div class="modal fade" id="modalEdicionOs" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
+    <div class="modal fade" id="modalEdicionArea" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
         data-bs-backdrop="static">
 
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tituloLegajo">
-                        <i class="fa-solid fa-pen-to-square"></i> Edicion de obra social
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-pen-to-square"></i> Edicion de área
                     </h5>
-                    <button type="button" class="btn-close" onclick="cerrarModalOsEdit()"></button>
+                    <button type="button" class="btn-close" onclick="cerrarModalAreaEdit()"></button>
                 </div>
 
-                <form id="formEditObraSocial">
+                <form id="formEditArea">
                     @csrf
                     <div class="modal-body">
                         <div class="row g-4 mb-4">
                             <div class="col-lg-12">
                                 <div class="empleado-box p-3">
                                     <div class="row g-3">
-                                        <div class="col-lg-4 col-12">
-                                            <label class="form-label">CÓDIGO</label>
-                                            <input type="text" id="codigoOsEdit" name="codigoOsEdit"
-                                                class="form-control">
-                                            <input type="hidden" id="idOs" name="idOs">
+                                        <div class="col-lg-2 col-12">
+                                            <label class="form-label">ID</label>
+                                            <input type="text" id="idAreaEdit" name="idAreaEdit" class="form-control" readonly>
                                         </div>
-                                        <div class="col-lg-8 col-12">
-                                            <label class="form-label">CONCEPTO</label>
-                                            <input type="text" id="nombreOsEdit" name="nombreOsEdit"
-                                                class="form-control">
+                                        <div class="col-lg-10 col-12">
+                                            <label class="form-label">NOMBRE</label>
+                                            <input type="text" id="nombreAreaEdit" name="nombreAreaEdit" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -225,10 +222,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" onclick="cerrarModalOsEdit()">
-                            Atrás
+                        <button class="btn btn-danger">
+                            Eliminar
                         </button>
-                        <button type="submit" class="btn btn-primary" id="btnEditarOs">
+                        <button type="submit" class="btn btn-primary" id="btnEditarArea">
                             Actualizar
                         </button>
                     </div>

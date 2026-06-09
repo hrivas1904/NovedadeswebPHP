@@ -2,8 +2,9 @@ $(document).ready(function () {
     cargarAreasServicios();
 });
 
+//AREAS
 $(document).ready(function () {
-    new DataTable("#tb_areas", {
+    const tablaArea=new DataTable("#tb_areas", {
         ajax: {
             url: "/areas/lista",
             type: "GET",
@@ -22,8 +23,126 @@ $(document).ready(function () {
         info: false,
         searching: false,
     });
+
+    $("#tb_areas tbody").on("click", "tr", function () {
+        const rowData=tablaArea.row(this).data();
+        verDetalleArea(rowData.id_area);
+    });
 });
 
+function verDetalleArea(idArea){
+    const modal=$("#modalEdicionArea");
+
+    $.ajax({
+        url:'/parametrizacion/verArea',
+        type:'GET',
+        data:{
+            idArea:idArea
+        },
+        success: function(res){
+            $("#idAreaEdit").val(res.data[0].id_area);
+            $("#nombreAreaEdit").val(res.data[0].nombre);
+        },
+        error: function(){
+            Swal.fire({
+                title:'Error',
+                text:'No se pudo cargar la información del área.',
+                icon:'error',
+                customClass:{   
+                    confirmColorButton: 'btn-primary'
+                },
+                buttonsStyling:false,
+            })
+        }
+    });
+
+    modal.modal('show');
+}
+
+function cerrarModalAreaEdit(){
+    const modal=$("#modalEdicionArea");
+    const form=$("#formEditArea");
+    form.reset[0];
+    modal.modal('hide');
+}
+
+$("#formNuevaArea").on("submit", function (e) {
+    e.preventDefault();
+
+    const formData = $(this).serialize();
+
+    $.ajax({
+        url: "/areas/crear",
+        method: "POST",
+        data: formData,
+
+        success: function (response) {
+            Swal.fire({
+                icon: "success",
+                title: "Éxito",
+                text: response.message,
+                
+            });
+
+            $("#formNuevaArea")[0].reset();
+            cargarAreasServicios();
+        },
+
+        error: function (xhr) {
+            let mensaje = "Ocurrió un error.";
+
+            if (xhr.responseJSON?.message) {
+                mensaje = xhr.responseJSON.message;
+            }
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: mensaje,
+            });
+        },
+    });
+});
+
+$("#btnEditarArea").on("click", function () {
+    const idArea = $("#idAreaEdit").val();
+    const nombre = $("#nombreAreaEdit").val();
+
+    $.ajax({
+        url: '/parametrizacion/editarArea',
+        type: 'POST',
+        data: {
+            idArea: idArea,
+            nombre: nombre,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (res) {
+            if (res.success) {
+                Swal.fire({
+                    title: 'Éxito',
+                    text: 'Área actualizada correctamente.',
+                    icon: 'success',
+                    buttonsStyling: false,
+                    customClass: { confirmButton: 'btn btn-primary' }
+                }).then(() => {
+                    $("#modalEdicionArea").modal('hide');
+                    tablaAreas.ajax.reload();
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo actualizar el área.',
+                icon: 'error',
+                buttonsStyling: false,
+                customClass: { confirmButton: 'btn btn-primary' }
+            });
+        }
+    });
+});
+
+//CATEGORÍAS
 $(document).ready(function () {
     new DataTable("#tb_categ", {
         ajax: {
@@ -46,6 +165,10 @@ $(document).ready(function () {
     });
 });
 
+function verDetalleCategorias(){
+}
+
+//SERVICIOS
 $(document).ready(function () {
     new DataTable("#tb_servicios", {
         ajax: {
@@ -73,6 +196,10 @@ $(document).ready(function () {
     });
 });
 
+function verDetalleServicio(){
+
+}
+
 function cargarAreasServicios() {
     $.ajax({
         url: "/areas/lista",
@@ -93,56 +220,3 @@ function cargarAreasServicios() {
         },
     });
 }
-
-$("#formNuevaArea").on("submit", function (e) {
-    e.preventDefault();
-
-    const formData = $(this).serialize();
-
-    $.ajax({
-        url: "/areas/crear",
-        method: "POST",
-        data: formData,
-
-        beforeSend: function () {
-            $("#btnCrearArea").prop("disabled", true).html(`
-                    <span class="spinner-border spinner-border-sm me-1"></span>
-                    Guardando...
-                `);
-        },
-
-        success: function (response) {
-            Swal.fire({
-                icon: "success",
-                title: "Éxito",
-                text: response.message,
-            });
-
-            $("#formNuevaArea")[0].reset();
-
-            // Recargar listado
-            cargarAreas();
-        },
-
-        error: function (xhr) {
-            let mensaje = "Ocurrió un error.";
-
-            if (xhr.responseJSON?.message) {
-                mensaje = xhr.responseJSON.message;
-            }
-
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: mensaje,
-            });
-        },
-
-        complete: function () {
-            $("#btnCrearArea").prop("disabled", false).html(`
-                    <i class="fa-solid fa-plus me-1"></i>
-                    Crear nueva área
-                `);
-        },
-    });
-});

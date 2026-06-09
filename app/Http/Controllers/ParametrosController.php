@@ -52,4 +52,44 @@ class ParametrosController extends Controller
             ], 500);
         }
     }
+
+    public function verDetalleArea(Request $request)
+    {
+
+        try {
+            $idArea = $request->idArea;
+
+            $data = DB::select('CALL SP_VER_AREA(?)', [$idArea]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editarArea(Request $request)
+    {
+        try {
+            DB::statement('CALL SP_MODIFICAR_AREA(?, ?)', [
+                $request->idArea,
+                $request->nombre
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Área actualizada correctamente.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
