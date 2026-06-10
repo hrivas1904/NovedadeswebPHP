@@ -383,6 +383,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/areas/crear', [ParametrosController::class, 'crearArea']);
     Route::get('/parametrizacion/verArea', [ParametrosController::class, 'verDetalleArea']);
     Route::post('/parametrizacion/editarArea', [ParametrosController::class, 'editarArea']);
+    Route::delete('/areas/{id}', [ParametrosController::class, 'eliminarArea']);
+
+    Route::post('/categorias/crear', [ParametrosController::class, 'crearCategoria']);
+    Route::get('/parametrizacion/verCategoria', [ParametrosController::class, 'verDetalleCateg']);
+    Route::post('/parametrizacion/editarCateg', [ParametrosController::class, 'editarCateg']);
+    Route::delete('/categ/{id}', [ParametrosController::class, 'eliminarCateg']);
+
+    Route::post('/servicios/crear', [ParametrosController::class, 'crearServicio']);
+    Route::get('/parametrizacion/verServicio', [ParametrosController::class, 'verDetalleServicio']);
+    Route::post('/parametrizacion/editarServicio', [ParametrosController::class, 'editarServicio']);
+    Route::delete('/servicio/{id}', [ParametrosController::class, 'eliminarServicio']);
 });
 
 

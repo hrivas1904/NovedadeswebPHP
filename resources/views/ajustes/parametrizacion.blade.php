@@ -98,17 +98,17 @@
                                             <span>Crear nueva categoría</span>
                                         </div>
                                     </div>
-                                    <form id="formNuevaObraSocial">
+                                    <form id="formNuevaCategoria">
                                         @csrf
 
                                         <div class="row g-3 mb-3">
                                             <div class="col-12">
                                                 <label class="form-label">CATEGORÍA</label>
-                                                <input type="text" class="form-control" name="nombreOs" required />
+                                                <input type="text" class="form-control" name="nombreCateg" required />
                                             </div>
 
                                             <div class="col-12 text-end">
-                                                <button type="submit" class="btn btn-primary" id="btnCrearOs">
+                                                <button type="submit" class="btn btn-primary" id="btnCrearCateg">
                                                     <i class="fa-solid fa-plus me-1"></i>
                                                     Crear nueva categoría
                                                 </button>
@@ -153,24 +153,23 @@
                                             <span>Crear nuevo servicio</span>
                                         </div>
                                     </div>
-                                    <form id="formNuevaObraSocial">
+                                    <form id="formNuevoServicio">
                                         @csrf
 
                                         <div class="row g-3 mb-3">
 
                                             <div class="col-12 col-md-5 col-xl-5">
                                                 <label class="form-label">ÁREA</label>
-                                                <select id="selectAreaServicios" class="form-select w-100"></select>
-                                                <input type="hidden" name="idAreaServicio">
+                                                <select id="selectAreaServicios" name="area" class="form-select w-100" required></select>
                                             </div>
 
                                             <div class="col-12 col-md-7 col-xl-7">
                                                 <label class="form-label">SERVICIO</label>
-                                                <input type="text" class="form-control" name="nombreOs" required />
+                                                <input type="text" class="form-control" name="servicio" required />
                                             </div>
 
                                             <div class="col-12 text-end">
-                                                <button type="submit" class="btn btn-primary" id="btnCrearOs">
+                                                <button type="submit" class="btn btn-primary" id="btnCrearServicio">
                                                     <i class="fa-solid fa-plus me-1"></i>
                                                     Crear nuevo servicio
                                                 </button>
@@ -188,15 +187,15 @@
 @endsection
 
 @push('modals')
-    <div class="modal fade" id="modalEdicionArea" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
-        data-bs-backdrop="static">
+    <div class="modal fade" id="modalEdicionArea" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true" data-bs-backdrop="static">
 
         <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content p-2">
 
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="fa-solid fa-pen-to-square"></i> Edicion de área
+                        <i class="fa-solid fa-pen-to-square"></i> Edición de área
                     </h5>
                     <button type="button" class="btn-close" onclick="cerrarModalAreaEdit()"></button>
                 </div>
@@ -210,11 +209,13 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2 col-12">
                                             <label class="form-label">ID</label>
-                                            <input type="text" id="idAreaEdit" name="idAreaEdit" class="form-control" readonly>
+                                            <input type="text" id="idAreaEdit" name="idAreaEdit" class="form-control"
+                                                readonly>
                                         </div>
                                         <div class="col-lg-10 col-12">
                                             <label class="form-label">NOMBRE</label>
-                                            <input type="text" id="nombreAreaEdit" name="nombreAreaEdit" class="form-control">
+                                            <input type="text" id="nombreAreaEdit" name="nombreAreaEdit"
+                                                class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -222,10 +223,115 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-danger">
+                        <button type="button" class="btn btn-danger" id="btnEliminarArea">
                             Eliminar
                         </button>
                         <button type="submit" class="btn btn-primary" id="btnEditarArea">
+                            Actualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEdicionCateg" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true" data-bs-backdrop="static">
+
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content p-2">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-pen-to-square"></i> Edición de categoría
+                    </h5>
+                    <button type="button" class="btn-close" onclick="cerrarModalCategEdit()"></button>
+                </div>
+
+                <form id="formEditCateg">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row g-4 mb-4">
+                            <div class="col-lg-12">
+                                <div class="empleado-box p-3">
+                                    <div class="row g-3">
+                                        <div class="col-lg-2 col-12">
+                                            <label class="form-label">ID</label>
+                                            <input type="text" id="idCategEdit" name="idCategEdit"
+                                                class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-10 col-12">
+                                            <label class="form-label">NOMBRE</label>
+                                            <input type="text" id="nombreCategEdit" name="nombreCategEdit"
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="btnEliminarCateg">
+                            Eliminar
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btnEditarCateg">
+                            Actualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEdicionServicio" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true" data-bs-backdrop="static">
+
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content p-2">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-pen-to-square"></i> Edición de servicios
+                    </h5>
+                    <button type="button" class="btn-close" onclick="cerrarModalServEdit()"></button>
+                </div>
+
+                <form id="formEditServicio">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row g-4 mb-4">
+                            <div class="col-lg-12">
+                                <div class="empleado-box p-3">
+                                    <div class="row g-3">
+                                        <div class="col-lg-2 col-12">
+                                            <label class="form-label">ID</label>
+                                            <input type="text" id="idServEdit" name="idServEdit" class="form-control"
+                                                readonly>
+                                        </div>
+                                        <div class="col-lg-10 col-12">
+                                            <label class="form-label">NOMBRE</label>
+                                            <input type="text" id="nombreServEdit" name="nombreServEdit"
+                                                class="form-control">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="areaServEdit" class="form-label">
+                                                ÁREA VINCULADA
+                                            </label>
+
+                                            <select id="areaServEdit" name="areaServEdit" class="form-select" style="width: 100%;">
+                                                <option value="">-- Seleccione un área --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="btnEliminarServ">
+                            Eliminar
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btnEditarServ">
                             Actualizar
                         </button>
                     </div>
