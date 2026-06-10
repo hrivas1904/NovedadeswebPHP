@@ -273,8 +273,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('novedades.editarConceptoNovedad');
 
     //mensajes
-    Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNovedad'])->middleware('auth');
-    Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->middleware('auth')->name('notificaciones.lista');
+    Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNotificacion']);
+    Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->name('notificaciones.lista');
     Route::post('/notificaciones/borrar', [NotificacionController::class, 'eliminarNotificacion']);
     Route::get('/feriados/lista', [NotificacionController::class, 'obtenerFeriados']);
 

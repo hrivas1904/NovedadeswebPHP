@@ -109,6 +109,9 @@ $("#btnRedactarComunicado").click(function () {
     $.ajax({
         url: "/notificaciones/publicar",
         type: "POST",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest", // ← agregá esto
+        },
         data: {
             contenido: contenido,
             titulo: titulo,
@@ -119,6 +122,9 @@ $("#btnRedactarComunicado").click(function () {
                 Swal.fire({
                     title: data.mensaje,
                     icon: "success",
+                    customClass: {
+                        confirmButtonColor: "btn-primary btn",
+                    },
                 });
 
                 $("#txtNotificacion").val("");
@@ -128,11 +134,33 @@ $("#btnRedactarComunicado").click(function () {
                 Swal.fire({
                     title: data.mensaje,
                     icon: "error",
+                    customClass: {
+                        confirmButtonColor: "btn-primary btn",
+                    },
                 });
             }
         },
-        error: function () {
-            Swal.fire("Error", "Error del servidor", "error");
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                Swal.fire({
+                    title: "Sesión expirada",
+                    text: "Por favor recargá la página",
+                    icon: "warning",
+                    customClass: {
+                        confirmButtonColor: "btn-primary btn",
+                    },
+                });
+            } else {
+                Swal.fire("Error", "Error del servidor", "error");
+                Swal.fire({
+                    title: "Error",
+                    text: "Error del servidor",
+                    icon: "error",
+                    customClass: {
+                        confirmButtonColor: "btn btn-primary",
+                    },
+                });
+            }
         },
     });
 });
