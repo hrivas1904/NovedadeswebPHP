@@ -271,7 +271,6 @@ class PersonalController extends Controller
             return null;
         }
 
-        // Si viene como array → lo paso a "1,2,3"
         if (is_array($valor)) {
             return implode(',', $valor);
         }
@@ -285,6 +284,7 @@ class PersonalController extends Controller
             $areaId   = $this->normalizarFiltro($request->area_id);
             $categId  = $this->normalizarFiltro($request->categ_id);
             $convenio = $this->normalizarFiltro($request->convenio);
+            $estado = $this->normalizarFiltro($request->estado);
 
             $regimen  = $request->p_regimen !== null && $request->p_regimen !== ''
                 ? (int)$request->p_regimen
@@ -299,8 +299,8 @@ class PersonalController extends Controller
                 : null;
 
             $empleados = DB::select(
-                "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?)",
-                [$areaId, $categId, $convenio, $regimen, $uti, $noche]
+                "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?, ?)",
+                [$areaId, $categId, $convenio, $regimen, $uti, $noche, $estado]
             );
 
             return response()->json([
@@ -320,6 +320,7 @@ class PersonalController extends Controller
             $areaId   = $this->normalizarFiltro($request->area_id);
             $categId  = $this->normalizarFiltro($request->categ_id);
             $convenio = $this->normalizarFiltro($request->convenio);
+            $estado = $this->normalizarFiltro($request->estado);
 
             $regimen  = $request->p_regimen !== null && $request->p_regimen !== ''
                 ? (int)$request->p_regimen
@@ -334,8 +335,8 @@ class PersonalController extends Controller
                 : null;
 
             $empleados = DB::select(
-                "CALL SP_LISTA_EMPLEADOS_DATATABLE(?, ?, ?, ?, ?, ?)",
-                [$areaId, $categId, $convenio, $regimen, $uti, $noche]
+                "CALL SP_LISTA_EMPLEADOS_DATATABLE(?, ?, ?, ?, ?, ?, ?)",
+                [$areaId, $categId, $convenio, $regimen, $uti, $noche, $estado]
             );
 
             return response()->json([
@@ -351,13 +352,14 @@ class PersonalController extends Controller
 
     public function exportarListaColabDatatable(Request $request)
     {
-        $data = DB::select('CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?)', [
+        $data = DB::select('CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?, ?)', [
             $request->area_id,
             $request->categ_id,
             $request->p_convenio,
             $request->p_regimen,
             $request->p_uti,
-            $request->p_noche
+            $request->p_noche,
+            $request->p_estado,
         ]);
 
         $spreadsheet = new Spreadsheet();
@@ -367,29 +369,29 @@ class PersonalController extends Controller
         $headers = [
             'LEGAJO',
             'COLABORADOR',
-            'DNI',
-            'FECHA INGRESO',
-            'AREA',
-            'CATEGORIA',
-            'REGIMEN',
-            'HORAS',
-            'CONVENIO',
             'ESTADO',
-            'UTI',
-            'NOCHE',
+            'DNI',
             'CUIL',
+            'FECHA NAC',
+            'CORREO',
+            'TELEFONO',
             'DOMICILIO',
             'LOCALIDAD',
             'ESTADO CIVIL',
             'GENERO',
-            'FECHA NAC',
             'OBRA SOCIAL',
             'TITULO',
-            'CORREO',
-            'TELEFONO',
-            'numero_cuenta', 
-            'cbu', 
-            'banco',
+            'FECHA INGRESO',            
+            'AREA',
+            'CONVENIO',
+            'CATEGORIA',
+            'REGIMEN',
+            'HORAS',        
+            'NOCHE',
+            'UTI',         
+            'CUENTA', 
+            'CBU', 
+            'BANCO',
         ];
 
         $sheet->fromArray($headers, NULL, 'A1');
@@ -399,26 +401,26 @@ class PersonalController extends Controller
         foreach ($data as $item) {
             $sheet->setCellValue("A$row", $item->LEGAJO);
             $sheet->setCellValue("B$row", $item->COLABORADOR);
-            $sheet->setCellValue("C$row", $item->DNI);
-            $sheet->setCellValue("D$row", $item->FECHA_INGRESO);
-            $sheet->setCellValue("E$row", $item->AREA);
-            $sheet->setCellValue("F$row", $item->CATEGORIA);
-            $sheet->setCellValue("G$row", $item->REGIMEN);
-            $sheet->setCellValue("H$row", $item->HORAS_DIARIAS);
-            $sheet->setCellValue("I$row", $item->CONVENIO);
-            $sheet->setCellValue("J$row", $item->ESTADO);
-            $sheet->setCellValue("K$row", $item->UTI);
-            $sheet->setCellValue("L$row", $item->NOCHE);
-            $sheet->setCellValue("M$row", $item->CUIL);
-            $sheet->setCellValue("N$row", $item->DOMICILIO);
-            $sheet->setCellValue("O$row", $item->LOCALIDAD);
-            $sheet->setCellValue("P$row", $item->ESTADO_CIVIL);
-            $sheet->setCellValue("Q$row", $item->GENERO);
-            $sheet->setCellValue("R$row", $item->FECHA_NAC);
-            $sheet->setCellValue("S$row", $item->OBRA_SOCIAL);
-            $sheet->setCellValue("T$row", $item->TITULO);
-            $sheet->setCellValue("U$row", $item->CORREO);
-            $sheet->setCellValue("V$row", $item->TELEFONO);
+            $sheet->setCellValue("C$row", $item->ESTADO);
+            $sheet->setCellValue("D$row", $item->DNI);
+            $sheet->setCellValue("E$row", $item->CUIL);
+            $sheet->setCellValue("F$row", $item->FECHA_NAC);
+            $sheet->setCellValue("G$row", $item->CORREO);
+            $sheet->setCellValue("H$row", $item->TELEFONO);
+            $sheet->setCellValue("I$row", $item->DOMICILIO);
+            $sheet->setCellValue("J$row", $item->LOCALIDAD);
+            $sheet->setCellValue("K$row", $item->ESTADO_CIVIL);
+            $sheet->setCellValue("L$row", $item->GENERO);
+            $sheet->setCellValue("M$row", $item->OBRA_SOCIAL);
+            $sheet->setCellValue("N$row", $item->TITULO);
+            $sheet->setCellValue("O$row", $item->FECHA_INGRESO);
+            $sheet->setCellValue("P$row", $item->AREA);
+            $sheet->setCellValue("Q$row", $item->CONVENIO);
+            $sheet->setCellValue("R$row", $item->CATEGORIA);
+            $sheet->setCellValue("S$row", $item->REGIMEN);
+            $sheet->setCellValue("T$row", $item->HORAS_DIARIAS);
+            $sheet->setCellValue("U$row", $item->NOCHE);
+            $sheet->setCellValue("V$row", $item->UTI);
             $sheet->setCellValueExplicit("W$row", $item->numero_cuenta, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValueExplicit("X$row", $item->cbu, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue("Y$row", $item->banco);

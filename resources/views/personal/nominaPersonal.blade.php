@@ -53,6 +53,22 @@
                             <div class="filtro-body d-none" id="listaConvenios">
                             </div>
                         </div>
+                        <div class="filtro-box">
+                            <div class="filtro-header" id="toggleEstados">
+                                <span>Estados</span>
+                                <i class="fa fa-chevron-down"></i>
+                            </div>
+                            <div class="filtro-body" id="listaEstados">
+                                <label class="filtro-item">
+                                    <input type="checkbox" class="check-estado" value="ACTIVO" checked>
+                                    ACTIVO
+                                </label>
+                                <label class="filtro-item">
+                                    <input type="checkbox" class="check-estado" value="DE BAJA">
+                                    DE BAJA
+                                </label>
+                            </div>
+                        </div>
                         <div class="col-12">
                             <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
                                 <i class="fa-solid fa-eraser"></i> Limpiar
@@ -64,47 +80,41 @@
             <div class="col-12 col-xl-10 col-xxl-10">
                 <div class="card" style="border-radius:15px;">
                     <div class="card-header">
-                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-2">
+                        <div
+                            class="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-2">
 
-                        @if (Auth::user()->rol === 'Administrador/a')
-                            <button type="button"
-                                class="btn btn-primary"
-                                onclick="abrirModal()">
-                                <i class="fa-solid fa-user me-2"></i>
-                                Nuevo Colaborador
-                            </button>
-                        @endif
-
-                        <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2">
-
-                            <!-- SOLO DESKTOP -->
-                            <button type="button"
-                                id="btnExportExcel"
-                                class="btn btn-primary d-none d-md-inline-flex align-items-center">
-                                <i class="fa-regular fa-file-excel me-2"></i>
-                                Excel
-                            </button>
-
-                            <!-- BUSCADOR -->
-                            <div class="input-group buscador-personal">
-                                <span class="input-group-text bg-white">
-                                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
-                                </span>
-
-                                <input type="text"
-                                    id="searchPersonal"
-                                    class="form-control"
-                                    placeholder="Buscar colaborador...">
-
-                                <button class="btn btn-secondary"
-                                    id="btnClearSearch"
-                                    type="button">
-                                    <i class="fa-solid fa-xmark"></i>
+                            @if (Auth::user()->rol === 'Administrador/a')
+                                <button type="button" class="btn btn-primary" onclick="abrirModal()">
+                                    <i class="fa-solid fa-user me-2"></i>
+                                    Nuevo Colaborador
                                 </button>
-                            </div>
+                            @endif
 
+                            <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2">
+
+                                <!-- SOLO DESKTOP -->
+                                <button type="button" id="btnExportExcel"
+                                    class="btn btn-primary d-none d-md-inline-flex align-items-center">
+                                    <i class="fa-regular fa-file-excel me-2"></i>
+                                    Excel
+                                </button>
+
+                                <!-- BUSCADOR -->
+                                <div class="input-group buscador-personal">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                                    </span>
+
+                                    <input type="text" id="searchPersonal" class="form-control"
+                                        placeholder="Buscar colaborador...">
+
+                                    <button class="btn btn-secondary" id="btnClearSearch" type="button">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive px-2">
@@ -554,7 +564,8 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Fecha nacimiento</label>
-                                            <input type="date" id="inputFechaNacimiento" name="fechaNacimiento" class="form-control editAllowed">
+                                            <input type="date" id="inputFechaNacimiento" name="fechaNacimiento"
+                                                class="form-control editAllowed">
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Edad</label>
@@ -588,183 +599,6 @@
                                                 class="form-select editAllowed" style="width:100%">
                                                 <option value="">Seleccionar localidad</option>
                                             </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @if (Auth::user()->rol === 'Administrador/a')
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <div class="section-divider mb-3">
-                                        <span>Información bancaria del colaborador</span>
-                                    </div>
-                                    <div class="empleado-box p-3">
-                                        <button type="button" id="btnMostraDivNuevaCuenta" class="btn btn-primary">
-                                            <i class="fa-solid fa-square-plus"></i>
-                                            Agregar cuenta
-                                        </button>
-                                        <div id="divCrearCuentaBancariaColab" class="row g-1 my-2 d-none">
-                                            <div class="empleado-box p-3">
-                                                <div class="row align-items-center mb-2">
-                                                    <div class="col">
-                                                        <h5 class="mb-0">Crear nueva cuenta</h5>
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <button type="button" class="btn"
-                                                            id="btnOcultarDivCuentaNueva">
-                                                            <i class="fa-solid fa-x"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div class="row g-2 mb-2">
-                                                    <div class="col-lg-4 col-md-6 col-12">
-                                                        <label class="form-label">Banco</label>
-                                                        <select class="form-select" id="selectBanco" name="banco">
-                                                            <option selected value="">Seleccione banco</option>
-                                                            <option value="Macro">Macro</option>
-                                                            <option value="Francés">Francés</option>
-                                                            <option value="Nación">Nación</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-6 col-12">
-                                                        <label class="form-label">Cuenta N°</label>
-                                                        <input name="numero_cuenta" type="number" id="inputNumeroCuenta"
-                                                            class="form-control" />
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-6 col-12">
-                                                        <label class="form-label">CBU</label>
-                                                        <input name="cbu" type="number" id="inputCbu"
-                                                            class="form-control" />
-                                                    </div>
-                                                </div>
-                                                <button class="btn btn-primary" type="button"
-                                                    id="btnGuardarCuenta">Crear
-                                                    cuenta
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div id="contenedorCuentasBancarias" class="row g-1 my-2">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="section-divider mb-3">
-                                    <span>Requerimientos alimentarios</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <i class="fa-solid fa-circle-info text-primary" style="cursor: pointer;"
-                                        data-bs-toggle="tooltip" data-bs-placement="right"
-                                        title="Si no tiene ningún requerimiento específico, no
-                                    seleccione nada. Si no encuentra un requerimiento específico,
-                                    seleccione Otro y complete Observaciones">
-                                    </i>
-                                    <div class="row g-1">
-                                        <div class="row g-1" id="contenedorRequerimientos"></div>
-                                        <div class="row mt-3" id="rowObservacionReq" style="display:none;">
-                                            <div class="col-12">
-                                                <label class="form-label">Observaciones</label>
-                                                <input type="text" name="req_alimenticio_otro" id="inputReqOtro"
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="section-divider mb-3">
-                                    <span>Contactos de emergencia</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <div class="row g-3">
-
-                                        <!-- CONTACTO 1 -->
-                                        <div class="col-lg-6 col-12 p-2">
-                                            <div class="card p-2">
-                                                <h6 class="mb-3 text-muted">Contacto de emergencia 1</h6>
-                                                <div class="row g-3">
-                                                    <div class="col-12">
-                                                        <label class="form-label">Nombre</label>
-                                                        <input id="personaEmergencia1Edit" name="personaEmerg1"
-                                                            class="form-control editAllowed">
-                                                    </div>
-                                                    <div class="col-lg-6 col-12">
-                                                        <label class="form-label">Teléfono</label>
-                                                        <input id="contactoEmergencia1Edit" name="telefEmerg1"
-                                                            class="form-control editAllowed">
-                                                    </div>
-                                                    <div class="col-lg-6 col-12">
-                                                        <label class="form-label">Parentesco</label>
-                                                        <input id="parentescoEmergencia1Edit" name="parentesco1"
-                                                            class="form-control editAllowed">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6 col-12 p-2">
-                                            <div class="card p-2">
-                                                <h6 class="mb-3 text-muted">Contacto de emergencia 2</h6>
-                                                <div class="row g-3">
-                                                    <div class="col-12">
-                                                        <label class="form-label">Nombre</label>
-                                                        <input id="personaEmergencia2Edit" name="personaEmerg2"
-                                                            class="form-control editAllowed">
-                                                    </div>
-
-                                                    <div class="col-lg-6 col-12">
-                                                        <label class="form-label">Teléfono</label>
-                                                        <input id="contactoEmergencia2Edit" name="telefEmerg2"
-                                                            class="form-control editAllowed">
-                                                    </div>
-
-                                                    <div class="col-lg-6 col-12">
-                                                        <label class="form-label">Parentesco</label>
-                                                        <input id="parentescoEmergencia2Edit" name="parentesco2"
-                                                            class="form-control editAllowed">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="section-divider mb-3">
-                                    <span>Grupo familiar</span>
-                                </div>
-                                <div class="empleado-box p-3">
-                                    <div class="row g-3">
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Padre</label>
-                                            <input id="padreColaboradorEdit" name="padre" class="form-control">
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Madre</label>
-                                            <input id="madreColaboradorEdit" name="madre" class="form-control">
-                                        </div>
-
-                                        <div class="col-lg-2 d-flex flex-column">
-                                            <label class="form-label">Agregar hijo/a</label>
-                                            <button type="button" id="btnAgregarHijoEdit" class="btn btn-primary">
-                                                <i class="fa-solid fa-plus"></i> Hijo/a
-                                            </button>
-                                        </div>
-                                        <div class="row g-3">
-                                            <div id="divHijosEdit" class="row g-3" hidden>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -837,7 +671,6 @@
 
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 
@@ -964,6 +797,183 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if (Auth::user()->rol === 'Administrador/a')
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="section-divider mb-3">
+                                        <span>Información bancaria del colaborador</span>
+                                    </div>
+                                    <div class="empleado-box p-3">
+                                        <button type="button" id="btnMostraDivNuevaCuenta" class="btn btn-primary">
+                                            <i class="fa-solid fa-square-plus"></i>
+                                            Agregar cuenta
+                                        </button>
+                                        <div id="divCrearCuentaBancariaColab" class="row g-1 my-2 d-none">
+                                            <div class="empleado-box p-3">
+                                                <div class="row align-items-center mb-2">
+                                                    <div class="col">
+                                                        <h5 class="mb-0">Crear nueva cuenta</h5>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <button type="button" class="btn"
+                                                            id="btnOcultarDivCuentaNueva">
+                                                            <i class="fa-solid fa-x"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-2 mb-2">
+                                                    <div class="col-lg-4 col-md-6 col-12">
+                                                        <label class="form-label">Banco</label>
+                                                        <select class="form-select" id="selectBanco" name="banco">
+                                                            <option selected value="">Seleccione banco</option>
+                                                            <option value="Macro">Macro</option>
+                                                            <option value="Francés">Francés</option>
+                                                            <option value="Nación">Nación</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6 col-12">
+                                                        <label class="form-label">Cuenta N°</label>
+                                                        <input name="numero_cuenta" type="number" id="inputNumeroCuenta"
+                                                            class="form-control" />
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6 col-12">
+                                                        <label class="form-label">CBU</label>
+                                                        <input name="cbu" type="number" id="inputCbu"
+                                                            class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-primary" type="button"
+                                                    id="btnGuardarCuenta">Crear
+                                                    cuenta
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="contenedorCuentasBancarias" class="row g-1 my-2">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="section-divider mb-3">
+                                    <span>Grupo familiar</span>
+                                </div>
+                                <div class="empleado-box p-3">
+                                    <div class="row g-3">
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Padre</label>
+                                            <input id="padreColaboradorEdit" name="padre" class="form-control">
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Madre</label>
+                                            <input id="madreColaboradorEdit" name="madre" class="form-control">
+                                        </div>
+
+                                        <div class="col-lg-2 d-flex flex-column">
+                                            <label class="form-label">Agregar hijo/a</label>
+                                            <button type="button" id="btnAgregarHijoEdit" class="btn btn-primary">
+                                                <i class="fa-solid fa-plus"></i> Hijo/a
+                                            </button>
+                                        </div>
+                                        <div class="row g-3">
+                                            <div id="divHijosEdit" class="row g-3" hidden>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="section-divider mb-3">
+                                    <span>Contactos de emergencia</span>
+                                </div>
+                                <div class="empleado-box p-3">
+                                    <div class="row g-3">
+
+                                        <!-- CONTACTO 1 -->
+                                        <div class="col-lg-6 col-12 p-2">
+                                            <div class="card p-2">
+                                                <h6 class="mb-3 text-muted">Contacto de emergencia 1</h6>
+                                                <div class="row g-3">
+                                                    <div class="col-12">
+                                                        <label class="form-label">Nombre</label>
+                                                        <input id="personaEmergencia1Edit" name="personaEmerg1"
+                                                            class="form-control editAllowed">
+                                                    </div>
+                                                    <div class="col-lg-6 col-12">
+                                                        <label class="form-label">Teléfono</label>
+                                                        <input id="contactoEmergencia1Edit" name="telefEmerg1"
+                                                            class="form-control editAllowed">
+                                                    </div>
+                                                    <div class="col-lg-6 col-12">
+                                                        <label class="form-label">Parentesco</label>
+                                                        <input id="parentescoEmergencia1Edit" name="parentesco1"
+                                                            class="form-control editAllowed">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-12 p-2">
+                                            <div class="card p-2">
+                                                <h6 class="mb-3 text-muted">Contacto de emergencia 2</h6>
+                                                <div class="row g-3">
+                                                    <div class="col-12">
+                                                        <label class="form-label">Nombre</label>
+                                                        <input id="personaEmergencia2Edit" name="personaEmerg2"
+                                                            class="form-control editAllowed">
+                                                    </div>
+
+                                                    <div class="col-lg-6 col-12">
+                                                        <label class="form-label">Teléfono</label>
+                                                        <input id="contactoEmergencia2Edit" name="telefEmerg2"
+                                                            class="form-control editAllowed">
+                                                    </div>
+
+                                                    <div class="col-lg-6 col-12">
+                                                        <label class="form-label">Parentesco</label>
+                                                        <input id="parentescoEmergencia2Edit" name="parentesco2"
+                                                            class="form-control editAllowed">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="section-divider mb-3">
+                                    <span>Requerimientos alimentarios</span>
+                                </div>
+                                <div class="empleado-box p-3">
+                                    <i class="fa-solid fa-circle-info text-primary" style="cursor: pointer;"
+                                        data-bs-toggle="tooltip" data-bs-placement="right"
+                                        title="Si no tiene ningún requerimiento específico, no
+                                    seleccione nada. Si no encuentra un requerimiento específico,
+                                    seleccione Otro y complete Observaciones">
+                                    </i>
+                                    <div class="row g-1">
+                                        <div class="row g-1" id="contenedorRequerimientos"></div>
+                                        <div class="row mt-3" id="rowObservacionReq" style="display:none;">
+                                            <div class="col-12">
+                                                <label class="form-label">Observaciones</label>
+                                                <input type="text" name="req_alimenticio_otro" id="inputReqOtro"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                  
 
                         <input type="file" id="inputComprobantes" accept="pdf,image/*" multiple hidden>
 
@@ -1302,10 +1312,9 @@
 @endpush
 
 @push('scripts')
-
     <script>
-        const logoHp3c="{{ asset('img/logo_2.png') }}";
-        const firma="{{ asset('img/ffernandez-firma.png') }}"
+        const logoHp3c = "{{ asset('img/logo_2.png') }}";
+        const firma = "{{ asset('img/ffernandez-firma.png') }}"
     </script>
 
     <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>

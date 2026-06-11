@@ -76,25 +76,21 @@
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
                                     Auth::user()->rol === 'Administrador/a' ||
                                     Auth::user()->rol === 'Coordinador/a')
-                                <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Colaboradores
-                                        activos</a></li>
-                                <li><a class="dropdown-item" href="{{ route('nominaPersonalBaja') }}">Colaboradores de
-                                        baja</a></li>
+                                <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Colaboradores</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                                <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario
-                                        recepción</a></li>
+                                <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>
+                                <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>
 
                                 <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Médicos</a></li>
 
                                 <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Marcar asistencia</a></li>
 
-                                <li><a class="dropdown-item" href="{{ route('controlTarjas') }}">Tarjas</a></li>
+                                <li><a class="dropdown-item" href="{{ route('controlTarjas') }}">Tarjas</a></li>-->
                             @endif
 
                         </ul>

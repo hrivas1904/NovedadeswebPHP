@@ -215,6 +215,14 @@ function getConveniosSeleccionados() {
         .get();
 }
 
+function getEstadosSeleccionados() {
+    return $(".check-estado:checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
+}
+
 $("#toggleAreas").on("click", function () {
     $("#listaAreas").toggleClass("d-none");
 });
@@ -225,6 +233,10 @@ $("#toggleCateg").on("click", function () {
 
 $("#toggleConvenios").on("click", function () {
     $("#listaConvenios").toggleClass("d-none");
+});
+
+$("#toggleEstados").on("click", function () {
+    $("#listaEstados").toggleClass("d-none");
 });
 
 //REQUERIMIENTOS ALIMENTARIOS
