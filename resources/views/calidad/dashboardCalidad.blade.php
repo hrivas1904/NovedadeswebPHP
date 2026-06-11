@@ -206,7 +206,7 @@
                                 <i class="fa-solid fa-circle-chevron-down"></i>
                             </div>
                             <div class="card-body d-none" id="divOtrasBody">
-                                <table id="tablaInternacionPreguntasOtras" class="table table-bordered w-100"></table>
+                                <table id="tablaInternacionPreguntasOtros" class="table table-bordered w-100"></table>
                             </div>                            
                         </div>                        
                     </div>

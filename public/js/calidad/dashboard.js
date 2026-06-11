@@ -102,13 +102,23 @@ function cargarDashboard() {
             renderTablaUti(res.uti);
             renderTablaInternacion(res.internacion);
             renderTablaGuardiaPreguntas(res.guardia_adulto_preguntas);
-            renderTablaGuardiaPediatricaPreguntas(res.guardia_pediatrica_preguntas,);
+            renderTablaGuardiaPediatricaPreguntas(
+                res.guardia_pediatrica_preguntas,
+            );
             renderTablaInternacionPreguntas(res.internacion_preguntas);
-            renderTablaInternacionPreguntasDesign(res.internacion_preguntas_design);
-            renderTablaInternacionPreguntasStandard(res.internacion_preguntas_standard);
+            renderTablaInternacionPreguntasDesign(
+                res.internacion_preguntas_design,
+            );
+            renderTablaInternacionPreguntasStandard(
+                res.internacion_preguntas_standard,
+            );
             renderTablaInternacionPreguntasUtis(res.internacion_preguntas_utis);
-            renderTablaInternacionPreguntasOtras(res.internacion_preguntas_otras);
-            renderTablaInternacionPreguntasGeneral(res.internacion_preguntas_general);
+            renderTablaInternacionPreguntasOtras(
+                res.internacion_preguntas_otros,
+            );
+            renderTablaInternacionPreguntasGeneral(
+                res.internacion_preguntas_general,
+            );
             renderTablaInternacionAmb(res.internacion_amb_preguntas);
         },
     });
@@ -162,8 +172,8 @@ function renderTablaGuardias(data) {
             },
         ],
         pageLength: 5,
-        language:{
-            url:"/js/es-ES.json",
+        language: {
+            url: "/js/es-ES.json",
         },
         footerCallback: function (row, data) {
             let totalGeneral = data.reduce((acc, item) => {
@@ -227,8 +237,8 @@ function renderTablaAreas(data) {
             },
         ],
         pageLength: 5,
-        language:{
-            url:"/js/es-ES.json",
+        language: {
+            url: "/js/es-ES.json",
         },
 
         footerCallback: function (row, data) {
@@ -292,8 +302,8 @@ function renderTablaExpectativasAmbulatoria(data) {
             },
         ],
         pageLength: 5,
-        language:{
-            url:"/js/es-ES.json",
+        language: {
+            url: "/js/es-ES.json",
         },
         footerCallback: function (row, data) {
             let totalGeneral = data.reduce((acc, item) => {
@@ -356,9 +366,9 @@ function renderTablaUti(data) {
             },
         ],
         pageLength: 5,
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -390,11 +400,11 @@ function renderTablaInternacion(data) {
                         data >= 80 ? "green" : data >= 60 ? "orange" : "red";
                     return `<span style="color:${color}; font-weight:bold">${data}%</span>`;
                 },
-            },            
+            },
         ],
         pageLength: 5,
-        language:{
-            url:"/js/es-ES.json",
+        language: {
+            url: "/js/es-ES.json",
         },
     });
 }
@@ -450,13 +460,15 @@ function renderTablaGuardiaPreguntas(data) {
             {
                 title: "%Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
-
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
                     let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
+                        denominador > 0
+                            ? ((positivos * 100) / denominador).toFixed(2)
+                            : "0.00";
 
                     let color =
                         porcentaje >= 95
@@ -466,24 +478,24 @@ function renderTablaGuardiaPreguntas(data) {
                               : "#d64545";
 
                     return `
-                        <span class="badge px-3 py-2"
-                            style="
-                                background:${color};
-                                color:white;
-                                border:1px solid;
-                                font-weight:600;
-                                font-size:1rem;
-                                min-width:75px;
-                            ">
-                            ${porcentaje}%
-                        </span>
-                    `;
+                    <span class="badge px-3 py-2"
+                        style="
+                            background:${color};
+                            color:white;
+                            border:1px solid;
+                            font-weight:600;
+                            font-size:1rem;
+                            min-width:75px;
+                        ">
+                        ${porcentaje}%
+                    </span>
+                `;
                 },
             },
         ],
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -536,20 +548,20 @@ function renderTablaGuardiaPediatricaPreguntas(data) {
             {
                 title: "%Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
+                    let porcentaje = denominador > 0
+                        ? ((positivos * 100) / denominador).toFixed(2)
+                        : "0.00";
 
-                    let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
-
-                    let color =
-                        porcentaje >= 95
-                            ? "#00b18d"
-                            : porcentaje >= 90
-                              ? "#ffc107"
-                              : "#d64545";
+                    let color = porcentaje >= 95
+                        ? "#00b18d"
+                        : porcentaje >= 90
+                            ? "#ffc107"
+                            : "#d64545";
 
                     return `
                         <span class="badge px-3 py-2"
@@ -567,9 +579,9 @@ function renderTablaGuardiaPediatricaPreguntas(data) {
                 },
             },
         ],
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -622,20 +634,20 @@ function renderTablaInternacionPreguntas(data) {
             {
                 title: "% Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
+                    let porcentaje = denominador > 0
+                        ? ((positivos * 100) / denominador).toFixed(2)
+                        : "0.00";
 
-                    let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
-
-                    let color =
-                        porcentaje >= 95
-                            ? "#00b18d"
-                            : porcentaje >= 90
-                              ? "#ffc107"
-                              : "#d64545";
+                    let color = porcentaje >= 95
+                        ? "#00b18d"
+                        : porcentaje >= 90
+                            ? "#ffc107"
+                            : "#d64545";
 
                     return `
                         <span class="badge px-3 py-2"
@@ -658,9 +670,9 @@ function renderTablaInternacionPreguntas(data) {
             [0, "asc"],
             [6, "asc"],
         ],
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -713,20 +725,20 @@ function renderTablaInternacionPreguntasDesign(data) {
             {
                 title: "% Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
+                    let porcentaje = denominador > 0
+                        ? ((positivos * 100) / denominador).toFixed(2)
+                        : "0.00";
 
-                    let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
-
-                    let color =
-                        porcentaje >= 95
-                            ? "#00b18d"
-                            : porcentaje >= 90
-                              ? "#ffc107"
-                              : "#d64545";
+                    let color = porcentaje >= 95
+                        ? "#00b18d"
+                        : porcentaje >= 90
+                            ? "#ffc107"
+                            : "#d64545";
 
                     return `
                         <span class="badge px-3 py-2"
@@ -749,9 +761,9 @@ function renderTablaInternacionPreguntasDesign(data) {
             [0, "asc"],
             [6, "asc"],
         ],
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -804,20 +816,20 @@ function renderTablaInternacionPreguntasStandard(data) {
             {
                 title: "% Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
+                    let porcentaje = denominador > 0
+                        ? ((positivos * 100) / denominador).toFixed(2)
+                        : "0.00";
 
-                    let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
-
-                    let color =
-                        porcentaje >= 95
-                            ? "#00b18d"
-                            : porcentaje >= 90
-                              ? "#ffc107"
-                              : "#d64545";
+                    let color = porcentaje >= 95
+                        ? "#00b18d"
+                        : porcentaje >= 90
+                            ? "#ffc107"
+                            : "#d64545";
 
                     return `
                         <span class="badge px-3 py-2"
@@ -840,9 +852,9 @@ function renderTablaInternacionPreguntasStandard(data) {
             [0, "asc"],
             [6, "asc"],
         ],
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -895,20 +907,20 @@ function renderTablaInternacionPreguntasUtis(data) {
             {
                 title: "% Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
+                    let porcentaje = denominador > 0
+                        ? ((positivos * 100) / denominador).toFixed(2)
+                        : "0.00";
 
-                    let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
-
-                    let color =
-                        porcentaje >= 95
-                            ? "#00b18d"
-                            : porcentaje >= 90
-                              ? "#ffc107"
-                              : "#d64545";
+                    let color = porcentaje >= 95
+                        ? "#00b18d"
+                        : porcentaje >= 90
+                            ? "#ffc107"
+                            : "#d64545";
 
                     return `
                         <span class="badge px-3 py-2"
@@ -931,9 +943,9 @@ function renderTablaInternacionPreguntasUtis(data) {
             [0, "asc"],
             [6, "asc"],
         ],
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -986,20 +998,20 @@ function renderTablaInternacionPreguntasOtras(data) {
             {
                 title: "% Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
+                    let porcentaje = denominador > 0
+                        ? ((positivos * 100) / denominador).toFixed(2)
+                        : "0.00";
 
-                    let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
-
-                    let color =
-                        porcentaje >= 95
-                            ? "#00b18d"
-                            : porcentaje >= 90
-                              ? "#ffc107"
-                              : "#d64545";
+                    let color = porcentaje >= 95
+                        ? "#00b18d"
+                        : porcentaje >= 90
+                            ? "#ffc107"
+                            : "#d64545";
 
                     return `
                         <span class="badge px-3 py-2"
@@ -1017,14 +1029,9 @@ function renderTablaInternacionPreguntasOtras(data) {
                 },
             },
         ],
-
-        order: [
-            [0, "asc"],
-            [6, "asc"],
-        ],
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -1075,21 +1082,20 @@ function renderTablaInternacionPreguntasGeneral(data) {
             {
                 title: "% Positivas",
                 data: null,
-                render: function (row) {
-                    let total = row.total_respuestas;
-                    let positivos = row.positivos;
-                    let noAplica=row.no_aplica;
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
+                    let porcentaje = denominador > 0
+                        ? ((positivos * 100) / denominador).toFixed(2)
+                        : "0.00";
 
-                    let porcentaje =
-                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
-                    
-
-                    let color =
-                        porcentaje >= 95
-                            ? "#00b18d"
-                            : porcentaje >= 90
-                              ? "#ffc107"
-                              : "#d64545";
+                    let color = porcentaje >= 95
+                        ? "#00b18d"
+                        : porcentaje >= 90
+                            ? "#ffc107"
+                            : "#d64545";
 
                     return `
                         <span class="badge px-3 py-2"
@@ -1112,14 +1118,13 @@ function renderTablaInternacionPreguntasGeneral(data) {
             [0, "asc"],
             [6, "asc"],
         ],
-        language:{
-            url:"/js/es-ES.json",
-        }
+        language: {
+            url: "/js/es-ES.json",
+        },
     });
 }
 
 function renderTablaInternacionAmb(data) {
-
     if ($.fn.DataTable.isDataTable("#tablaInternacionAmbPregunta")) {
         $("#tablaInternacionAmbPregunta").DataTable().destroy();
         $("#tablaInternacionAmbPregunta tbody").empty();
@@ -1140,59 +1145,53 @@ function renderTablaInternacionAmb(data) {
         columns: [
             {
                 title: "Pregunta",
-                data: "pregunta"
+                data: "pregunta",
             },
 
             {
                 title: "Positivas",
                 data: "positivos",
                 render: (d) =>
-                    `<span style="color:green;font-weight:bold">${d}</span>`
+                    `<span style="color:green;font-weight:bold">${d}</span>`,
             },
 
             {
                 title: "Negativas",
                 data: "negativos",
                 render: (d) =>
-                    `<span style="color:red;font-weight:bold">${d}</span>`
+                    `<span style="color:red;font-weight:bold">${d}</span>`,
             },
 
             {
                 title: "No Aplica",
-                data: "no_aplica"
+                data: "no_aplica",
             },
 
             {
                 title: "Total",
-                data: "total_respuestas"
+                data: "total_respuestas",
             },
 
             {
                 title: "% Positivas",
                 data: null,
-                render: function (data, type, row) {
+                render: function (d, type, row) {
+                    let total = row.total_respuestas ?? 0;
+                    let positivos = row.positivos ?? 0;
+                    let noAplica = row.no_aplica ?? 0;
+                    let denominador = total - noAplica;
+                    let porcentaje = denominador > 0
+                        ? ((positivos * 100) / denominador).toFixed(2)
+                        : "0.00";
 
-                    let total = parseInt(row.total_respuestas) || 0;
-                    let positivos = parseInt(row.positivos) || 0;
-                    let noAplica = parseInt(row.no_aplica) || 0;
-
-                    let base = total - noAplica;
-
-                    let porcentaje =
-                        base > 0
-                            ? ((positivos * 100) / base).toFixed(2)
-                            : 0;
-
-                    let color =
-                        porcentaje >= 95
-                            ? "#00b18d"
-                            : porcentaje >= 90
-                                ? "#ffc107"
-                                : "#d64545";
+                    let color = porcentaje >= 95
+                        ? "#00b18d"
+                        : porcentaje >= 90
+                            ? "#ffc107"
+                            : "#d64545";
 
                     return `
-                        <span
-                            class="badge px-3 py-2"
+                        <span class="badge px-3 py-2"
                             style="
                                 background:${color};
                                 color:white;
@@ -1204,15 +1203,15 @@ function renderTablaInternacionAmb(data) {
                             ${porcentaje}%
                         </span>
                     `;
-                }
-            }
+                },
+            },
         ],
 
         order: [[0, "asc"]],
 
         language: {
-            url: "/js/es-ES.json"
-        }
+            url: "/js/es-ES.json",
+        },
     });
 }
 
@@ -1370,26 +1369,34 @@ $("#btnKpiPromedioAmbulatoria").on("click", function () {
     );
 });
 
-$("#divStandardButton").on("click", function(){
-    $("#divStandardBody").toggleClass('d-none');
-    $(this).find('i').toggleClass('fa-circle-chevron-down fa-circle-chevron-up');
+$("#divStandardButton").on("click", function () {
+    $("#divStandardBody").toggleClass("d-none");
+    $(this)
+        .find("i")
+        .toggleClass("fa-circle-chevron-down fa-circle-chevron-up");
     $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
 });
 
-$("#divDesignButton").on("click", function(){
-    $("#divDesignBody").toggleClass('d-none');
-    $(this).find('i').toggleClass('fa-circle-chevron-down fa-circle-chevron-up');
+$("#divDesignButton").on("click", function () {
+    $("#divDesignBody").toggleClass("d-none");
+    $(this)
+        .find("i")
+        .toggleClass("fa-circle-chevron-down fa-circle-chevron-up");
     $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
 });
 
-$("#divUtisButton").on("click", function(){
-    $("#divUtisBody").toggleClass('d-none');
-    $(this).find('i').toggleClass('fa-circle-chevron-down fa-circle-chevron-up');
+$("#divUtisButton").on("click", function () {
+    $("#divUtisBody").toggleClass("d-none");
+    $(this)
+        .find("i")
+        .toggleClass("fa-circle-chevron-down fa-circle-chevron-up");
     $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
 });
 
-$("#divOtrasButton").on("click", function(){
-    $("#divOtrasBody").toggleClass('d-none');
-    $(this).find('i').toggleClass('fa-circle-chevron-down fa-circle-chevron-up');
+$("#divOtrasButton").on("click", function () {
+    $("#divOtrasBody").toggleClass("d-none");
+    $(this)
+        .find("i")
+        .toggleClass("fa-circle-chevron-down fa-circle-chevron-up");
     $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
 });

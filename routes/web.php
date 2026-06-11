@@ -27,9 +27,14 @@ Route::post('/usuario/guardar', [HomeController::class, 'guardar'])->name('usuar
 Route::get('/index', [HomeController::class, 'index'])
     ->name('index');
 
+Route::post('/restaurarPassword', [HomeController::class, 'restaurarPassword'])
+    ->name('restaurarPassword');
+
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/ingresar', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/forgotPassword', [HomeController::class, 'forgotPassword'])->name('forgotPassword');
+
 
 Route::middleware(['auth'])->group(function () {
 

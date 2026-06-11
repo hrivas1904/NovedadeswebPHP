@@ -267,7 +267,7 @@
 
                     <div class="card p-2 mt-4">
                         <h5>RESULTADOS INTERNACIÓN CON ESTADÍA - GENERAL</h5>
-                        <table id="tablaInternacionPreguntasGeneral" class="table table-bordered w-100"></table>
+                        <table id="tablaInternacionPreguntasGeneral" class="table table-bordered table-wrapper w-100"></table>
                     </div>
                 </section>
 
