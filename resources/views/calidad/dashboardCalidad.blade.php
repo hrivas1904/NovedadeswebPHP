@@ -168,9 +168,47 @@
                 </section>
 
                 <section id="sectionResultadosInternacionEstadia">
-                    <div class="card p-2 mt-4">
+                    <div class="card p-1 mt-4 gap-2">
                         <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
-                        <table id="tablaInternacionPreguntas" class="table table-bordered w-100"></table>
+                        <div class="card">
+                            <div class="card-header" style="color: var(--color-default); cursor:pointer;" id="divStandardButton">
+                                <label class="fw-bolder fs-6">STANDARD </label>
+                                <i class="fa-solid fa-circle-chevron-down"></i>
+                            </div>
+                            <div class="card-body d-none" id="divStandardBody">
+                                <table id="tablaInternacionPreguntasStandard" class="table table-bordered w-100"></table>
+                            </div>                            
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header" style="color: var(--color-default); cursor:pointer;" id="divDesignButton">
+                                <label class="fw-bolder fs-6">DESIGN </label>
+                                <i class="fa-solid fa-circle-chevron-down"></i>
+                            </div>
+                            <div class="card-body d-none" id="divDesignBody">
+                                <table id="tablaInternacionPreguntasDesign" class="table table-bordered w-100"></table>
+                            </div>                            
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header" style="color: var(--color-default); cursor:pointer;" id="divUtisButton">
+                                <label class="fw-bolder fs-6">UTI's </label>
+                                <i class="fa-solid fa-circle-chevron-down"></i>
+                            </div>
+                            <div class="card-body d-none" id="divUtisBody">
+                                <table id="tablaInternacionPreguntasUtis" class="table table-bordered w-100"></table>
+                            </div>                            
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header" style="color: var(--color-default); cursor:pointer;" id="divOtrasButton">
+                                <label class="fw-bolder fs-6">OTRAS </label>
+                                <i class="fa-solid fa-circle-chevron-down"></i>
+                            </div>
+                            <div class="card-body d-none" id="divOtrasBody">
+                                <table id="tablaInternacionPreguntasOtras" class="table table-bordered w-100"></table>
+                            </div>                            
+                        </div>                        
                     </div>
 
                     <div class="card p-2 mt-4">
