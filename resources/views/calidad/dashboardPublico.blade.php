@@ -158,35 +158,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="quality-legend">
-
-                    <div class="legend-title">
-                        <i class="fa-solid fa-chart-pie me-2"></i>
-                        Referencias
-                    </div>
-
-                    <div class="legend-items">
-
-                        <div class="legend-item success">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <span>≥95% Meta Cumplida</span>
-                        </div>
-
-                        <div class="legend-item warning">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            <span> ≥90% - <95% Próxima a Cumplir</span>
-                        </div>
-
-                        <div class="legend-item danger">
-                            <i class="fa-solid fa-circle-xmark"></i>
-                            <span>&lt;90% Meta Incumplida</span>
-                        </div>
-
-                    </div>
-
-                </div>
+                </div>               
 
                 <div class="section-divider text-center mt-4">
                     <span>
@@ -239,53 +211,204 @@
                     </div>
                 </div>
 
-                <div class="section-divider text-center mt-4">
-                    <span>
-                        <h3 class="tituloVista">RESULTADOS POR TIPO DE ENCUESTAS</h3>
-                    </span>
+                <div class="modal fade" id="modalGuardias" tabindex="-1">
+                    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header d-flex justify-content-center">
+                                <div class="quality-legend">
+                                    <div class="legend-title">
+                                        <i class="fa-solid fa-chart-pie me-2"></i>
+                                        Referencias
+                                    </div>
+                                    <div class="legend-items">
+                                        <div class="legend-item success">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            <span>≥95% Meta Cumplida</span>
+                                        </div>
+                                        <div class="legend-item warning">
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                            <span> ≥90% - <95% Próxima a Cumplir</span>
+                                        </div>
+                                        <div class="legend-item danger">
+                                            <i class="fa-solid fa-circle-xmark"></i>
+                                            <span>&lt;90% Meta Incumplida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardGuardiaAdultoHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS GUARDIA ADULTO</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardGuardiaAdultoBody">
+                                        <table id="tablaGuardia" class="table table-striped table-bordered table-wrapper w-100"></table>
+                                    </div>
+                                </div>
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardGuardiaPedHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS GUARDIA PEDIÁTRICA</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardGuardiaPedBody">
+                                        <table id="tablaGuardiaPediatrica" class="table table-striped table-bordered table-wrapper w-100"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
                 </div>
 
-                <section id="sectionResultadosGuardias">
-                    <div class="card glass-section p-2 mb-4" id="cardGuardiaAdulto">
-                        <h5>RESULTADOS GUARDIA ADULTO</h5>
-                        <table id="tablaGuardia" class="table table-striped table-bordered table-wrapper w-100">
-                        </table>
-                    </div>
-                    <div class="card p-2" id="cardGuardiaPediatrica">
-                        <h5>RESULTADOS GUARDIA PEDIÁTRICA</h5>
-                        <table id="tablaGuardiaPediatrica"
-                            class="table table-striped table-bordered table-wrapper w-100"></table>
-                    </div>
-                </section>
+                <div class="modal fade" id="modalInternacionEst" tabindex="-1">
+                    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header d-flex justify-content-center">
+                                <div class="quality-legend">
+                                    <div class="legend-title">
+                                        <i class="fa-solid fa-chart-pie me-2"></i>
+                                        Referencias
+                                    </div>
+                                    <div class="legend-items">
+                                        <div class="legend-item success">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            <span>≥95% Meta Cumplida</span>
+                                        </div>
+                                        <div class="legend-item warning">
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                            <span> ≥90% - <95% Próxima a Cumplir</span>
+                                        </div>
+                                        <div class="legend-item danger">
+                                            <i class="fa-solid fa-circle-xmark"></i>
+                                            <span>&lt;90% Meta Incumplida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaGeneralHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - GENERAL</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardEstadiaGeneralBody">
+                                        <table id="tablaInternacionPreguntasGeneral" class="table table-bordered table-wrapper w-100"></table>
+                                    </div>
+                                </div>
 
-                <section id="sectionResultadosInternacionEstadia">
-                    <div class="card p-2 mt-4">
-                        <h5>RESULTADOS INTERNACIÓN CON ESTADÍA</h5>
-                        <table id="tablaInternacionPreguntas" class="table table-bordered table-wrapper w-100">
-                        </table>
-                    </div>
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaStdHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - STANDARD</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardEstadiaStdBody">
+                                        <table id="tablaInternacionPreguntasStandard" class="table table-bordered w-100"></table>
+                                    </div>
+                                </div>
 
-                    <div class="card p-2 mt-4">
-                        <h5>RESULTADOS INTERNACIÓN CON ESTADÍA - GENERAL</h5>
-                        <table id="tablaInternacionPreguntasGeneral" class="table table-bordered table-wrapper w-100"></table>
-                    </div>
-                </section>
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaDsgHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - DESIGN</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardEstadiaDsgBody">
+                                        <table id="tablaInternacionPreguntasDesign" class="table table-bordered w-100"></table>
+                                    </div>
+                                </div>
 
-                <section id="sectionResultadosInternacionAmbulatoria">
-                    <div class="card p-2 mt-4">
-                        <h5>RESULTADOS INTERNACIÓN AMBULATORIA</h5>
-                        <table id="tablaInternacionAmbPregunta" class="table table-bordered table-wrapper w-100">
-                        </table>
-                    </div>
-                </section>
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaOtrasHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - OTRAS</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardEstadiaOtrasBody">
+                                        <table id="tablaInternacionPreguntasOtros" class="table table-bordered w-100"></table>
+                                    </div>
+                                </div>
 
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtiaHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - UTI ADULTO</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardEstadiaUtiaBody">
+                                        <table id="tablaInternacionPreguntasUtia" class="table table-bordered w-100"></table>
+                                    </div>
+                                </div>
+
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtipHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - UTI PEDIÁTRICA</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardEstadiaUtipBody">
+                                        <table id="tablaInternacionPreguntasUtip" class="table table-bordered w-100"></table>
+                                    </div>
+                                </div>
+
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtinHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - UTI NEO</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardEstadiaUtinBody">
+                                        <table id="tablaInternacionPreguntasUtin" class="table table-bordered w-100"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+
+                <div class="modal fade" id="modalAmbulatoria" tabindex="-1">
+                    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header d-flex justify-content-center">
+                                <div class="quality-legend">
+                                    <div class="legend-title">
+                                        <i class="fa-solid fa-chart-pie me-2"></i>
+                                        Referencias
+                                    </div>
+                                    <div class="legend-items">
+                                        <div class="legend-item success">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            <span>≥95% Meta Cumplida</span>
+                                        </div>
+                                        <div class="legend-item warning">
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                            <span> ≥90% - <95% Próxima a Cumplir</span>
+                                        </div>
+                                        <div class="legend-item danger">
+                                            <i class="fa-solid fa-circle-xmark"></i>
+                                            <span>&lt;90% Meta Incumplida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card glass-section p-2 mb-4">
+                                    <div class="card-header d-flex gap-3 align-items-center" id="cardAmbHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS INTERNACIÓN AMBULATORIA</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardAmbBody">
+                                        <table id="tablaInternacionAmbPregunta" class="table table-bordered table-wrapper w-100"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
             </div>
         </div>
     </div>
 
-    <button type="button" class="btn btn-primary btn-floating shadow-lg" id="btn-back-to-top">
+    <!--<button type="button" class="btn btn-primary btn-floating shadow-lg" id="btn-back-to-top">
         <i class="fas fa-arrow-up"></i>
-    </button>
+    </button>-->
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -299,6 +422,7 @@
         const DASHBOARD_TOKEN = "{{ request()->route('token') }}";
     </script>
     <script src="{{ asset('js/calidad/dashboardPublico.js') }}"></script>
+    <script src="{{ asset('js/calidad/dashboardPublicoMotion.js') }}"></script>
 
 </body>
 

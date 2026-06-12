@@ -552,6 +552,21 @@ class CalidadController extends Controller
                     [$desde, $hasta]
                 ),
 
+                'internacion_preguntas_utia' => DB::select(
+                    'CALL SP_ANALISIS_INTERNACION_EST_PREGUNTAS_UTIA(?, ?)',
+                    [$desde, $hasta]
+                ),
+
+                'internacion_preguntas_utip' => DB::select(
+                    'CALL SP_ANALISIS_INTERNACION_EST_PREGUNTAS_UTIP(?, ?)',
+                    [$desde, $hasta]
+                ),
+                
+                'internacion_preguntas_utineo' => DB::select(
+                    'CALL SP_ANALISIS_INTERNACION_EST_PREGUNTAS_UTINEO(?, ?)',
+                    [$desde, $hasta]
+                ),
+
                 'internacion_preguntas_otros' => DB::select(
                     'CALL SP_ANALISIS_INTERNACION_EST_PREGUNTAS_OTROS(?, ?)',
                     [$desde, $hasta]
