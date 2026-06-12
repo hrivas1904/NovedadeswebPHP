@@ -95,10 +95,11 @@ function obtenerFeriados() {
 }
 
 $("#btnRedactarComunicado").click(function () {
-    let contenido = $("#txtNotificacion").val().trim();
+
+    let contenido = quill.root.innerHTML;
     let titulo = $("#txtNotificacionTitulo").val().trim();
 
-    if (contenido == "") {
+    if (quill.getText().trim().length === 0) {
         Swal.fire({
             title: "Debe escribir un mensaje",
             icon: "warning",
@@ -110,7 +111,7 @@ $("#btnRedactarComunicado").click(function () {
         url: "/notificaciones/publicar",
         type: "POST",
         headers: {
-            "X-Requested-With": "XMLHttpRequest", // ← agregá esto
+            "X-Requested-With": "XMLHttpRequest",
         },
         data: {
             contenido: contenido,
@@ -118,7 +119,9 @@ $("#btnRedactarComunicado").click(function () {
             _token: $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (data) {
+
             if (data.success) {
+
                 Swal.fire({
                     title: data.mensaje,
                     icon: "success",
@@ -127,10 +130,13 @@ $("#btnRedactarComunicado").click(function () {
                     },
                 });
 
-                $("#txtNotificacion").val("");
+                quill.setContents([]); // limpia el editor
                 $("#txtNotificacionTitulo").val("");
+
                 cargarNotificaciones();
+
             } else {
+
                 Swal.fire({
                     title: data.mensaje,
                     icon: "error",
@@ -138,30 +144,9 @@ $("#btnRedactarComunicado").click(function () {
                         confirmButtonColor: "btn-primary btn",
                     },
                 });
+
             }
-        },
-        error: function (xhr) {
-            if (xhr.status === 401) {
-                Swal.fire({
-                    title: "Sesión expirada",
-                    text: "Por favor recargá la página",
-                    icon: "warning",
-                    customClass: {
-                        confirmButtonColor: "btn-primary btn",
-                    },
-                });
-            } else {
-                Swal.fire("Error", "Error del servidor", "error");
-                Swal.fire({
-                    title: "Error",
-                    text: "Error del servidor",
-                    icon: "error",
-                    customClass: {
-                        confirmButtonColor: "btn btn-primary",
-                    },
-                });
-            }
-        },
+        }
     });
 });
 
