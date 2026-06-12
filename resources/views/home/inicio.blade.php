@@ -260,7 +260,7 @@
                     <div class="col-xl-7 col-md-6 col-12">
                         <label for="selectTipoEvento" class="form-label">Tipo de evento</label>
                         <select class="form-select w-100" id="selectTipoEvento" name="tipoEvento">
-                            <option selected disabled value="">Seleccione evento</option>
+                            <option selected disabled value="">Seleccione evento...</option>
                             <option value="">Capacitación</option>
                             <option value="">Feriado nacional</option>
                             <option value="">Feriado provincial</option>

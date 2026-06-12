@@ -372,7 +372,8 @@ class PersonalController extends Controller
             'ESTADO',
             'DNI',
             'CUIL',
-            'FECHA NAC',
+            'FECHA NACIMIENTO',
+            'EDAD',
             'CORREO',
             'TELEFONO',
             'DOMICILIO',
@@ -380,18 +381,36 @@ class PersonalController extends Controller
             'ESTADO CIVIL',
             'GENERO',
             'OBRA SOCIAL',
+            'CÓDIGO OS',
             'TITULO',
-            'FECHA INGRESO',            
+            'DESCRIPCIÓN TITULO',
+            'MP',
+            'TIPO DE CONTRATO',
+            'FECHA INGRESO',
+            'FECHA FIN PRUEBA',
+            'FECHA EGRESO',
+            'ANTIGÜEDAD',
             'AREA',
+            'SERVICIO',
             'CONVENIO',
             'CATEGORIA',
             'REGIMEN',
-            'HORAS',        
+            'HORAS',
+            'COORDINADOR',
+            'SINDICATO',
             'NOCHE',
-            'UTI',         
-            'CUENTA', 
-            'CBU', 
+            'UTI',
             'BANCO',
+            'CUENTA',
+            'CBU',
+            'MADRE',
+            'PADRE',
+            'PERSONA EMERG I',
+            'CONTACTO EMERG I',
+            'PARENTESCO EMERG I',
+            'PERSONA EMERG II',
+            'CONTACTO EMERG II',
+            'PARENTESCO EMERG II',
         ];
 
         $sheet->fromArray($headers, NULL, 'A1');
@@ -399,40 +418,58 @@ class PersonalController extends Controller
         // 🔹 Datos
         $row = 2;
         foreach ($data as $item) {
-            $sheet->setCellValue("A$row", $item->LEGAJO);
+            $sheet->setCellValue("A$row", str_pad($item->LEGAJO, 5, '0', STR_PAD_LEFT));
             $sheet->setCellValue("B$row", $item->COLABORADOR);
             $sheet->setCellValue("C$row", $item->ESTADO);
             $sheet->setCellValue("D$row", $item->DNI);
             $sheet->setCellValue("E$row", $item->CUIL);
-            $sheet->setCellValue("F$row", $item->FECHA_NAC);
-            $sheet->setCellValue("G$row", $item->CORREO);
-            $sheet->setCellValue("H$row", $item->TELEFONO);
-            $sheet->setCellValue("I$row", $item->DOMICILIO);
-            $sheet->setCellValue("J$row", $item->LOCALIDAD);
-            $sheet->setCellValue("K$row", $item->ESTADO_CIVIL);
-            $sheet->setCellValue("L$row", $item->GENERO);
-            $sheet->setCellValue("M$row", $item->OBRA_SOCIAL);
-            $sheet->setCellValue("N$row", $item->TITULO);
-            $sheet->setCellValue("O$row", $item->FECHA_INGRESO);
-            $sheet->setCellValue("P$row", $item->AREA);
-            $sheet->setCellValue("Q$row", $item->CONVENIO);
-            $sheet->setCellValue("R$row", $item->CATEGORIA);
-            $sheet->setCellValue("S$row", $item->REGIMEN);
-            $sheet->setCellValue("T$row", $item->HORAS_DIARIAS);
-            $sheet->setCellValue("U$row", $item->NOCHE);
-            $sheet->setCellValue("V$row", $item->UTI);
-            $sheet->setCellValueExplicit("W$row", $item->numero_cuenta, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValueExplicit("X$row", $item->cbu, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue("Y$row", $item->banco);
-
+            $sheet->setCellValue("F$row", $item->FECHA_NAC ? date('d/m/Y', strtotime($item->FECHA_NAC)) : '');
+            $sheet->setCellValue("G$row", $item->EDAD);
+            $sheet->setCellValue("H$row", $item->CORREO);
+            $sheet->setCellValue("I$row", $item->TELEFONO);
+            $sheet->setCellValue("J$row", $item->DOMICILIO);
+            $sheet->setCellValue("K$row", $item->LOCALIDAD);
+            $sheet->setCellValue("L$row", $item->ESTADO_CIVIL);
+            $sheet->setCellValue("M$row", $item->GENERO);
+            $sheet->setCellValue("N$row", $item->OBRA_SOCIAL);
+            $sheet->setCellValue("O$row", $item->CODIGO);
+            $sheet->setCellValue("P$row", $item->TITULO);
+            $sheet->setCellValue("Q$row", $item->DESCRIP_TITULO);
+            $sheet->setCellValue("R$row", $item->MAT_PROF);
+            $sheet->setCellValue("S$row", $item->TIPO_CONTRATO);
+            $sheet->setCellValue("T$row", $item->FECHA_INGRESO ? date('d/m/Y', strtotime($item->FECHA_INGRESO)) : '');
+            $sheet->setCellValue("U$row", $item->FECHA_FIN_PRUEBA ? date('d/m/Y', strtotime($item->FECHA_FIN_PRUEBA)) : '');
+            $sheet->setCellValue("V$row", $item->FECHA_EGRESO ? date('d/m/Y', strtotime($item->FECHA_EGRESO)) : '');
+            $sheet->setCellValue("W$row", $item->ANTIGUEDAD);
+            $sheet->setCellValue("X$row", $item->AREA);
+            $sheet->setCellValue("Y$row", $item->SERVICIO);
+            $sheet->setCellValue("Z$row", $item->CONVENIO);
+            $sheet->setCellValue("AA$row", $item->CATEGORIA);
+            $sheet->setCellValue("AB$row", $item->REGIMEN);
+            $sheet->setCellValue("AC$row", $item->HORAS_DIARIAS);
+            $sheet->setCellValue("AD$row", $item->COORDINADOR);
+            $sheet->setCellValue("AE$row", $item->AFILIADO);
+            $sheet->setCellValue("AF$row", $item->NOCHE);
+            $sheet->setCellValue("AG$row", $item->UTI);
+            $sheet->setCellValue("AH$row", $item->banco);
+            $sheet->setCellValueExplicit("AI$row", $item->numero_cuenta, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit("AJ$row", $item->cbu, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue("AK$row", $item->MADRE);
+            $sheet->setCellValue("AL$row", $item->PADRE);
+            $sheet->setCellValue("AM$row", $item->PERSONA_EMERG1);
+            $sheet->setCellValue("AN$row", $item->CONTACTO_EMERG1);
+            $sheet->setCellValue("AO$row", $item->PARENTESCO_EMERG1);
+            $sheet->setCellValue("AP$row", $item->PERSONA_EMERG2);
+            $sheet->setCellValue("AQ$row", $item->CONTACTO_EMERG2);
+            $sheet->setCellValue("AR$row", $item->PARENTESCO_EMERG2);
             $row++;
         }
 
-        foreach (range('A', 'V') as $col) {
+        for ($col = 'A'; $col !== 'AS'; $col++) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        $fileName = 'colaboradores_activos_' . date('Ymd_His') . '.xlsx';
+        $fileName = 'NOMINA_COLABORADORES' . date('Ymd_His') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header("Content-Disposition: attachment; filename=\"$fileName\"");
@@ -1558,8 +1595,9 @@ class PersonalController extends Controller
         }
     }
 
-    public function enviarIngresoAsistencia(Request $request){
-        try{
+    public function enviarIngresoAsistencia(Request $request)
+    {
+        try {
             $fechaHora = now();
 
             $request->validate([
@@ -1569,7 +1607,7 @@ class PersonalController extends Controller
                 'longitud' => 'required',
             ]);
 
-            DB::statement("CALL SP_INGRESO_ASISTENCIA(?,?,?,?,?,?,?, @p_msj)",[
+            DB::statement("CALL SP_INGRESO_ASISTENCIA(?,?,?,?,?,?,?, @p_msj)", [
                 Auth::user()->id,
                 $request->turno,
                 $request->servicio,
@@ -1589,18 +1627,18 @@ class PersonalController extends Controller
                 'success' => $success,
                 'message' => $mensaje->mensaje,
             ]);
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
-                'success'=>false,
-                'message'=>'Error al registrar el ingreso.',
-                'error'=>$e->getMessage(),
+                'success' => false,
+                'message' => 'Error al registrar el ingreso.',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
 
-    public function enviarEgresoAsistencia(Request $request){
-        try{
+    public function enviarEgresoAsistencia(Request $request)
+    {
+        try {
             $fechaHora = now();
 
             $request->validate([
@@ -1610,7 +1648,7 @@ class PersonalController extends Controller
                 'longitud' => 'required'
             ]);
 
-            DB::statement("CALL SP_EGRESO_ASISTENCIA(?,?,?,?,?,?,?,@p_msj)",[
+            DB::statement("CALL SP_EGRESO_ASISTENCIA(?,?,?,?,?,?,?,@p_msj)", [
                 Auth::user()->id,
                 $request->turno,
                 $request->servicio,
@@ -1630,12 +1668,11 @@ class PersonalController extends Controller
                 'success' => $success,
                 'message' => $mensaje->mensaje,
             ]);
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
-                'success'=>false,
-                'message'=>'Error al registrar el egreso.',
-                'error'=>$e->getMessage(),
+                'success' => false,
+                'message' => 'Error al registrar el egreso.',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

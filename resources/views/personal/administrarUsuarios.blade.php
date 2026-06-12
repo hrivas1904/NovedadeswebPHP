@@ -137,11 +137,6 @@
 
                         </div>
 
-                        <!-- INFO UX -->
-                        <div class="mt-3 small text-muted">
-                            💡 Si no se ingresa nombre de usuario, se utilizará el legajo automáticamente.
-                        </div>
-
                     </form>
                 </div>
 

@@ -239,7 +239,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="card glass-section p-2 mb-4">
-                                    <div class="card-header d-flex gap-3 align-items-center" id="cardGuardiaAdultoHeader" style="cursor: pointer">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardGuardiaAdultoHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS GUARDIA ADULTO</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
                                     </div>
@@ -247,7 +247,7 @@
                                         <table id="tablaGuardia" class="table table-striped table-bordered table-wrapper w-100"></table>
                                     </div>
                                 </div>
-                                <div class="card glass-section p-2 mb-4">
+                                <div style="color: var(--color-default);" class="card glass-section p-2 mb-4">
                                     <div class="card-header d-flex gap-3 align-items-center" id="cardGuardiaPedHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS GUARDIA PEDIÁTRICA</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
@@ -289,7 +289,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="card glass-section p-2 mb-4">
-                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaGeneralHeader" style="cursor: pointer">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardEstadiaGeneralHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - GENERAL</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
                                     </div>
@@ -299,7 +299,7 @@
                                 </div>
 
                                 <div class="card glass-section p-2 mb-4">
-                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaStdHeader" style="cursor: pointer">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardEstadiaStdHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - STANDARD</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
                                     </div>
@@ -309,7 +309,7 @@
                                 </div>
 
                                 <div class="card glass-section p-2 mb-4">
-                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaDsgHeader" style="cursor: pointer">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardEstadiaDsgHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - DESIGN</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
                                     </div>
@@ -319,7 +319,7 @@
                                 </div>
 
                                 <div class="card glass-section p-2 mb-4">
-                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaOtrasHeader" style="cursor: pointer">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardEstadiaOtrasHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - OTRAS</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
                                     </div>
@@ -329,7 +329,7 @@
                                 </div>
 
                                 <div class="card glass-section p-2 mb-4">
-                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtiaHeader" style="cursor: pointer">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtiaHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - UTI ADULTO</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
                                     </div>
@@ -339,7 +339,7 @@
                                 </div>
 
                                 <div class="card glass-section p-2 mb-4">
-                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtipHeader" style="cursor: pointer">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtipHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - UTI PEDIÁTRICA</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
                                     </div>
@@ -349,7 +349,7 @@
                                 </div>
 
                                 <div class="card glass-section p-2 mb-4">
-                                    <div class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtinHeader" style="cursor: pointer">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardEstadiaUtinHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS INTERNACIÓN CON ESTADÍA - UTI NEO</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>
                                     </div>
@@ -389,7 +389,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="card glass-section p-2 mb-4">
+                                <div style="color: var(--color-default);" class="card glass-section p-2 mb-4">
                                     <div class="card-header d-flex gap-3 align-items-center" id="cardAmbHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS INTERNACIÓN AMBULATORIA</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>

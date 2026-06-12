@@ -16,6 +16,21 @@ $(document).on("click", ".toggle-password", function () {
     }
 });
 
+$("#togglePassword").on("click", function () {
+
+    const input = $("#edit_password");
+    const icon = $(this).find("i");
+
+    if (input.attr("type") === "password") {
+        input.attr("type", "text");
+        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+    } else {
+        input.attr("type", "password");
+        icon.removeClass("fa-eye-slash").addClass("fa-eye");
+    }
+
+});
+
 $.ajaxSetup({
     headers: {
         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -126,19 +141,6 @@ $(document).ready(function () {
                 text: '<i class="fa-solid fa-file-excel"></i> Excel',
                 className: "btn-export-excel dt-buttons",
                 exportOptions: { columns: ":visible" },
-            },
-            {
-                extend: "pdfHtml5",
-                text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                className: "btn-export-pdf dt-buttons",
-                exportOptions: { columns: ":visible" },
-            },
-            {
-                extend: "print",
-                text: '<i class="fa-solid fa-print"></i> Imprimir',
-                title: "Nómina de personal dt-buttons",
-                exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                className: "btn-printer",
             },
         ],
     });
