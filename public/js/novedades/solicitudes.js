@@ -622,6 +622,7 @@ $(document).ready(function () {
                     className: "text-start",
                     render: function (data) {
                         const texto = data ?? "";
+                        if (!texto) return ""; // 👈 si está vacío, no generar HTML
                         return `<span title="${texto}" style="display:block;white-space:normal;word-break:break-word;">${texto}</span>`;
                     },
                 },
@@ -669,10 +670,16 @@ $(document).ready(function () {
                         columns: [2, 3, 4, 6, 7, 9, 10, 11, 12],
                         format: {
                             body: function (data, row, column, node) {
-                                if (/^\d{11,}$/.test(data)) {
-                                    return "'" + data;
+                                // Limpiar HTML y obtener solo el texto
+                                const tmp = document.createElement("div");
+                                tmp.innerHTML = data;
+                                const texto =
+                                    tmp.textContent || tmp.innerText || data;
+
+                                if (/^\d{11,}$/.test(texto)) {
+                                    return "'" + texto;
                                 }
-                                return data;
+                                return texto;
                             },
                         },
                     },

@@ -143,13 +143,14 @@ class CalendarioServController extends Controller
     public function exportarReporte(Request $request)
     {
         try {
+
             $desde = $request->fechaDesde ?: null;
             $hasta = $request->fechaHasta ?: null;
 
-            $data = DB::select("CALL SP_REPORTE_SERVICIOS(?, ?)", [
-                $desde,
-                $hasta
-            ]);
+            $data = DB::select(
+                "CALL SP_REPORTE_SERVICIOS(?, ?)",
+                [$desde, $hasta]
+            );
 
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
@@ -159,42 +160,67 @@ class CalendarioServController extends Controller
                 [
                     'Legajo',
                     'Colaborador',
-                    'Regimen',
-                    'Desde',
-                    'Hasta',
-                    'Días',
-                    'Horas Totales',
+                    'Régimen',
+                    'Fecha',
+                    'Turno',
+                    'Caja',
+                    'Horas Trabajadas',
+                    'Horas Previas Semana',
                     'Horas Normales',
                     'Horas Extras',
-                    'Caja',
-                    'Turno'
+                    'Horas Liquidadas',
+                    'Feriado'
                 ]
             ], null, 'A1');
 
-            // Datos
             $fila = 2;
 
             foreach ($data as $row) {
 
-                $sheet->setCellValue("A{$fila}", $row->legajo);
+                $sheet->setCellValue("A{$fila}", str_pad($row->legajo, 5, '0', STR_PAD_LEFT));
                 $sheet->setCellValue("B{$fila}", $row->colaborador);
                 $sheet->setCellValue("C{$fila}", $row->regimen);
-                $sheet->setCellValue("D{$fila}", $row->fechaDesde);
-                $sheet->setCellValue("E{$fila}", $row->fechaHasta);
-                $sheet->setCellValue("F{$fila}", $row->dias);
-                $sheet->setCellValue("G{$fila}", $row->horas_totales);
-                $sheet->setCellValue("H{$fila}", $row->horas_normales);
-                $sheet->setCellValue("I{$fila}", $row->horas_extras);
-                $sheet->setCellValue("J{$fila}", $row->caja ? 'SI' : 'NO');
-                $sheet->setCellValue("K{$fila}", $row->turno);
+
+                $sheet->setCellValue(
+                    "D{$fila}",
+                    $row->fecha
+                        ? date('d/m/Y', strtotime($row->fecha))
+                        : ''
+                );
+
+                $sheet->setCellValue("E{$fila}", $row->turno);
+                $sheet->setCellValue("F{$fila}", $row->caja ? 'SI' : 'NO');
+
+                $sheet->setCellValue("G{$fila}", $row->horas_trabajadas);
+                $sheet->setCellValue("H{$fila}", $row->horas_previas_semana);
+                $sheet->setCellValue("I{$fila}", $row->horas_normales);
+                $sheet->setCellValue("J{$fila}", $row->horas_extras_reales);
+                $sheet->setCellValue("K{$fila}", $row->horas_liquidadas);
+                $sheet->setCellValue("L{$fila}", $row->feriado);
+
                 $fila++;
             }
 
+            // Autoajuste columnas
+            foreach (range('A', 'L') as $col) {
+                $sheet->getColumnDimension($col)->setAutoSize(true);
+            }
+
+            // Congelar encabezado
+            $sheet->freezePane('A2');
+
+            // Negrita encabezado
+            $sheet->getStyle('A1:L1')->getFont()->setBold(true);
+
             $writer = new Xlsx($spreadsheet);
-            $fileName = 'reporte_calendario.xlsx';
-            $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+
+            $fileName = 'reporte_servicios.xlsx';
+            $temp_file = tempnam(sys_get_temp_dir(), 'rep_');
+
             $writer->save($temp_file);
-            return response()->download($temp_file, $fileName)
+
+            return response()
+                ->download($temp_file, $fileName)
                 ->deleteFileAfterSend(true);
         } catch (\Exception $e) {
 

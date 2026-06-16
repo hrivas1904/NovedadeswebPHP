@@ -164,6 +164,25 @@ $(document).on("click", ".btnEliminarFila", function () {
 });
 
 //RECORRER DATATABLE Y GUARDAR EVENTO
+function generarFechasEntre(desde, hasta) {
+    let fechas = [];
+
+    let fechaActual = new Date(desde + "T00:00:00");
+    let fechaFin = new Date(hasta + "T00:00:00");
+
+    while (fechaActual <= fechaFin) {
+        let yyyy = fechaActual.getFullYear();
+        let mm = String(fechaActual.getMonth() + 1).padStart(2, "0");
+        let dd = String(fechaActual.getDate()).padStart(2, "0");
+
+        fechas.push(`${yyyy}-${mm}-${dd}`);
+
+        fechaActual.setDate(fechaActual.getDate() + 1);
+    }
+
+    return fechas;
+}
+
 function obtenerDatosTabla() {
     let datos = [];
 
@@ -179,17 +198,21 @@ function obtenerDatosTabla() {
         let observ = fila.find(".inputObserv").val();
 
         if (!legajo || !turno || !desde || !hasta) {
-            return; // saltea filas incompletas
+            return;
         }
 
-        datos.push({
-            legajo,
-            fechaDesde: desde,
-            fechaHasta: hasta,
-            caja,
-            turno,
-            horas,
-            observ,
+        let fechas = generarFechasEntre(desde, hasta);
+
+        fechas.forEach(function (fecha) {
+            datos.push({
+                legajo: legajo,
+                fechaDesde: fecha,
+                fechaHasta: fecha,
+                caja: caja,
+                turno: turno,
+                horas: horas,
+                observ: observ,
+            });
         });
     });
 
