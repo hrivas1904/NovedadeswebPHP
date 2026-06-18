@@ -161,15 +161,10 @@ class CalendarioServController extends Controller
                     'Legajo',
                     'Colaborador',
                     'Régimen',
-                    'Fecha',
-                    'Turno',
-                    'Caja',
+                    'Régimen Mensual Teórico',
                     'Horas Trabajadas',
-                    'Horas Previas Semana',
-                    'Horas Normales',
                     'Horas Extras',
-                    'Horas Liquidadas',
-                    'Feriado'
+                    'Horas Feriados'
                 ]
             ], null, 'A1');
 
@@ -177,40 +172,66 @@ class CalendarioServController extends Controller
 
             foreach ($data as $row) {
 
-                $sheet->setCellValue("A{$fila}", str_pad($row->legajo, 5, '0', STR_PAD_LEFT));
-                $sheet->setCellValue("B{$fila}", $row->colaborador);
-                $sheet->setCellValue("C{$fila}", $row->regimen);
+                $sheet->setCellValue(
+                    "A{$fila}",
+                    str_pad($row->legajo, 5, '0', STR_PAD_LEFT)
+                );
+
+                $sheet->setCellValue(
+                    "B{$fila}",
+                    $row->colaborador
+                );
+
+                $sheet->setCellValue(
+                    "C{$fila}",
+                    $row->regimen
+                );
 
                 $sheet->setCellValue(
                     "D{$fila}",
-                    $row->fecha
-                        ? date('d/m/Y', strtotime($row->fecha))
-                        : ''
+                    $row->regimen_mensual_teorico
                 );
 
-                $sheet->setCellValue("E{$fila}", $row->turno);
-                $sheet->setCellValue("F{$fila}", $row->caja ? 'SI' : 'NO');
+                $sheet->setCellValue(
+                    "E{$fila}",
+                    $row->acumulador_mensual
+                );
 
-                $sheet->setCellValue("G{$fila}", $row->horas_trabajadas);
-                $sheet->setCellValue("H{$fila}", $row->horas_previas_semana);
-                $sheet->setCellValue("I{$fila}", $row->horas_normales);
-                $sheet->setCellValue("J{$fila}", $row->horas_extras_reales);
-                $sheet->setCellValue("K{$fila}", $row->horas_liquidadas);
-                $sheet->setCellValue("L{$fila}", $row->feriado);
+                $sheet->setCellValue(
+                    "F{$fila}",
+                    $row->horas_extras_totales
+                );
+
+                $sheet->setCellValue(
+                    "G{$fila}",
+                    $row->horas_feriados
+                );
+
+                $sheet->setCellValue(
+                    "H{$fila}",
+                    $row->horas_cajas_totales
+                );
+
+                $sheet->setCellValue(
+                    "I{$fila}",
+                    $row->horas_nocturnas
+                );
 
                 $fila++;
             }
 
-            // Autoajuste columnas
-            foreach (range('A', 'L') as $col) {
-                $sheet->getColumnDimension($col)->setAutoSize(true);
-            }
+            // Estilo encabezado
+            $sheet->getStyle('A1:G1')
+                ->getFont()
+                ->setBold(true);
 
             // Congelar encabezado
             $sheet->freezePane('A2');
 
-            // Negrita encabezado
-            $sheet->getStyle('A1:L1')->getFont()->setBold(true);
+            // Autoajustar columnas
+            foreach (range('A', 'G') as $col) {
+                $sheet->getColumnDimension($col)->setAutoSize(true);
+            }
 
             $writer = new Xlsx($spreadsheet);
 
