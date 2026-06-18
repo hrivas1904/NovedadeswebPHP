@@ -239,6 +239,15 @@
                             </div>
                             <div class="modal-body">
                                 <div class="card glass-section p-2 mb-4">
+                                    <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardGuardiaGralHeader" style="cursor: pointer">
+                                        <h5 class="mb-0">RESULTADOS GENERALES GUARDIA</h5>
+                                        <i class="fa-solid fa-circle-chevron-down"></i>
+                                    </div>
+                                    <div class="card-body d-none" id="cardGuardiaGralBody">
+                                        <table id="tablaGuardiaGral" class="table table-striped table-bordered table-wrapper w-100"></table>
+                                    </div>
+                                </div>
+                                <div class="card glass-section p-2 mb-4">
                                     <div style="color: var(--color-default);" class="card-header d-flex gap-3 align-items-center" id="cardGuardiaAdultoHeader" style="cursor: pointer">
                                         <h5 class="mb-0">RESULTADOS GUARDIA ADULTO</h5>
                                         <i class="fa-solid fa-circle-chevron-down"></i>

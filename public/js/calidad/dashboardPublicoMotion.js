@@ -3,6 +3,12 @@ $("#btnKpiPromedioGuardias").on("click", function () {
     $("#modalGuardias").modal('show');
 });
 
+$("#cardGuardiaGralHeader").on("click", function () {
+    $("#cardGuardiaGralBody").toggleClass("d-none");
+    $(this).find("i").toggleClass("fa-circle-chevron-down fa-circle-chevron-up");
+    $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+});
+
 $("#cardGuardiaAdultoHeader").on("click", function () {
     $("#cardGuardiaAdultoBody").toggleClass("d-none");
     $(this).find("i").toggleClass("fa-circle-chevron-down fa-circle-chevron-up");

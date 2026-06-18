@@ -532,6 +532,11 @@ class CalidadController extends Controller
                     [$desde, $hasta]
                 ),
 
+                'guardia_general_preguntas' => DB::select(
+                    'CALL SP_ANALISIS_GUARDIA_GENERAL_PREGUNTAS(?, ?)',
+                    [$desde, $hasta]
+                ),
+
                 'internacion_preguntas' => DB::select(
                     'CALL SP_ANALISIS_INTERNACION_EST_PREGUNTAS(?, ?)',
                     [$desde, $hasta]

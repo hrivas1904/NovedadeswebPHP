@@ -101,6 +101,7 @@ function cargarDashboard() {
             renderTablaExpectativasAmbulatoria(res.expectativasAmbulatoria);
             renderTablaUti(res.uti);
             renderTablaInternacion(res.internacion);
+            renderTablaGuardiaGeneralPreguntas(res.guardia_general_preguntas);
             renderTablaGuardiaPreguntas(res.guardia_adulto_preguntas);
             renderTablaGuardiaPediatricaPreguntas(res.guardia_pediatrica_preguntas,);
             renderTablaInternacionPreguntas(res.internacion_preguntas);
@@ -402,6 +403,92 @@ function renderTablaInternacion(data) {
 }
 
 //RESULTADOS POR TIPO DE ENCUESTAS
+
+function renderTablaGuardiaGeneralPreguntas(data) {
+    if ($.fn.DataTable.isDataTable("#tablaGuardiaGral")) {
+        $("#tablaGuardiaGral").DataTable().destroy();
+    }
+
+    $("#tablaGuardiaGral").DataTable({
+        data: data,
+        autoWidth: false,
+        scrollX: false,
+        paging: false,
+        scrollCollapse: true,
+        scrollY: getScrollY(),
+        responsive: true,
+        searching: false,
+        info: false,
+        ordering: false,
+
+        columns: [
+            { title: "Pregunta", data: "pregunta" },
+
+            {
+                title: "Positivas",
+                data: "positivos",
+                render: function (data) {
+                    return `<span style="color:green;font-weight:bold">${data}</span>`;
+                },
+            },
+
+            {
+                title: "Negativas",
+                data: "negativos",
+                render: function (data) {
+                    return `<span style="color:red;font-weight:bold">${data}</span>`;
+                },
+            },
+
+            {
+                title: "No Aplica",
+                data: "no_aplica",
+            },
+
+            {
+                title: "Total",
+                data: "total_respuestas",
+            },
+
+            {
+                title: "%Positivas",
+                data: null,
+                render: function (row) {
+                    let total = row.total_respuestas;
+                    let positivos = row.positivos;
+                    let noAplica=row.no_aplica;
+
+                    let porcentaje =
+                        total > 0 ? ((positivos * 100) / (total-noAplica)).toFixed(2) : 0;
+
+                    let color =
+                        porcentaje >= 95
+                            ? "#00b18d"
+                            : porcentaje >= 90
+                              ? "#ffc107"
+                              : "#d64545";
+
+                    return `
+                        <span class="badge px-3 py-2"
+                            style="
+                                background:${color};
+                                color:white;
+                                border:1px solid;
+                                font-weight:600;
+                                font-size:1rem;
+                                min-width:75px;
+                            ">
+                            ${porcentaje}%
+                        </span>
+                    `;
+                },
+            },
+        ],
+        language:{
+            url:"/js/es-ES.json",
+        }
+    });
+}
 
 function renderTablaGuardiaPreguntas(data) {
     if ($.fn.DataTable.isDataTable("#tablaGuardia")) {
