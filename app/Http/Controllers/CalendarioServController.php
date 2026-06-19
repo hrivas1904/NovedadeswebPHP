@@ -143,7 +143,6 @@ class CalendarioServController extends Controller
     public function exportarReporte(Request $request)
     {
         try {
-
             $desde = $request->fechaDesde ?: null;
             $hasta = $request->fechaHasta ?: null;
 
@@ -161,10 +160,17 @@ class CalendarioServController extends Controller
                     'Legajo',
                     'Colaborador',
                     'Régimen',
-                    'Régimen Mensual Teórico',
-                    'Horas Trabajadas',
+                    'Semana',
+                    'Fecha',
+                    'Turno',
+                    'Caja',
+                    'Horas',
+                    'Feriado',
+                    'Acumulado Semana',
+                    'Acumulado Previo',
+                    'Horas Normales',
                     'Horas Extras',
-                    'Horas Feriados'
+                    'Horas Liquidadas'
                 ]
             ], null, 'A1');
 
@@ -177,51 +183,33 @@ class CalendarioServController extends Controller
                     str_pad($row->legajo, 5, '0', STR_PAD_LEFT)
                 );
 
-                $sheet->setCellValue(
-                    "B{$fila}",
-                    $row->colaborador
-                );
-
-                $sheet->setCellValue(
-                    "C{$fila}",
-                    $row->regimen
-                );
-
-                $sheet->setCellValue(
-                    "D{$fila}",
-                    $row->regimen_mensual_teorico
-                );
+                $sheet->setCellValue("B{$fila}", $row->colaborador);
+                $sheet->setCellValue("C{$fila}", $row->regimen);
+                $sheet->setCellValue("D{$fila}", $row->semana);
 
                 $sheet->setCellValue(
                     "E{$fila}",
-                    $row->acumulador_mensual
+                    $row->fecha
+                        ? date('d/m/Y', strtotime($row->fecha))
+                        : ''
                 );
 
-                $sheet->setCellValue(
-                    "F{$fila}",
-                    $row->horas_extras_totales
-                );
+                $sheet->setCellValue("F{$fila}", $row->turno);
+                $sheet->setCellValue("G{$fila}", $row->caja ? 'SI' : 'NO');
+                $sheet->setCellValue("H{$fila}", $row->horas);
+                $sheet->setCellValue("I{$fila}", $row->feriado ? 'SI' : 'NO');
 
-                $sheet->setCellValue(
-                    "G{$fila}",
-                    $row->horas_feriados
-                );
-
-                $sheet->setCellValue(
-                    "H{$fila}",
-                    $row->horas_cajas_totales
-                );
-
-                $sheet->setCellValue(
-                    "I{$fila}",
-                    $row->horas_nocturnas
-                );
+                $sheet->setCellValue("J{$fila}", $row->acumulado);
+                $sheet->setCellValue("K{$fila}", $row->acumulado_previo);
+                $sheet->setCellValue("L{$fila}", $row->horas_normales);
+                $sheet->setCellValue("M{$fila}", $row->horas_extras);
+                $sheet->setCellValue("N{$fila}", $row->horas_liquidadas);
 
                 $fila++;
             }
 
             // Estilo encabezado
-            $sheet->getStyle('A1:G1')
+            $sheet->getStyle('A1:N1')
                 ->getFont()
                 ->setBold(true);
 
@@ -229,7 +217,7 @@ class CalendarioServController extends Controller
             $sheet->freezePane('A2');
 
             // Autoajustar columnas
-            foreach (range('A', 'G') as $col) {
+            foreach (range('A', 'N') as $col) {
                 $sheet->getColumnDimension($col)->setAutoSize(true);
             }
 
