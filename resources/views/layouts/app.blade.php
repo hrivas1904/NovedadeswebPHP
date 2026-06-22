@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
     <link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssFiltroEcommerce.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/componentes/cssNavbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssNavbarV2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssDivAvisos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssCards.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">

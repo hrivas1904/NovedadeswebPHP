@@ -1,0 +1,234 @@
+/* =========================
+   NAVBAR BASE
+========================= */
+.navbar {
+    min-height: 64px;
+    background: var(--color-default) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 2px 10px rgba(0,0,0,.08);
+    padding: 0.55rem 1rem;
+    z-index: 1030;
+}
+
+.logo-navbar {
+    max-height: 42px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+}
+
+/* =========================
+   LINKS PRINCIPALES
+========================= */
+.navbar .navbar-nav {
+    gap: 4px;
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.88) !important;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 10px 14px !important;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .25s ease;
+}
+
+.navbar .nav-link i {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    color: #ffffff !important;
+    background: rgba(255,255,255,.10);          
+}
+
+.navbar .nav-link::after {
+    display: none !important;
+}
+
+/* Flecha dropdown */
+.navbar .dropdown-toggle::after {
+    border: none !important;
+    content: "▾" !important;
+    font-size: 0.7rem;
+    margin-left: 2px;
+    opacity: 0.75;
+    transition: transform 0.2s ease;
+}
+
+.navbar .dropdown:hover .dropdown-toggle::after {
+    transform: translateY(1px);
+}
+
+/* =========================
+   DROPDOWN
+========================= */
+.navbar .dropdown-menu {
+    min-width: 220px;
+    border: 1px solid rgba(0,0,0,.05);
+    border-radius: 16px;
+    padding: 10px;
+    margin-top: 10px;
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.15);
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+}
+
+.navbar .dropdown-item {
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    transition: all 0.18s ease;
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+    background: rgba(0, 145, 213, 0.1);
+    color: #004a7c;
+    transform: translateX(3px);
+}
+
+/* =========================
+   USUARIO
+========================= */
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-info {
+    line-height: 1.15;
+}
+
+.user-info strong {
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+.user-role {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+/* =========================
+   BOTONES DERECHA
+========================= */
+.navbar .btn-light {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.22s ease;
+}
+
+.navbar .btn-light i {
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.navbar .btn-light:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+}
+
+/* =========================
+   CONTADOR NOTIFICACIONES
+========================= */
+#contadorAlertas {
+    font-size: 0.62rem;
+    min-width: 17px;
+    height: 17px;
+    padding: 3px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================
+   ALERTAS DROPDOWN CUSTOM
+========================= */
+.dropdown-alertas {
+    position: absolute;
+    top: 62px;
+    right: 16px;
+    width: 310px;
+    display: none;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    border: 1px solid rgba(0, 74, 124, 0.08);
+    box-shadow: 0 18px 38px rgba(0, 32, 55, 0.25);
+    z-index: 1050;
+    overflow: hidden;
+}
+
+.nav-link.active{
+    background: rgba(255,255,255,.14);
+    color:white !important;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 1199px) {
+    .navbar-collapse {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 14px;
+        background: rgba(0, 45, 78, 0.95);
+    }
+
+    .navbar .navbar-nav {
+        gap: 2px;
+    }
+
+    .navbar .nav-link {
+        justify-content: flex-start;
+    }
+
+    .navbar .dropdown-menu {
+        margin-top: 4px;
+        box-shadow: none;
+        border-radius: 12px;
+    }
+
+    .navbar .d-flex.align-items-center.gap-3 {
+        margin-top: 12px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .user-chip {
+        order: -1;
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .dropdown-alertas {
+        right: 12px;
+        width: calc(100vw - 24px);
+        max-width: 330px;
+    }
+}

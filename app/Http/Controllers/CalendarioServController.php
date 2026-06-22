@@ -239,4 +239,85 @@ class CalendarioServController extends Controller
             ], 500);
         }
     }
+
+    public function verDetalleEvento(Request $request)
+    {
+        try {
+
+            $idEvento = $request->idEvento;
+
+            $data = DB::select(
+                "CALL SP_VER_DETELLE_EVENTO_CALENDARIO(?)",
+                [$idEvento]
+            );
+
+            if (empty($data)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró el evento.'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'evento' => $data[0]
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editarEvento(Request $request)
+    {
+        try {
+
+            DB::statement(
+                'CALL SP_EDITAR_EVENTO_CALENDARIO(?,?,?,?,?,?,?)',
+                [
+                    $request->idEvento,
+                    $request->legajo,
+                    $request->fechaEvento,
+                    $request->horas,
+                    $request->turno,
+                    $request->caja,
+                    $request->observaciones
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Evento actualizado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function eliminarEvento(Request $request)
+    {
+        try {
+            DB::statement('CALL SP_ELIMINAR_EVENTO_CALENDARIO(?)', [
+                $request->idEvento
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Evento eliminado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo eliminar el evento.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

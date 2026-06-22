@@ -15,7 +15,7 @@ $(document).on("change", ".selectTurno", function () {
     let turno = $(this).val();
     if (turno === "Noche") {
         fila.find(".selectCaja").val("1");
-    }    
+    }
 });
 
 //SELECTOR COLAB --> LEGAJO
@@ -404,49 +404,73 @@ function pintarEvento(contenedor, evento, fechaString) {
     contenedor.append(html);
 }
 
-function modificarEventoDirecto(idEvento, fechaInterrupcion) {
-    //if (!confirm("¿Quitar este día del evento?")) return;
+//EDICIÓN DEL COLABORADOR
+function cargarColaboradoresArea(idArea) {
+    $.ajax({
+        url: "/calendario/colaboradores-area",
+        type: "GET",
+        data: { idArea: idArea },
+        dataType: "json",
+        success: function (data) {
+            $("#selectColab")
+                .empty()
+                .select2({
+                    data: data,
+                    placeholder: "Seleccione un colaborador",
+                    allowClear: true,
+                    width: "100%",
+                    dropdownParent: $("#modalNuevaTarea"), // si está dentro de un modal
+                });
+        },
+        error: function (err) {
+            console.error("Error al cargar colaboradores:", err);
+        },
+    });
+}
 
-    Swal.fire({
-        title: "¿Borrar evento?",
-        text: "El siguiente evento será borrado",
-        icon: "warning",
-        showCancelButton: true,
-        cancelButtonColor: "#004a7c",
-        confirmButtonColor: "#00b18d",
-        confirmButtonText: "Borrar",
-        cancelButtonText: "Cancelar",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: "/eventos/modificar",
-                method: "POST",
-                data: {
-                    idEvento: idEvento,
-                    fechaInterrupcion: fechaInterrupcion,
-                },
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content",
-                    ),
-                },
-                success: function () {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Evento modificado",
-                        text: "El evento fue modificado correctamente",
-                    });
-                    generarCalendario(fechaActual);
-                },
-                error: function () {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "No se pudo modificar el evento",
-                    });
+function verDetalleEventoCalendario(idEvento) {
+    $("#selectColab").select2({
+        data: colaboradoresData,
+        placeholder: "Seleccione un colaborador",
+        allowClear: true,
+        width: "100%",
+        dropdownParent: $("#modalDetalleEventoCalendario"),
+    });
+
+    $.ajax({
+        url: "/calendario/verDetalleEvento",
+        type: "GET",
+        data: {
+            idEvento: idEvento,
+        },
+
+        success: function (res) {
+            if (res.success) {
+                $("#idEventoCalendario").val(res.evento.id);
+                $("#inputLegajo").val(res.evento.legajo);
+                $("#selectColab").val(res.evento.legajo).trigger("change");
+                $("#inputFecha").val(res.evento.fechaDesde);
+                $("#selectTurno").val(res.evento.turno);
+                $("#detalleObservaciones").val(res.evento.observaciones);
+                $("#selectCaja").val(res.evento.caja);
+                $("#inputHoras").val(parseInt(res.evento.horas));
+                $("#modalDetalleEventoCalendario").modal("show");
+            }
+        },
+
+        error: function (xhr) {
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo obtener el detalle del evento.",
+                icon: "error",
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: "btn btn-danger",
                 },
             });
-        }
+
+            console.error(xhr.responseText);
+        },
     });
 }
 
@@ -454,7 +478,119 @@ $(document).on("click", ".event-item", function () {
     const idEvento = $(this).data("id-evento");
     const fecha = $(this).data("fecha");
     console.log("Evento: " + idEvento + ", " + "fecha: " + fecha);
-    modificarEventoDirecto(idEvento, fecha);
+    verDetalleEventoCalendario(idEvento);
+});
+
+function cerrarDetalleEvento() {
+    $("#formEditarEvento")[0].reset();
+    $("#modalDetalleEventoCalendario").modal("hide");
+}
+
+$("#btnEditarEvento").on("click", function () {
+    $.ajax({
+        url: "/calendario/editarEvento",
+        type: "POST",
+        data: {
+            idEvento: $("#idEventoCalendario").val(),
+            legajo: $("#selectColab").val(),
+            fechaEvento: $("#inputFecha").val(),
+            turno: $("#selectTurno").val(),
+            caja: $("#selectCaja").val(),
+            horas: $("#inputHoras").val(),
+            observaciones: $("#inputObserv").val(),
+            _token: $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        success: function (res) {
+            if (res.success) {
+                Swal.fire({
+                    title: "Éxito",
+                    text: res.message,
+                    icon: "success",
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                    },
+                }).then(() => {
+                    $("#modalDetalleEventoCalendario").modal("hide");
+                    generarCalendario(fechaActual);
+                });
+            }
+        },
+
+        error: function (xhr) {
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo actualizar el evento.",
+                icon: "error",
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: "btn btn-danger",
+                },
+            });
+
+            console.error(xhr.responseText);
+        },
+    });
+});
+
+$("#btnEliminarEvento").on("click", function () {
+    const idEvento = $("#idEventoCalendario").val();
+
+    Swal.fire({
+        title: "¿Eliminar evento?",
+        text: "Esta acción quitará el evento del calendario.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: "btn btn-danger me-2",
+            cancelButton: "btn btn-secondary",
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/calendario/eliminarEvento",
+                type: "POST",
+                data: {
+                    idEvento: idEvento,
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                },
+                success: function (res) {
+                    if (res.success) {
+                        Swal.fire({
+                            title: "Eliminado",
+                            text: res.message,
+                            icon: "success",
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                            },
+                        }).then(() => {
+                            $("#modalDetalleEventoCalendario").modal("hide");
+
+                            generarCalendario(fechaActual);
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "No se pudo eliminar el evento.",
+                        icon: "error",
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: "btn btn-danger",
+                        },
+                    });
+
+                    console.error(xhr.responseText);
+                },
+            });
+        }
+    });
 });
 
 function cargarEventosMes(year, month) {
@@ -527,8 +663,6 @@ $(document).on("click", ".event-item", function () {
     const fecha = $(this).data("fecha");
 
     console.log("CLICK", idEvento, fecha);
-
-    modificarEventoDirecto(idEvento, fecha);
 });
 
 function generarCalendario(fecha) {

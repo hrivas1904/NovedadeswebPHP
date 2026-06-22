@@ -8,7 +8,8 @@
         <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
             <div class="d-flex align-items-start gap-3">
                 <div class="icon-box">
-                    <img src="{{ asset('img/icons/calendario-logo.png') }}" style="height: 32px;" alt="Logo calendario recepcion">
+                    <img src="{{ asset('img/icons/calendario-logo.png') }}" style="height: 32px;"
+                        alt="Logo calendario recepcion">
                 </div>
                 <div>
                     <h3 class="tituloVista mb-0">CALENDARIO DE RECEPCIÓN</h3>
@@ -16,7 +17,8 @@
                 </div>
             </div>
 
-            <button class="btn btn-secondary rounded-pill" data-bs-toggle="collapse" data-bs-target="#refs" title="Referencias">
+            <button class="btn btn-secondary rounded-pill" data-bs-toggle="collapse" data-bs-target="#refs"
+                title="Referencias">
                 <i class="fa-solid fa-circle-info"></i>
             </button>
         </div>
@@ -150,6 +152,86 @@
                     <button type="button" class="btn btn-secondary" id="btnCerrarModalEvento"
                         onclick="cerrarModalTarea()">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="btnGuardarEvento">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDetalleEventoCalendario" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true" data-bs-backdrop="static"" data-bs-backdrop=" static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="formEditarEvento">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Editar evento</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            onclick="cerrarDetalleEvento()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="section-divider mb-3">
+                            <span>Detalle del evento</span>
+                        </div>
+
+                        <div class="empleado-box p-3 mb-4">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <label for="inputFecha" class="form-label">FECHA</label>
+                                    <input id="inputFecha" class="form-control" type="date" name="fechaEvento">
+                                    <input id="idEventoCalendario" type="hidden">
+                                </div>
+
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <label for="inputLegajo" class="form-label">LEGAJO</label>
+                                    <input id="inputLegajo" class="form-control" type="number" name="legajo" readonly>
+                                </div>
+
+                                <div class="col-12 col-md-12 col-lg-6">
+                                    <label for="selectColab" class="form-label">COLABORADOR</label>
+                                    <select id="selectColab" class="form-control" name="colaborador"></select>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-lg-2">
+                                    <label for="selectTurno" class="form-label">TURNO</label>
+                                    <select id="selectTurno" class="form-control" name="turno">
+                                        <option value="">Turno</option>
+                                        <option value="Mañana">Mañana</option>
+                                        <option value="Refuerzo">Refuerzo</option>
+                                        <option value="Tarde">Tarde</option>
+                                        <option value="Noche">Noche</option>
+                                        <option value="Adic Recep">Adic Recep</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-lg-2">
+                                    <label for="selectCaja" class="form-label">CAJA</label>
+                                    <select id="selectCaja" class="form-control" name="caja">
+                                        <option value="0">NO</option>
+                                        <option value="1">SI</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-lg-2">
+                                    <label for="inputHoras" class="form-label">HS</label>
+                                    <input id="inputHoras" class="form-control" type="text" name="horas">
+                                </div>
+
+                                <div class="col-12 col-md-12 col-lg-6">
+                                    <label for="inputObserv" class="form-label">OBSERVACIONES</label>
+                                    <input id="inputObserv" class="form-control" name="observaciones">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn" id="btnEliminarEvento"
+                        style="background-color: #d64545; color: white;" title="Eliminar evento">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="btnCerrarModalEvento"
+                        onclick="cerrarModalTarea()">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnEditarEvento">Editar</button>
                 </div>
             </div>
         </div>

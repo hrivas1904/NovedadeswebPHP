@@ -92,11 +92,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/calendario-servicios', [CalendarioServController::class, 'calendarioServicios'])
         ->name('calendarioServicios');
 
+    Route::get('/calendario/verDetalleEvento', [CalendarioServController::class, 'verDetalleEvento'])
+        ->name('calendario.verDetalleEvento');
+
     //RUTAS DE SP PERSONAL
     Route::get('/home/dashboardDiario', [HomeController::class, 'cargarDashboardDiario']);
 
     Route::get('/home/misOperaciones', [HomeController::class, 'cargarMisOperaciones']);
-    
+
     Route::get('/areas/lista', [PersonalController::class, 'listarAreas'])
         ->name('areas.lista');
 
@@ -316,6 +319,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/calendario/eventos/{idArea}', [CalendarioServController::class, 'obtenerEventos']);
     Route::post('/eventos/modificar', [CalendarioServController::class, 'modificarEvento']);
     Route::post('/calendario/reporte/exportar', [CalendarioServController::class, 'exportarReporte']);
+    Route::post('/calendario/editarEvento', [CalendarioServController::class, 'editarEvento']);
+    Route::post('/calendario/eliminarEvento', [CalendarioServController::class, 'eliminarEvento']);
 
     //dashboard
     Route::get('/dashboard/novedades-por-tipo', [DashboardController::class, 'novedadesPorTipo']);
@@ -414,5 +419,4 @@ Route::middleware(['dashboard.publico'])->group(function () {
         '/dashboard/completo/{token}',
         [CalidadController::class, 'dashboardCompleto']
     );
-
 });
