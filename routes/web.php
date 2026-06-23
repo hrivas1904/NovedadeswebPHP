@@ -285,6 +285,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->name('notificaciones.lista');
     Route::post('/notificaciones/borrar', [NotificacionController::class, 'eliminarNotificacion']);
     Route::get('/feriados/lista', [NotificacionController::class, 'obtenerFeriados']);
+    Route::get('/eventosProgramados/lista', [NotificacionController::class, 'obtenerEventosProgramados']);
+    Route::post('/calendario/agendarEvento', [NotificacionController::class, 'agendarEvento']);
+    Route::get('/eventosProgramados/verDetalle/{idEvento}',[NotificacionController::class, 'verDetalleEventoProgramado']);
+    Route::post('/eventosProgramados/editar',[NotificacionController::class, 'editarEventoProgramado']);
+    Route::post('/eventosProgramados/eliminar',[NotificacionController::class, 'eliminarEventoProgramado']);
 
     //calidad
     Route::get('/encuestasCalidad', [CalidadController::class, 'encuestasCalidad'])
