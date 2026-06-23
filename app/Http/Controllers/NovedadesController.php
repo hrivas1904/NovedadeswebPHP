@@ -195,7 +195,9 @@ class NovedadesController extends Controller
             $legajo = Auth::user()->legajo;
 
             $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? $request->idNovedad : null;
-            $paraFinnegans = ($request->paraFinnegans && $request->paraFinnegans !== "") ? $request->paraFinnegans : null;
+            $paraFinnegans = ($request->has('paraFinnegans') && $request->paraFinnegans !== null && $request->paraFinnegans !== "")
+                ? $request->paraFinnegans
+                : null;
             $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
             $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
             $liquidada = 0;
@@ -263,7 +265,9 @@ class NovedadesController extends Controller
             $legajo = Auth::user()->legajo;
 
             $idNovedad = ($request->idNovedad && $request->idNovedad !== "") ? $request->idNovedad : null;
-            $paraFinnegans = ($request->paraFinnegans && $request->paraFinnegans !== "") ? $request->paraFinnegans : null;
+            $paraFinnegans = ($request->has('paraFinnegans') && $request->paraFinnegans !== null && $request->paraFinnegans !== "")
+                ? $request->paraFinnegans
+                : null;
             $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
             $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
             $liquidada = 1;

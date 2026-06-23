@@ -207,6 +207,7 @@ $(document).ready(function () {
                     d.paraFinnegans = getFinnegansSeleccionadas().join(",") || null;
                     d.desde = $("#filtroDesde").val();
                     d.hasta = $("#filtroHasta").val();
+                    console.log(d.paraFinnegans);
                 },
             },
             columnDefs: [

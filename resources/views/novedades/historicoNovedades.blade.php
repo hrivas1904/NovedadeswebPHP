@@ -57,15 +57,11 @@
                                 </div>
                                 <div class="filtro-body d-none" id="listaFinnegas">
                                     <label class="filtro-item">
-                                        <input type="checkbox" class="check-Finnegans" value="Todas">
-                                        Todas
-                                    </label>
-                                    <label class="filtro-item">
-                                        <input type="checkbox" class="check-Finnegans" value="Informativas">
+                                        <input type="checkbox" class="check-Finnegans" value="0">
                                         Informativas
                                     </label>
                                     <label class="filtro-item">
-                                        <input type="checkbox" class="check-Finnegans" value="Para Finnegans">
+                                        <input type="checkbox" class="check-Finnegans" value="1">
                                         Para Finnegans
                                     </label>
                                 </div>
