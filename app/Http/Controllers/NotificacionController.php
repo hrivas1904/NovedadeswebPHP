@@ -118,9 +118,7 @@ class NotificacionController extends Controller
     {
         $year = now()->year;
 
-        $response = Http::get(
-            "https://date.nager.at/api/v3/PublicHolidays/$year/AR"
-        );
+        $response = Http::get("https://date.nager.at/api/v3/PublicHolidays/$year/AR");
 
         if ($response->successful()) {
 
@@ -133,5 +131,133 @@ class NotificacionController extends Controller
         return response()->json([
             'success' => false
         ], 500);
+    }
+
+    public function obtenerEventosProgramados()
+    {
+        try {
+
+            $eventosProgramados = DB::select(
+                'CALL SP_OBTENER_EVENTOS_PROGRAMADOS()'
+            );
+
+            return response()->json([
+                'success' => true,
+                'data' => $eventosProgramados
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener eventos programados'
+            ], 500);
+        }
+    }
+
+    public function agendarEvento(Request $request)
+    {
+        try {
+
+            DB::statement(
+                'CALL SP_AGENDAR_EVENTO(?,?,?,?)',
+                [
+                    $request->fechaEvento,
+                    $request->tipoEvento,
+                    $request->tituloEvento,
+                    $request->descripEvento
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Evento registrado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al registrar el evento.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function verDetalleEventoProgramado($idEvento)
+    {
+        try {
+
+            $evento = DB::select(
+                'CALL SP_VER_DETALLE_EVENTO_PROGRAMADO(?)',
+                [$idEvento]
+            );
+
+            if (empty($evento)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Evento no encontrado'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $evento[0]
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener el evento'
+            ], 500);
+        }
+    }
+
+    public function editarEventoProgramado(Request $request)
+    {
+        try {
+
+            DB::statement(
+                'CALL SP_EDITAR_EVENTO_PROGRAMADO(?,?,?,?,?)',
+                [
+                    $request->idEvento,
+                    $request->fechaEvento,
+                    $request->tipoEvento,
+                    $request->tituloEvento,
+                    $request->descripcionEvento
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Evento actualizado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el evento.'
+            ], 500);
+        }
+    }
+
+    public function eliminarEventoProgramado(Request $request)
+    {
+        try {
+
+            DB::statement(
+                'CALL SP_ELIMINAR_EVENTO_PROGRAMADO(?)',
+                [$request->idEvento]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Evento eliminado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo eliminar el evento.'
+            ], 500);
+        }
     }
 }

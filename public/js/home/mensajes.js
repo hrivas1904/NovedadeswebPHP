@@ -44,7 +44,7 @@ function obtenerMes(fecha) {
 
 function obtenerFeriados() {
     $.ajax({
-        url: "/feriados/lista",
+        url: "/eventosProgramados/lista",
         type: "GET",
         success: function (res) {
             if (res.success) {
@@ -54,17 +54,17 @@ function obtenerFeriados() {
                         <div class="d-flex align-items-start gap-2 mb-2 empleado-box p-1">
                             <div>
                                 <div style="width:60px; background-color:#1DAC8A; color:white;" class="border border-radius rounded-2 d-flex flex-column text-center justify-content-center align-items-center py-2">
-                                    <h2 class="fw-bolder mb-0">${obtenerDia(res.date)}</h2>
-                                    <h6>${obtenerMes(res.date)}</h6>
+                                    <h2 class="fw-bolder mb-0">${obtenerDia(res.fechaEvento)}</h2>
+                                    <h6>${obtenerMes(res.fechaEvento)}</h6>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h6 style="color: var(--color-default)" class="fw-bolder">${res.localName}</h6>
-                                <p class="text-muted">${formatearFechaLarga(res.date)}</p>
-                                <button type="button" class="btn text-muted">
+                                <h6 style="color: var(--color-default)" class="fw-bolder">${res.tituloEvento}</h6>
+                                <p class="text-muted">${formatearFechaLarga(res.fechaEvento)}</p>
+                                <button type="button" class="btn text-muted btnEditarEvento" data-id="${res.idEvento}">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
-                                <button type="button" class="btn text-muted">
+                                <button type="button" class="btn text-muted btnEliminarEvento" data-id="${res.idEvento}">
                                     <i class="fa-regular fa-trash-can"></i>
                                 </button>
                             </div>
@@ -94,8 +94,87 @@ function obtenerFeriados() {
     });
 }
 
-$("#btnRedactarComunicado").click(function () {
+$(document).on("click", ".btnEditarEvento", function () {
+    const idEvento = $(this).data("id");
 
+    $.ajax({
+        url: `/eventosProgramados/verDetalle/${idEvento}`,
+        type: "GET",
+        dataType: "json",
+
+        success: function (res) {
+            if (res.success) {
+                const e = res.data;
+
+                $("#inputIdEventoEdit").val(e.idEvento);
+                $("#inputFechaEventoEdit").val(e.fechaEvento.substring(0, 10));
+                $("#selectTipoEventoEdit").val(e.tipoEvento).trigger("change");
+                $("#inputTituloEventoEdit").val(e.tituloEvento);
+                $("#inputDescripEventoEdit").val(e.descripcionEvento);
+                $("#modalDetalleEvento").modal("show");
+            }
+        },
+
+        error: function () {
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo obtener el detalle del evento.",
+                icon: "error",
+                confirmButtonColor: "#1DAC8A",
+            });
+        },
+    });
+});
+
+$(document).on("click", ".btnEliminarEvento", function () {
+    const idEvento = $(this).data("id");
+
+    Swal.fire({
+        title: "¿Eliminar evento?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Eliminar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#dc3545",
+        cancelButtonColor: "#6c757d",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/eventosProgramados/eliminar",
+                type: "POST",
+                data: {
+                    idEvento: idEvento,
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                },
+
+                success: function (res) {
+                    if (res.success) {
+                        Swal.fire({
+                            title: "Éxito",
+                            text: res.message,
+                            icon: "success",
+                            confirmButtonColor: "#1DAC8A",
+                        });
+
+                        obtenerFeriados();
+                    }
+                },
+
+                error: function () {
+                    Swal.fire({
+                        title: "Error",
+                        text: "No se pudo eliminar el evento.",
+                        icon: "error",
+                        confirmButtonColor: "#1DAC8A",
+                    });
+                },
+            });
+        }
+    });
+});
+
+$("#btnRedactarComunicado").click(function () {
     let contenido = quill.root.innerHTML;
     let titulo = $("#txtNotificacionTitulo").val().trim();
 
@@ -119,9 +198,7 @@ $("#btnRedactarComunicado").click(function () {
             _token: $('meta[name="csrf-token"]').attr("content"),
         },
         success: function (data) {
-
             if (data.success) {
-
                 Swal.fire({
                     title: data.mensaje,
                     icon: "success",
@@ -134,9 +211,7 @@ $("#btnRedactarComunicado").click(function () {
                 $("#txtNotificacionTitulo").val("");
 
                 cargarNotificaciones();
-
             } else {
-
                 Swal.fire({
                     title: data.mensaje,
                     icon: "error",
@@ -144,9 +219,8 @@ $("#btnRedactarComunicado").click(function () {
                         confirmButtonColor: "btn-primary btn",
                     },
                 });
-
             }
-        }
+        },
     });
 });
 
@@ -350,6 +424,99 @@ function cargarMisOperaciones() {
         },
     });
 }
+
+$("#btnGuardarEvento").on("click", function () {
+    const fecha = $("#inputFechaEvento").val();
+    const tipo = $("#selectTipoEvento").val();
+    const titulo = $("#inputTituloEvento").val();
+
+    if (!fecha || !tipo || !titulo) {
+        Swal.fire({
+            title: "Atención",
+            text: "Complete todos los campos.",
+            icon: "warning",
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: "btn btn-primary",
+            },
+        });
+        return;
+    }
+
+    $.ajax({
+        url: "/calendario/agendarEvento",
+        type: "POST",
+        data: {
+            fechaEvento: $("#inputFechaEvento").val(),
+            tipoEvento: $("#selectTipoEvento").val(),
+            tituloEvento: $("#inputTituloEvento").val(),
+            descripEvento: $("#inputDescripEvento").val(),
+            _token: $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (res) {
+            if (res.success) {
+                Swal.fire({
+                    title: "Éxito",
+                    text: res.message,
+                    icon: "success",
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                    },
+                }).then(() => {
+                    $("#formNuevoEventoProgramado")[0].reset();
+                    $("#modalNuevoEventoProgramado").modal("hide");
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo registrar el evento.",
+                icon: "error",
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+            });
+        },
+    });
+});
+
+$("#btnEditarEvento").on("click", function () {
+    $.ajax({
+        url: "/eventosProgramados/editar",
+        type: "POST",
+        data: {
+            idEvento: $("#inputIdEventoEdit").val(),
+            fechaEvento: $("#inputFechaEventoEdit").val(),
+            tipoEvento: $("#selectTipoEventoEdit").val(),
+            tituloEvento: $("#inputTituloEventoEdit").val(),
+            descripcionEvento: $("#inputDescripEventoEdit").val(),
+            _token: $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (res) {
+            Swal.fire({
+                title: "Éxito",
+                text: res.message,
+                icon: "success",
+                confirmButtonColor: "#1DAC8A",
+            }).then(() => {
+                $("#modalDetalleEvento").modal("hide");
+
+                obtenerFeriados();
+            });
+        },
+        error: function () {
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo actualizar el evento.",
+                icon: "error",
+                confirmButtonColor: "#1DAC8A",
+            });
+        },
+    });
+});
 
 $(document).ready(function () {
     cargarNotificaciones();
