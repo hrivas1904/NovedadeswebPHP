@@ -212,7 +212,7 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">Fecha aplicación</label>
-                                            <input type="text" id="inputFechaAplicacion" class="form-control"
+                                            <input type="date" id="inputFechaAplicacion" class="form-control editable"
                                                 readonly>
                                         </div>
                                         <div class="col-lg-2">
@@ -237,7 +237,8 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <label class="form-label">Novedad</label>
-                                            <input type="text" id="inputNovedad" class="form-control" readonly>
+                                            <select class="form-select" id="inputNovedad" disabled></select>
+                                            <input hidden id="inputIdNovedad">
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label">Descripción</label>
@@ -289,6 +290,14 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    @if (Auth::user()->rol !== 'Colaborador/a')
+                        <button class="btn btn-secondary" id="btnHabilitarEdicion">
+                            Editar
+                        </button>
+                    @endif
+                    <button class="btn btn-primary d-none" id="btnGuardarCambios">
+                        Actualizar
+                    </button>
                     <button class="btn btn-primary" onclick="cerrarModalDetalleNovedad()">
                         Atrás
                     </button>
@@ -299,7 +308,7 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/novedades/scriptComunNov.js') }}"></script>   
+    <script src="{{ asset('js/novedades/scriptComunNov.js') }}"></script>
     <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
     <script src="{{ asset('js/novedades/historicoNovedades.js') }}"></script>
     <script>

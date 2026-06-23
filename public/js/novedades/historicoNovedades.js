@@ -370,9 +370,7 @@ function verDetalleNovedad(idRegistro) {
                 $("#inputDni").val(d.dni);
                 $("#inputArea").val(d.area);
 
-                $("#inputFechaAplicacion").val(
-                    formatearFechaArgentina(d.FECHA_APLICACION),
-                );
+                $("#inputFechaAplicacion").val(d.FECHA_APLICACION);
                 $("#inputFechaDesde").val(d.FECHA_DESDE);
                 $("#inputFechaHasta").val(d.FECHA_HASTA);
 
@@ -390,8 +388,13 @@ function verDetalleNovedad(idRegistro) {
                     $("#inputValor").addClass("text-start");
                 }
 
+                if (tipo_valor === "Horas") {
+                    calcularHorasHabiles();
+                }                
+
                 $("#inputCodigo").val(d.codigo_novedad);
-                $("#inputNovedad").val(d.novedad);
+                $("#inputNovedad").val(d.novedad).trigger('change');
+                $("#inputIdNovedad").val(d.novedad);
                 $("#inputDescripcion").val(d.DESCRIPCION);
 
                 $("#inputTipoVacaciones").val(d.TIPO);
@@ -426,4 +429,4 @@ function verDetalleNovedad(idRegistro) {
             alert("No se pudo conectar con el servidor");
         },
     });
-};
+}
