@@ -16,8 +16,8 @@
             </div>
         </div>
 
-        <div class="card p-4">
-            @if (Auth::user()->rol == 'Administrador/a')
+        <div class="card p-4 mb-3">
+            @if (in_array(Auth::user()->rol, ['Administrador/a']))
                 <div class="row g-3 mb-3">
                     <div class="col-xl-3 col-md-6 col-12">
                         <div class="card card-hover-radial p-2" id="cardKpiColabActivos" style="cursor: pointer;">
@@ -72,6 +72,8 @@
                         </div>
                     </div>
                 </div>
+            @endif
+            @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
                 <div id="publicarNotificacion" class="row mb-4">
                     <div class="col-12">
                         <div class="card p-3">
@@ -103,34 +105,33 @@
 
             <div class="row d-flex">
                 <div class="col-xl-9 col-12 d-flex">
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="card card-header-fixed p-2">
-                                <div class="card-header">
-                                    <div class="d-flex gap-3 align-items-center">
-                                        <div class="icon-box d-flex align-items-center justify-content-center"
-                                            style="
-                                                width: 50px;
-                                                height: 50px;
-                                                border-radius: 50%;
-                                                background: rgba(0, 145, 213, 0.1);
-                                                color: var(--color-second);
-                                                flex-shrink: 0;">
-                                            <i class="fa-solid fa-bullhorn"></i>
-                                        </div>
-                                        <div>
-                                            <h5 class="fw-bold mt-1" style="color: var(--color-default)">AVISOS</h5>
-                                        </div>
+                    <div class="col-12">
+                        <div class="card card-header-fixed p-2">
+                            <div class="card-header">
+                                <div class="d-flex gap-3 align-items-center">
+                                    <div class="icon-box d-flex align-items-center justify-content-center"
+                                        style="
+                                            width: 50px;
+                                            height: 50px;
+                                            border-radius: 50%;
+                                            background: rgba(0, 145, 213, 0.1);
+                                            color: var(--color-second);
+                                            flex-shrink: 0;">
+                                        <i class="fa-solid fa-bullhorn"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold mt-1" style="color: var(--color-default)">AVISOS</h5>
                                     </div>
                                 </div>
-                                <div class="card-body contenedor-scroll">
-                                    <div id="listaNotificaciones">
-                                    </div>
+                            </div>
+                            <div class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
+                                <div id="listaNotificaciones">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col-xl-2 col-md-6 col-12 d-none">
                     <div class="card p-2">
                         <div class="card-header">
@@ -205,6 +206,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-xl-3 col-12 d-flex">
                     <div class="card card-header-fixed p-2">
                         <div class="card-header">
@@ -222,7 +224,7 @@
                                 <div>
                                     <h5 class="fw-bold mt-1" style="color: var(--color-default)">PRÓXIMOS EVENTOS</h5>
                                 </div>
-                                @if (Auth::user()->rol == 'Administrador/a')
+                                @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
                                     <div class="ms-auto">
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#modalProximoEvento">
@@ -232,7 +234,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="card-body contenedor-scroll">
+                        <div class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
                             <div id="divCardFeriado">
                             </div>
                         </div>

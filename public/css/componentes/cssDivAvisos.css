@@ -8,11 +8,19 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+.card-header-fixed{
+    height: 100%;
+}
+
 .contenedor-scroll{
-    max-height: 400px;
     overflow-y: auto;
     overflow-x: hidden;
 }
-.card-header-fixed{
-    height: 100%;
+
+.scroll-admin{
+    max-height: 350px;
+}
+
+.scroll-user{
+    max-height: 600px;
 }

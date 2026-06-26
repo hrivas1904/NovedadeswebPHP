@@ -194,11 +194,11 @@ function verLegajo(legajoColaborador, nombre) {
         <i class="fa-solid fa-id-card me-2"></i>
         Legajo de <strong>${nombre}</strong>
     `);
-    
+
     listarCuentasBancarias(legajoColaborador);
     cargarRequerimientosAlimentarios();
     cargarReqSeleccionados(legajoColaborador);
-    cargarHijoColab(legajoColaborador);        
+    cargarHijoColab(legajoColaborador);
 
     $.ajax({
         url: `/personal/ver-legajo/${legajoColaborador}`,
@@ -212,8 +212,8 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#inputEstado").val(d.ESTADO);
                 $("#inputDni").val(d.DNI);
                 $("#inputCuil").val(d.CUIL);
-                $("#inputFechaNacimiento").val(d.FECHA_NAC),
-                $("#inputEdad").val(calcularEdad(d.FECHA_NAC));
+                ($("#inputFechaNacimiento").val(d.FECHA_NAC),
+                    $("#inputEdad").val(calcularEdad(d.FECHA_NAC)));
                 $("#inputEmail").val(d.CORREO);
                 $("#inputTelefono").val(d.TELEFONO);
                 $("#inputDomicilio").val(d.DOMICILIO);
@@ -389,8 +389,8 @@ $(document).ready(function () {
                         d.area_id = getAreasSeleccionadas().join(",") || null;
                     }
                     d.categ_id = getCategoriasSeleccionadas().join(",") || null;
-                    d.convenio = getConveniosSeleccionados().join(",") || null;
-                    d.estado = getEstadosSeleccionados().join(",") || null;
+                    d.p_convenio = getConveniosSeleccionados().join(",") || null;
+                    d.p_estado = getEstadosSeleccionados().join(",") || null;
                 },
             },
             autoWidth: false,
@@ -436,7 +436,7 @@ $(document).ready(function () {
 
                         return `<span class="badge ${clase}">${data}</span>`;
                     },
-                },                
+                },
                 {
                     data: null,
                     className: "text-center acciones-nowrap",
@@ -488,7 +488,10 @@ $(document).ready(function () {
                 <'d-bottom d-flex justify-content-center'i>",
         });
 
-        $(document).on("change",".check-area, .check-categ, .check-convenio, .check-estado",function () {
+        $(document).on(
+            "change",
+            ".check-area, .check-categ, .check-convenio, .check-estado",
+            function () {
                 tablaPersonal.ajax.reload();
             },
         );

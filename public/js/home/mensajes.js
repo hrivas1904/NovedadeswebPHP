@@ -50,6 +50,17 @@ function obtenerFeriados() {
             if (res.success) {
                 let html = ``;
                 res.data.forEach(function (res) {
+                    const botonesAdmin = USER_ROLE === "Administrador/a" || USER_ROLE === "Supervisor/a Calidad"
+                        ? `
+                            <button type="button" class="btn text-muted btnEditarEvento" data-id="${res.idEvento}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="btn text-muted btnEliminarEvento" data-id="${res.idEvento}">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        `
+                    : "";
+
                     html += `
                         <div class="d-flex align-items-start gap-2 mb-2 empleado-box p-1">
                             <div>
@@ -61,12 +72,7 @@ function obtenerFeriados() {
                             <div class="flex-grow-1">
                                 <h6 style="color: var(--color-default)" class="fw-bolder">${res.tituloEvento}</h6>
                                 <p class="text-muted">${formatearFechaLarga(res.fechaEvento)}</p>
-                                <button type="button" class="btn text-muted btnEditarEvento" data-id="${res.idEvento}">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-                                <button type="button" class="btn text-muted btnEliminarEvento" data-id="${res.idEvento}">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
+                                ${botonesAdmin}
                             </div>
                         </div>
                     `;
