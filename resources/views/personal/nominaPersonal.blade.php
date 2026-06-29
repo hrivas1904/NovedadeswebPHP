@@ -10,8 +10,8 @@
                 <img src="{{ asset('img/icons/personal-logo.png') }}" style="height: 32px;" alt="Logo personal activo">
             </div>
             <div>
-                <h3 class="tituloVista mb-0">GESTIÓN DEL PERSONAL ACTIVO</h3>
-                <p class="mb-0 text-muted">Administración de Colaboradores Activos.</p>
+                <h3 class="tituloVista mb-0">GESTIÓN DE COLABORADORES</h3>
+                <p class="mb-0 text-muted">Administración de Colaboradores Activos y de Baja.</p>
             </div>
         </div>
 
@@ -60,11 +60,30 @@
                             </div>
                             <div class="filtro-body" id="listaEstados">
                                 <label class="filtro-item">
-                                    <input type="checkbox" class="check-estado" value="ACTIVO" checked>
-                                    ACTIVO
+                                    <input
+                                        type="radio"
+                                        name="estado"
+                                        class="radio-estado"
+                                        value="">
+                                    TODOS
                                 </label>
+
                                 <label class="filtro-item">
-                                    <input type="checkbox" class="check-estado" value="DE BAJA">
+                                    <input
+                                        type="radio"
+                                        name="estado"
+                                        class="radio-estado"
+                                        value="ACTIVO"
+                                        checked>
+                                    ACTIVOS
+                                </label>
+
+                                <label class="filtro-item">
+                                    <input
+                                        type="radio"
+                                        name="estado"
+                                        class="radio-estado"
+                                        value="DE BAJA">
                                     DE BAJA
                                 </label>
                             </div>

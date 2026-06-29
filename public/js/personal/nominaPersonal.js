@@ -390,7 +390,7 @@ $(document).ready(function () {
                     }
                     d.categ_id = getCategoriasSeleccionadas().join(",") || null;
                     d.p_convenio = getConveniosSeleccionados().join(",") || null;
-                    d.p_estado = getEstadosSeleccionados().join(",") || null;
+                    d.p_estado = getEstadosSeleccionado();
                 },
             },
             autoWidth: false,
@@ -490,17 +490,18 @@ $(document).ready(function () {
 
         $(document).on(
             "change",
-            ".check-area, .check-categ, .check-convenio, .check-estado",
+            ".check-area, .check-categ, .check-convenio, .radio-estado",
             function () {
                 tablaPersonal.ajax.reload();
             },
         );
 
         $("#btn-limpiar-filtros").on("click", function () {
-            $(".check-area, .check-categ, .check-convenio, .check-estado").prop(
+            $(".check-area, .check-categ, .check-convenio").prop(
                 "checked",
                 false,
             );
+            $('input[name="estado"][value=""]').prop("checked", true);
             $("#toggleAreas span").text("Áreas");
             $("#toggleCateg span").text("Categorías");
             $("#toggleConvenios span").text("Convenios");

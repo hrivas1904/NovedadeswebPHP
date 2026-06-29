@@ -320,7 +320,7 @@ class PersonalController extends Controller
             $areaId   = $this->normalizarFiltro($request->area_id);
             $categId  = $this->normalizarFiltro($request->categ_id);
             $convenio = $this->normalizarFiltro($request->convenio);
-            $estado = $this->normalizarFiltro($request->estado);
+            $estado = $this->normalizarFiltro($request->p_estado);
 
             $regimen  = $request->p_regimen !== null && $request->p_regimen !== ''
                 ? (int)$request->p_regimen

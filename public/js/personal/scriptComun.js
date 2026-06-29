@@ -21,7 +21,7 @@ $("#btnExportExcel").on("click", function () {
         p_regimen: $("#filtroRegimen").val() || null,
         p_uti: $("#filtroUti").val() || null,
         p_noche: $("#filtroNoche").val() || null,
-        p_estado: getEstadosSeleccionados().join(",") || null,
+        p_estado: getEstadosSeleccionado() || null,
     };
 
     Object.keys(filtros).forEach((key) => {
@@ -32,25 +32,6 @@ $("#btnExportExcel").on("click", function () {
         "/personal/exportarListaColabDatatable?" + $.param(filtros),
         "_blank"
     );
-});
-
-$("#btnExportExcelBaja").on("click", function () {
-    let filtros = {
-        area_id: $("#filtroArea").val() || null,
-        categ_id: $("#filtroCategoria").val() || null,
-        p_convenio: $("#filtroConvenio").val() || null,
-        p_regimen: $("#filtroRegimen").val() || null,
-        p_uti: $("#filtroUti").val() || null,
-        p_noche: $("#filtroNoche").val() || null,
-    };
-
-    Object.keys(filtros).forEach((key) => {
-        if (!filtros[key]) filtros[key] = null;
-    });
-
-    let query = $.param(filtros);
-
-    window.open("/personal/exportarListaColabBajaDatatable?" + query, "_blank");
 });
 
 //CALCULAR EDAD
@@ -222,12 +203,8 @@ function getConveniosSeleccionados() {
         .get();
 }
 
-function getEstadosSeleccionados() {
-    return $(".check-estado:checked")
-        .map(function () {
-            return $(this).val();
-        })
-        .get();
+function getEstadosSeleccionado() {
+    return $(".radio-estado:checked").val() || null;
 }
 
 $("#toggleAreas").on("click", function () {
