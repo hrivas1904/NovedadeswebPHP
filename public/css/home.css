@@ -285,6 +285,11 @@ table.dataTable tbody tr:hover {
     max-width: 750px;
 }
 
+.readonly-select {
+    pointer-events: none;
+    background-color: #e9ecef; /* look de disabled */
+}
+
 @media (min-width: 768px) {
     .buscador-personal {
         width: 750px;
