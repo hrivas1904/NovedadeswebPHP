@@ -50,26 +50,26 @@
         </div>
 
         <div class="p-3">
-            <div class="row mb-3 g-3 d-none">
-                <div class="col-md-3">
+            <div class="row mb-3 g-3 justify-content-center">
+                <div class="col-md-2 col-3">
                     <input type="date" id="fechaDesde" class="form-control">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2 col-3">
                     <input type="date" id="fechaHasta" class="form-control">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 col-3">
                     <button id="btnFiltrar" class="btn btn-primary w-100">
                         <i class="fa-solid fa-filter"></i>
                         Filtrar
                     </button>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 col-3">
                     <button id="btnLimpiar" class="btn btn-secondary w-100">
                         <i class="fa-solid fa-eraser"></i>
                         Limpiar
                     </button>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 d-none">
                     <button id="btnLimpiar" class="btn btn-danger w-100" onclick="exportarDashboardPDF(dashboardData)">
                         <i class="fa-solid fa-file-pdf"></i>
                         Informe
@@ -78,7 +78,7 @@
             </div>
 
             <div class="justify-content-center">
-                <div class="row mb-4 g-3">
+                <div class="row mb-2 g-3">
                     <div class="col-md-6 col-lg-3 col-12">
                         <div class="glass-section card-hover-radial text-center">
                             <div class="card-body">
@@ -160,7 +160,7 @@
                     </div>
                 </div>               
 
-                <div class="section-divider text-center mt-4">
+                <div class="section-divider text-center mt-2">
                     <span>
                         <h3 class="tituloVista">EXPECTATIVAS</h3>
                     </span>

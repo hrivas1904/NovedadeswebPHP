@@ -1,4 +1,6 @@
 let satisfaccion;
+let desde;
+let hasta;
 
 $(document).ready(function () {
     let mybutton = $("#btn-back-to-top");
@@ -40,16 +42,16 @@ $("#btnLimpiar").click(function () {
 });
 
 function cargarDashboard() {
-    let desde = $("#fechaDesde").val() || null;
-    let hasta = $("#fechaHasta").val() || null;
+    desde = $("#fechaDesde").val() || null;
+    hasta = $("#fechaHasta").val() || null;
     let tipoEncuesta = null;
 
     $.ajax({
         url: `/dashboard/completo/${DASHBOARD_TOKEN}`,
         method: "GET",
         data: {
-            desde: null,
-            hasta: null,
+            desde : desde,
+            hasta : hasta,
             tipo: null,
         },
 
