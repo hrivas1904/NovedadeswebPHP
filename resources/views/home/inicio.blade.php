@@ -2,6 +2,14 @@
 
 @section('title', 'Espacio de Comunicados')
 
+@push('styles')
+<style>
+    #editorComunicado .ql-editor {
+        font-size: 1.5rem;
+    }
+</style>
+@endpush
+
 @section('content')
 
     <div class="container-fluid">
@@ -87,8 +95,19 @@
                                 </div>
                             </div>
                             <input id="txtNotificacionTitulo" class="form-control mb-2" placeholder="Escriba el asunto...">
-                            <div id="editorComunicado" style="height:250px;"></div>
+                            <div id="editorComunicado" style="height:250px; font-family:1rem;"></div>
                             <input type="hidden" id="txtNotificacion">
+
+                            <div id="emojiPicker" class="border rounded p-2 shadow-sm"
+                                style="display:none; position:absolute; z-index:1000; background:#fff;">
+                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">❗</span>
+                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">📌</span>
+                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">⚠️</span>
+                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">✅</span>
+                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">📅</span>
+                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">🔔</span>
+                            </div>
+
                             <div class="d-flex justify-content-end mt-3 gap-3">
                                 <button type="button" id='btnCancelarRedactarComunicado' class="btn btn-secondary">
                                     Cancelar
@@ -124,7 +143,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
+                            <div
+                                class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
                                 <div id="listaNotificaciones">
                                 </div>
                             </div>
@@ -234,7 +254,8 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
+                        <div
+                            class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
                             <div id="divCardFeriado">
                             </div>
                         </div>
@@ -349,24 +370,50 @@
         const USER_ROLE = "{{ Auth::user()->rol }}";
     </script>
 
-
     <script>
+        const icons = Quill.import('ui/icons');
+        icons['emoji'] = '<i class="fa-regular fa-face-smile"></i>'; // usa Font Awesome que ya tenés
+
         const quill = new Quill('#editorComunicado', {
             theme: 'snow',
             placeholder: 'Escriba el comunicado...',
             modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline'],
-                    [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }],
-                    [{
-                        'align': []
-                    }],
-                ]
+                toolbar: {
+                    container: [
+                        ['bold', 'italic', 'underline'],
+                        [{
+                            'list': 'ordered'
+                        }, {
+                            'list': 'bullet'
+                        }],
+                        [{
+                            'align': []
+                        }],
+                        ['emoji']
+                    ],
+                    handlers: {
+                        emoji: function() {
+                            const bounds = this.quill.getBounds(this.quill.getSelection()?.index || 0);
+                            const toolbar = document.querySelector('.ql-toolbar');
+                            const picker = document.getElementById('emojiPicker');
+
+                            picker.style.top = (toolbar.offsetTop + toolbar.offsetHeight) + 'px';
+                            picker.style.left = toolbar.offsetLeft + 'px';
+                            picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+                        }
+                    }
+                }
             }
+        });
+
+        // Insertar emoji al hacer clic
+        document.querySelectorAll('.emoji-option').forEach(el => {
+            el.addEventListener('click', function() {
+                const range = quill.getSelection(true);
+                quill.insertText(range.index, this.textContent, 'user');
+                quill.setSelection(range.index + this.textContent.length);
+                document.getElementById('emojiPicker').style.display = 'none';
+            });
         });
 
         $("#btnRedactarComunicado").click(function() {

@@ -302,7 +302,7 @@ function cargarNotificaciones() {
                                 </p>
 
                                 ${
-                                    USER_ROLE === "Administrador/a"
+                                    USER_ROLE === "Administrador/a" || USER_ROLE === "Supervisor/a Calidad"
                                         ? `
                                     <div class="d-flex justify-content-end">
                                         <button type="button" class="btn btn-sm text-danger btn-Eliminar" data-id="${n.id_notificacion}">

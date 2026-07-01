@@ -866,4 +866,195 @@ class NovedadesController extends Controller
             ]
         );
     }
+
+    public function exportarExcelHist(Request $request)
+    {
+        $idNovedad = ($request->idNovedad && $request->idNovedad !== "")
+            ? (int)$request->idNovedad
+            : null;
+
+        $paraFinnegans = ($request->paraFinnegans === '' || $request->paraFinnegans === null)
+            ? null
+            : (int)$request->paraFinnegans;
+
+        $rol = Auth::user()->rol;
+        $legajo = Auth::user()->legajo;
+
+        $desde = ($request->desde && $request->desde !== "")
+            ? $request->desde
+            : null;
+
+        $hasta = ($request->hasta && $request->hasta !== "")
+            ? $request->hasta
+            : null;
+
+        $liquidada = 1;
+
+        if ($rol === 'Coordinador/a') {
+            $areaId = Auth::user()->area_id;
+        } else {
+            $areaId = ($request->area_id && $request->area_id !== "")
+                ? (int)$request->area_id
+                : null;
+        }
+
+        $novedades = DB::select(
+            "CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?,?,?,?)",
+            [
+                $areaId,
+                $idNovedad,
+                $paraFinnegans,
+                $desde,
+                $hasta,
+                $rol,
+                $legajo,
+                $liquidada
+            ]
+        );
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Novedades');
+
+        // ==========================
+        // ENCABEZADOS
+        // ==========================
+
+        $headers = [
+            'ID',
+            'AREA',
+            'LEGAJO',
+            'NOVEDAD',
+            'CENTROCOSTO',
+            'VALOR1',
+            'VALOR2',
+            'FECHAAPLICACION',
+            'FECHADESDE',
+            'FECHAHASTA',
+            'DESCRIPCION',
+            'COLABORADOR',
+            'CONCEPTO_NOVEDAD'
+        ];
+
+        $columna = 'A';
+
+        foreach ($headers as $header) {
+            $sheet->setCellValue($columna . '1', $header);
+            $columna++;
+        }
+
+        $sheet->getStyle('A1:M1')
+            ->getFont()
+            ->setBold(true);
+
+        // ==========================
+        // DATOS
+        // ==========================
+
+        $fila = 2;
+
+        foreach ($novedades as $nov) {
+
+            $sheet->setCellValue("A{$fila}", $nov->REGISTRO ?? '');
+
+            $sheet->setCellValue("B{$fila}", $nov->AREA ?? '');
+
+            $sheet->setCellValueExplicit(
+                "C{$fila}",
+                str_pad($nov->LEGAJO ?? '', 5, '0', STR_PAD_LEFT),
+                DataType::TYPE_STRING
+            );
+
+            $sheet->setCellValue("D{$fila}", $nov->CODIGO_NOVEDAD ?? '');
+
+            $sheet->setCellValue("E{$fila}", $nov->CENTRO_COSTO ?? '');
+
+            $sheet->setCellValue("F{$fila}", $nov->DURACION ?? '');
+
+            $sheet->setCellValue("G{$fila}", $nov->VALOR2 ?? '');
+
+            // FECHA APLICACION
+            if (!empty($nov->FECHA_APLICACION)) {
+                $sheet->setCellValue(
+                    "H{$fila}",
+                    Date::PHPToExcel(
+                        new \DateTime($nov->FECHA_APLICACION)
+                    )
+                );
+            }
+
+            // FECHA DESDE
+            if (!empty($nov->FECHA_DESDE)) {
+                $sheet->setCellValue(
+                    "I{$fila}",
+                    Date::PHPToExcel(
+                        new \DateTime($nov->FECHA_DESDE)
+                    )
+                );
+            }
+
+            // FECHA HASTA
+            if (!empty($nov->FECHA_HASTA)) {
+                $sheet->setCellValue(
+                    "J{$fila}",
+                    Date::PHPToExcel(
+                        new \DateTime($nov->FECHA_HASTA)
+                    )
+                );
+            }
+
+            $sheet->setCellValue("K{$fila}", $nov->DESCRIPCION ?? '');
+
+            $sheet->setCellValue("L{$fila}", $nov->COLABORADOR ?? '');
+
+            $sheet->setCellValue("M{$fila}", $nov->NOVEDAD_NOMBRE ?? '');
+
+            $fila++;
+        }
+
+        // ==========================
+        // FORMATOS
+        // ==========================
+
+        $sheet->getStyle('H:H')
+            ->getNumberFormat()
+            ->setFormatCode('dd/mm/yyyy');
+
+        $sheet->getStyle('I:I')
+            ->getNumberFormat()
+            ->setFormatCode('dd/mm/yyyy');
+
+        $sheet->getStyle('J:J')
+            ->getNumberFormat()
+            ->setFormatCode('dd/mm/yyyy');
+
+        // ==========================
+        // AUTO SIZE
+        // ==========================
+
+        foreach (range('A', 'M') as $col) {
+            $sheet->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        // ==========================
+        // DESCARGA
+        // ==========================
+
+        $writer = new Xlsx($spreadsheet);
+
+        $nombreArchivo =
+            'Novedades_' . date('Ymd_His') . '.xlsx';
+
+        return response()->streamDownload(
+            function () use ($writer) {
+                $writer->save('php://output');
+            },
+            $nombreArchivo,
+            [
+                'Content-Type' =>
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ]
+        );
+    }
 }
