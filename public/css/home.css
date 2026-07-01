@@ -9,7 +9,7 @@ body {
 }
 
 body {
-    background-image: url("/img/new-background.png");
+    background-image: url("/img/backmini.png");
     background-size: cover; /* ocupa toda la pantalla */
     background-repeat: no-repeat; /* no se repite */
     background-position: center; /* centrado */
