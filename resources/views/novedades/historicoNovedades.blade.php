@@ -87,6 +87,14 @@
                                 <input type="text" id="filtroHasta" class="form-control mx-1" placeholder="Hasta" />
                             </div>
 
+                            @if (Auth::user()->rol == 'Administrador/a')
+                                <div class="col-6 col-sm-12 col-md-6 col-lg-1">
+                                    <button type="button" id="btnExportExcelHist" class="btn btn-primary w-100">
+                                        <i class="fa-solid fa-file-excel"></i> Excel
+                                    </button>
+                                </div>
+                            @endif
+
                             <div class="col-6 col-sm-12 col-md-6 col-lg-2">
                                 <div class="input-group buscador-personal">
                                     <span class="input-group-text bg-white">

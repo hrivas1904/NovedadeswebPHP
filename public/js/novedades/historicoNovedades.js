@@ -430,3 +430,15 @@ function verDetalleNovedad(idRegistro) {
         },
     });
 }
+
+$(document).on("click", "#btnExportExcelHist", function () {
+    let params = new URLSearchParams({
+        area_id: getAreasSeleccionadas().join(",") || "",
+        idNovedad: getNovedadesSeleccionadas().join(",") || "",
+        paraFinnegans: getFinnegansSeleccionadas().join(",") || "",
+        desde: $("#filtroDesde").val(),
+        hasta: $("#filtroHasta").val(),
+    });
+
+    window.location.href = "/novedades/exportarExcelHist?" + params.toString();
+});

@@ -77,6 +77,11 @@ Route::middleware(['auth'])->group(function () {
         [NovedadesController::class, 'exportarExcel']
     )->name('novedades.exportarExcel');
 
+    Route::get(
+        '/novedades/exportarExcelHist',
+        [NovedadesController::class, 'exportarExcelHist']
+    )->name('novedades.exportarExcelHist');
+
     Route::get('/configNovedades', [NovedadesController::class, 'configNovedades'])
         ->name('configNovedades');
 
