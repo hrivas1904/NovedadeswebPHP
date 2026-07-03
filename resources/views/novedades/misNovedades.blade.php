@@ -34,6 +34,7 @@
 
                     <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                         <select id="liquidada" name="liquidada" class="form-select w-100">
+                            <option value="">TODAS</option>
                             <option value="0" selected>A LIQUIDAR</option>
                             <option value="1">LIQUIDADAS</option>
                         </select>

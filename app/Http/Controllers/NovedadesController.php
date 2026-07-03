@@ -237,7 +237,7 @@ class NovedadesController extends Controller
             $legajo = Auth::user()->legajo;
             $desde = ($request->desde && $request->desde !== "") ? $request->desde : null;
             $hasta = ($request->hasta && $request->hasta !== "") ? $request->hasta : null;
-            $liquidada = ($request->has('liquidada') && $request->liquidada !== "") ? (int)$request->liquidada : null;
+            $liquidada = $request->filled('liquidada')? (int) $request->input('liquidada'): null;
 
             $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADESXCOLABORADOR (?,?,?,?,?)", [
                 $legajo,
