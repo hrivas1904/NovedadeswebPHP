@@ -14,6 +14,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AlertasController;
 use App\Http\Controllers\ParametrosController;
 use App\Http\Controllers\PushController;
+use App\Http\Controllers\AdministracionController;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Illuminate\Support\Facades\Route;
 
@@ -292,9 +293,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/feriados/lista', [NotificacionController::class, 'obtenerFeriados']);
     Route::get('/eventosProgramados/lista', [NotificacionController::class, 'obtenerEventosProgramados']);
     Route::post('/calendario/agendarEvento', [NotificacionController::class, 'agendarEvento']);
-    Route::get('/eventosProgramados/verDetalle/{idEvento}',[NotificacionController::class, 'verDetalleEventoProgramado']);
-    Route::post('/eventosProgramados/editar',[NotificacionController::class, 'editarEventoProgramado']);
-    Route::post('/eventosProgramados/eliminar',[NotificacionController::class, 'eliminarEventoProgramado']);
+    Route::get('/eventosProgramados/verDetalle/{idEvento}', [NotificacionController::class, 'verDetalleEventoProgramado']);
+    Route::post('/eventosProgramados/editar', [NotificacionController::class, 'editarEventoProgramado']);
+    Route::post('/eventosProgramados/eliminar', [NotificacionController::class, 'eliminarEventoProgramado']);
 
     //calidad
     Route::get('/encuestasCalidad', [CalidadController::class, 'encuestasCalidad'])
@@ -414,6 +415,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/parametrizacion/verServicio', [ParametrosController::class, 'verDetalleServicio']);
     Route::post('/parametrizacion/editarServicio', [ParametrosController::class, 'editarServicio']);
     Route::delete('/servicio/{id}', [ParametrosController::class, 'eliminarServicio']);
+
+    //ADMINISTRACION
+    Route::get('/pedidosComprasView', [AdministracionController::class, 'pedidosComprasView'])->name('pedidosComprasView');
+    Route::get('/panelAdminView', [AdministracionController::class, 'panelAdminView'])->name('panelAdminView');
+    Route::get('/compras/centros-costo/listar', [AdministracionController::class, 'listarCentrosCosto'])
+    ->name('compras.listarCentrosCosto');
+    Route::get('/compras/proveedores/listar', [AdministracionController::class, 'listarProveedores'])
+    ->name('compras.listarProveedores');
+    Route::get('/compras/productos/listar', [AdministracionController::class, 'listarProductos'])
+    ->name('compras.listarProductos');
 });
 
 

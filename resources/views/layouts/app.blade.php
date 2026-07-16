@@ -60,11 +60,11 @@
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">
-                                <i class="bx bx-grid-alt"></i> Dashboard
-                            </a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('dashboard') }}">
+                            <i class="bx bx-grid-alt"></i> Dashboard
+                        </a>
+                    </li>
                     @endif
 
                     <li class="nav-item dropdown">
@@ -75,17 +75,17 @@
                             <li><a class="dropdown-item" href="{{ route('miLegajo') }}">Mi legajo</a></li>
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
-                                    Auth::user()->rol === 'Administrador/a' ||
-                                    Auth::user()->rol === 'Coordinador/a')
-                                <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Colaboradores</a></li>
+                            Auth::user()->rol === 'Administrador/a' ||
+                            Auth::user()->rol === 'Coordinador/a')
+                            <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Colaboradores</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                                <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
+                            <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Administrador/a')
-                                <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>
+                            <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>
 
                                 <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Médicos</a></li>
 
@@ -105,10 +105,10 @@
                             <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis
                                     novedades</a></li>
                             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
-                                <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de
-                                        novedades</a></li>
-                                <li><a class="dropdown-item" href="{{ route('novedades.historico') }}">Histórico
-                                        novedades</a></li>
+                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de
+                                    novedades</a></li>
+                            <li><a class="dropdown-item" href="{{ route('novedades.historico') }}">Histórico
+                                    novedades</a></li>
                             @endif
                             <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud
                                     adelanto sueldo</a></li>
@@ -116,36 +116,52 @@
                     </li>
 
                     @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                <i class="fa-solid fa-award"></i> Calidad
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar
-                                        encuestas</a></li>
-                                <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
-                                <!--<li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-award"></i> Calidad
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar
+                                    encuestas</a></li>
+                            <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
+                            <!--<li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
                                 </li>-->
-                            </ul>
-                        </li>
+                        </ul>
+                    </li>
                     @endif
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                <i class="fa-solid fa-gear"></i> Ajustes
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('configNovedades') }}">Conceptos
-                                        novedades</a></li>
-                                <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar
-                                        usuarios</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('obraSocial.administrarObraSociales') }}">Obras
-                                        sociales</a></li>
-                                <li><a class="dropdown-item" href="{{ route('parametrizacionesGenerales') }}">Parámetros generales</a></li>
-                            </ul>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-gear"></i> Ajustes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('configNovedades') }}">Conceptos
+                                    novedades</a></li>
+                            <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar
+                                    usuarios</a></li>
+                            <li><a class="dropdown-item"
+                                    href="{{ route('obraSocial.administrarObraSociales') }}">Obras
+                                    sociales</a></li>
+                            <li><a class="dropdown-item" href="{{ route('parametrizacionesGenerales') }}">Parámetros generales</a></li>
+                        </ul>
+                    </li>
+                    @endif
+
+                    @if (Auth::user()->rol != 'Colaborador/a')
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-chart-pie"></i> Administración
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('pedidosComprasView') }}">
+                                    Cargar pedido de compras
+                                </a></li>
+                            <li><a class="dropdown-item" href="{{ route('panelAdminView') }}">
+                                    Panel de administración
+                                </a></li>
+                        </ul>
+                    </li>
                     @endif
 
                     <li class="nav-item">
@@ -164,7 +180,7 @@
 
                 <div class="d-flex align-items-center gap-3">
 
-                    <div class="user-chip text-white">                       
+                    <div class="user-chip text-white">
 
                         <div class="user-info text-end small">
                             <div><strong>{{ Auth::user()->name }}</strong></div>
