@@ -244,44 +244,120 @@ function leerLineas() {
     return out;
 }
 
+let archivosSeleccionados = []; // File[] reales, para mandar en el FormData
+
+const TIPOS_PERMITIDOS = [
+    ".pdf",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".webp",
+    ".xlsx",
+    ".xls",
+    ".doc",
+    ".docx",
+];
+const TAMANIO_MAX = 3 * 1024 * 1024; // 3 MB
+
+function onAdjuntosSeleccionados(event) {
+    const nuevos = Array.from(event.target.files);
+
+    nuevos.forEach((file) => {
+        const ext = "." + file.name.split(".").pop().toLowerCase();
+
+        if (!TIPOS_PERMITIDOS.includes(ext)) {
+            Swal.fire(
+                "Atención",
+                `"${file.name}" no es un tipo de archivo permitido.`,
+                "warning",
+            );
+            return;
+        }
+        if (file.size > TAMANIO_MAX) {
+            Swal.fire(
+                "Atención",
+                `"${file.name}" supera los 3 MB permitidos.`,
+                "warning",
+            );
+            return;
+        }
+        archivosSeleccionados.push(file);
+    });
+
+    event.target.value = ""; // permite volver a elegir el mismo archivo si lo saca y lo re-agrega
+    renderAdjuntosList();
+}
+
+function quitarAdjunto(index) {
+    archivosSeleccionados.splice(index, 1);
+    renderAdjuntosList();
+}
+
+function renderAdjuntosList() {
+    const cont = document.getElementById("adjuntosList");
+    cont.innerHTML = "";
+
+    archivosSeleccionados.forEach((file, i) => {
+        const kb = (file.size / 1024).toFixed(0);
+        const div = document.createElement("div");
+        div.className =
+            "d-flex align-items-center justify-content-between border rounded px-2 py-1 mb-1";
+        div.innerHTML = `
+      <span class="text-truncate" style="max-width: 80%;">
+        <i class="fa-regular fa-file me-1"></i>${file.name} <small class="text-muted">(${kb} KB)</small>
+      </span>
+      <button type="button" class="btn btn-sm btn-outline-danger" onclick="quitarAdjunto(${i})">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    `;
+        cont.appendChild(div);
+    });
+}
+
 function enviarPedido() {
     const lineas = leerLineas();
 
     if (lineas.length === 0) {
         Swal.fire("Atención", "Debe agregar al menos un producto.", "warning");
-
         return;
     }
 
+    const formData = new FormData();
+
+    formData.append("fecha", $("#fFecha").val());
+    formData.append("prioridad", $("#fPrioridad").val());
+    formData.append("solicitante_id", $("#fUserId").val());
+    formData.append("centro_costo_id", $("#cmbCentroCosto").val());
+    formData.append("proveedor_id", $("#cmbProveedor").val());
+    formData.append("descripcion", $("#fDescripcion").val());
+
+    lineas.forEach((item, i) => {
+        formData.append(`detalle[${i}][producto_id]`, item.producto_id);
+        formData.append(`detalle[${i}][cantidad]`, item.cantidad);
+        formData.append(`detalle[${i}][precio]`, item.precio);
+        formData.append(
+            `detalle[${i}][descripcion_item]`,
+            item.descripcion_item || "",
+        );
+    });
+
+    archivosSeleccionados.forEach((file, i) => {
+        formData.append(`adjuntos[${i}]`, file);
+    });
+
     $.ajax({
         url: "/compras/guardar",
-
         type: "POST",
-
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
-
-        data: {
-            fecha: $("#fFecha").val(),
-
-            prioridad: $("#fPrioridad").val(),
-
-            solicitante_id: $("#fUserId").val(),
-
-            centro_costo_id: $("#cmbCentroCosto").val(),
-
-            proveedor_id: $("#cmbProveedor").val(),
-
-            descripcion: $("#fDescripcion").val(),
-
-            detalle: lineas,
-        },
+        data: formData,
+        processData: false,
+        contentType: false,
 
         success: function () {
             Swal.fire({
                 icon: "success",
-
                 title: "Pedido registrado correctamente",
             }).then(() => {
                 location.reload();
@@ -290,10 +366,8 @@ function enviarPedido() {
 
         error: function (xhr) {
             console.log(xhr.responseText);
-
             Swal.fire({
                 icon: "error",
-
                 title: "Ocurrió un error",
             });
         },

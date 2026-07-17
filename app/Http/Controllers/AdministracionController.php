@@ -46,6 +46,11 @@ class AdministracionController extends Controller
 
     public function guardarPedido(Request $request)
     {
+        $request->validate([
+            'adjuntos'   => ['nullable', 'array'],
+            'adjuntos.*' => ['file', 'max:3072', 'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'],
+        ]);
+
         DB::beginTransaction();
 
         try {
@@ -76,6 +81,21 @@ class AdministracionController extends Controller
                         $item['descripcion_item']
                     ]
                 );
+            }
+
+            if ($request->hasFile('adjuntos')) {
+                foreach ($request->file('adjuntos') as $archivo) {
+                    $path = $archivo->store('pedidos_compras/' . $pedidoId, 'public');
+
+                    DB::statement(
+                        "CALL SP_GUARDAR_ADJUNTO_PEDIDO_COMPRA(?,?,?)",
+                        [
+                            $pedidoId,
+                            $path,
+                            $archivo->getClientOriginalName()
+                        ]
+                    );
+                }
             }
 
             DB::commit();
