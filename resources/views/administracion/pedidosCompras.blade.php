@@ -4,8 +4,8 @@
 
 @section('content')
 <h4 class="fw-bold my-3" style="color: var(--color-default);">CARGAR PEDIDO DE COMPRAS</h4>
-<div class="container-fluid card p-3">
-    <div id="tabCargar" class="container-fluid py-3">
+<div class="container-fluid card">
+    <div id="tabCargar" class="container-fluid mt-3">
         {{-- AVISO DE EDICIÓN --}}
         <div id="edicionBanner"
             class="alert alert-warning d-none align-items-center justify-content-between mb-3"
@@ -27,7 +27,7 @@
         {{-- DATOS DEL SOLICITANTE --}}
         <div class="card border-0 shadow-sm mb-4">
 
-            <div class="card-header bg-white border-bottom py-3">
+            <div class="card-header bg-white border-bottom">
                 <div class="d-flex align-items-center gap-2">
                     <div class="section-icon">
                         <i class="fa-solid fa-user"></i>
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="card-body p-4">
+            <div class="card-body">
 
                 <div class="row g-3 mb-3">
 

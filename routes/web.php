@@ -420,11 +420,33 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pedidosComprasView', [AdministracionController::class, 'pedidosComprasView'])->name('pedidosComprasView');
     Route::get('/panelAdminView', [AdministracionController::class, 'panelAdminView'])->name('panelAdminView');
     Route::get('/compras/centros-costo/listar', [AdministracionController::class, 'listarCentrosCosto'])
-    ->name('compras.listarCentrosCosto');
+        ->name('compras.listarCentrosCosto');
     Route::get('/compras/proveedores/listar', [AdministracionController::class, 'listarProveedores'])
-    ->name('compras.listarProveedores');
+        ->name('compras.listarProveedores');
     Route::get('/compras/productos/listar', [AdministracionController::class, 'listarProductos'])
-    ->name('compras.listarProductos');
+        ->name('compras.listarProductos');
+    Route::post('/compras/guardar', [AdministracionController::class, 'guardarPedido'])
+        ->name('compras.guardar');
+    Route::get(
+        '/compras/listar',
+        [AdministracionController::class, 'listarPedidosCompras']
+    )->name('compras.listar');
+    Route::post(
+        '/compras/exportar-excel',
+        [AdministracionController::class, 'exportarExcel']
+    )->name('compras.exportarExcel');
+    Route::post(
+        '/compras/aprobar',
+        [AdministracionController::class, 'aprobarPedido']
+    );
+    Route::post(
+        '/compras/rechazar',
+        [AdministracionController::class, 'rechazarPedido']
+    );
+    Route::get(
+    '/compras/ver/{id}',
+    [AdministracionController::class,'verDetallePedido']
+);
 });
 
 

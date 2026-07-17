@@ -92,7 +92,22 @@ function cargarProductos() {
         dataType: "json",
 
         success: function (response) {
-            productos = response;
+            PRODUCTOS = response;
+
+            console.log("Productos cargados:", PRODUCTOS);
+
+            // Agrega la primera línea recién ahora
+            agregarLinea();
+        },
+
+        error: function (xhr) {
+            console.error(xhr.responseText);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudieron cargar los productos.",
+            });
         },
     });
 }
@@ -202,19 +217,85 @@ function quitarLinea(id) {
 
 function leerLineas() {
     const out = [];
+
     document.querySelectorAll("#lineasBody tr").forEach((tr) => {
         const id = tr.id;
-        const prodCodigo = document.getElementById(`prodCodigo_${id}`).value;
-        const prodNombre = document
-            .getElementById(`prodInput_${id}`)
-            .value.trim();
-        const desc = document.getElementById(`desc_${id}`).value.trim();
-        const cant = parseFloat(document.getElementById(`cant_${id}`).value);
-        const precio = parseFloat(
-            document.getElementById(`precio_${id}`).value,
-        );
-        if (!prodNombre && !cant && !precio) return;
-        out.push({ prodCodigo, prodNombre, desc, cant, precio });
+
+        const producto_id = $("#producto_" + id).val();
+
+        const descripcion = $("#desc_" + id)
+            .val()
+            .trim();
+
+        const cantidad = parseFloat($("#cant_" + id).val());
+
+        const precio = parseFloat($("#precio_" + id).val());
+
+        if (!producto_id) return;
+
+        out.push({
+            producto_id: producto_id,
+            descripcion_item: descripcion,
+            cantidad: cantidad,
+            precio: precio,
+        });
     });
+
     return out;
+}
+
+function enviarPedido() {
+    const lineas = leerLineas();
+
+    if (lineas.length === 0) {
+        Swal.fire("Atención", "Debe agregar al menos un producto.", "warning");
+
+        return;
+    }
+
+    $.ajax({
+        url: "/compras/guardar",
+
+        type: "POST",
+
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        data: {
+            fecha: $("#fFecha").val(),
+
+            prioridad: $("#fPrioridad").val(),
+
+            solicitante_id: $("#fUserId").val(),
+
+            centro_costo_id: $("#cmbCentroCosto").val(),
+
+            proveedor_id: $("#cmbProveedor").val(),
+
+            descripcion: $("#fDescripcion").val(),
+
+            detalle: lineas,
+        },
+
+        success: function () {
+            Swal.fire({
+                icon: "success",
+
+                title: "Pedido registrado correctamente",
+            }).then(() => {
+                location.reload();
+            });
+        },
+
+        error: function (xhr) {
+            console.log(xhr.responseText);
+
+            Swal.fire({
+                icon: "error",
+
+                title: "Ocurrió un error",
+            });
+        },
+    });
 }
