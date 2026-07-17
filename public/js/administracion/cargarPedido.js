@@ -164,7 +164,7 @@ function agregarLinea(prefill = null) {
             <button
                 class="btn btn-sm btn-outline-danger"
                 onclick="quitarLinea('${id}')">
-                <i class="fa fa-times"></i>
+                <i class="fa-solid fa-trash"></i>
             </button>
         </td>
     `;
