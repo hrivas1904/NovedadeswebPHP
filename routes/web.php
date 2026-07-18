@@ -444,9 +444,15 @@ Route::middleware(['auth'])->group(function () {
         [AdministracionController::class, 'rechazarPedido']
     );
     Route::get(
-    '/compras/ver/{id}',
-    [AdministracionController::class,'verDetallePedido']
-);
+        '/compras/ver/{id}',
+        [AdministracionController::class, 'verDetallePedido']
+    );
+    Route::get('/compras/{id}/adjuntos', [AdministracionController::class, 'listarAdjuntos'])
+        ->name('compras.adjuntos.listar');
+    Route::get('/compras/{id}/adjuntos/{tipo?}', [AdministracionController::class, 'listarAdjuntos'])
+        ->name('compras.adjuntos.listar');
+    Route::post('/compras/{id}/orden-compra', [AdministracionController::class, 'subirOrdenCompra'])
+        ->name('compras.ordenCompra.subir');
 });
 
 

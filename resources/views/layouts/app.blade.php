@@ -155,13 +155,16 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('pedidosComprasView') }}">
-                                    Cargar pedido de compras
-                                </a></li>
-                            @if (in_array(Auth::id(), [1,2,5,6]))
+                                Cargar pedido de compras
+                            </a></li>            
                             <li><a class="dropdown-item" href="{{ route('panelAdminView') }}">
-                                    Panel de administración
-                                </a></li>
-                            @endif
+                                Pedidos de compras
+                            </a></li>
+                            <!--@if (in_array(Auth::id(), [1,2,5,6]))
+                            <li><a class="dropdown-item" href="{{ route('panelAdminView') }}">
+                                Productos y Proveedores
+                            </a></li>
+                            @endif-->
                         </ul>
                     </li>
                     @endif

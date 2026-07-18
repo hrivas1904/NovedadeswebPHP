@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Cargar pedido de compras')
+@section('title', 'Pedidos de compras')
 
 @section('content')
 <div class="container-fluid p-2">
@@ -29,7 +29,7 @@
                             <span>Prioridad</span>
                             <i class="fa fa-chevron-down"></i>
                         </div>
-                        <div class="filtro-body d-none" id="listaPrioridades">
+                        <div class="filtro-body" id="listaPrioridades">
                             <label class="filtro-item">
                                 <input type="checkbox" class="check-Prioridades" value="0">
                                 URGENTE
@@ -49,7 +49,7 @@
                             <span>Autorización</span>
                             <i class="fa fa-chevron-down"></i>
                         </div>
-                        <div class="filtro-body d-none" id="listaAutorizacion">
+                        <div class="filtro-body" id="listaAutorizacion">
                             <label class="filtro-item">
                                 <input type="checkbox" class="check-Autorizacion" value="0">
                                 APROBADA
@@ -69,7 +69,7 @@
                             <span>Estados</span>
                             <i class="fa fa-chevron-down"></i>
                         </div>
-                        <div class="filtro-body d-none" id="listaEstados">
+                        <div class="filtro-body" id="listaEstados">
                             <label class="filtro-item">
                                 <input type="checkbox" class="check-Autorizacion" value="1">
                                 PENDIENTE
@@ -105,12 +105,15 @@
                             <input type="text" id="buscarPedido" class="form-control w-100" placeholder="Buscar..." oninput="filtrarPedidos()">
                         </div>
 
+                        @if (in_array(Auth::id(), [1,2,5,6]))
                         <div class="col-6 col-sm-12 col-md-6 col-lg-2">
                             <button type="button" class="btn btn-primary w-100" onclick="exportarExcel()">
                                 <i class="fa-solid fa-file-excel me-2"></i>
                                 Exportar a Excel
                             </button>
                         </div>
+                        @endif
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -211,18 +214,56 @@
 
                 <div class="table-responsive">
                     <table
-                        class="table table-hover">
+                        class="table table-bordered table-hover align-middle nowrap">
                         <thead>
                             <tr>
                                 <th>Producto</th>
                                 <th>Descripción</th>
                                 <th class="text-center">Cantidad</th>
-                                <th class="text-end">Precio</th>
+                                <th class="text-end">Precio Unitario sin Impuestos</th>
                             </tr>
                         </thead>
                         <tbody id="detalleProductosBody">
                         </tbody>
                     </table>
+                </div>
+
+                <h6 class="fw-bold mb-3 mt-4">
+                    Presupuestos / cotizaciones adjuntas
+                </h6>
+
+                <div id="detalleAdjuntosBody" class="row g-2">
+                    <!-- se completa dinámicamente -->
+                </div>
+                <div id="sinAdjuntosMsg" class="text-muted small d-none">
+                    Este pedido no tiene archivos adjuntos.
+                </div>
+
+                <h6 class="fw-bold mb-3 mt-4">
+                    Orden de compra asociada
+                </h6>
+
+                <div class="row g-2 align-items-end mb-3">
+                    @if (in_array(Auth::id(), [1,2,5,6]))
+                    <div class="col-12 col-md-9">
+                        <input type="file" class="form-control" id="inputOrdenCompra" accept=".pdf,.jpg,.jpeg,.png,.webp,.xlsx,.xls,.doc,.docx">
+                    </div>
+
+                    <div class="col-12 col-md-3 d-grid">
+                        <button type="button" class="btn btn-primary" id="btnSubirOrdenCompra">
+                            <i class="fa-solid fa-upload me-2"></i>
+                            Subir archivo
+                        </button>
+                    </div>
+                    @endif
+                </div>
+
+                <div id="detalleOCBody" class="row g-2">
+                    <!-- Se completa dinámicamente -->
+                </div>
+
+                <div id="sinOCMsg" class="text-muted small d-none">
+                    Este pedido no tiene una orden de compra asociada.
                 </div>
             </div>
 
@@ -234,9 +275,29 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalVisorAdjunto" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="visorAdjuntoNombre">
+                    <i class="fa-solid fa-file me-2"></i>
+                </h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0" style="height: 80vh;">
+                <div id="visorAdjuntoContenido" class="w-100 h-100"></div>
+            </div>
+        </div>
+    </div>
+</div>
 @endpush
 
+
 @push('scripts')
+<script>
+    const PUEDE_AUTORIZAR_PEDIDOS = {{in_array(Auth::id(), [1, 2, 5, 6]) ? 'true' : 'false'}};
+</script>
 <script src="{{ asset('js/administracion/panelAdmin.js') }}"></script>
 <script src="{{ asset('js/administracion/scriptComunAdmin.js') }}"></script>
 @endpush

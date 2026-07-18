@@ -10,7 +10,7 @@ $("#toggleEstado").on("click", function () {
     $("#listaEstados").toggleClass("d-none");
 });
 
-function getAreasSeleccionadas() {
+function getPrioridadesSeleccionadas() {
     return $(".check-Prioridades:checked")
         .map(function () {
             return $(this).val();
@@ -18,7 +18,7 @@ function getAreasSeleccionadas() {
         .get();
 }
 
-function getNovedadesSeleccionadas() {
+function getAutorizacionesSeleccionadas() {
     return $(".check-Autorizacion:checked")
         .map(function () {
             return $(this).val();
@@ -26,7 +26,7 @@ function getNovedadesSeleccionadas() {
         .get();
 }
 
-function getFinnegansSeleccionadas() {
+function getEstadosSeleccionadas() {
     return $(".check-Estados:checked")
         .map(function () {
             return $(this).val();

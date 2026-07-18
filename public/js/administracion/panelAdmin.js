@@ -21,19 +21,31 @@ function filtrarPedidos() {
 }
 
 $("#tablaPedidosCompras").DataTable({
-    ajax: "/compras/listar",
+    ajax: {
+        url: "/compras/listar",
+        type: "GET",
+        data: function (d) {
+            d.prioridades = getPrioridadesSeleccionadas().join(",") || null;
+            d.estados = getEstadosSeleccionadas().join(",") || null;
+            d.autorizaciones =
+                getAutorizacionesSeleccionadas().join(",") || null;
+            d.desde = $("#filtroDesde").val();
+            d.hasta = $("#filtroHasta").val();
+        },
+    },
+    order: [[0, 'desc']],
     destroy: true,
     responsive: true,
-    pageLength: 25,
     language: {
         url: "/js/es-ES.json",
     },
     scrollX: true,
     paging: false,
-    searching: false,
+    searching: true,
     autoWidth: false,
     scrollCollapse: true,
     scrollY: getScrollY(),
+    dom: "tir",
     columns: [
         {
             data: "fecha",
@@ -60,6 +72,9 @@ $("#tablaPedidosCompras").DataTable({
             searchable: false,
             className: "text-center",
             render: function (data) {
+                if (!PUEDE_AUTORIZAR_PEDIDOS) {
+                    return "";
+                }
                 if (data.autorizacion == "PENDIENTE") {
                     return `
                         <button class="btn btn-success btn-sm btnAutorizar" data-id="${data.id}">
@@ -81,6 +96,27 @@ $("#tablaPedidosCompras").DataTable({
             },
         },
     ],
+});
+
+$(document).on(
+    "change",
+    ".check-Prioridades, .check-Autorizacion, .check-Estados",
+    function () {
+        $("#tablaPedidosCompras").DataTable().ajax.reload();
+    },
+);
+
+$("#filtroDesde, #filtroHasta").on("change", function () {
+    $("#tablaPedidosCompras").DataTable().ajax.reload();
+});
+
+$("#btn-limpiar-filtros").on("click", function () {
+    $(".check-Prioridades, .check-Autorizacion, .check-Estados").prop(
+        "checked",
+        false,
+    );
+    $("#filtroDesde, #filtroHasta").val(null);
+    $("#tablaPedidosCompras").DataTable().ajax.reload();
 });
 
 $("#tablaPedidosCompras tbody").on("click", "tr", function (e) {
@@ -212,28 +248,206 @@ function verPedido(id) {
             $("#verEstado").val(c.estado);
             $("#verAutorizacion").val(c.autorizacion);
             $("#verDescripcion").val(c.descripcion);
+
             let tbody = $("#detalleProductosBody");
             tbody.empty();
             response.detalle.forEach(function (item) {
                 tbody.append(`
                     <tr>
-                        <td>${item.nombre}</td>
+                        <td>${item.producto}</td>
                         <td>${item.descripcion_item ?? ""}</td>
-                        <td class="text-center">
-                            ${item.cantidad}
-                        </td>
+                        <td class="text-center">${item.cantidad}</td>
                         <td class="text-end">
-                            $ ${parseFloat(item.precio).toLocaleString(
-                                "es-AR",
-                                {
-                                    minimumFractionDigits: 2,
-                                },
-                            )}
+                            $ ${parseFloat(item.precio).toLocaleString("es-AR", { minimumFractionDigits: 2 })}
                         </td>
                     </tr>
                 `);
             });
+
+            // guardamos el id actual en el propio modal, para que btnSubirOrdenCompra lo pueda leer
+            $("#modalDetallePedido").data("pedido-id", id);
+
+            cargarAdjuntosPedido(id);
+            cargarOrdenesCompra(id);
             $("#modalDetallePedido").modal("show");
         },
     });
 }
+
+function cargarAdjuntosPedido(pedidoId) {
+    $("#detalleAdjuntosBody").html("");
+    $("#sinAdjuntosMsg").addClass("d-none");
+
+    $.get(`/compras/${pedidoId}/adjuntos`, function (resp) {
+        if (!resp.data.length) {
+            $("#sinAdjuntosMsg").removeClass("d-none");
+            return;
+        }
+
+        resp.data.forEach((adj) => {
+            const icono = adj.esImagen ? "fa-file-image" : "fa-file-pdf";
+
+            const col = `
+                <div class="col-md-3 col-6">
+                    <div class="border rounded p-2 text-center h-100" style="cursor:pointer;" onclick="verAdjunto('${adj.url}', '${adj.nombre}', ${adj.esImagen})">
+                        <i class="fa-solid ${icono} fa-2x mb-1 text-secondary"></i>
+                        <div class="small text-truncate" title="${adj.nombre}">${adj.nombre}</div>
+                    </div>
+                </div>
+            `;
+            $("#detalleAdjuntosBody").append(col);
+        });
+    }).fail(function () {
+        Swal.fire(
+            "Error",
+            "No se pudieron cargar los adjuntos del pedido.",
+            "error",
+        );
+    });
+}
+
+function verAdjunto(url, nombre, esImagen) {
+    $("#visorAdjuntoNombre").html(
+        `<i class="fa-solid fa-file me-2"></i>${nombre}`,
+    );
+
+    let contenido;
+    if (esImagen) {
+        contenido = `<img src="${url}" class="w-100 h-100" style="object-fit: contain;" alt="${nombre}">`;
+    } else {
+        contenido = `<iframe src="${url}" class="w-100 h-100" style="border: none;"></iframe>`;
+    }
+
+    $("#visorAdjuntoContenido").html(contenido);
+    $("#modalVisorAdjunto").modal("show");
+}
+
+$("#modalVisorAdjunto").on("hidden.bs.modal", function () {
+    $("#visorAdjuntoContenido").html("");
+});
+
+$(document).on("click", "#btnSubirOrdenCompra", function () {
+    const pedidoId = $("#detallePedidoId").val();
+    const input = $("#inputOrdenCompra")[0];
+    const archivo = input.files[0];
+
+    if (!pedidoId) {
+        Swal.fire("Atención", "No se pudo identificar el pedido.", "warning");
+        return;
+    }
+
+    if (!archivo) {
+        Swal.fire("Atención", "Seleccione un archivo.", "warning");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("archivo", archivo);
+
+    $.ajax({
+        url: `/compras/${pedidoId}/orden-compra`,
+        type: "POST",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        beforeSend: function () {
+            $("#btnSubirOrdenCompra").prop("disabled", true).html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Subiendo...
+                `);
+        },
+
+        success: function (response) {
+            $("#inputOrdenCompra").val("");
+
+            Swal.fire({
+                icon: "success",
+                title: "Archivo adjuntado",
+                text: response.mensaje,
+                timer: 1800,
+                showConfirmButton: false,
+            });
+
+            cargarOrdenesCompra(pedidoId);
+        },
+
+        error: function (xhr) {
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo subir el archivo",
+                text:
+                    xhr.responseJSON?.message ??
+                    xhr.responseJSON?.mensaje ??
+                    "Ocurrió un error.",
+            });
+        },
+
+        complete: function () {
+            $("#btnSubirOrdenCompra").prop("disabled", false).html(`
+                    <i class="fa-solid fa-upload me-2"></i>
+                    Subir archivo
+                `);
+        },
+    });
+});
+
+function cargarOrdenesCompra(pedidoId) {
+    $('#detalleOCBody').html('');
+    $('#sinOCMsg').addClass('d-none');
+
+    $.get(`/compras/${pedidoId}/adjuntos/ORDEN_COMPRA`, function (resp) {
+        if (!resp.data.length) {
+            $('#sinOCMsg').removeClass('d-none');
+            return;
+        }
+        resp.data.forEach(adj => {
+            const icono = adj.esImagen ? 'fa-file-image' : 'fa-file-pdf';
+            const col = `
+                <div class="col-md-3 col-6">
+                    <div class="border rounded p-2 text-center h-100" style="cursor:pointer;" onclick="verAdjunto('${adj.url}', '${adj.nombre}', ${adj.esImagen})">
+                        <i class="fa-solid ${icono} fa-2x mb-1 text-secondary"></i>
+                        <div class="small text-truncate" title="${adj.nombre}">${adj.nombre}</div>
+                    </div>
+                </div>
+            `;
+            $('#detalleOCBody').append(col);
+        });
+    });
+}
+
+$(document).on('click', '#btnSubirOrdenCompra', function () {
+    const input = document.getElementById('inputOrdenCompra');
+    const file = input.files[0];
+
+    if (!file) {
+        Swal.fire('Atención', 'Seleccioná un archivo primero.', 'warning');
+        return;
+    }
+
+    const pedidoId = $('#modalDetallePedido').data('pedido-id');
+
+    const formData = new FormData();
+    formData.append('archivo', file);
+
+    $.ajax({
+        url: `/compras/${pedidoId}/orden-compra`,
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function () {
+            Swal.fire('Listo', 'Orden de compra cargada correctamente.', 'success');
+            input.value = '';
+            cargarOrdenesCompra(pedidoId);
+        },
+        error: function (xhr) {
+            const msg = xhr.responseJSON?.mensaje || 'Ocurrió un error al subir el archivo.';
+            Swal.fire('Error', msg, 'error');
+        },
+    });
+});

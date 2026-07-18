@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -88,12 +89,8 @@ class AdministracionController extends Controller
                     $path = $archivo->store('pedidos_compras/' . $pedidoId, 'public');
 
                     DB::statement(
-                        "CALL SP_GUARDAR_ADJUNTO_PEDIDO_COMPRA(?,?,?)",
-                        [
-                            $pedidoId,
-                            $path,
-                            $archivo->getClientOriginalName()
-                        ]
+                        "CALL SP_GUARDAR_ADJUNTO_PEDIDO_COMPRA(?,?,?,?)",
+                        [$pedidoId, $path, $archivo->getClientOriginalName(), 'PRESUPUESTO']
                     );
                 }
             }
@@ -114,12 +111,22 @@ class AdministracionController extends Controller
         }
     }
 
-    public function listarPedidosCompras()
+    public function listarPedidosCompras(Request $request)
     {
-        $pedidos = DB::select("CALL SP_LISTAR_PEDIDOS_COMPRAS()");
+        $data = DB::select(
+            "CALL SP_LISTAR_PEDIDOS_COMPRAS(?,?,?,?,?,?)",
+            [
+                Auth::id(),
+                $request->prioridades ?: null,
+                $request->estados ?: null,
+                $request->autorizaciones ?: null,
+                $request->desde ?: null,
+                $request->hasta ?: null,
+            ]
+        );
 
         return response()->json([
-            "data" => $pedidos
+            'data' => $data
         ]);
     }
 
@@ -255,5 +262,52 @@ class AdministracionController extends Controller
             'cabecera' => $cabecera[0],
             'detalle' => $detalle
         ]);
+    }
+
+    public function listarAdjuntos($id, $tipo = 'PRESUPUESTO')
+    {
+        $adjuntos = DB::select("CALL SP_LISTAR_ADJUNTOS_PEDIDO_COMPRA(?,?)", [$id, $tipo]);
+
+        $adjuntos = collect($adjuntos)->map(function ($a) {
+            return [
+                'id'       => $a->id,
+                'nombre'   => $a->nombre_original,
+                'url'      => Storage::disk('public')->url($a->archivo),
+                'esImagen' => preg_match('/\.(jpg|jpeg|png|webp)$/i', $a->archivo) === 1,
+            ];
+        });
+
+        return response()->json(['data' => $adjuntos]);
+    }
+
+    public function subirOrdenCompra(Request $request, $id)
+    {
+        if (!in_array(Auth::id(), [1, 2, 5, 6])) {
+            return response()->json(['success' => false, 'mensaje' => 'No tenés permisos para esta acción.'], 403);
+        }
+
+        $pedido = DB::table('pedidos_compras')->where('id', $id)->first();
+
+        if (!$pedido) {
+            return response()->json(['success' => false, 'mensaje' => 'Pedido no encontrado.'], 404);
+        }
+
+        if ($pedido->autorizacion !== 'APROBADA') {
+            return response()->json(['success' => false, 'mensaje' => 'Solo se puede cargar la orden de compra en pedidos ya autorizados.'], 422);
+        }
+
+        $request->validate([
+            'archivo' => ['required', 'file', 'max:3072', 'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'],
+        ]);
+
+        $archivo = $request->file('archivo');
+        $path = $archivo->store('pedidos_compras/' . $id, 'public');
+
+        DB::statement(
+            "CALL SP_GUARDAR_ADJUNTO_PEDIDO_COMPRA(?,?,?,?)",
+            [$id, $path, $archivo->getClientOriginalName(), 'ORDEN_COMPRA']
+        );
+
+        return response()->json(['success' => true]);
     }
 }
