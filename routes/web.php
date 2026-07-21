@@ -462,6 +462,7 @@ Route::middleware(['auth'])->group(function () {
     ->name('compras.crearProveedor');
     Route::post('/compras/proveedores/editar', [AdministracionController::class, 'editarProveedor'])
     ->name('compras.editarProveedor');
+    Route::post('/compras/aprobar-gerente', [AdministracionController::class, 'aprobarPedidoGerente']);
 });
 
 

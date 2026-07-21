@@ -214,7 +214,6 @@ class AdministracionController extends Controller
             }
 
             DB::statement("CALL SP_FINALIZAR_PEDIDO(?)", [$pedidoId]);
-            
         }
 
         foreach (range('A', 'V') as $col) {
@@ -235,9 +234,11 @@ class AdministracionController extends Controller
     public function aprobarPedido(Request $request)
     {
         DB::statement(
-            "CALL SP_APROBAR_PEDIDO_COMPRA(?)",
+            "CALL SP_APROBAR_PEDIDO_COMPRA(?, ?, ?)",
             [
-                $request->id
+                Auth::id(),
+                $request->id,
+                $request->requiereGerente
             ]
         );
 
@@ -249,8 +250,9 @@ class AdministracionController extends Controller
     public function rechazarPedido(Request $request)
     {
         DB::statement(
-            "CALL SP_RECHAZAR_PEDIDO_COMPRA(?)",
+            "CALL SP_RECHAZAR_PEDIDO_COMPRA(?,?)",
             [
+                Auth::id(),
                 $request->id
             ]
         );
@@ -428,5 +430,20 @@ class AdministracionController extends Controller
                 'mensaje' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function aprobarPedidoGerente(Request $request)
+    {
+        DB::statement(
+            "CALL SP_APROBACION_GERENTE_PEDIDO_COMPRA(?,?)",
+            [
+                Auth::id(),
+                $request->id
+            ]
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

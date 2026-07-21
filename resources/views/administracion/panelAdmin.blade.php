@@ -192,14 +192,24 @@
                         <input class="form-control" id="verProveedor" readonly>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label fw-bold">Estado</label>
                         <input class="form-control" id="verEstado" readonly>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Autorización</label>
                         <input class="form-control" id="verAutorizacion" readonly>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Requiere Autorización Gerente</label>
+                        <input class="form-control" id="reqAutGerente" readonly>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Estado Autorización Gerente</label>
+                        <input class="form-control" id="estadoAutGerente" readonly>
                     </div>
 
                     <div class="col-12">
@@ -296,7 +306,9 @@
 
 @push('scripts')
 <script>
+    const USER_ID = {{ Auth::id() }};
     const PUEDE_AUTORIZAR_PEDIDOS = {{in_array(Auth::id(), [1, 2, 5, 6]) ? 'true' : 'false'}};
+    const PUEDE_APROBAR_GERENCIA = {{ in_array(Auth::id(), [1, 5]) ? 'true' : 'false' }};
 </script>
 <script src="{{ asset('js/administracion/panelAdmin.js') }}"></script>
 <script src="{{ asset('js/administracion/scriptComunAdmin.js') }}"></script>

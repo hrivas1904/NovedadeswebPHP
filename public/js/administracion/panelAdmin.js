@@ -76,14 +76,25 @@ $("#tablaPedidosCompras").DataTable({
                     return "";
                 }
 
-                // Si ya está finalizado, no mostrar nada
-                if (data.estado == "FINALIZADO") {
+                if (data.estado == "GENERADO") {
                     return "";
                 }
 
                 if (data.autorizacion == "PENDIENTE") {
                     return `
                         <button class="btn btn-primary btn-sm btnAutorizar" data-id="${data.id}">
+                            <i class="fa fa-check"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm btnRechazar" data-id="${data.id}">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    `;
+                }
+
+                const PUEDE_APROBAR_GERENTE = [1, 5].includes(USER_ID);
+                if (data.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE" && PUEDE_APROBAR_GERENTE) {
+                    return `
+                        <button class="btn btn-primary btn-sm btnAutorizarGerente" data-id="${data.id}">
                             <i class="fa fa-check"></i>
                         </button>
                         <button class="btn btn-danger btn-sm btnRechazar" data-id="${data.id}">
@@ -135,31 +146,63 @@ $("#tablaPedidosCompras tbody").on("click", "tr", function (e) {
 
 $(document).on("click", ".btnAutorizar", function () {
     let id = $(this).data("id");
+
     Swal.fire({
-        title: "¿Autorizar pedido?",
+        title: "Autorización de pedido de compra",
+        html: `
+            <div class="text-start mt-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipoAprobacion" id="aprobacionDirecta" value="DIRECTA" checked>
+                    <label class="form-check-label" for="aprobacionDirecta">
+                        Aprobar directamente
+                    </label>
+                </div>
+
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="tipoAprobacion" id="aprobacionGerente" value="GERENTE">
+                    <label class="form-check-label" for="aprobacionGerente">
+                        Requiere aprobación del gerente
+                    </label>
+                </div>
+            </div>
+        `,
         icon: "question",
         showCancelButton: true,
         cancelButtonText: "Cancelar",
-        confirmButtonText: "Autorizar",
+        confirmButtonText: "Continuar",
         customClass: {
             confirmButton: "btn btn-primary me-2",
             cancelButton: "btn btn-secondary",
         },
         buttonsStyling: false,
-    }).then((r) => {
-        if (!r.isConfirmed) return;
+        preConfirm: () => {
+            return $('input[name="tipoAprobacion"]:checked').val();
+        },
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
         $.post(
             "/compras/aprobar",
             {
                 _token: $('meta[name="csrf-token"]').attr("content"),
                 id: id,
+                requiereGerente:
+                    $('input[name="tipoAprobacion"]:checked').val() ===
+                    "GERENTE"
+                        ? 1
+                        : 0,
             },
             function () {
+                let mensaje =
+                    result.value === "DIRECTA"
+                        ? "Pedido autorizado correctamente."
+                        : "El pedido fue enviado para aprobación del gerente.";
+
                 Swal.fire({
                     icon: "success",
-                    title: "Operación exitosa!",
-                    text: "Pedido autorizado correctamente.",
-                    timer: 1800,
+                    title: "¡Operación exitosa!",
+                    text: mensaje,
+                    timer: 2000,
                     showConfirmButton: false,
                 });
 
@@ -167,6 +210,50 @@ $(document).on("click", ".btnAutorizar", function () {
             },
         );
     });
+});
+
+$(document).on("click", ".btnAutorizarGerente", function () {
+
+    let id = $(this).data("id");
+
+    Swal.fire({
+        title: "¿Autorizar pedido?",
+        text: "El pedido quedará aprobado por Gerencia.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Autorizar",
+        cancelButtonText: "Cancelar",
+        customClass: {
+            confirmButton: "btn btn-primary me-2",
+            cancelButton: "btn btn-secondary",
+        },
+        buttonsStyling: false,
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        $.post(
+            "/compras/aprobar-gerente",
+            {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+                id: id,
+            },
+            function () {
+
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Operación exitosa!",
+                    text: "El pedido fue aprobado por Gerencia.",
+                    timer: 1800,
+                    showConfirmButton: false,
+                });
+
+                $("#tablaPedidosCompras").DataTable().ajax.reload(null, false);
+            }
+        );
+
+    });
+
 });
 
 $(document).on("click", ".btnRechazar", function () {
@@ -280,6 +367,8 @@ function verPedido(id) {
             $("#verEstado").val(c.estado);
             $("#verAutorizacion").val(c.autorizacion);
             $("#verDescripcion").val(c.descripcion);
+            $("#reqAutGerente").val(c.autGerente);
+            $("#estadoAutGerente").val(c.autorizacion_gerente);
 
             let tbody = $("#detalleProductosBody");
             tbody.empty();
