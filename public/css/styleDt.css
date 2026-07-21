@@ -84,6 +84,11 @@
     white-space: nowrap;
 }
 
+.text-wrap {
+    white-space: normal !important;
+    word-break: break-word;
+}
+
 @media (max-width: 768px) {
     
 }

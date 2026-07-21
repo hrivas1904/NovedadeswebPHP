@@ -46,6 +46,12 @@ $("#tablaPedidosCompras").DataTable({
     scrollCollapse: true,
     scrollY: getScrollY(),
     dom: "tir",
+    columnDefs: [
+        {
+            targets: [4, 5],
+            className: "text-wrap",
+        },
+    ],
     columns: [
         {
             data: "fecha",
@@ -61,7 +67,7 @@ $("#tablaPedidosCompras").DataTable({
         { data: "solicitante" },
         { data: "sector" },
         { data: "proveedor" },
-        { data: "descripcion", visible: false },
+        { data: "descripcion" },
         { data: "lineas", visible: false },
         { data: "adjuntos", visible: false },
         { data: "autorizacion" },
@@ -92,7 +98,10 @@ $("#tablaPedidosCompras").DataTable({
                 }
 
                 const PUEDE_APROBAR_GERENTE = [1, 5].includes(USER_ID);
-                if (data.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE" && PUEDE_APROBAR_GERENTE) {
+                if (
+                    data.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE" &&
+                    PUEDE_APROBAR_GERENTE
+                ) {
                     return `
                         <button class="btn btn-primary btn-sm btnAutorizarGerente" data-id="${data.id}">
                             <i class="fa fa-check"></i>
@@ -213,7 +222,6 @@ $(document).on("click", ".btnAutorizar", function () {
 });
 
 $(document).on("click", ".btnAutorizarGerente", function () {
-
     let id = $(this).data("id");
 
     Swal.fire({
@@ -229,7 +237,6 @@ $(document).on("click", ".btnAutorizarGerente", function () {
         },
         buttonsStyling: false,
     }).then((result) => {
-
         if (!result.isConfirmed) return;
 
         $.post(
@@ -239,7 +246,6 @@ $(document).on("click", ".btnAutorizarGerente", function () {
                 id: id,
             },
             function () {
-
                 Swal.fire({
                     icon: "success",
                     title: "¡Operación exitosa!",
@@ -249,11 +255,9 @@ $(document).on("click", ".btnAutorizarGerente", function () {
                 });
 
                 $("#tablaPedidosCompras").DataTable().ajax.reload(null, false);
-            }
+            },
         );
-
     });
-
 });
 
 $(document).on("click", ".btnRechazar", function () {
