@@ -419,6 +419,7 @@ Route::middleware(['auth'])->group(function () {
     //ADMINISTRACION
     Route::get('/pedidosComprasView', [AdministracionController::class, 'pedidosComprasView'])->name('pedidosComprasView');
     Route::get('/panelAdminView', [AdministracionController::class, 'panelAdminView'])->name('panelAdminView');
+    Route::get('/productosProveedoresView', [AdministracionController::class, 'productosProveedoresView'])->name('productosProveedoresView');
     Route::get('/compras/centros-costo/listar', [AdministracionController::class, 'listarCentrosCosto'])
         ->name('compras.listarCentrosCosto');
     Route::get('/compras/proveedores/listar', [AdministracionController::class, 'listarProveedores'])
@@ -453,6 +454,14 @@ Route::middleware(['auth'])->group(function () {
         ->name('compras.adjuntos.listar');
     Route::post('/compras/{id}/orden-compra', [AdministracionController::class, 'subirOrdenCompra'])
         ->name('compras.ordenCompra.subir');
+    Route::post('/compras/productos/crear', [AdministracionController::class, 'crearProducto'])
+    ->name('compras.crearProducto');
+    Route::post('/compras/productos/editar', [AdministracionController::class, 'editarProducto'])
+    ->name('compras.editarProducto');
+    Route::post('/compras/proveedores/crear', [AdministracionController::class, 'crearProveedor'])
+    ->name('compras.crearProveedor');
+    Route::post('/compras/proveedores/editar', [AdministracionController::class, 'editarProveedor'])
+    ->name('compras.editarProveedor');
 });
 
 

@@ -24,6 +24,11 @@ class AdministracionController extends Controller
         return view('administracion.panelAdmin');
     }
 
+    public function productosProveedoresView()
+    {
+        return view('administracion.productosProveedores');
+    }
+
     public function listarCentrosCosto()
     {
         $centros = DB::select("CALL SP_LISTAR_CENTRO_COSTOS()");
@@ -48,8 +53,16 @@ class AdministracionController extends Controller
     public function guardarPedido(Request $request)
     {
         $request->validate([
-            'adjuntos'   => ['nullable', 'array'],
-            'adjuntos.*' => ['file', 'max:3072', 'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'],
+            'fecha'                      => ['required', 'date'],
+            'prioridad'                  => ['required'],
+            'centro_costo_id'            => ['nullable', 'integer', 'exists:centros_costo,id'],
+            'proveedor_id'               => ['nullable', 'integer', 'exists:proveedores,id'],
+            'detalle'                    => ['required', 'array', 'min:1'],
+            'detalle.*.producto_id'      => ['required', 'integer', 'exists:productos,id'],
+            'detalle.*.cantidad'         => ['required', 'numeric', 'min:0.01'],
+            'detalle.*.precio'           => ['nullable', 'numeric', 'min:0'],
+            'adjuntos'                   => ['nullable', 'array'],
+            'adjuntos.*'                 => ['file', 'max:3072', 'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'],
         ]);
 
         DB::beginTransaction();
@@ -62,8 +75,8 @@ class AdministracionController extends Controller
                     $request->fecha,
                     strtoupper($request->prioridad),
                     Auth::id(),
-                    $request->centro_costo_id,
-                    $request->proveedor_id,
+                    $request->centro_costo_id ?: null,
+                    $request->proveedor_id ?: null,
                     $request->descripcion
                 ]
             );
@@ -78,7 +91,7 @@ class AdministracionController extends Controller
                         $pedidoId,
                         $item['producto_id'],
                         $item['cantidad'],
-                        $item['precio'],
+                        $item['precio'] !== '' ? $item['precio'] : null,
                         $item['descripcion_item']
                     ]
                 );
@@ -97,9 +110,7 @@ class AdministracionController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true
-            ]);
+            return response()->json(['success' => true]);
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -309,5 +320,110 @@ class AdministracionController extends Controller
         );
 
         return response()->json(['success' => true]);
+    }
+
+    public function crearProducto(Request $request)
+    {
+        $request->validate([
+            'nombreProducto' => ['required', 'string', 'max:255'],
+            'codigoProducto' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        try {
+            DB::statement(
+                "CALL SP_NUEVO_PRODUCTO(?,?)",
+                [$request->nombreProducto, $request->codigoProducto]
+            );
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editarProducto(Request $request)
+    {
+        $request->validate([
+            'idProducto'      => ['required', 'integer', 'exists:productos,id'],
+            'nombreProducto'  => ['required', 'string', 'max:255'],
+            'codigoProducto'  => ['nullable', 'string', 'max:255'],
+        ]);
+
+        try {
+            DB::statement(
+                "CALL SP_EDITAR_PRODUCTO(?,?,?)",
+                [$request->idProducto, $request->nombreProducto, $request->codigoProducto]
+            );
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function crearProveedor(Request $request)
+    {
+        $request->validate([
+            'nombreProveedor' => ['required', 'string', 'max:255'],
+            'razonSocial'     => ['nullable', 'string', 'max:255'],
+            'cuitProveedor'   => ['nullable', 'string', 'max:20'],
+            'codigoProveedor' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        try {
+            DB::statement(
+                "CALL SP_NUEVO_PROVEEDOR(?,?,?,?)",
+                [
+                    $request->nombreProveedor,
+                    $request->razonSocial,
+                    $request->cuitProveedor,
+                    $request->codigoProveedor,
+                ]
+            );
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editarProveedor(Request $request)
+    {
+        $request->validate([
+            'idProveedor'      => ['required', 'integer', 'exists:proveedores,id'],
+            'nombreProveedor'  => ['required', 'string', 'max:255'],
+            'razonSocial'      => ['nullable', 'string', 'max:255'],
+            'cuitProveedor'    => ['nullable', 'string', 'max:20'],
+            'codigoProveedor'  => ['nullable', 'string', 'max:255'],
+        ]);
+
+        try {
+            DB::statement(
+                "CALL SP_EDITAR_PROVEEDOR(?,?,?,?,?)",
+                [
+                    $request->idProveedor,
+                    $request->nombreProveedor,
+                    $request->razonSocial,
+                    $request->cuitProveedor,
+                    $request->codigoProveedor,
+                ]
+            );
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
     }
 }

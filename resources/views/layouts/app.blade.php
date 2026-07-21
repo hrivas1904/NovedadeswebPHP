@@ -160,11 +160,11 @@
                             <li><a class="dropdown-item" href="{{ route('panelAdminView') }}">
                                 Pedidos de compras
                             </a></li>
-                            <!--@if (in_array(Auth::id(), [1,2,5,6]))
-                            <li><a class="dropdown-item" href="{{ route('panelAdminView') }}">
+                            @if (in_array(Auth::id(), [1,2,5,6]))
+                            <li><a class="dropdown-item" href="{{ route('productosProveedoresView') }}">
                                 Productos y Proveedores
                             </a></li>
-                            @endif-->
+                            @endif
                         </ul>
                     </li>
                     @endif

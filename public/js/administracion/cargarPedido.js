@@ -1,3 +1,5 @@
+document.getElementById("fFecha").value = new Date().toISOString().slice(0, 10);
+
 $(function () {
     cargarCentrosCosto();
     cargarProveedores();
@@ -217,22 +219,18 @@ function quitarLinea(id) {
 
 function leerLineas() {
     const out = [];
-
     document.querySelectorAll("#lineasBody tr").forEach((tr) => {
         const id = tr.id;
-
         const producto_id = $("#producto_" + id).val();
-
         const descripcion = $("#desc_" + id)
             .val()
             .trim();
-
         const cantidad = parseFloat($("#cant_" + id).val());
-
-        const precio = parseFloat($("#precio_" + id).val());
-
+        const precioRaw = $("#precio_" + id)
+            .val()
+            .trim();
+        const precio = precioRaw === "" ? "" : parseFloat(precioRaw); // string vacío, no null
         if (!producto_id) return;
-
         out.push({
             producto_id: producto_id,
             descripcion_item: descripcion,
@@ -240,7 +238,6 @@ function leerLineas() {
             precio: precio,
         });
     });
-
     return out;
 }
 

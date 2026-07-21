@@ -33,7 +33,7 @@ $("#tablaPedidosCompras").DataTable({
             d.hasta = $("#filtroHasta").val();
         },
     },
-    order: [[0, 'desc']],
+    order: [[0, "desc"]],
     destroy: true,
     responsive: true,
     language: {
@@ -241,7 +241,7 @@ function verPedido(id) {
         success: function (response) {
             let c = response.cabecera;
             $("#verSolicitante").val(c.solicitante);
-            $("#verFecha").val(c.fecha);
+            $("#verFecha").val(formatearFechaArgentina(c.fecha));
             $("#verPrioridad").val(c.prioridad);
             $("#verCentroCosto").val(c.centroCosto);
             $("#verProveedor").val(c.proveedor);
@@ -252,13 +252,23 @@ function verPedido(id) {
             let tbody = $("#detalleProductosBody");
             tbody.empty();
             response.detalle.forEach(function (item) {
+                const precioTexto =
+                    item.precio === null || item.precio === undefined
+                        ? "Sin especificar"
+                        : "$ " +
+                          parseFloat(item.precio).toLocaleString("es-AR", {
+                              minimumFractionDigits: 2,
+                          });
+
                 tbody.append(`
                     <tr>
                         <td>${item.producto}</td>
                         <td>${item.descripcion_item ?? ""}</td>
-                        <td class="text-center">${item.cantidad}</td>
+                        <td class="text-center">
+                            ${item.cantidad}
+                        </td>
                         <td class="text-end">
-                            $ ${parseFloat(item.precio).toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+                            ${precioTexto}
                         </td>
                     </tr>
                 `);
@@ -396,16 +406,16 @@ $(document).on("click", "#btnSubirOrdenCompra", function () {
 });
 
 function cargarOrdenesCompra(pedidoId) {
-    $('#detalleOCBody').html('');
-    $('#sinOCMsg').addClass('d-none');
+    $("#detalleOCBody").html("");
+    $("#sinOCMsg").addClass("d-none");
 
     $.get(`/compras/${pedidoId}/adjuntos/ORDEN_COMPRA`, function (resp) {
         if (!resp.data.length) {
-            $('#sinOCMsg').removeClass('d-none');
+            $("#sinOCMsg").removeClass("d-none");
             return;
         }
-        resp.data.forEach(adj => {
-            const icono = adj.esImagen ? 'fa-file-image' : 'fa-file-pdf';
+        resp.data.forEach((adj) => {
+            const icono = adj.esImagen ? "fa-file-image" : "fa-file-pdf";
             const col = `
                 <div class="col-md-3 col-6">
                     <div class="border rounded p-2 text-center h-100" style="cursor:pointer;" onclick="verAdjunto('${adj.url}', '${adj.nombre}', ${adj.esImagen})">
@@ -414,40 +424,48 @@ function cargarOrdenesCompra(pedidoId) {
                     </div>
                 </div>
             `;
-            $('#detalleOCBody').append(col);
+            $("#detalleOCBody").append(col);
         });
     });
 }
 
-$(document).on('click', '#btnSubirOrdenCompra', function () {
-    const input = document.getElementById('inputOrdenCompra');
+$(document).on("click", "#btnSubirOrdenCompra", function () {
+    const input = document.getElementById("inputOrdenCompra");
     const file = input.files[0];
 
     if (!file) {
-        Swal.fire('Atención', 'Seleccioná un archivo primero.', 'warning');
+        Swal.fire("Atención", "Seleccioná un archivo primero.", "warning");
         return;
     }
 
-    const pedidoId = $('#modalDetallePedido').data('pedido-id');
+    const pedidoId = $("#modalDetallePedido").data("pedido-id");
 
     const formData = new FormData();
-    formData.append('archivo', file);
+    formData.append("archivo", file);
 
     $.ajax({
         url: `/compras/${pedidoId}/orden-compra`,
-        type: 'POST',
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        type: "POST",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
         data: formData,
         processData: false,
         contentType: false,
         success: function () {
-            Swal.fire('Listo', 'Orden de compra cargada correctamente.', 'success');
-            input.value = '';
+            Swal.fire(
+                "Listo",
+                "Orden de compra cargada correctamente.",
+                "success",
+            );
+            input.value = "";
             cargarOrdenesCompra(pedidoId);
         },
         error: function (xhr) {
-            const msg = xhr.responseJSON?.mensaje || 'Ocurrió un error al subir el archivo.';
-            Swal.fire('Error', msg, 'error');
+            const msg =
+                xhr.responseJSON?.mensaje ||
+                "Ocurrió un error al subir el archivo.";
+            Swal.fire("Error", msg, "error");
         },
     });
 });
