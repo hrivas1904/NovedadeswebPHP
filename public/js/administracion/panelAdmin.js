@@ -75,24 +75,30 @@ $("#tablaPedidosCompras").DataTable({
                 if (!PUEDE_AUTORIZAR_PEDIDOS) {
                     return "";
                 }
+
+                // Si ya está finalizado, no mostrar nada
+                if (data.estado == "FINALIZADO") {
+                    return "";
+                }
+
                 if (data.autorizacion == "PENDIENTE") {
                     return `
-                        <button class="btn btn-success btn-sm btnAutorizar" data-id="${data.id}">
+                        <button class="btn btn-primary btn-sm btnAutorizar" data-id="${data.id}">
                             <i class="fa fa-check"></i>
                         </button>
-
                         <button class="btn btn-danger btn-sm btnRechazar" data-id="${data.id}">
                             <i class="fa fa-times"></i>
                         </button>
+                    `;
+                }
 
+                if (data.autorizacion == "APROBADA") {
+                    return `
                         <input type="checkbox" class="form-check-input chkPedido" value="${data.id}">
                     `;
                 }
-                return `
-                    <button class="btn btn-secondary btn-sm" disabled>
-                        <i class="fa fa-lock"></i>
-                    </button>
-                `;
+
+                return "";
             },
         },
     ],
@@ -129,12 +135,17 @@ $("#tablaPedidosCompras tbody").on("click", "tr", function (e) {
 
 $(document).on("click", ".btnAutorizar", function () {
     let id = $(this).data("id");
-
     Swal.fire({
         title: "¿Autorizar pedido?",
         icon: "question",
         showCancelButton: true,
+        cancelButtonText: "Cancelar",
         confirmButtonText: "Autorizar",
+        customClass: {
+            confirmButton: "btn btn-primary me-2",
+            cancelButton: "btn btn-secondary",
+        },
+        buttonsStyling: false,
     }).then((r) => {
         if (!r.isConfirmed) return;
         $.post(
@@ -144,6 +155,14 @@ $(document).on("click", ".btnAutorizar", function () {
                 id: id,
             },
             function () {
+                Swal.fire({
+                    icon: "success",
+                    title: "Operación exitosa!",
+                    text: "Pedido autorizado correctamente.",
+                    timer: 1800,
+                    showConfirmButton: false,
+                });
+
                 $("#tablaPedidosCompras").DataTable().ajax.reload(null, false);
             },
         );
@@ -157,6 +176,12 @@ $(document).on("click", ".btnRechazar", function () {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Rechazar",
+        cancelButtonText: "Cancelar",
+        customClass: {
+            confirmButton: "btn btn-primary me-2",
+            cancelButton: "btn btn-secondary",
+        },
+        buttonsStyling: false,
     }).then((r) => {
         if (!r.isConfirmed) return;
 
@@ -167,6 +192,13 @@ $(document).on("click", ".btnRechazar", function () {
                 id: id,
             },
             function () {
+                Swal.fire({
+                    icon: "success",
+                    title: "Operación exitosa!",
+                    text: "Pedido rechazado correctamente.",
+                    timer: 1800,
+                    showConfirmButton: false,
+                });
                 $("#tablaPedidosCompras").DataTable().ajax.reload(null, false);
             },
         );

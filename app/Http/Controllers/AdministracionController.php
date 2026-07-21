@@ -212,6 +212,9 @@ class AdministracionController extends Controller
 
                 $fila++;
             }
+
+            DB::statement("CALL SP_FINALIZAR_PEDIDO(?)", [$pedidoId]);
+            
         }
 
         foreach (range('A', 'V') as $col) {
