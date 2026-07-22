@@ -36,212 +36,197 @@
     <link rel="stylesheet" href="{{ asset('css/calendario.css') }}">
     <link rel="stylesheet" href="{{ asset('css/tickets.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssFiltroEcommerce.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/componentes/cssNavbarV2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssSideBar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssDivAvisos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssCards.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-xl navbar-dark fixed-top shadow-sm"
-        style="background-color: var(--color-default);">
-        <div class="container-fluid">
+    <div class="wrapper">
 
-            <a class="navbar-brand d-flex align-items-center" href="{{ route('index') }}">
-                <img src="{{ asset('img/logo-hp3c-white.png') }}" height="40" class="me-2 logo-navbar">
-            </a>
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="sidebar-header">
+                <a class="sidebar-brand" href="{{ route('index') }}">
+                    <img src="{{ asset('img/logo-hp3c-white.png') }}" class="logo-full" alt="HP3C">
+                    <img src="{{ asset('img/logo-hp3c-icon.png') }}" class="logo-icon" alt="HP3C">
+                </a>
+            </div>
 
-            <div class="collapse navbar-collapse" id="navbarMain">
-
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+            <div class="sidebar-body">
+                <ul class="sidebar-nav">
 
                     @if (Auth::user()->rol === 'Administrador/a')
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('dashboard') }}">
-                            <i class="bx bx-grid-alt"></i> Dashboard
+                            <i class="bx bx-grid-alt"></i>
+                            <span class="link-text">Dashboard</span>
                         </a>
                     </li>
                     @endif
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bx bx-user"></i> Colaboradores
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuColaboradores">
+                            <i class="bx bx-user"></i>
+                            <span class="link-text">Colaboradores</span>
+                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('miLegajo') }}">Mi legajo</a></li>
+                        <ul class="collapse submenu" id="submenuColaboradores">
+                            <li><a class="submenu-link" href="{{ route('miLegajo') }}">Mi legajo</a></li>
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
                             Auth::user()->rol === 'Administrador/a' ||
                             Auth::user()->rol === 'Coordinador/a')
-                            <li><a class="dropdown-item" href="{{ route('nominaPersonal') }}">Colaboradores</a></li>
+                            <li><a class="submenu-link" href="{{ route('nominaPersonal') }}">Colaboradores</a></li>
                             @endif
 
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                            <li><a class="dropdown-item" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
+                            <li><a class="submenu-link" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
                             @endif
-
-                            @if (Auth::user()->rol === 'Administrador/a')
-                            <!--<li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Monotributistas</a></li>
-
-                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Médicos</a></li>
-
-                                <li><a class="dropdown-item" href="{{ route('registroAsistencia') }}">Marcar asistencia</a></li>
-
-                                <li><a class="dropdown-item" href="{{ route('controlTarjas') }}">Tarjas</a></li>-->
-                            @endif
-
                         </ul>
                     </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-folder-open"></i> Novedades
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuNovedades">
+                            <i class="fa-solid fa-folder-open"></i>
+                            <span class="link-text">Novedades</span>
+                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('novedades.misNovedades') }}">Mis
-                                    novedades</a></li>
+                        <ul class="collapse submenu" id="submenuNovedades">
+                            <li><a class="submenu-link" href="{{ route('novedades.misNovedades') }}">Mis novedades</a></li>
                             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
-                            <li><a class="dropdown-item" href="{{ route('controlNovedades') }}">Registro de
-                                    novedades</a></li>
-                            <li><a class="dropdown-item" href="{{ route('novedades.historico') }}">Histórico
-                                    novedades</a></li>
+                            <li><a class="submenu-link" href="{{ route('controlNovedades') }}">Registro de novedades</a></li>
+                            <li><a class="submenu-link" href="{{ route('novedades.historico') }}">Histórico novedades</a></li>
                             @endif
-                            <li><a class="dropdown-item" href="{{ route('personal.solicitudes') }}">Solicitud
-                                    adelanto sueldo</a></li>
+                            <li><a class="submenu-link" href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
                         </ul>
                     </li>
 
                     @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-award"></i> Calidad
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuCalidad">
+                            <i class="fa-solid fa-award"></i>
+                            <span class="link-text">Calidad</span>
+                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('encuestasCalidad') }}">Importar
-                                    encuestas</a></li>
-                            <li><a class="dropdown-item" href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
-                            <!--<li><a class="dropdown-item" href="{{ route('respuestasEncuestas') }}">Resultados</a>
-                                </li>-->
-                        </ul>
-                    </li>
-                    @endif
-
-                    @if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-gear"></i> Ajustes
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('configNovedades') }}">Conceptos
-                                    novedades</a></li>
-                            <li><a class="dropdown-item" href="{{ route('administrarUsuarios') }}">Administrar
-                                    usuarios</a></li>
-                            <li><a class="dropdown-item"
-                                    href="{{ route('obraSocial.administrarObraSociales') }}">Obras
-                                    sociales</a></li>
-                            <li><a class="dropdown-item" href="{{ route('parametrizacionesGenerales') }}">Parámetros generales</a></li>
+                        <ul class="collapse submenu" id="submenuCalidad">
+                            <li><a class="submenu-link" href="{{ route('encuestasCalidad') }}">Importar encuestas</a></li>
+                            <li><a class="submenu-link" href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
                         </ul>
                     </li>
                     @endif
 
                     @if (Auth::user()->rol != 'Colaborador/a')
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-chart-pie"></i> Administración
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuAdministracion">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span class="link-text">Administración</span>
+                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('pedidosComprasView') }}">
-                                Cargar pedido de compras
-                            </a></li>            
-                            <li><a class="dropdown-item" href="{{ route('panelAdminView') }}">
-                                Pedidos de compras
-                            </a></li>
+                        <ul class="collapse submenu" id="submenuAdministracion">
+                            <li><a class="submenu-link" href="{{ route('pedidosComprasView') }}">Cargar pedido de compras</a></li>
+                            <li><a class="submenu-link" href="{{ route('panelAdminView') }}">Pedidos de compras</a></li>
                             @if (in_array(Auth::id(), [1,2,5,6]))
-                            <li><a class="dropdown-item" href="{{ route('productosProveedoresView') }}">
-                                Productos y Proveedores
-                            </a></li>
+                            <li><a class="submenu-link" href="{{ route('productosProveedoresView') }}">Productos y Proveedores</a></li>
                             @endif
+                        </ul>
+                    </li>
+                    @endif
+
+                    @if (Auth::user()->rol === 'Administrador/a')
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuAjustes">
+                            <i class="fa-solid fa-gear"></i>
+                            <span class="link-text">Ajustes</span>
+                            <i class="bx bx-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="collapse submenu" id="submenuAjustes">
+                            <li><a class="submenu-link" href="{{ route('configNovedades') }}">Conceptos novedades</a></li>
+                            <li><a class="submenu-link" href="{{ route('administrarUsuarios') }}">Administrar usuarios</a></li>
+                            <li><a class="submenu-link" href="{{ route('obraSocial.administrarObraSociales') }}">Obras sociales</a></li>
+                            <li><a class="submenu-link" href="{{ route('parametrizacionesGenerales') }}">Parámetros generales</a></li>
                         </ul>
                     </li>
                     @endif
 
                     <li class="nav-item">
                         <a class="nav-link" href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
-                            <i class='bx bx-book'></i> Capacitaciones
+                            <i class='bx bx-book'></i>
+                            <span class="link-text">Capacitaciones</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('ayuda') }}">
-                            <i class="fa-regular fa-circle-question"></i> Ayuda
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span class="link-text">Ayuda</span>
                         </a>
                     </li>
 
                 </ul>
+            </div>
 
-                <div class="d-flex align-items-center gap-3">
+            <div class="sidebar-footer p-2">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="nav-link btn-logout w-100 d-flex align-content-center">
+                        <i class="bx bx-log-out fs-5 text-white me-2"></i>
+                        <span class="link-text fs-6 text-white">Cerrar sesión</span>
+                    </button>
+                </form>
+            </div>
 
-                    <div class="user-chip text-white">
+        </aside>
 
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- CONTENT -->
+        <div class="main-wrapper" id="mainWrapper">
+
+            <header class="topbar">
+                <button class="btn-mobile-toggle" id="mobileSidebarToggle">
+                    <i class="fa-solid fa-bars fw-bold fs-3"></i>
+                </button>
+
+                <div class="mx-3 d-md-none d-lg-block">
+                    <h4 class="mb-0">GESTIÓN HP3C</h4>
+                    <h6 class="mb-0 fw-normal">Plataforma de Gestión Integral</h6>
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="user-chip text-dark">
                         <div class="user-info text-end small">
                             <div><strong>{{ Auth::user()->name }}</strong></div>
                             <div class="user-role">{{ Auth::user()->rol }}</div>
                         </div>
-
-                        <!--<div class="user-avatar">
-                            @if (Auth::user()->foto)
-                                <img src="{{ asset('storage/' . Auth::user()->foto) }}" alt="Perfil">
-                            @else
-                                <span class="avatar-initial">
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                                </span>
-                            @endif
-                        </div>-->
-
                     </div>
 
                     <button class="btn btn-light position-relative" id="btnAlertas">
                         <i class="fa-solid fa-bell"></i>
-                        <span id="contadorAlertas"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
-                        </span>
+                        <span id="contadorAlertas" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                     </button>
 
                     <div id="dropdownAlertas" class="dropdown-alertas">
                         <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
                             <span class="fw-semibold">Notificaciones</span>
-                            <button id="btnLimpiarAlertas" class="btn btn-sm text-danger p-0">
-                                Limpiar
-                            </button>
+                            <button id="btnLimpiarAlertas" class="btn btn-sm text-danger p-0">Limpiar</button>
                         </div>
                         <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
                     </div>
 
-                    <!--<button id="toggleTheme" class="btn btn-light">
-                        <i id="themeIcon" class="fa-solid fa-moon"></i>
-                    </button>-->
-
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-light">
-                            <i class='bx bx-log-out'></i>
-                        </button>
-                    </form>
-
                 </div>
+            </header>
 
-            </div>
+            <main class="container-fluid content-area">
+                @yield('content')
+            </main>
+
         </div>
-    </nav>
 
-    <main class="container-fluid mt-5 pt-4">
-        @yield('content')
-    </main>
+    </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -281,6 +266,7 @@
 
     <script src="{{ asset('js/home/alertas.js') }}"></script>
     <script src="{{ asset('js/home/darkMode.js') }}"></script>
+    <script src="{{ asset('js/sideBar.js') }}"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -1,0 +1,291 @@
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 72px;
+    --topbar-height: 64px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: var(--sidebar-collapsed-width); /* riel angosto por defecto */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    background-color: var(--color-default);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    transition: width 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Estado EXPANDIDO: se agranda por encima del contenido, no empuja nada */
+.sidebar.expanded {
+    width: var(--sidebar-width);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.25);
+}
+
+.sidebar-header {
+    height: var(--topbar-height);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.75rem 0 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.sidebar-brand .logo-full,
+.sidebar-brand .logo-icon {
+    height: 32px;
+}
+
+/* Con el riel angosto (default), mostramos el logo ícono; expandida, el logo completo */
+.sidebar:not(.expanded) .logo-full,
+.sidebar.expanded .logo-icon {
+    display: none;
+}
+
+.sidebar-toggle-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 0.25rem;
+    flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+    opacity: 0.8;
+}
+
+.sidebar.expanded .sidebar-toggle-btn {
+    transform: rotate(180deg);
+}
+
+.sidebar-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sidebar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.sidebar-nav .nav-link i:first-child {
+    font-size: 1.15rem;
+    width: 1.4rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sidebar-nav .link-text {
+    flex: 1;
+}
+
+.submenu-arrow {
+    font-size: 0.85rem;
+    margin-left: auto;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.nav-link[aria-expanded="true"] .submenu-arrow {
+    transform: rotate(180deg);
+}
+
+.submenu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.submenu-link {
+    display: block;
+    padding: 0.5rem 1rem 0.5rem 3.1rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.submenu-link:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-footer {
+    flex-shrink: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-logout {
+    background: transparent;
+    border: none;
+    text-align: left;
+}
+
+/* Con el riel angosto (no expandida), ocultamos textos y flechas */
+.sidebar:not(.expanded) .link-text,
+.sidebar:not(.expanded) .submenu-arrow {
+    display: none;
+}
+
+.sidebar:not(.expanded) .nav-item {
+    position: relative;
+}
+
+/* Submenus como flyout SOLO en modo riel angosto (no expandida) */
+.sidebar:not(.expanded) .submenu {
+    display: none !important;
+}
+
+.sidebar:not(.expanded) .has-submenu:hover .submenu {
+    display: block !important;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    min-width: 220px;
+    background-color: var(--color-default);
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 0 6px 6px 0;
+    padding: 0.4rem 0;
+}
+
+.sidebar:not(.expanded) .has-submenu:hover .submenu .submenu-link {
+    padding: 0.5rem 1rem;
+}
+
+/* Expandida: submenu funciona como acordeón normal de Bootstrap */
+.sidebar.expanded .submenu {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ===== MAIN WRAPPER / CONTENT ===== */
+/* Fijo SIEMPRE al ancho del riel angosto: el contenido nunca se mueve ni se achica */
+.main-wrapper {
+    flex: 1;
+    margin-left: var(--sidebar-collapsed-width);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.topbar {
+    height: var(--topbar-height);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background-color: #fff;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    gap: 1rem;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.btn-mobile-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+}
+
+.content-area {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+/* ===== BACKDROP (solo mobile) ===== */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1025;
+}
+
+.sidebar-backdrop.show {
+    display: block;
+}
+
+@media (min-width: 992px) {
+    .sidebar-backdrop {
+        display: none !important;
+    }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 991.98px) {
+    .sidebar {
+        width: var(--sidebar-width) !important;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.expanded {
+        transform: translateX(0);
+    }
+
+    .sidebar .link-text,
+    .sidebar .submenu-arrow {
+        display: flex !important;
+    }
+
+    .sidebar:not(.expanded) .has-submenu:hover .submenu {
+        display: none !important;
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+    }
+
+    .btn-mobile-toggle {
+        display: block;
+    }
+
+    .sidebar-toggle-btn {
+        display: none;
+    }
+}
