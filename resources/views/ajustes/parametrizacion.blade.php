@@ -4,15 +4,7 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="d-flex align-items-start gap-3 my-3">
-            <div class="icon-box">
-                <img src="{{ asset('img/icons/ajustes.png') }}" style="height: 32px;" alt="Logo ajustes">
-            </div>
-            <div>
-                <h3 class="tituloVista mb-0">PARAMETRIZACIÓN</h3>
-                <p class="mb-0 text-muted">Configuración de Áreas, Servicios y Categorías.</p>
-            </div>
-        </div>
+        <h3 class="tituloVista mb-3">PARAMETRIZACIÓN</h3>
 
         <div class="row d-flex g-3">
             <div class="col-lg-6 col-12">

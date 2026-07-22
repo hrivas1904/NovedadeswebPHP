@@ -12,7 +12,7 @@ flatpickr("#filtroDesde, #filtroHasta", {
 });
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "62vh";
+    return window.innerWidth < 768 ? "28vh" : "53vh";
 }
 
 function formatearFechaArgentina(fecha) {

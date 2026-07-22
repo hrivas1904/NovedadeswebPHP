@@ -8,9 +8,6 @@
 
         <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
             <div class="d-flex align-items-start gap-3">
-                <div class="icon-box">
-                    <img src="{{ asset('img/icons/dash-calidad-logo.png') }}" style="height: 32px;" alt="Logo subir encuestas">
-                </div>
                 <div>
                     <h3 class="tituloVista mb-0">DASHBOARD DE CALIDAD</h3>
                     <p class="mb-0 text-muted">Estadísticas de encuestas de atención al paciente.</p>
@@ -18,7 +15,7 @@
             </div>
         </div>
 
-        <div class="card p-3">
+        <div class="">
             <div class="row mb-3 g-3">
                 <div class="col-md-3">
                     <input type="date" id="fechaDesde" class="form-control">
@@ -71,7 +68,7 @@
                     <div class="col-md-6 col-lg-3 col-12">
                         <div class="card card-hover-radial text-center" id="btnKpiPromedioInternacion">
                             <div class="card-body">
-                                <h5>Promedio General Internación con Estadía</h5>
+                                <h5>Promedio Gral Int con Estadía</h5>
                                 <p class="text-small">Expectativas Internación con Estadía</p>
                                 <h2 id="kpiInternacionGeneral">0%</h2>
                             </div>

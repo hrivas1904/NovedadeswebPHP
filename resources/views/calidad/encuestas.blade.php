@@ -5,11 +5,8 @@
 @section('content')
 
     <div class="container-fluid">
-        <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
+        <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-start gap-3">
-                <div class="icon-box">
-                    <img src="{{ asset('img/icons/importar-encuestas.png') }}" style="height: 32px;" alt="Logo subir encuestas">
-                </div>
                 <div>
                     <h3 class="tituloVista mb-0">IMPORTAR ENCUESTAS</h3>
                     <p class="mb-0 text-muted">Importación de encuestas de atención al paciente.</p>
@@ -17,7 +14,7 @@
             </div>
         </div>
 
-        <div class="card p-3">
+        <div class="">
             <div class="row align-items-end g-2">
 
                 <div class="col-12 col-md-auto">

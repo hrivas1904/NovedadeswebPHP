@@ -4,17 +4,11 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="d-flex align-items-start gap-3 my-3">
-        <div class="icon-box">
-            <img src="{{ asset('img/icons/logo-os.png') }}" style="height: 32px;" alt="Saludo">
-        </div>
-        <div>
-            <h3 class="tituloVista mb-0">OBRAS SOCIALES</h3>
-            <p class="mb-0 text-muted">Administración de Obras Sociales.</p>
-        </div>
-    </div>
+
+    <h3 class="tituloVista mb-3">OBRAS SOCIALES</h3>
+
     <div class="row d-flex">
-        <div class="col-xl-6 col-12 mb-3">
+        <div class="col-xl-6 col-12">
             <div class="card" style="border-radius:15px;">
                 <div class="card-body">
                     <table id="tb_obraSocial" class="table table-striped table-bordered">

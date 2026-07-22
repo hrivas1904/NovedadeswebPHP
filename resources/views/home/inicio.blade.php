@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                             <input id="txtNotificacionTitulo" class="form-control mb-2" placeholder="Escriba el asunto...">
-                            <div id="editorComunicado" style="height:250px; font-family:1rem;"></div>
+                            <div id="editorComunicado" style="height:150px; font-family:1rem;"></div>
                             <input type="hidden" id="txtNotificacion">
 
                             <div id="emojiPicker" class="border rounded p-2 shadow-sm"

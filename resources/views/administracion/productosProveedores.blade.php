@@ -5,18 +5,18 @@
 @section('content')
 <div class="container-fluid">
 
-    <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
+    <div class="d-flex align-items-center justify-content-between mb-3">
         <div class="d-flex align-items-center gap-3">
-            <div class="icon-box">
+            <div class="icon-box d-none">
                 <i class="fa-solid fa-boxes-packing fs-3"></i>
             </div>
             <div>
-                <h3 class="tituloVista mb-0">PRODUCTOS Y PROVEEDORES</h3>
+                <h3 class="tituloVista mb-0">GESTIÓN DE PRODUCTOS Y PROVEEDORES</h3>
             </div>
         </div>
     </div>
 
-    <div class="card p-2">
+    <div class="">
         <div class="row g-3 ">
             <div class="col-12 col-md-4 col-lg-4">
                 <form id="formNuevoProducto">

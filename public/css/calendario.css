@@ -179,7 +179,7 @@
 }
 
 .calendar-scroll {
-    max-height: 72vh; /* ajustable */
+    max-height: 68vh; /* ajustable */
     overflow-y: auto;
     padding-right: 5px;
 }

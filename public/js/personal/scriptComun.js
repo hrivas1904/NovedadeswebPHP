@@ -5,7 +5,7 @@ $(document).ready(function () {
 });
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "30vh" : "60vh";
+    return window.innerWidth < 768 ? "30vh" : "55vh";
 }
 
 $("#btnExportExcel").on("click", function () {

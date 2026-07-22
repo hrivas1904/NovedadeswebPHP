@@ -4,16 +4,7 @@
 
 @section('content')
 <div class="container-fluid">
-
-    <div class="d-flex align-items-start gap-3 my-3">
-        <div class="icon-box">
-            <img src="{{ asset('img/icons/personal-logo.png') }}" style="height: 32px;" alt="Logo personal activo">
-        </div>
-        <div>
-            <h3 class="tituloVista mb-0">GESTIÓN DE COLABORADORES</h3>
-            <p class="mb-0 text-muted">Administración de Colaboradores Activos y de Baja.</p>
-        </div>
-    </div>
+    <h3 class="tituloVista mb-3">GESTIÓN DE COLABORADORES</h3>
 
     <div class="row d-flex justify-content-start align-items-start">
         <div class="col-2 d-none d-xl-block">

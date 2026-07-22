@@ -4,18 +4,18 @@ body {
     padding: 0;
     height: 100%;
     font-family: "Roboto", sans-serif;
-    font-size: 1rem;
+    font-size: 0.92rem;
     overflow-x: hidden;
 }
 
-body {
+/*body {
     background-image: url("/img/backmini.png");
-    background-size: cover; /* ocupa toda la pantalla */
-    background-repeat: no-repeat; /* no se repite */
-    background-position: center; /* centrado */
-    background-attachment: fixed; /* efecto moderno tipo "parallax" */
-    background-color: #e9f2f1; /* tono suave verdoso acorde al diseño */
-}
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center; 
+    background-attachment: fixed;
+    background-color: #e9f2f1;
+}*/
 
 body[data-theme="dark"] {
     --bs-body-bg: var(--bg-body);
@@ -294,4 +294,11 @@ table.dataTable tbody tr:hover {
     .buscador-personal {
         width: 750px;
     }
+}
+
+#editorComunicado {
+    resize: vertical;
+    overflow: auto;
+    min-height: 150px;
+    max-height: 600px; /* opcional */
 }

@@ -45,7 +45,7 @@ $(document).ready(function () {
             scrollX: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: "65vh",
+            scrollY: "60vh",
         });
     }
 

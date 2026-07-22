@@ -5,14 +5,10 @@
 @section('content')
     <div class="container-fluid">
         <div class="text-start mb-2">
-            <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
+            <div class="d-flex align-items-center justify-content-between mb-3">
                 <div class="d-flex align-items-start gap-3">
-                    <div class="icon-box">
-                        <img src="{{ asset('img/icons/config_nov_logo.png') }}" style="height: 32px;" alt="Logo configuración novedades">
-                    </div>
                     <div>
                         <h3 class="tituloVista mb-0">CONFIGURAR NOVEDADES DE SUELDO</h3>
-                        <p class="mb-0 text-muted">Configuración de conceptos de liquidación.</p>
                     </div>
                 </div>
             </div>

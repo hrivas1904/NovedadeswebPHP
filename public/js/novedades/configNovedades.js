@@ -84,16 +84,11 @@ $(document).ready(function () {
                     text: '<i class="fa-solid fa-file-pdf"></i> PDF',
                     className: "btn-export-pdf",
                 },
-                {
-                    extend: "print",
-                    className: "btn-printer",
-                    text: '<i class="fa-solid fa-print"></i> Imprimir',
-                },
             ],
             scrollX: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: "65vh",
+            scrollY: "58vh",
         });
     }
 

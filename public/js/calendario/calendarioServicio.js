@@ -93,7 +93,7 @@ $(document).ready(function () {
             { width: "5%", className: "text-center" }, // Acciones
         ],
         language: {
-            url: "//cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json",
+            url: "/js/es-ES.json",
         },
     });
 });

@@ -53,10 +53,21 @@
                     <img src="{{ asset('img/logo-hp3c-white.png') }}" class="logo-full" alt="HP3C">
                     <img src="{{ asset('img/logo-hp3c-icon.png') }}" class="logo-icon" alt="HP3C">
                 </a>
+
+                <button
+                    type="button"
+                    class="sidebar-close-btn"
+                    id="sidebarClose"
+                    aria-label="Cerrar menú"
+                    title="Cerrar menú">
+                    <i class="bx bx-x"></i>
+                </button>
             </div>
 
             <div class="sidebar-body">
                 <ul class="sidebar-nav">
+
+                    <li class="nav-section-title section-rrhh"><span class="section-dot"></span>Recursos Humanos</li>
 
                     @if (Auth::user()->rol === 'Administrador/a')
                     <li class="nav-item">
@@ -68,20 +79,17 @@
                     @endif
 
                     <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuColaboradores">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="bx bx-user"></i>
                             <span class="link-text">Colaboradores</span>
-                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="collapse submenu" id="submenuColaboradores">
+                        <ul class="submenu">
                             <li><a class="submenu-link" href="{{ route('miLegajo') }}">Mi legajo</a></li>
-
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
                             Auth::user()->rol === 'Administrador/a' ||
                             Auth::user()->rol === 'Coordinador/a')
                             <li><a class="submenu-link" href="{{ route('nominaPersonal') }}">Colaboradores</a></li>
                             @endif
-
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
                             <li><a class="submenu-link" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
                             @endif
@@ -89,12 +97,11 @@
                     </li>
 
                     <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuNovedades">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-folder-open"></i>
                             <span class="link-text">Novedades</span>
-                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="collapse submenu" id="submenuNovedades">
+                        <ul class="submenu">
                             <li><a class="submenu-link" href="{{ route('novedades.misNovedades') }}">Mis novedades</a></li>
                             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
                             <li><a class="submenu-link" href="{{ route('controlNovedades') }}">Registro de novedades</a></li>
@@ -104,28 +111,32 @@
                         </ul>
                     </li>
 
+                    <!-- ===== SECCIÓN: CALIDAD ===== -->
                     @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
+                    <li class="nav-section-title section-calidad"><span class="section-dot"></span>Calidad</li>
+
                     <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuCalidad">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-award"></i>
                             <span class="link-text">Calidad</span>
-                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="collapse submenu" id="submenuCalidad">
+                        <ul class="submenu">
                             <li><a class="submenu-link" href="{{ route('encuestasCalidad') }}">Importar encuestas</a></li>
                             <li><a class="submenu-link" href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
                         </ul>
                     </li>
                     @endif
 
+                    <!-- ===== SECCIÓN: ADMINISTRACIÓN ===== -->
                     @if (Auth::user()->rol != 'Colaborador/a')
+                    <li class="nav-section-title section-administracion"><span class="section-dot"></span>Administración</li>
+
                     <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuAdministracion">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-chart-pie"></i>
                             <span class="link-text">Administración</span>
-                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="collapse submenu" id="submenuAdministracion">
+                        <ul class="submenu">
                             <li><a class="submenu-link" href="{{ route('pedidosComprasView') }}">Cargar pedido de compras</a></li>
                             <li><a class="submenu-link" href="{{ route('panelAdminView') }}">Pedidos de compras</a></li>
                             @if (in_array(Auth::id(), [1,2,5,6]))
@@ -135,14 +146,16 @@
                     </li>
                     @endif
 
+                    <!-- ===== SECCIÓN: AJUSTES ===== -->
                     @if (Auth::user()->rol === 'Administrador/a')
+                    <li class="nav-section-title section-ajustes"><span class="section-dot"></span>Ajustes</li>
+
                     <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenuAjustes">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-gear"></i>
                             <span class="link-text">Ajustes</span>
-                            <i class="bx bx-chevron-down submenu-arrow"></i>
                         </a>
-                        <ul class="collapse submenu" id="submenuAjustes">
+                        <ul class="submenu">
                             <li><a class="submenu-link" href="{{ route('configNovedades') }}">Conceptos novedades</a></li>
                             <li><a class="submenu-link" href="{{ route('administrarUsuarios') }}">Administrar usuarios</a></li>
                             <li><a class="submenu-link" href="{{ route('obraSocial.administrarObraSociales') }}">Obras sociales</a></li>
@@ -150,6 +163,8 @@
                         </ul>
                     </li>
                     @endif
+
+                    <li class="nav-section-title section-general"><span class="section-dot"></span>General</li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
@@ -172,8 +187,8 @@
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="nav-link btn-logout w-100 d-flex align-content-center">
-                        <i class="bx bx-log-out fs-5 text-white me-2"></i>
-                        <span class="link-text fs-6 text-white">Cerrar sesión</span>
+                        <i class="bx bx-log-out fs-5 me-2"></i>
+                        <span class="link-text fs-6">Cerrar sesión</span>
                     </button>
                 </form>
             </div>
@@ -186,18 +201,18 @@
         <div class="main-wrapper" id="mainWrapper">
 
             <header class="topbar">
-                <button class="btn-mobile-toggle" id="mobileSidebarToggle">
+                <button type="button" class="btn-mobile-toggle" id="mobileSidebarToggle" aria-label="Abrir menú" title="Abrir menú">
                     <i class="fa-solid fa-bars fw-bold fs-3"></i>
                 </button>
 
-                <div class="mx-3 d-md-none d-lg-block">
-                    <h4 class="mb-0">GESTIÓN HP3C</h4>
+                <div class="mx-3 d-none d-lg-block text-white">
+                    <h4 class="mb-0 fw-bold">GESTIÓN HP3C</h4>
                     <h6 class="mb-0 fw-normal">Plataforma de Gestión Integral</h6>
                 </div>
 
                 <div class="topbar-right">
 
-                    <div class="user-chip text-dark">
+                    <div class="user-chip text-white">
                         <div class="user-info text-end small">
                             <div><strong>{{ Auth::user()->name }}</strong></div>
                             <div class="user-role">{{ Auth::user()->rol }}</div>

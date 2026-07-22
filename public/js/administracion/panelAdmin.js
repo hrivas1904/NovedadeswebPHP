@@ -12,7 +12,7 @@ function formatearFechaArgentina(fecha) {
 }
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "30vh" : "60vh";
+    return window.innerWidth < 768 ? "30vh" : "57vh";
 }
 
 function filtrarPedidos() {

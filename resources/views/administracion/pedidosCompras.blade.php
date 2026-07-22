@@ -3,11 +3,8 @@
 @section('title', 'Cargar pedido de compras')
 
 @section('content')
-<div class="d-flex align-items-center justify-content-between mt-2 mb-3">
+<div class="d-flex align-items-center justify-content-between mb-3">
     <div class="d-flex align-items-center gap-3">
-        <div class="icon-box">
-            <i class="fa-solid fa-file-pen fs-3"></i>
-        </div>
         <div>
             <h3 class="tituloVista mb-0">CARGA DE PEDIDOS DE COMPRAS</h3>
         </div>

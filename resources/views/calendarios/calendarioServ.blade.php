@@ -5,17 +5,8 @@
 @section('content')
 
     <div class="container-fluid">
-        <div class="d-flex align-items-center justify-content-between mt-2 mb-3">
-            <div class="d-flex align-items-start gap-3">
-                <div class="icon-box">
-                    <img src="{{ asset('img/icons/calendario-logo.png') }}" style="height: 32px;"
-                        alt="Logo calendario recepcion">
-                </div>
-                <div>
-                    <h3 class="tituloVista mb-0">CALENDARIO DE RECEPCIÓN</h3>
-                    <p class="mb-0 text-muted">Administración de turnos y asignaciones del personal.</p>
-                </div>
-            </div>
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="tituloVista">CALENDARIO DE RECEPCIÓN</h3>
 
             <button class="btn btn-secondary rounded-pill" data-bs-toggle="collapse" data-bs-target="#refs"
                 title="Referencias">
@@ -55,7 +46,7 @@
 
                 <div class="col-lg-7">
                     <div class="row g-2 justify-content-lg-end align-items-center">
-                        <div class="col-xl-4 col-lg-4 col-md-12">
+                        <div class="col-xl-4 col-lg-4 col-md-12 d-none">
                             <input id="nombreArea" class="form-control" readonly value="Servicios" disabled>
                             <input id="idArea" hidden readonly value="15">
                         </div>

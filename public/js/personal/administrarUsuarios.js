@@ -38,7 +38,7 @@ $.ajaxSetup({
 });
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "58vh";
+    return window.innerWidth < 768 ? "28vh" : "54vh";
 }
 
 function cargarAreas() {

@@ -3,13 +3,10 @@
 @section('title', 'Pedidos de compras')
 
 @section('content')
-<div class="container-fluid p-2">
+<div class="container-fluid">
     <div class="d-flex align-items-center gap-3">
-        <div class="icon-box">
-            <i class="fa-solid fa-list-check fs-3"></i>
-        </div>
         <div>
-            <h3 class="tituloVista mb-0">PEDIDOS DE COMPRAS</h3>
+            <h3 class="tituloVista mb-0">GESTIÓN DE PEDIDOS DE COMPRAS</h3>
         </div>
     </div>
     <div class="mt-3 row d-flex">
