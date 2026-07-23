@@ -117,7 +117,7 @@ function registrarNovedad(legajoColaborador) {
     const modal = $("#modalRegNovedadColaborador");
 
     $.ajax({
-        url: `/personal/info/${legajoColaborador}`,
+        url: `/rrhh/personal/info/${legajoColaborador}`,
         type: "GET",
         success: function (data) {
             $("#tituloRegNovedad").html(`
@@ -183,7 +183,7 @@ $(document).ready(function () {
     const $select = $("#selectNovedad");
 
     $.ajax({
-        url: "/novedades/selector",
+        url: "/rrhh/novedades/selector",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -251,7 +251,7 @@ $("#formCargaNovedad").on("submit", function (e) {
     });
 
     $.ajax({
-        url: "/novedades/registrar",
+        url: "/rrhh/novedades/registrar",
         type: "POST",
         data: $(this).serialize(),
         headers: {
@@ -313,7 +313,7 @@ function anularNovedad(idRegistro) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/novedades/anular",
+                url: "/rrhh/novedades/anular",
                 type: "POST",
                 data: {
                     idRegistro: idRegistro,
@@ -365,7 +365,7 @@ $(document).ready(function () {
     if ($("#tbSeleccionColabs").length > 0) {
         tablaPersonal = $("#tbSeleccionColabs").DataTable({
             ajax: {
-                url: "/personal/listarCargaMasiva",
+                url: "/rrhh/personal/listarCargaMasiva",
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
@@ -387,7 +387,7 @@ $(document).ready(function () {
             scrollCollapse: true,
             scrollY: "50vh",
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                url: "/js/es-ES.json",
             },
             columns: [
                 {
@@ -458,7 +458,7 @@ $(document).ready(function () {
         scrollCollapse: true,
         ordering: false,
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+            url: "/js/es-ES.json",
         },
     });
 });
@@ -578,7 +578,7 @@ $("#btnRegistrarMasivo").on("click", function () {
         console.log(data);
 
         $.ajax({
-            url: "/novedades/registrar-masivo",
+            url: "/rrhh/novedades/registrar-masivo",
             type: "POST",
             data: data,
             success: function (response) {
@@ -686,7 +686,7 @@ $("#btnGuardarCambios").on("click", function () {
     console.log(data);
 
     $.ajax({
-        url: "/novedades/actualizar",
+        url: "/rrhh/novedades/actualizar",
         type: "POST",
         data: data,
         headers: {
@@ -785,7 +785,7 @@ function calcularValorFila(row) {
 
 $(document).ready(function () {
     $.ajax({
-        url: "/novedades/selector",
+        url: "/rrhh/novedades/selector",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -936,7 +936,7 @@ $(document).ready(function () {
     const $select = $("#inputNovedad");
 
     $.ajax({
-        url: "/novedades/selector",
+        url: "/rrhh/novedades/selector",
         type: "GET",
         dataType: "json",
         success: function (data) {

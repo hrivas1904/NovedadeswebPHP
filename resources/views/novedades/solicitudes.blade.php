@@ -183,7 +183,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="formCargaSolicitud" action="{{ route('novedades.store') }}" method="POST">
+                <form id="formCargaSolicitud" action="{{ route('rrhh.novedades.store') }}" method="POST">
 
                     <div class="section-divider mb-3">
                         <span>Información general</span>

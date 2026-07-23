@@ -18,7 +18,7 @@ $("#toggleFinnegans").on("click", function () {
 
 function cargarAreas() {
     $.ajax({
-        url: "/areas/lista",
+        url: "/rrhh/areas/lista",
         method: "GET",
         dataType:'json',
         success: function (data) {
@@ -43,7 +43,7 @@ function cargarAreas() {
 
 function cargarNovedades() {
     $.ajax({
-        url: "/novedades/lista",
+        url: "/rrhh/novedades/lista",
         type: "GET",
         dataType: "json",
         success: function (data) {

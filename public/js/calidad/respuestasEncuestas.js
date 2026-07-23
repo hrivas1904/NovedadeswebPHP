@@ -8,7 +8,7 @@ $(document).ready(function () {
 
 function cargarTipoEncuestas() {
     $.ajax({
-        url: "/encuestas/tipos",
+        url: "/calidad/encuestas/tipos",
         method: "GET",
         success: function (data) {
             const select = $("#selectTipoEncuesta");

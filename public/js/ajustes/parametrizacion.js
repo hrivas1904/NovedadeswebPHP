@@ -6,7 +6,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     const tablaArea = new DataTable("#tb_areas", {
         ajax: {
-            url: "/areas/lista",
+            url: "/rrhh/areas/lista",
             type: "GET",
             dataSrc: "",
         },
@@ -34,7 +34,7 @@ function verDetalleArea(idArea) {
     const modal = $("#modalEdicionArea");
 
     $.ajax({
-        url: "/parametrizacion/verArea",
+        url: "/rrhh/parametrizacion/verArea",
         type: "GET",
         data: {
             idArea: idArea,
@@ -72,7 +72,7 @@ $("#formNuevaArea").on("submit", function (e) {
     const formData = $(this).serialize();
 
     $.ajax({
-        url: "/areas/crear",
+        url: "/rrhh/areas/crear",
         method: "POST",
         data: formData,
 
@@ -112,7 +112,7 @@ $("#btnEditarArea").on("click", function () {
     const nombre = $("#nombreAreaEdit").val();
 
     $.ajax({
-        url: "/parametrizacion/editarArea",
+        url: "/rrhh/parametrizacion/editarArea",
         type: "POST",
         data: {
             idArea: idArea,
@@ -163,7 +163,7 @@ $("#btnEliminarArea").click(function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/areas/" + idArea,
+                url: "/rrhh/areas/" + idArea,
                 type: "POST",
                 headers: {
                     "X-HTTP-Method-Override": "DELETE",
@@ -228,7 +228,7 @@ $("#btnEliminarArea").click(function () {
 $(document).ready(function () {
     const tablaCateg = new DataTable("#tb_categ", {
         ajax: {
-            url: "/categorias-empleados/lista",
+            url: "/rrhh/categorias-empleados/lista",
             type: "GET",
             dataSrc: "",
         },
@@ -256,7 +256,7 @@ function verDetalleCateg(idCateg) {
     const modal = $("#modalEdicionCateg");
 
     $.ajax({
-        url: "/parametrizacion/verCategoria",
+        url: "/rrhh/parametrizacion/verCategoria",
         type: "GET",
         data: {
             idCateg: idCateg,
@@ -294,7 +294,7 @@ $("#formNuevaCategoria").on("submit", function (e) {
     const formData = $(this).serialize();
 
     $.ajax({
-        url: "/categorias/crear",
+        url: "/rrhh/categorias/crear",
         method: "POST",
         data: formData,
 
@@ -334,7 +334,7 @@ $("#btnEditarCateg").on("click", function () {
     const nombre = $("#nombreCategEdit").val();
 
     $.ajax({
-        url: "/parametrizacion/editarCateg",
+        url: "/rrhh/parametrizacion/editarCateg",
         type: "POST",
         data: {
             idCateg: idCateg,
@@ -382,7 +382,7 @@ $("#btnEliminarCateg").click(function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/categ/" + idCateg,
+                url: "/rrhh/categ/" + idCateg,
                 type: "POST",
                 headers: {
                     "X-HTTP-Method-Override": "DELETE",
@@ -445,7 +445,7 @@ $("#btnEliminarCateg").click(function () {
 $(document).ready(function () {
     const tablaServicio = new DataTable("#tb_servicios", {
         ajax: {
-            url: "/servicios/listar",
+            url: "/rrhh/servicios/listar",
             type: "GET",
             dataSrc: "",
         },
@@ -478,7 +478,7 @@ function verDetalleServicio(idServ) {
     const modal = $("#modalEdicionServicio");
 
     $.ajax({
-        url: "/parametrizacion/verServicio",
+        url: "/rrhh/parametrizacion/verServicio",
         type: "GET",
         data: {
             idServ: idServ,
@@ -506,7 +506,7 @@ function verDetalleServicio(idServ) {
 
 function cargarAreasServicios() {
     $.ajax({
-        url: "/areas/lista",
+        url: "/rrhh/areas/lista",
         type: "GET",
         success: function (data) {
             const selects = [$("#selectAreaServicios"), $("#areaServEdit")];
@@ -560,7 +560,7 @@ $("#formNuevoServicio").on("submit", function (e) {
     const formData = $(this).serialize();
 
     $.ajax({
-        url: "/servicios/crear",
+        url: "/rrhh/servicios/crear",
         method: "POST",
         data: formData,
 
@@ -603,7 +603,7 @@ $("#btnEditarServ").on("click", function () {
     const idArea = $("#areaServEdit").val();
 
     $.ajax({
-        url: "/parametrizacion/editarServicio",
+        url: "/rrhh/parametrizacion/editarServicio",
         type: "POST",
         data: {
             idServ: idServ,
@@ -652,7 +652,7 @@ $("#btnEliminarServ").click(function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/servicio/" + idServ,
+                url: "/rrhh/servicio/" + idServ,
                 type: "POST",
                 headers: {
                     "X-HTTP-Method-Override": "DELETE",

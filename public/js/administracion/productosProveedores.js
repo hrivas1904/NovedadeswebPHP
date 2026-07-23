@@ -8,7 +8,7 @@ function getScrollY() {
 $(document).ready(function () {
     tablaProductos = $("#tbProductos").DataTable({
         ajax: {
-            url: "/compras/productos/listar",
+            url: "/administracion/compras/productos/listar",
             dataSrc: "",
         },
         columns: [
@@ -61,7 +61,7 @@ $(document).on("click", "#btnCrearProducto", function () {
     }
 
     $.ajax({
-        url: "/compras/productos/crear",
+        url: "/administracion/compras/productos/crear",
         type: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -103,7 +103,7 @@ $(document).on("click", "#btnGuardarProducto", function () {
     }
 
     $.ajax({
-        url: "/compras/productos/editar",
+        url: "/administracion/compras/productos/editar",
         type: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -134,7 +134,7 @@ $(document).on("click", "#btnGuardarProducto", function () {
 $(document).ready(function () {
     tablaProveedores = $("#tbProveedores").DataTable({
         ajax: {
-            url: "/compras/proveedores/listar",
+            url: "/administracion/compras/proveedores/listar",
             dataSrc: "",
         },
         columns: [
@@ -195,7 +195,7 @@ $(document).on("click", "#btnCrearProveedor", function () {
     }
 
     $.ajax({
-        url: "/compras/proveedores/crear",
+        url: "/administracion/compras/proveedores/crear",
         type: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -239,7 +239,7 @@ $(document).on('click', '#btnGuardarProveedor', function () {
     }
 
     $.ajax({
-        url: "/compras/proveedores/editar",
+        url: "/administracion/compras/proveedores/editar",
         type: "POST",
         headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
         data: {

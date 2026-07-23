@@ -8,7 +8,7 @@ $(function () {
 
 function cargarCentrosCosto() {
     $.ajax({
-        url: "/compras/centros-costo/listar",
+        url: "/administracion/compras/centros-costo/listar",
         type: "GET",
         dataType: "json",
 
@@ -47,7 +47,7 @@ function cargarCentrosCosto() {
 
 function cargarProveedores() {
     $.ajax({
-        url: "/compras/proveedores/listar",
+        url: "/administracion/compras/proveedores/listar",
         type: "GET",
         dataType: "json",
 
@@ -89,7 +89,7 @@ let PRODUCTOS = [];
 
 function cargarProductos() {
     $.ajax({
-        url: "/compras/productos/listar",
+        url: "/administracion/compras/productos/listar",
         type: "GET",
         dataType: "json",
 
@@ -343,7 +343,7 @@ function enviarPedido() {
     });
 
     $.ajax({
-        url: "/compras/guardar",
+        url: "/administracion/compras/guardar",
         type: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),

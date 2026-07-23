@@ -24,7 +24,7 @@ $("#btnIngresarAsistencia").on("click", function () {
         console.log(position.coords.accuracy);
 
         $.ajax({
-            url: "/asistencia/ingreso",
+            url: "/rrhh/asistencia/ingreso",
             type: "POST",
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -82,7 +82,7 @@ $("#btnEgresarAsistencia").on("click", function () {
         console.log(position.coords.accuracy);
 
         $.ajax({
-            url: "/asistencia/egreso",
+            url: "/rrhh/asistencia/egreso",
             type: "POST",
 
             headers: {

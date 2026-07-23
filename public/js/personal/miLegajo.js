@@ -62,7 +62,7 @@ $(document).ready(function () {
     const $select = $("#obraSocial");
 
     $.ajax({
-        url: "/obra-social/lista",
+        url: "/rrhh/obra-social/lista",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -109,7 +109,7 @@ $(function () {
         minimumInputLength: 3,
         width: "100%",
         ajax: {
-            url: "/geo/localidades",
+            url: "/rrhh/geo/localidades",
             dataType: "json",
             delay: 400,
             data: function (params) {
@@ -148,7 +148,7 @@ $("#formAltaColaborador").on("submit", function (e) {
     });
 
     $.ajax({
-        url: "/actualizarMiLegajo",
+        url: "/rrhh/actualizarMiLegajo",
         type: "POST",
         data: formData,
 
@@ -175,7 +175,7 @@ $("#formAltaColaborador").on("submit", function (e) {
 
 function cargarMiLegajo() {
     $.ajax({
-        url: "/verMiLegajo",
+        url: "/rrhh/verMiLegajo",
         type: "GET",
         success: function (response) {
             if (response.success) {
@@ -267,7 +267,7 @@ function cargarMiLegajo() {
 
 function cargarRequerimientosAlimentarios() {
     $.ajax({
-        url: "/requerimientos-alimentarios",
+        url: "/rrhh/requerimientos-alimentarios",
         type: "GET",
         success: function (data) {
             let html = "";
@@ -334,7 +334,7 @@ function cargarReqSeleccionados(legajo) {
 
 function cargarReqSeleccionados(legajo) {
     $.ajax({
-        url: `/personal/${legajo}/req-alimenticios`,
+        url: `/rrhh/personal/${legajo}/req-alimenticios`,
         type: "GET",
         success: function (data) {
             // limpiar todos

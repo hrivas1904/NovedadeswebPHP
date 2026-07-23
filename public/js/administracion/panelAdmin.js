@@ -22,7 +22,7 @@ function filtrarPedidos() {
 
 $("#tablaPedidosCompras").DataTable({
     ajax: {
-        url: "/compras/listar",
+        url: "/administracion/compras/listar",
         type: "GET",
         data: function (d) {
             d.prioridades = getPrioridadesSeleccionadas().join(",") || null;
@@ -191,7 +191,7 @@ $(document).on("click", ".btnAutorizar", function () {
         if (!result.isConfirmed) return;
 
         $.post(
-            "/compras/aprobar",
+            "/administracion/compras/aprobar",
             {
                 _token: $('meta[name="csrf-token"]').attr("content"),
                 id: id,
@@ -240,7 +240,7 @@ $(document).on("click", ".btnAutorizarGerente", function () {
         if (!result.isConfirmed) return;
 
         $.post(
-            "/compras/aprobar-gerente",
+            "/administracion/compras/aprobar-gerente",
             {
                 _token: $('meta[name="csrf-token"]').attr("content"),
                 id: id,
@@ -277,7 +277,7 @@ $(document).on("click", ".btnRechazar", function () {
         if (!r.isConfirmed) return;
 
         $.post(
-            "/compras/rechazar",
+            "/administracion/compras/rechazar",
             {
                 _token: $('meta[name="csrf-token"]').attr("content"),
                 id: id,
@@ -317,7 +317,7 @@ function exportarExcel() {
 
     let form = $("<form>", {
         method: "POST",
-        action: "/compras/exportar-excel",
+        action: "/administracion/compras/exportar-excel",
     });
 
     form.append(
@@ -358,7 +358,7 @@ $(document).on("change", ".chkPedido", function () {
 
 function verPedido(id) {
     $.ajax({
-        url: "/compras/ver/" + id,
+        url: "/administracion/compras/ver/" + id,
         type: "GET",
         dataType: "json",
         success: function (response) {
@@ -413,7 +413,7 @@ function cargarAdjuntosPedido(pedidoId) {
     $("#detalleAdjuntosBody").html("");
     $("#sinAdjuntosMsg").addClass("d-none");
 
-    $.get(`/compras/${pedidoId}/adjuntos`, function (resp) {
+    $.get(`/administracion/compras/${pedidoId}/adjuntos`, function (resp) {
         if (!resp.data.length) {
             $("#sinAdjuntosMsg").removeClass("d-none");
             return;
@@ -480,7 +480,7 @@ $(document).on("click", "#btnSubirOrdenCompra", function () {
     formData.append("archivo", archivo);
 
     $.ajax({
-        url: `/compras/${pedidoId}/orden-compra`,
+        url: `/administracion/compras/${pedidoId}/orden-compra`,
         type: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -534,7 +534,7 @@ function cargarOrdenesCompra(pedidoId) {
     $("#detalleOCBody").html("");
     $("#sinOCMsg").addClass("d-none");
 
-    $.get(`/compras/${pedidoId}/adjuntos/ORDEN_COMPRA`, function (resp) {
+    $.get(`/administracion/compras/${pedidoId}/adjuntos/ORDEN_COMPRA`, function (resp) {
         if (!resp.data.length) {
             $("#sinOCMsg").removeClass("d-none");
             return;
@@ -569,7 +569,7 @@ $(document).on("click", "#btnSubirOrdenCompra", function () {
     formData.append("archivo", file);
 
     $.ajax({
-        url: `/compras/${pedidoId}/orden-compra`,
+        url: `/administracion/compras/${pedidoId}/orden-compra`,
         type: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),

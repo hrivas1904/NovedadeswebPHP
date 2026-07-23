@@ -1043,7 +1043,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="formCargaNovedad" action="{{ route('novedades.store') }}" method="POST">
+                <form id="formCargaNovedad" action="{{ route('rrhh.novedades.store') }}" method="POST">
                     @csrf
                     <div class="section-divider mb-3">
                         <span>Información general</span>
@@ -1211,7 +1211,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="formNuevaOs" action="{{ route('obraSocial.registraNuevaOs') }}" method="POST">
+                <form id="formNuevaOs" action="{{ route('rrhh.obraSocial.registraNuevaOs') }}" method="POST">
                     @csrf <div class="row">
                         <div class="col-6 mb-2">
                             <label class="form-label fw-bold">Código de la Obra Social</label>

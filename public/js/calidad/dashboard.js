@@ -45,7 +45,7 @@ function cargarDashboard() {
     let tipoEncuesta = null;
 
     $.ajax({
-        url: "/dashboard/completo",
+        url: "/calidad/dashboard/completo",
         method: "GET",
         data: {
             desde: desde,

@@ -8,7 +8,7 @@ $(document).ready(function () {
 
 function cargarTipoEncuestas() {
     $.ajax({
-        url: "/encuestas/tipos",
+        url: "/calidad/encuestas/tipos",
         method: "GET",
         success: function (data) {
             const select = $("#selectTipoEncuesta");
@@ -81,7 +81,7 @@ $("#btnImportar").click(function () {
     });
 
     $.ajax({
-        url: "/encuestas/importar",
+        url: "/calidad/encuestas/importar",
         type: "POST",
         data: formData,
         processData: false,
@@ -141,7 +141,7 @@ function renderExcelPreview(headers, rows) {
         scrollCollapse: true,
         scrollY: getScrollY(),
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+            url: "/js/es-ES.json",
         },
     });
 }
@@ -192,7 +192,7 @@ $("#btnAnalizar").click(function (e) {
     });
 
     $.ajax({
-        url: "/encuestas/procesar",
+        url: "/calidad/encuestas/procesar",
         type: "POST",
         data: formData,
         processData: false,
@@ -248,7 +248,7 @@ function renderResultados(data) {
 
 function cargarResultados(idImportacion) {
     $.ajax({
-        url: `/encuestas/resultados/${idImportacion}`,
+        url: `/calidad/encuestas/resultados/${idImportacion}`,
         method: "GET",
         success: function (data) {
             console.log("RESULTADOS:", data);

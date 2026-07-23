@@ -98,7 +98,7 @@ function obtenerFiltrosFechas() {
 
 function cargarHistoricoColab() {
     $.ajax({
-        url: "/dashboard/historico-colaboradores",
+        url: "/rrhh/dashboard/historico-colaboradores",
         type: "GET",
         dataType: "json",
 
@@ -117,7 +117,7 @@ function cargarIndiceRotacional() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/tasa-rotacional",
+        url: "/rrhh/dashboard/tasa-rotacional",
         type: "GET",
         dataType: "json",
 
@@ -141,7 +141,7 @@ function cargarColaboradoresActivos() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/colaboradores-activos",
+        url: "/rrhh/dashboard/colaboradores-activos",
         type: "GET",
         dataType: "json",
 
@@ -165,7 +165,7 @@ function cargarColaboradoresBaja() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/colaboradores-baja",
+        url: "/rrhh/dashboard/colaboradores-baja",
         type: "GET",
         dataType: "json",
         data: {
@@ -190,7 +190,7 @@ function cargarHistoricoNovedades() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/novedades-historicos",
+        url: "/rrhh/dashboard/novedades-historicos",
         type: "GET",
         dataType: "json",
         data: {
@@ -213,7 +213,7 @@ function cargarHistoricoNovedades() {
 
 function cargarNovedadesMesActual() {
     $.ajax({
-        url: "/dashboard/novedades-mes-actual",
+        url: "/rrhh/dashboard/novedades-mes-actual",
         type: "GET",
         dataType: "json",
 
@@ -234,7 +234,7 @@ function cargarNovedadesMasFrecuente() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/novedades-mas-frec",
+        url: "/rrhh/dashboard/novedades-mas-frec",
         type: "GET",
         dataType: "json",
         data: {
@@ -261,7 +261,7 @@ function cargarNovedadesMenosFrecuente() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/novedades-menos-frec",
+        url: "/rrhh/dashboard/novedades-menos-frec",
         type: "GET",
         dataType: "json",
         data: {
@@ -288,7 +288,7 @@ function cargarAreaMasNovedades() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/area-mas-novedades",
+        url: "/rrhh/dashboard/area-mas-novedades",
         type: "GET",
         dataType: "json",
         data: {
@@ -315,7 +315,7 @@ function cargarAreaMenosNovedades() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/area-menos-novedades",
+        url: "/rrhh/dashboard/area-menos-novedades",
         type: "GET",
         dataType: "json",
         data: {
@@ -342,7 +342,7 @@ function cargarChartNovedadesPorTipo() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/novedades-por-tipo",
+        url: "/rrhh/dashboard/novedades-por-tipo",
         type: "GET",
         dataType: "json",
         data: {
@@ -430,7 +430,7 @@ function cargarChartNovedadesPorArea() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/novedades-por-area",
+        url: "/rrhh/dashboard/novedades-por-area",
         type: "GET",
         dataType: "json",
         data: {
@@ -506,7 +506,7 @@ function cargarChartNovedadesMes() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/novedades-por-mes",
+        url: "/rrhh/dashboard/novedades-por-mes",
         type: "GET",
         dataType: "json",
         data: {
@@ -596,7 +596,7 @@ function cargarTopEmpleadosNovedades() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/top-empleados-novedades",
+        url: "/rrhh/dashboard/top-empleados-novedades",
         type: "GET",
         dataType: "json",
         data: {
@@ -671,7 +671,7 @@ function cargarTablaNovedadesTipo() {
 
     tablaNovedadesTipo = $("#tblNovedadesTipo").DataTable({
         ajax: {
-            url: "/dashboard/novedades-por-tipo",
+            url: "/rrhh/dashboard/novedades-por-tipo",
             type: "GET",
 
             data: function (d) {
@@ -723,7 +723,7 @@ function cargarTablaNovedadesArea() {
 
     tablaNovedadesArea = $("#tblNovedadesArea").DataTable({
         ajax: {
-            url: "/dashboard/novedades-por-area",
+            url: "/rrhh/dashboard/novedades-por-area",
             dataSrc: "",
             data: function (d) {
                 return filtrosDashboard;
@@ -769,7 +769,7 @@ function cargarTotalesAdelantos() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/totalAdelantosSueldos",
+        url: "/rrhh/dashboard/totalAdelantosSueldos",
         type: "GET",
         dataType: "json",
 
@@ -793,7 +793,7 @@ function cargarMontoAdelantos() {
     const filtros = obtenerFiltrosFechas();
     console.log("Llamando AJAX con:", filtros);
     $.ajax({
-        url: "/dashboard/totalAdelantosSueldos",
+        url: "/rrhh/dashboard/totalAdelantosSueldos",
         type: "GET",
         dataType: "json",
 
@@ -819,7 +819,7 @@ function cargarChartAdelantosMes() {
     console.log("Llamando AJAX adelantos por mes con:", filtros);
 
     $.ajax({
-        url: "/dashboard/adelantosPorMes",
+        url: "/rrhh/dashboard/adelantosPorMes",
         type: "GET",
         dataType: "json",
 

@@ -111,7 +111,7 @@ function subirComprobantes(files) {
     }
 
     $.ajax({
-        url: "/novedades/subir-comprobante",
+        url: "/rrhh/novedades/subir-comprobante",
         method: "POST",
         data: formData,
         processData: false,
@@ -140,7 +140,7 @@ $(document).on("click", ".btn-ver-archivo", function (e) {
 
 function verComprobantes(idNovedad) {
     $.ajax({
-        url: `/novedades/${idNovedad}/comprobantes`,
+        url: `/rrhh/novedades/${idNovedad}/comprobantes`,
         method: "GET",
         dataType: "json",
         success: function (response) {
@@ -155,7 +155,7 @@ function verComprobantes(idNovedad) {
                 );
             } else {
                 response.forEach((comp) => {
-                    const url = `/comprobantes/${comp.id}/ver`;
+                    const url = `/rrhh/comprobantes/${comp.id}/ver`;
 
                     contenedor.append(`
                         <div class="mb-4 border rounded p-2">
@@ -201,7 +201,7 @@ function verLegajo(legajoColaborador, nombre) {
     cargarHijoColab(legajoColaborador);
 
     $.ajax({
-        url: `/personal/ver-legajo/${legajoColaborador}`,
+        url: `/rrhh/personal/ver-legajo/${legajoColaborador}`,
         type: "GET",
         success: function (response) {
             if (response.success) {
@@ -313,7 +313,7 @@ $(document).on("submit", "#formBajaColaborador", function (e) {
         if (!result.isConfirmed) return;
 
         $.ajax({
-            url: `/personal/baja/${legajo}`,
+            url: `/rrhh/personal/baja/${legajo}`,
             type: "POST",
             data: {
                 fechaBaja: $("#fechaBajaColab").val(),
@@ -376,7 +376,7 @@ $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
         tablaPersonal = $("#tb_personal").DataTable({
             ajax: {
-                url: "/personal/listarColaboradoresDatatable",
+                url: "/rrhh/personal/listarColaboradoresDatatable",
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
@@ -567,7 +567,7 @@ $(document).ready(function () {
 //SELECTORES CATEGORÍAS Y ROLES
 function cargarCategorias() {
     $.ajax({
-        url: "/categorias-empleados/lista",
+        url: "/rrhh/categorias-empleados/lista",
         type: "GET",
         success: function (data) {
             $(".js-select-categoria").each(function () {
@@ -610,7 +610,7 @@ $(document).on("change", ".js-select-categoria", function () {
     if (!idCategoria) return;
 
     $.ajax({
-        url: `/roles-empleados/por-categoria/${idCategoria}`,
+        url: `/rrhh/roles-empleados/por-categoria/${idCategoria}`,
         method: "GET",
         success: function (data) {
             data.forEach((rol) => {
@@ -636,7 +636,7 @@ function cargarSelectAreas() {
     $select.empty().append('<option value="">Cargando...</option>');
 
     $.ajax({
-        url: "/areas/lista",
+        url: "/rrhh/areas/lista",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -669,7 +669,7 @@ $(document).on("change", ".js-select-area", function () {
     if (!idArea) return;
 
     $.ajax({
-        url: `/servicios-empleados/por-area/${idArea}`,
+        url: `/rrhh/servicios-empleados/por-area/${idArea}`,
         method: "GET",
         dataType: "json",
         success: function (data) {
@@ -699,7 +699,7 @@ $(document).ready(function () {
     const $select = $("#obraSocial");
 
     $.ajax({
-        url: "/obra-social/lista",
+        url: "/rrhh/obra-social/lista",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -788,7 +788,7 @@ $(function () {
         width: "100%",
         dropdownParent: $("#modalAltaColaborador"),
         ajax: {
-            url: "/geo/localidades",
+            url: "/rrhh/geo/localidades",
             dataType: "json",
             delay: 400, // Un poco más de delay ayuda a no disparar tantas peticiones
             data: function (params) {
@@ -832,7 +832,7 @@ $(function () {
         width: "100%",
         dropdownParent: $("#modalLegajoColaborador"),
         ajax: {
-            url: "/geo/localidades",
+            url: "/rrhh/geo/localidades",
             dataType: "json",
             delay: 400, // Un poco más de delay ayuda a no disparar tantas peticiones
             data: function (params) {
@@ -897,7 +897,7 @@ $("#formAltaColaborador").on("submit", function (e) {
     let formData = $(this).serialize();
 
     $.ajax({
-        url: "/personal/guardar",
+        url: "/rrhh/personal/guardar",
         type: "POST",
         data: formData,
         headers: {

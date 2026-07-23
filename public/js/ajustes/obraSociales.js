@@ -1,6 +1,6 @@
 function verObraSocial(id) {
     $.ajax({
-        url: `/obra-social/${id}`,
+        url: `/rrhh/obra-social/${id}`,
         type: "GET",
         success: function (data) {
             $("#idOs").val(data.id);
@@ -19,7 +19,7 @@ $(document).ready(function () {
     if ($("#tb_obraSocial").length > 0) {
         $("#tb_obraSocial").DataTable({
             ajax: {
-                url: "/obra-social/lista",
+                url: "/rrhh/obra-social/lista",
                 type: "GET",
                 dataSrc: "", // 👈 clave
             },
@@ -29,7 +29,7 @@ $(document).ready(function () {
                 { data: "codigo" },
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                url: "/js/es-ES.json",
                 lengthMenu: "_MENU_",
                 paginate: {
                     first: "<<",
@@ -67,7 +67,7 @@ $(document).on("submit", "#formNuevaObraSocial", function (e) {
     $("#btnCrearOs").prop("disabled", true);
 
     $.ajax({
-        url: "/obra-social/crear",
+        url: "/rrhh/obra-social/crear",
         method: "POST",
         data: form.serialize(),
         headers: {
@@ -115,7 +115,7 @@ $(document).on("submit", "#formEditObraSocial", function (e) {
     $("#btnGuardarOsEdit").prop("disabled", true);
 
     $.ajax({
-        url: "/obra-social/editar",
+        url: "/rrhh/obra-social/editar",
         method: "POST",
         data: form.serialize(),
         headers: {

@@ -44,7 +44,7 @@ function obtenerMes(fecha) {
 
 function obtenerFeriados() {
     $.ajax({
-        url: "/eventosProgramados/lista",
+        url: "/rrhh/eventosProgramados/lista",
         type: "GET",
         success: function (res) {
             if (res.success) {
@@ -104,7 +104,7 @@ $(document).on("click", ".btnEditarEvento", function () {
     const idEvento = $(this).data("id");
 
     $.ajax({
-        url: `/eventosProgramados/verDetalle/${idEvento}`,
+        url: `/rrhh/eventosProgramados/verDetalle/${idEvento}`,
         type: "GET",
         dataType: "json",
 
@@ -147,7 +147,7 @@ $(document).on("click", ".btnEliminarEvento", function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/eventosProgramados/eliminar",
+                url: "/rrhh/eventosProgramados/eliminar",
                 type: "POST",
                 data: {
                     idEvento: idEvento,
@@ -193,7 +193,7 @@ $("#btnRedactarComunicado").click(function () {
     }
 
     $.ajax({
-        url: "/notificaciones/publicar",
+        url: "/rrhh/notificaciones/publicar",
         type: "POST",
         headers: {
             "X-Requested-With": "XMLHttpRequest",
@@ -232,7 +232,7 @@ $("#btnRedactarComunicado").click(function () {
 
 function cargarNotificaciones() {
     $.ajax({
-        url: "/notificaciones/lista",
+        url: "/rrhh/notificaciones/lista",
         method: "GET",
         success: function (response) {
             const contenedor = $("#listaNotificaciones");
@@ -346,7 +346,7 @@ function eliminarNotificacion(idNotificacion) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/notificaciones/borrar",
+                url: "/rrhh/notificaciones/borrar",
                 method: "POST",
                 data: {
                     idNotificacion: idNotificacion,
@@ -375,7 +375,7 @@ function eliminarNotificacion(idNotificacion) {
 
 function cargarDashboardDiario() {
     $.ajax({
-        url: "/home/dashboardDiario",
+        url: "/rrhh/home/dashboardDiario",
         type: "GET",
         success: function (res) {
             dashboardData = res;
@@ -408,7 +408,7 @@ function cargarDashboardDiario() {
 
 function cargarMisOperaciones() {
     $.ajax({
-        url: "/home/misOperaciones",
+        url: "/rrhh/home/misOperaciones",
         type: "GET",
         success: function (res) {
             dashboardData = res;
@@ -450,7 +450,7 @@ $("#btnGuardarEvento").on("click", function () {
     }
 
     $.ajax({
-        url: "/calendario/agendarEvento",
+        url: "/rrhh/calendario/agendarEvento",
         type: "POST",
         data: {
             fechaEvento: $("#inputFechaEvento").val(),
@@ -491,7 +491,7 @@ $("#btnGuardarEvento").on("click", function () {
 
 $("#btnEditarEvento").on("click", function () {
     $.ajax({
-        url: "/eventosProgramados/editar",
+        url: "/rrhh/eventosProgramados/editar",
         type: "POST",
         data: {
             idEvento: $("#inputIdEventoEdit").val(),

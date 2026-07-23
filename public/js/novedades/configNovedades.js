@@ -1,6 +1,6 @@
 function verNovedad(codigo) {
     $.ajax({
-        url: `/novedades/${codigo}`,
+        url: `/rrhh/novedades/${codigo}`,
         type: "GET",
         success: function (data) {
             $("#idNovedadEdit").val(data.id_novedad);
@@ -40,14 +40,14 @@ $(document).ready(function () {
     if ($("#tb_configuracion").length > 0) {
         $("#tb_configuracion").DataTable({
             ajax: {
-                url: "/novedades/data",
+                url: "/rrhh/novedades/data",
                 type: "GET",
                 error: function (e) {
                     console.error("Error al cargar datos:", e.responseText);
                 },
             },
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                url: "/js/es-ES.json",
                 lengthMenu: "_MENU_",
                 paginate: {
                     first: "<<",
@@ -108,7 +108,7 @@ $(document).on("submit", "#formNuevaNovedad", function (e) {
     let form = $(this);
 
     $.ajax({
-        url: "/novedades/crear",
+        url: "/rrhh/novedades/crear",
         method: "POST",
         data: form.serialize(),
         headers: {
@@ -155,7 +155,7 @@ $(document).on("submit", "#formEditNovedades", function (e) {
     let form = $(this);
 
     $.ajax({
-        url: "/novedades/editar",
+        url: "/rrhh/novedades/editar",
         method: "POST",
         data: form.serialize(),
         headers: {

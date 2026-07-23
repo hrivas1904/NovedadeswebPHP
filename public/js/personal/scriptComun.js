@@ -29,7 +29,7 @@ $("#btnExportExcel").on("click", function () {
     });
 
     window.open(
-        "/personal/exportarListaColabDatatable?" + $.param(filtros),
+        "/rrhh/personal/exportarListaColabDatatable?" + $.param(filtros),
         "_blank"
     );
 });
@@ -98,7 +98,7 @@ function formatearFechaArgentina(fecha) {
 //FILTROS TIPO ECOMMERCE
 function cargarAreas() {
     $.ajax({
-        url: "/areas/lista",
+        url: "/rrhh/areas/lista",
         method: "GET",
         success: function (data) {
             const container = $("#listaAreas");
@@ -126,7 +126,7 @@ function cargarAreas() {
 
 function cargarFiltroCateg() {
     $.ajax({
-        url: "/categorias-empleados/lista",
+        url: "/rrhh/categorias-empleados/lista",
         method: "GET",
         success: function (data) {
             const container = $("#listaCateg");
@@ -152,7 +152,7 @@ function cargarFiltroCateg() {
 
 function cargarFiltroConvenio() {
     $.ajax({
-        url: "/convenios/lista",
+        url: "/rrhh/convenios/lista",
         method: "GET",
         success: function (data) {
             const container = $("#listaConvenios");
@@ -226,7 +226,7 @@ $("#toggleEstados").on("click", function () {
 //REQUERIMIENTOS ALIMENTARIOS
 function cargarRequerimientosAlimentarios() {
     $.ajax({
-        url: "/requerimientos-alimentarios",
+        url: "/rrhh/requerimientos-alimentarios",
         type: "GET",
         success: function (data) {
             let html = "";
@@ -278,7 +278,7 @@ $(document).on("change", "input[name='req_alimenticios[]']", function () {
 
 function cargarReqSeleccionados(legajo) {
     $.ajax({
-        url: `/personal/${legajo}/req-alimenticios`,
+        url: `/rrhh/personal/${legajo}/req-alimenticios`,
         type: "GET",
         success: function (data) {
             // limpiar todos
@@ -306,14 +306,14 @@ function cargarReqSeleccionados(legajo) {
 function inicializarORefrescarHistorial() {
     if (tablaHistorialNovedades) {
         tablaHistorialNovedades.ajax
-            .url(`/novedades/historial/${legajoActivo}`)
+            .url(`/rrhh/novedades/historial/${legajoActivo}`)
             .load(null, false);
         return;
     }
 
     tablaHistorialNovedades = $("#tb_historialNovedades").DataTable({
         ajax: {
-            url: `/novedades/historial/${legajoActivo}`,
+            url: `/rrhh/novedades/historial/${legajoActivo}`,
             type: "GET",
             dataSrc: "data",
         },

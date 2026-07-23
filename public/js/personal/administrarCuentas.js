@@ -13,7 +13,7 @@ $.ajaxSetup({
 
 function listarCuentasBancarias(legajo) {
     $.ajax({
-        url: "/personal/cuentasBancarias",
+        url: "/rrhh/personal/cuentasBancarias",
         type: "GET",
         data: { legajo: legajo },
         success: function (respuesta) {
@@ -102,7 +102,7 @@ $(document).on("click", ".btn-guardar-cuenta", function () {
     legajo=card.find(".input-legajo").val();
 
     $.ajax({
-        url: "/cuentas/actualizar",
+        url: "/rrhh/cuentas/actualizar",
         type: "POST",
         data: {
             id: id,
@@ -156,7 +156,7 @@ $(document).on("click", ".btn-eliminar-cuenta", function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/cuentas/eliminar",
+                url: "/rrhh/cuentas/eliminar",
                 type: "POST",
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
@@ -236,7 +236,7 @@ $(document).on("click", "#btnGuardarCuenta", function () {
     }
 
     $.ajax({
-        url: "/cuentas/crear",
+        url: "/rrhh/cuentas/crear",
         type: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -294,7 +294,7 @@ $(document).on("change", "input[type=radio][name^='cuenta_']", function () {
     legajo = $("#inputLegajo").val();
 
     $.ajax({
-        url: "/cuentas/priorizar",
+        url: "/rrhh/cuentas/priorizar",
         type: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),

@@ -107,7 +107,7 @@ function cerrarModalLegajo() {
 
 function verDetalleNovedad(idRegistro) {
     $.ajax({
-        url: `/novedades/verDetalleRegistroNovedad/${idRegistro}`,
+        url: `/rrhh/novedades/verDetalleRegistroNovedad/${idRegistro}`,
         type: "GET",
         dataType: "json",
         success: function (response) {
@@ -199,7 +199,7 @@ $(document).ready(function () {
     if (tablaControl.length > 0) {
         tablaControl = new DataTable("#tb_control", {
             ajax: {
-                url: "/novedades/listarNovedadesPorArea",
+                url: "/rrhh/novedades/listarNovedadesPorArea",
                 type: "GET",
                 data: function (d) {
                     d.area_id = getAreasSeleccionadas().join(",") || null;
@@ -346,7 +346,7 @@ $(document).ready(function () {
             scrollCollapse: true,
             scrollY: getScrollY(),
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                url: "/js/es-ES.json",
                 lengthMenu: "_MENU_",
                 paginate: {
                     first: "<<",
@@ -590,7 +590,7 @@ $(document).on("click", "#btnExportExcel", function () {
         hasta: $("#filtroHasta").val(),
     });
 
-    window.location.href = "/novedades/exportarExcel?" + params.toString();
+    window.location.href = "/rrhh/novedades/exportarExcel?" + params.toString();
 });
 
 //selector novedad
@@ -598,7 +598,7 @@ $(document).ready(function () {
     const $select = $("#selectNovedad");
 
     $.ajax({
-        url: "/novedades/selector",
+        url: "/rrhh/novedades/selector",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -837,7 +837,7 @@ $("#btnLiquidarNovedadesSelec").on("click", function () {
             });
 
             $.ajax({
-                url: "/novedades/liquidarNovedades",
+                url: "/rrhh/novedades/liquidarNovedades",
                 type: "POST",
                 data: {
                     ids: ids,

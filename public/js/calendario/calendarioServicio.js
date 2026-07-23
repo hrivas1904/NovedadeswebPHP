@@ -31,7 +31,7 @@ $(document).ready(function () {
     const idArea = parseInt($("#idArea").val());
 
     $.ajax({
-        url: "/calendario/colaboradores-area",
+        url: "/rrhh/calendario/colaboradores-area",
         type: "GET",
         data: { idArea: idArea },
         dataType: "json",
@@ -230,7 +230,7 @@ $("#btnGuardarEvento").on("click", function (e) {
     }
 
     $.ajax({
-        url: "/calendario/guardar",
+        url: "/rrhh/calendario/guardar",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ eventos: datos }),
@@ -311,7 +311,7 @@ $("#btnGenerarReporte").on("click", function () {
     let hasta = $("#fechaHasta").val();
 
     $.ajax({
-        url: "/calendario/reporte/exportar",
+        url: "/rrhh/calendario/reporte/exportar",
         type: "POST",
         data: {
             fechaDesde: desde,
@@ -407,7 +407,7 @@ function pintarEvento(contenedor, evento, fechaString) {
 //EDICIÓN DEL COLABORADOR
 function cargarColaboradoresArea(idArea) {
     $.ajax({
-        url: "/calendario/colaboradores-area",
+        url: "/rrhh/calendario/colaboradores-area",
         type: "GET",
         data: { idArea: idArea },
         dataType: "json",
@@ -438,7 +438,7 @@ function verDetalleEventoCalendario(idEvento) {
     });
 
     $.ajax({
-        url: "/calendario/verDetalleEvento",
+        url: "/rrhh/calendario/verDetalleEvento",
         type: "GET",
         data: {
             idEvento: idEvento,
@@ -488,7 +488,7 @@ function cerrarDetalleEvento() {
 
 $("#btnEditarEvento").on("click", function () {
     $.ajax({
-        url: "/calendario/editarEvento",
+        url: "/rrhh/calendario/editarEvento",
         type: "POST",
         data: {
             idEvento: $("#idEventoCalendario").val(),
@@ -552,7 +552,7 @@ $("#btnEliminarEvento").on("click", function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/calendario/eliminarEvento",
+                url: "/rrhh/calendario/eliminarEvento",
                 type: "POST",
                 data: {
                     idEvento: idEvento,
@@ -597,7 +597,7 @@ function cargarEventosMes(year, month) {
     const idArea = $("#idArea").val();
 
     $.ajax({
-        url: `/calendario/eventos/${idArea}`,
+        url: `/rrhh/calendario/eventos/${idArea}`,
         type: "GET",
         success: function (eventos) {
             eventos.forEach((evento) => {

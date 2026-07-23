@@ -28,7 +28,7 @@
             @if (in_array(Auth::user()->rol, ['Administrador/a']))
                 <div class="row g-3 mb-3">
                     <div class="col-xl-3 col-md-6 col-12">
-                        <div class="card card-hover-radial p-2" id="cardKpiColabActivos" style="cursor: pointer;">
+                        <div class="card  p-2" id="cardKpiColabActivos" style="cursor: pointer; color:var(--color-default);">
                             <div class="d-flex gap-3">
                                 <div class="icon-box" style="background: var(--color-accent-green); color: var(--bg-card);">
                                     <i class="fa-solid fa-users"></i>
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 col-12">
-                        <div class="card card-hover-radial p-2" id="cardKpiNovMes" style="cursor: pointer;">
+                        <div class="card  p-2" id="cardKpiNovMes" style="cursor: pointer; color:var(--color-default);">
                             <div class="d-flex gap-3">
                                 <div class="icon-box" style="background: var(--color-accent-green); color: var(--bg-card);">
                                     <i class="fa-solid fa-folder-open"></i>
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 col-12">
-                        <div class="card card-hover-radial p-2" id="cardKpiAdPendientes" style="cursor: pointer;">
+                        <div class="card  p-2" id="cardKpiAdPendientes" style="cursor: pointer; color:var(--color-default);">
                             <div class="d-flex gap-3">
                                 <div class="icon-box" style="background: var(--color-accent-green); color: var(--bg-card);">
                                     <i class="fa-solid fa-file-invoice-dollar"></i>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 col-12">
-                        <div class="card card-hover-radial p-2" id="cardKpiTicketAbiertos" style="cursor: pointer;">
+                        <div class="card  p-2" id="cardKpiTicketAbiertos" style="cursor: pointer; color:var(--color-default);">
                             <div class="d-flex gap-3">
                                 <div class="icon-box" style="background: var(--color-accent-green); color: var(--bg-card);">
                                     <i class="fa-solid fa-ticket"></i>

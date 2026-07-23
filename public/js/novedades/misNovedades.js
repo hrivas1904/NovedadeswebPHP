@@ -34,7 +34,7 @@ function cargarFiltroNovedad() {
     const select = $(".js-select-novedadFiltro");
     select.prop("disabled", true);
     $.ajax({
-        url: "/novedades/lista",
+        url: "/rrhh/novedades/lista",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -89,7 +89,7 @@ $(document).ready(function () {
     if (tablaControl.length > 0) {
         tablaControl = new DataTable("#tb_control", {
             ajax: {
-                url: "/novedades/listarMisNovedades",
+                url: "/rrhh/novedades/listarMisNovedades",
                 type: "GET",
                 data: function (d) {
                     d.idNovedad = $("#idNovedad").val();
@@ -186,7 +186,7 @@ $(document).ready(function () {
             scrollCollapse: true,
             scrollY: getScrollY(),
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                url: "/js/es-ES.json",
                 lengthMenu: "_MENU_",
                 paginate: {
                     first: "<<",
@@ -363,7 +363,7 @@ $(document).ready(function () {
 
 function verDetalleNovedad(idRegistro) {
     $.ajax({
-        url: `/novedades/verDetalleRegistroNovedad/${idRegistro}`,
+        url: `/rrhh/novedades/verDetalleRegistroNovedad/${idRegistro}`,
         type: "GET",
         dataType: "json",
         success: function (response) {

@@ -276,7 +276,7 @@ function abrirSolicitud() {
     Swal.showLoading();
 
     $.ajax({
-        url: `/personal/info/${legajo}`,
+        url: `/rrhh/personal/info/${legajo}`,
         type: "GET",
         success: function (data) {
             Swal.close();
@@ -311,7 +311,7 @@ $("#formCargaSolicitud").on("submit", function (e) {
     e.preventDefault();
 
     $.ajax({
-        url: "/solicitudes/registrar",
+        url: "/rrhh/solicitudes/registrar",
         method: "POST",
         data: $(this).serialize(),
         headers: {
@@ -380,7 +380,7 @@ $(document).on("click", "#btnAprobarSolicitudes", function (event) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/personal/aprobarSolicitud",
+                url: "/rrhh/personal/aprobarSolicitud",
 
                 type: "POST",
 
@@ -449,7 +449,7 @@ function anularSolicitud(idSolicitud, nombre, e) {
         if (!result.isConfirmed) return;
 
         $.ajax({
-            url: "/personal/anularSolicitud",
+            url: "/rrhh/personal/anularSolicitud",
             method: "POST",
             data: { idSolicitud: idSolicitud },
             headers: {
@@ -490,7 +490,7 @@ $(document).ready(function () {
     if ($("#tb_solicitudes").length > 0) {
         tablaSolicitudes = $("#tb_solicitudes").DataTable({
             ajax: {
-                url: "/personal/listarSolicitudes",
+                url: "/rrhh/personal/listarSolicitudes",
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
@@ -736,7 +736,7 @@ $(document).on("click", "#btnDepositarAdelantos", function (event) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/personal/depositarAdelantos",
+                url: "/rrhh/personal/depositarAdelantos",
                 type: "POST",
                 data: {
                     ids: ids,
@@ -809,7 +809,7 @@ $(document).on("click", "#btnRechazarAdelantos", function (event) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/personal/rechazarSolicitud",
+                url: "/rrhh/personal/rechazarSolicitud",
 
                 type: "POST",
 

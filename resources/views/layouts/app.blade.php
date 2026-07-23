@@ -71,8 +71,8 @@
 
                     @if (Auth::user()->rol === 'Administrador/a')
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">
-                            <i class="bx bx-grid-alt"></i>
+                        <a class="nav-link" href="{{ route('rrhh.dashboard') }}">
+                            <i class="fa-solid fa-chart-column"></i>
                             <span class="link-text">Dashboard</span>
                         </a>
                     </li>
@@ -80,36 +80,50 @@
 
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="bx bx-user"></i>
+                            <i class="fa-solid fa-users"></i>
                             <span class="link-text">Colaboradores</span>
                         </a>
                         <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('miLegajo') }}">Mi legajo</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.miLegajo') }}">Mi legajo</a></li>
                             @if (Auth::user()->rol === 'Coordinador/a L2' ||
                             Auth::user()->rol === 'Administrador/a' ||
                             Auth::user()->rol === 'Coordinador/a')
-                            <li><a class="submenu-link" href="{{ route('nominaPersonal') }}">Colaboradores</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.nominaPersonal') }}">Colaboradores</a></li>
                             @endif
                             @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                            <li><a class="submenu-link" href="{{ route('calendarioServicios') }}">Calendario recepción</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.calendarioServicios') }}">Calendario recepción</a></li>
                             @endif
                         </ul>
                     </li>
 
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-folder-open"></i>
+                            <i class="fa-solid fa-folder-closed"></i>
                             <span class="link-text">Novedades</span>
                         </a>
                         <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('novedades.misNovedades') }}">Mis novedades</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.novedades.misNovedades') }}">Mis novedades</a></li>
                             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
-                            <li><a class="submenu-link" href="{{ route('controlNovedades') }}">Registro de novedades</a></li>
-                            <li><a class="submenu-link" href="{{ route('novedades.historico') }}">Histórico novedades</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.controlNovedades') }}">Registro de novedades</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.novedades.historico') }}">Histórico novedades</a></li>
                             @endif
-                            <li><a class="submenu-link" href="{{ route('personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
                         </ul>
                     </li>
+
+                    @if (Auth::user()->rol === 'Administrador/a')
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
+                            <i class="fa-solid fa-gear"></i>
+                            <span class="link-text">Ajustes módulo RRHH</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a class="submenu-link" href="{{ route('rrhh.configNovedades') }}">Conceptos novedades</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.obraSocial.administrarObraSociales') }}">Obras sociales</a></li>
+                            <li><a class="submenu-link" href="{{ route('rrhh.parametrizacionesGenerales') }}">Parámetros generales</a></li>
+                        </ul>
+                    </li>
+                    @endif
 
                     <!-- ===== SECCIÓN: CALIDAD ===== -->
                     @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
@@ -117,12 +131,12 @@
 
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-award"></i>
+                            <i class="fa-solid fa-medal"></i>
                             <span class="link-text">Calidad</span>
                         </a>
                         <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('encuestasCalidad') }}">Importar encuestas</a></li>
-                            <li><a class="submenu-link" href="{{ route('dashboardCalidad') }}">Dashboard</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.encuestasCalidad') }}">Importar encuestas</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Dashboard</a></li>
                         </ul>
                     </li>
                     @endif
@@ -137,10 +151,10 @@
                             <span class="link-text">Administración</span>
                         </a>
                         <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('pedidosComprasView') }}">Cargar pedido de compras</a></li>
-                            <li><a class="submenu-link" href="{{ route('panelAdminView') }}">Pedidos de compras</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.pedidosComprasView') }}">Cargar pedido de compras</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.panelAdminView') }}">Pedidos de compras</a></li>
                             @if (in_array(Auth::id(), [1,2,5,6]))
-                            <li><a class="submenu-link" href="{{ route('productosProveedoresView') }}">Productos y Proveedores</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.productosProveedoresView') }}">Productos y Proveedores</a></li>
                             @endif
                         </ul>
                     </li>
@@ -148,19 +162,13 @@
 
                     <!-- ===== SECCIÓN: AJUSTES ===== -->
                     @if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-section-title section-ajustes"><span class="section-dot"></span>Ajustes</li>
+                    <li class="nav-section-title section-ajustes"><span class="section-dot"></span>USUARIOS Y PERMISOS</li>
 
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-gear"></i>
-                            <span class="link-text">Ajustes</span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('rrhh.administrarUsuarios') }}">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span class="link-text">Administrar usuarios</span>
                         </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('configNovedades') }}">Conceptos novedades</a></li>
-                            <li><a class="submenu-link" href="{{ route('administrarUsuarios') }}">Administrar usuarios</a></li>
-                            <li><a class="submenu-link" href="{{ route('obraSocial.administrarObraSociales') }}">Obras sociales</a></li>
-                            <li><a class="submenu-link" href="{{ route('parametrizacionesGenerales') }}">Parámetros generales</a></li>
-                        </ul>
                     </li>
                     @endif
 
@@ -168,13 +176,13 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
-                            <i class='bx bx-book'></i>
+                            <i class="fa-solid fa-book-atlas"></i>
                             <span class="link-text">Capacitaciones</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('ayuda') }}">
+                        <a class="nav-link" href="{{ route('rrhh.ayuda') }}">
                             <i class="fa-regular fa-circle-question"></i>
                             <span class="link-text">Ayuda</span>
                         </a>

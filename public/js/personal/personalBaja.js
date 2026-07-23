@@ -12,7 +12,7 @@ function verLegajo(legajoColaborador, nombre) {
     `);
 
     $.ajax({
-        url: `/personal/ver-legajo/${legajoColaborador}`,
+        url: `/rrhh/personal/ver-legajo/${legajoColaborador}`,
         type: "GET",
         success: function (response) {
             if (response.success) {
@@ -92,7 +92,7 @@ $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
         tablaPersonal = $("#tb_personal").DataTable({
             ajax: {
-                url: "/personal/listarPersonalBaja",
+                url: "/rrhh/personal/listarPersonalBaja",
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {

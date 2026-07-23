@@ -6,7 +6,7 @@ $(document).ready(function () {
     const $select = $("#selectObraSocialEdit");
 
     $.ajax({
-        url: "/obra-social/lista",
+        url: "/rrhh/obra-social/lista",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -39,7 +39,7 @@ function cargarSelectAreasEdit() {
     $select.empty().append('<option value="">Cargando...</option>');
 
     $.ajax({
-        url: "/areas/lista",
+        url: "/rrhh/areas/lista",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -72,7 +72,7 @@ function cargarServiciosSimple(selected = null) {
     }
 
     $.ajax({
-        url: `/servicios-empleados/por-area/${idArea}`,
+        url: `/rrhh/servicios-empleados/por-area/${idArea}`,
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -111,7 +111,7 @@ function cargarRolesSimple(selected = null) {
     }
 
     $.ajax({
-        url: `/roles-empleados/por-categoria/${idCategoria}`,
+        url: `/rrhh/roles-empleados/por-categoria/${idCategoria}`,
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -142,7 +142,7 @@ $("#formEditColaborador").on("submit", function (e) {
     const data = $(this).serialize();
     console.log("DATA:", data);
     $.ajax({
-        url: `/personal/${legajo}/actualizar`,
+        url: `/rrhh/personal/${legajo}/actualizar`,
         type: "POST",
         data: data,
         headers: {

@@ -59,7 +59,7 @@ $(document).ready(function () {
     if (tablaControl.length > 0) {
         tablaControl = new DataTable("#tb_control", {
             ajax: {
-                url: "/novedades/historicoNovedades",
+                url: "/rrhh/novedades/historicoNovedades",
                 type: "GET",
                 data: function (d) {
                     d.area_id = getAreasSeleccionadas().join(",") || null;
@@ -137,7 +137,7 @@ $(document).ready(function () {
             scrollCollapse: true,
             scrollY: getScrollY(),
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json",
+                url: "/js/es-ES.json",
                 lengthMenu: "_MENU_",
                 paginate: {
                     first: "<<",
@@ -351,7 +351,7 @@ $(document).ready(function () {
 
 function verDetalleNovedad(idRegistro) {
     $.ajax({
-        url: `/novedades/verDetalleRegistroNovedad/${idRegistro}`,
+        url: `/rrhh/novedades/verDetalleRegistroNovedad/${idRegistro}`,
         type: "GET",
         dataType: "json",
         success: function (response) {
@@ -440,5 +440,5 @@ $(document).on("click", "#btnExportExcelHist", function () {
         hasta: $("#filtroHasta").val(),
     });
 
-    window.location.href = "/novedades/exportarExcelHist?" + params.toString();
+    window.location.href = "/rrhh/novedades/exportarExcelHist?" + params.toString();
 });

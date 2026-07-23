@@ -7,7 +7,7 @@ let legajo;
 
 function cargarHijoColab(legajo) {
     $.ajax({
-        url: "/personal/listarFamiliares",
+        url: "/rrhh/personal/listarFamiliares",
         type: "GET",
         data: { legajo: legajo },
 
@@ -123,7 +123,7 @@ $(document).on("click", ".btn-update-hijo", function () {
     };
 
     $.ajax({
-        url: "/personal/editarFamiliares",
+        url: "/rrhh/personal/editarFamiliares",
         type: "GET",
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -194,7 +194,7 @@ $(document).on("click",".btn-eliminar-hijo",function(){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/personal/quitarFamiliares",
+                url: "/rrhh/personal/quitarFamiliares",
                 type: "POST",
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -296,7 +296,7 @@ $(document).on("click",".btnGuardarHijo",function(){
     };
 
     $.ajax({
-        url:"/personal/agregarFamiliares",
+        url:"/rrhh/personal/agregarFamiliares",
         type:"POST",
         data:{
             nombre:nombre,

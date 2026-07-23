@@ -47,7 +47,7 @@ function cargarDashboard() {
     let tipoEncuesta = null;
 
     $.ajax({
-        url: `/dashboard/completo/${DASHBOARD_TOKEN}`,
+        url: `/calidad/dashboard/completo/${DASHBOARD_TOKEN}`,
         method: "GET",
         data: {
             desde : desde,
