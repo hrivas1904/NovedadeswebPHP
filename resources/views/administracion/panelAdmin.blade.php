@@ -129,10 +129,7 @@
                                     <th class="text-center">Autorización</th>
                                     <th class="text-center">Estado</th>
                                     <th class="text-center" style="width: 40px;">
-                                        <input
-                                            type="checkbox"
-                                            id="checkTodosPedidos"
-                                            class="form-check-input">
+                                        <input type="checkbox" id="checkTodosPedidos" class="form-check-input">
                                     </th>
                                 </tr>
                             </thead>
@@ -207,6 +204,11 @@
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Estado Autorización Gerente</label>
                         <input class="form-control" id="estadoAutGerente" readonly>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Autorizado/Rechazado/Derivado por</label>
+                        <input class="form-control" id="auditorPedido" readonly>
                     </div>
 
                     <div class="col-12">
@@ -304,8 +306,8 @@
 @push('scripts')
 <script>
     const USER_ID = {{ Auth::id() }};
-    const PUEDE_AUTORIZAR_PEDIDOS = {{in_array(Auth::id(), [1, 2, 5, 6]) ? 'true' : 'false'}};
-    const PUEDE_APROBAR_GERENCIA = {{ in_array(Auth::id(), [1, 5]) ? 'true' : 'false' }};
+    const PUEDE_AUTORIZAR_PEDIDOS = {{in_array(Auth::id(), [1, 2, 5, 6, 15]) ? 'true' : 'false'}};
+    const PUEDE_APROBAR_GERENCIA = {{in_array(Auth::id(), [1, 5]) ? 'true' : 'false' }};
 </script>
 <script src="{{ asset('js/administracion/panelAdmin.js') }}"></script>
 <script src="{{ asset('js/administracion/scriptComunAdmin.js') }}"></script>

@@ -209,7 +209,7 @@ $("#btnAnalizar").click(function (e) {
                 },
                 buttonsStyling: false,
             }).then(() => {
-                window.location.href = "/dashboardCalidad";
+                window.location.href = "/calidad/dashboardCalidad";
             });
         },
         error: function (err) {

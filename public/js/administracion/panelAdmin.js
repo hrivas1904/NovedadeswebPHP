@@ -373,6 +373,7 @@ function verPedido(id) {
             $("#verDescripcion").val(c.descripcion);
             $("#reqAutGerente").val(c.autGerente);
             $("#estadoAutGerente").val(c.autorizacion_gerente);
+            $("#auditorPedido").val(c.auditor);
 
             let tbody = $("#detalleProductosBody");
             tbody.empty();
@@ -534,14 +535,16 @@ function cargarOrdenesCompra(pedidoId) {
     $("#detalleOCBody").html("");
     $("#sinOCMsg").addClass("d-none");
 
-    $.get(`/administracion/compras/${pedidoId}/adjuntos/ORDEN_COMPRA`, function (resp) {
-        if (!resp.data.length) {
-            $("#sinOCMsg").removeClass("d-none");
-            return;
-        }
-        resp.data.forEach((adj) => {
-            const icono = adj.esImagen ? "fa-file-image" : "fa-file-pdf";
-            const col = `
+    $.get(
+        `/administracion/compras/${pedidoId}/adjuntos/ORDEN_COMPRA`,
+        function (resp) {
+            if (!resp.data.length) {
+                $("#sinOCMsg").removeClass("d-none");
+                return;
+            }
+            resp.data.forEach((adj) => {
+                const icono = adj.esImagen ? "fa-file-image" : "fa-file-pdf";
+                const col = `
                 <div class="col-md-3 col-6">
                     <div class="border rounded p-2 text-center h-100" style="cursor:pointer;" onclick="verAdjunto('${adj.url}', '${adj.nombre}', ${adj.esImagen})">
                         <i class="fa-solid ${icono} fa-2x mb-1 text-secondary"></i>
@@ -549,9 +552,10 @@ function cargarOrdenesCompra(pedidoId) {
                     </div>
                 </div>
             `;
-            $("#detalleOCBody").append(col);
-        });
-    });
+                $("#detalleOCBody").append(col);
+            });
+        },
+    );
 }
 
 $(document).on("click", "#btnSubirOrdenCompra", function () {

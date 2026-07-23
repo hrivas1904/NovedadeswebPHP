@@ -17,7 +17,6 @@ $(document).on("click", ".toggle-password", function () {
 });
 
 $("#togglePassword").on("click", function () {
-
     const input = $("#edit_password");
     const icon = $(this).find("i");
 
@@ -28,7 +27,6 @@ $("#togglePassword").on("click", function () {
         input.attr("type", "password");
         icon.removeClass("fa-eye-slash").addClass("fa-eye");
     }
-
 });
 
 $.ajaxSetup({
@@ -43,7 +41,7 @@ function getScrollY() {
 
 function cargarAreas() {
     $.ajax({
-        url: "/areas/lista",
+        url: "/rrhh/areas/lista",
         method: "GET",
         success: function (data) {
             const select = $(".js-select-area");
@@ -75,7 +73,7 @@ $("#btnLimpiarFiltros").on("click", function () {
 $(document).ready(function () {
     let tabla = $("#tb_usuarios").DataTable({
         ajax: {
-            url: "/usuarios/listar",
+            url: "/rrhh/usuarios/listar",
             data: function (d) {
                 d.area = $("#filtroArea").val() || null;
                 d.estado = $("#filtroEstado").val() || null;
@@ -179,7 +177,7 @@ $("#btnGuardarUsuario").on("click", function () {
     }
 
     $.ajax({
-        url: "/usuarios/crear",
+        url: "/rrhh/usuarios/crear",
         type: "POST",
         data: data,
         success: function (resp) {
@@ -238,7 +236,7 @@ $("#btnActualizarUsuario").on("click", function () {
     }
 
     $.ajax({
-        url: "/usuarios/actualizar",
+        url: "/rrhh/usuarios/actualizar",
         type: "POST",
         data: data,
         success: function (resp) {
@@ -276,7 +274,7 @@ $(document).on("click", ".btnEliminar", function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/usuarios/baja",
+                url: "/rrhh/usuarios/baja",
                 type: "POST",
                 data: { legajo: legajo },
                 success: function (resp) {

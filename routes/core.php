@@ -14,6 +14,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/forgotPassword', [HomeController::class, 'forgotPassword'])->name('forgotPassword');
 
 Route::post('/push/subscribe', [PushController::class, 'subscribe']);
+
 Route::get('/usuario', [HomeController::class, 'crearUsuario'])->name('usuario');
 Route::post('/usuario/guardar', [HomeController::class, 'guardar'])->name('usuario.guardar');
 Route::get('/index', [HomeController::class, 'index'])->name('index');

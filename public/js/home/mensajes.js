@@ -44,14 +44,16 @@ function obtenerMes(fecha) {
 
 function obtenerFeriados() {
     $.ajax({
-        url: "/rrhh/eventosProgramados/lista",
+        url: "/eventosProgramados/lista",
         type: "GET",
         success: function (res) {
             if (res.success) {
                 let html = ``;
                 res.data.forEach(function (res) {
-                    const botonesAdmin = USER_ROLE === "Administrador/a" || USER_ROLE === "Supervisor/a Calidad"
-                        ? `
+                    const botonesAdmin =
+                        USER_ROLE === "Administrador/a" ||
+                        USER_ROLE === "Supervisor/a Calidad"
+                            ? `
                             <button type="button" class="btn text-muted btnEditarEvento" data-id="${res.idEvento}">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </button>
@@ -59,7 +61,7 @@ function obtenerFeriados() {
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
                         `
-                    : "";
+                            : "";
 
                     html += `
                         <div class="d-flex align-items-start gap-2 mb-2 empleado-box p-1">
@@ -104,7 +106,7 @@ $(document).on("click", ".btnEditarEvento", function () {
     const idEvento = $(this).data("id");
 
     $.ajax({
-        url: `/rrhh/eventosProgramados/verDetalle/${idEvento}`,
+        url: `/eventosProgramados/verDetalle/${idEvento}`,
         type: "GET",
         dataType: "json",
 
@@ -147,7 +149,7 @@ $(document).on("click", ".btnEliminarEvento", function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/rrhh/eventosProgramados/eliminar",
+                url: "/eventosProgramados/eliminar",
                 type: "POST",
                 data: {
                     idEvento: idEvento,
@@ -193,7 +195,7 @@ $("#btnRedactarComunicado").click(function () {
     }
 
     $.ajax({
-        url: "/rrhh/notificaciones/publicar",
+        url: "/notificaciones/publicar",
         type: "POST",
         headers: {
             "X-Requested-With": "XMLHttpRequest",
@@ -232,7 +234,7 @@ $("#btnRedactarComunicado").click(function () {
 
 function cargarNotificaciones() {
     $.ajax({
-        url: "/rrhh/notificaciones/lista",
+        url: "/notificaciones/lista",
         method: "GET",
         success: function (response) {
             const contenedor = $("#listaNotificaciones");
@@ -302,7 +304,8 @@ function cargarNotificaciones() {
                                 </p>
 
                                 ${
-                                    USER_ROLE === "Administrador/a" || USER_ROLE === "Supervisor/a Calidad"
+                                    USER_ROLE === "Administrador/a" ||
+                                    USER_ROLE === "Supervisor/a Calidad"
                                         ? `
                                     <div class="d-flex justify-content-end">
                                         <button type="button" class="btn btn-sm text-danger btn-Eliminar" data-id="${n.id_notificacion}">
@@ -346,7 +349,7 @@ function eliminarNotificacion(idNotificacion) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/rrhh/notificaciones/borrar",
+                url: "/notificaciones/borrar",
                 method: "POST",
                 data: {
                     idNotificacion: idNotificacion,
@@ -450,7 +453,7 @@ $("#btnGuardarEvento").on("click", function () {
     }
 
     $.ajax({
-        url: "/rrhh/calendario/agendarEvento",
+        url: "/calendario/agendarEvento",
         type: "POST",
         data: {
             fechaEvento: $("#inputFechaEvento").val(),
@@ -491,7 +494,7 @@ $("#btnGuardarEvento").on("click", function () {
 
 $("#btnEditarEvento").on("click", function () {
     $.ajax({
-        url: "/rrhh/eventosProgramados/editar",
+        url: "/eventosProgramados/editar",
         type: "POST",
         data: {
             idEvento: $("#inputIdEventoEdit").val(),
@@ -532,21 +535,21 @@ $(document).ready(function () {
 });
 
 $("#cardKpiColabActivos").on("click", function () {
-    window.location.href = "/nomina";
+    window.location.href = "/rrhh/nomina";
 });
 
 $("#cardKpiNovMes").on("click", function () {
-    window.location.href = "/controlNovedades";
+    window.location.href = "/rrhh/controlNovedades";
 });
 
 $("#kpiMisNovedades").on("click", function () {
-    window.location.href = "/novedades/misNovedades";
+    window.location.href = "/rrhh/novedades/misNovedades";
 });
 
 $("#cardKpiAdPendientes, #kpiMisSolicitudes").on("click", function () {
-    window.location.href = "/solicitudes";
+    window.location.href = "/rrhh/solicitudes";
 });
 
 $("#cardKpiTicketAbiertos, #kpiMisTickets").on("click", function () {
-    window.location.href = "/ayuda";
+    window.location.href = "/rrhh/ayuda";
 });
