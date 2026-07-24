@@ -129,10 +129,50 @@
                     @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
                     <li class="nav-section-title section-calidad"><span class="section-dot"></span>Calidad</li>
 
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('rrhh.ayuda') }}">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <span class="link-text">Alta dirección</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
+                            <i class="fa-solid fa-certificate"></i>
+                            <span class="link-text">Procesos principales</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a class="submenu-link" href="{{ route('calidad.encuestasCalidad') }}">Auditoría interna</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Auxiliar servicios</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Coordinación servicios</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Documentos</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Preparación habitaciones</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Jefa de enfermería</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Quirófano</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Reuniones</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">RSE</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Supervisora calidad</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Última auditoría</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
+                            <i class="fa-solid fa-handshake-angle"></i>
+                            <span class="link-text">Procesos de apoyo</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Proveedores</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - RRHH</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Mantenimiento</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Sistemas</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Limpieza</a></li>
+                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Seguridad</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-medal"></i>
-                            <span class="link-text">Calidad</span>
+                            <span class="link-text">Encuestas</span>
                         </a>
                         <ul class="submenu">
                             <li><a class="submenu-link" href="{{ route('calidad.encuestasCalidad') }}">Importar encuestas</a></li>
@@ -148,7 +188,25 @@
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-chart-pie"></i>
-                            <span class="link-text">Administración</span>
+                            <span class="link-text">Gestión financiera</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a class="submenu-link" href="{{ route('administracion.homeViewFinance') }}">Posición</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.operacionDiaView') }}">Hoy</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.presupuestarView') }}">Presupuestar</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.homeAnalisisView') }}">Análisis</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.movimientosView') }}">Movimientos</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.productosProveedoresView') }}">Saldos por cuenta</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.importacionView') }}">Importar</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.interbankingView') }}">Interbanking</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link" href="#" role="button" aria-expanded="false">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span class="link-text">Compras</span>
                         </a>
                         <ul class="submenu">
                             <li><a class="submenu-link" href="{{ route('administracion.pedidosComprasView') }}">Cargar pedido de compras</a></li>
@@ -168,6 +226,13 @@
                         <a class="nav-link" href="{{ route('rrhh.administrarUsuarios') }}">
                             <i class="fa-solid fa-users-gear"></i>
                             <span class="link-text">Administrar usuarios</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('configuracion.rolesPermisosView') }}">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span class="link-text">Roles y permisos</span>
                         </a>
                     </li>
                     @endif

@@ -309,6 +309,6 @@
     const PUEDE_AUTORIZAR_PEDIDOS = {{in_array(Auth::id(), [1, 2, 5, 6, 15]) ? 'true' : 'false'}};
     const PUEDE_APROBAR_GERENCIA = {{in_array(Auth::id(), [1, 5]) ? 'true' : 'false' }};
 </script>
-<script src="{{ asset('js/administracion/panelAdmin.js') }}"></script>
-<script src="{{ asset('js/administracion/scriptComunAdmin.js') }}"></script>
+<script src="{{ asset('js/administracion/compras/panelAdmin.js') }}"></script>
+<script src="{{ asset('js/administracion/compras/scriptComunAdmin.js') }}"></script>
 @endpush

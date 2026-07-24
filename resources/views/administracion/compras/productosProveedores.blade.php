@@ -233,5 +233,5 @@
 @endpush
 
 @push('scripts')
-<script src="{{ asset('js/administracion/productosProveedores.js') }}"></script>
+<script src="{{ asset('js/administracion/compras/productosProveedores.js') }}"></script>
 @endpush

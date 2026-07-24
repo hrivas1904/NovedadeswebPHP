@@ -226,5 +226,5 @@
 
 
 @push('scripts')
-<script src="{{ asset('js/administracion/cargarPedido.js') }}"></script>
+<script src="{{ asset('js/administracion/compras/cargarPedido.js') }}"></script>
 @endpush

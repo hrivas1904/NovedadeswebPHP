@@ -12,21 +12,21 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Illuminate\Http\Request;
 
-class AdministracionController extends Controller
+class ComprasController extends Controller
 {
     public function pedidosComprasView()
     {
-        return view('administracion.pedidosCompras');
+        return view('administracion.compras.pedidosCompras');
     }
 
     public function panelAdminView()
     {
-        return view('administracion.panelAdmin');
+        return view('administracion.compras.panelAdmin');
     }
 
     public function productosProveedoresView()
     {
-        return view('administracion.productosProveedores');
+        return view('administracion.compras.productosProveedores');
     }
 
     public function listarCentrosCosto()
