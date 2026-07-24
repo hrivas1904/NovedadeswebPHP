@@ -145,7 +145,7 @@
                         <label class="h6" style="font-size:0.8rem;">TOTAL DISPONIBLE EN PESOS</label>
                     </div>
                     <div>
-                        <label class="h3 fw-bolder" id="cardBodyMacro">$0,00</label>
+                        <label class="h3 fw-bolder" id="cardBodyTotalPesos">$0,00</label>
                     </div>
                     <div>
                         <label class="h6" style="font-size:0.8rem;">Bancos + FCI + Caja</label>
@@ -160,7 +160,7 @@
                         <label class="h6" style="font-size:0.8rem;">POSICIÓN EN DOLARES</label>
                     </div>
                     <div>
-                        <label class="h3 fw-bolder" id="cardBodyMacro">USD 0</label>
+                        <label class="h3 fw-bolder" id="cardBodyTotalUsd">USD 0</label>
                     </div>
                     <div>
                         <label class="h6" style="font-size:0.8rem;">FCI USD + Efectivo USD</label>
@@ -171,3 +171,10 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    const POSICION_ROUTES = {data: @json(route('administracion.posicion.data'))};
+</script>
+<script src="{{ asset('/js/administracion/dashboard/posicion.js') }}"></script>
+@endpush

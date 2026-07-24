@@ -1,13 +1,16 @@
 /* ===================================================== */
 /* BOTONES DE EXPORTACIÓN */
 /* ===================================================== */
-.dt-button, .btn-export-excel, .btn-export-pdf, .btn-printer {
+.dt-button,
+.btn-export-excel,
+.btn-export-pdf,
+.btn-printer {
     border: none !important;
     border-radius: 8px !important;
     font-weight: 500;
     padding: 4px 14px !important;
     margin-right: 8px !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease-in-out;
 }
 
@@ -17,10 +20,10 @@
     color: #fff !important;
 }
 
-    .btn-export-excel:hover {
-        background-color: #009c7c !important;
-        box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
-    }
+.btn-export-excel:hover {
+    background-color: #009c7c !important;
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
+}
 
 /* PDF */
 .btn-export-pdf {
@@ -28,10 +31,10 @@
     color: #fff !important;
 }
 
-    .btn-export-pdf:hover {
-        background-color: #d64545 !important;
-        box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3);
-    }
+.btn-export-pdf:hover {
+    background-color: #d64545 !important;
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3);
+}
 
 /* Imprimir */
 .btn-printer {
@@ -39,24 +42,22 @@
     color: #fff !important;
 }
 
-    .btn-printer:hover {
-        background-color: #0b3c6d !important;
-        box-shadow: 0 3px 8px rgba(108, 117, 125, 0.3);
-    }
+.btn-printer:hover {
+    background-color: #0b3c6d !important;
+    box-shadow: 0 3px 8px rgba(108, 117, 125, 0.3);
+}
 
-    /* === ÍCONOS EN BOTONES === */
-    .dt-button i,
-    .btn-export-excel i,
-    .btn-export-pdf i,
-    .btn-printer i {
-        font-size: 0.9em;
-    }
-
-
+/* === ÍCONOS EN BOTONES === */
+.dt-button i,
+.btn-export-excel i,
+.btn-export-pdf i,
+.btn-printer i {
+    font-size: 0.9em;
+}
 
 /* ===================================================== */
 /* ADITIVOS */
-/* ===================================================== */ 
+/* ===================================================== */
 .dataTables_length,
 .dataTables_filter {
     font-size: 0.9rem;
@@ -89,6 +90,9 @@
     word-break: break-word;
 }
 
+#tablaPedidosCompras tbody tr {
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
-    
 }

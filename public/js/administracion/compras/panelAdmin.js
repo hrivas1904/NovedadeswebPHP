@@ -118,7 +118,11 @@ $("#tablaPedidosCompras").DataTable({
                     `;
                 }
 
-                return "";
+                return `
+                    <button class="btn btn-secondary btn-sm btnVerDetalle" data-id="${data.id}">
+                        <i class="fa fa-eye"></i>
+                    </button>
+                `;
             },
         },
     ],
@@ -151,6 +155,12 @@ $("#tablaPedidosCompras tbody").on("click", "tr", function (e) {
     let tabla = $("#tablaPedidosCompras").DataTable();
     let data = tabla.row(this).data();
     verPedido(data.id);
+});
+
+$(document).on("click", ".btnVerDetalle", function (e) {
+    e.stopPropagation(); // opcional, ver nota abajo
+    let id = $(this).data("id");
+    verPedido(id);
 });
 
 $(document).on("click", ".btnAutorizar", function () {

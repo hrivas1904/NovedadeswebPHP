@@ -18,11 +18,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/compras/proveedores/listar', [ComprasController::class, 'listarProveedores'])->name('compras.listarProveedores');
     Route::get('/compras/productos/listar', [ComprasController::class, 'listarProductos'])->name('compras.listarProductos');
     Route::post('/compras/guardar', [ComprasController::class, 'guardarPedido'])->name('compras.guardar');
-    Route::get('/compras/listar',[ComprasController::class, 'listarPedidosCompras'])->name('compras.listar');
-    Route::post('/compras/exportar-excel',[ComprasController::class, 'exportarExcel'])->name('compras.exportarExcel');
-    Route::post('/compras/aprobar',[ComprasController::class, 'aprobarPedido']);
-    Route::post('/compras/rechazar',[ComprasController::class, 'rechazarPedido']);
-    Route::get('/compras/ver/{id}',[ComprasController::class, 'verDetallePedido']);
+    Route::get('/compras/listar', [ComprasController::class, 'listarPedidosCompras'])->name('compras.listar');
+    Route::post('/compras/exportar-excel', [ComprasController::class, 'exportarExcel'])->name('compras.exportarExcel');
+    Route::post('/compras/aprobar', [ComprasController::class, 'aprobarPedido']);
+    Route::post('/compras/rechazar', [ComprasController::class, 'rechazarPedido']);
+    Route::get('/compras/ver/{id}', [ComprasController::class, 'verDetallePedido']);
     Route::get('/compras/{id}/adjuntos', [ComprasController::class, 'listarAdjuntos'])->name('compras.adjuntos.listar');
     Route::get('/compras/{id}/adjuntos/{tipo?}', [ComprasController::class, 'listarAdjuntos'])->name('compras.adjuntos.listar');
     Route::post('/compras/{id}/orden-compra', [ComprasController::class, 'subirOrdenCompra'])->name('compras.ordenCompra.subir');
@@ -36,12 +36,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');
     Route::get('/operacionDiaView', [DashboardController::class, 'operacionDiaView'])->name('operacionDiaView');
 
+    Route::get('/posicion/data', [DashboardController::class, 'data'])->name('posicion.data');
+    Route::get('/hoy/data', [DashboardController::class, 'dataHoy'])->name('hoy.dataHoy');
+
     //PRESUPUESTAR
     Route::get('/presupuestarView', [PresupuestarController::class, 'presupuestarView'])->name('presupuestarView');
 
+    Route::get('/presupuestar', [PresupuestarController::class, 'index'])->name('presupuestar.index');
+    Route::post('/presupuestar/geclisa/preview', [PresupuestarController::class, 'previewGeclisa'])->name('presupuestar.geclisa.preview');
+    Route::post('/presupuestar/geclisa/confirmar', [PresupuestarController::class, 'confirmarGeclisa'])->name('presupuestar.geclisa.confirmar');
+    Route::post('/presupuestar/finnegans/preview', [PresupuestarController::class, 'previewFinnegans'])->name('presupuestar.finnegans.preview');
+    Route::post('/presupuestar/finnegans/confirmar', [PresupuestarController::class, 'confirmarFinnegans'])->name('presupuestar.finnegans.confirmar');
+    Route::get('/presupuestar/recurrentes', [PresupuestarController::class, 'listarRecurrentes'])->name('presupuestar.recurrentes.listar');
+    Route::post('/presupuestar/recurrentes', [PresupuestarController::class, 'guardarRecurrente'])->name('presupuestar.recurrentes.guardar');
+    Route::delete('/presupuestar/recurrentes/{id}', [PresupuestarController::class, 'eliminarRecurrente'])->name('presupuestar.recurrentes.eliminar');
+    Route::post('/presupuestar/recurrentes/aplicar', [PresupuestarController::class, 'aplicarRecurrentes'])->name('presupuestar.recurrentes.aplicar');
+
     //MOVIMIENTOS
     Route::get('/movimientosView', [MovimientosController::class, 'movimientosView'])->name('movimientosView');
-    
+
     //INTERBANKING
     Route::get('/interbankingView', [InterbankingController::class, 'interbankingView'])->name('interbankingView');
 
