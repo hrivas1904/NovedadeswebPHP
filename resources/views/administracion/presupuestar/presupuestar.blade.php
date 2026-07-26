@@ -162,6 +162,6 @@
     const CONCEPTOS_CATALOGO = @json($conceptos);
 </script>
 <script src="{{ asset('js/administracion/presupuestar/ivaGeclisa.js') }}"></script>
-<script src="{{ asset('js/administracion/presupuestar/pagoProveedores.js') }}"></script>
+<script src="{{ asset('js/administracion/presupuestar/pagosProveedores.js') }}"></script>
 <script src="{{ asset('js/administracion/presupuestar/lineasRecurrentes.js') }}"></script>
 @endpush
