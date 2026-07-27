@@ -196,12 +196,11 @@
                             <li><a class="submenu-link" href="{{ route('administracion.presupuestarView') }}">Presupuestar</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.homeAnalisisView') }}">Análisis</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.movimientosView') }}">Movimientos</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.productosProveedoresView') }}">Saldos por cuenta</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.saldosCuenta.index') }}">Saldos por cuenta</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.importacionView') }}">Importar</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.interbankingView') }}">Interbanking</a></li>
                         </ul>
                     </li>
-
 
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">

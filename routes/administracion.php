@@ -8,6 +8,7 @@ use App\Http\Controllers\Administracion\ImportacionController;
 use App\Http\Controllers\Administracion\InterbankingController;
 use App\Http\Controllers\Administracion\MovimientosController;
 use App\Http\Controllers\Administracion\PresupuestarController;
+use App\Http\Controllers\Administracion\SaldosCuentaController;
 
 Route::middleware(['auth'])->group(function () {
     //COMPRAS
@@ -54,6 +55,8 @@ Route::middleware(['auth'])->group(function () {
 
     //MOVIMIENTOS
     Route::get('/movimientosView', [MovimientosController::class, 'movimientosView'])->name('movimientosView');
+    Route::get('/movimientos/data', [MovimientosController::class, 'movimientosData'])->name('movimientosData');
+    Route::post('/movimientos/manual', [MovimientosController::class, 'movimientosGuardarManual'])->name('movimientosGuardarManual');
 
     //INTERBANKING
     Route::get('/interbankingView', [InterbankingController::class, 'interbankingView'])->name('interbankingView');
@@ -70,4 +73,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/importMovBancariosView', [ImportacionController::class, 'importMovBancariosView'])->name('importMovBancariosView');
     Route::get('/importMovCajaView', [ImportacionController::class, 'importMovCajaView'])->name('importMovCajaView');
     Route::get('/importTsvView', [ImportacionController::class, 'importTsvView'])->name('importTsvView');
+
+    //SALDOS POR CUENTAS
+    Route::get('/saldos-cuenta', [SaldosCuentaController::class, 'index'])->name('saldosCuenta.index');
+    Route::get('/saldos-cuenta/data', [SaldosCuentaController::class, 'data'])->name('saldosCuenta.data');
+    Route::post('/saldos-cuenta/guardar', [SaldosCuentaController::class, 'guardar'])->name('saldosCuenta.guardar');
+    Route::post('/saldos-cuenta/eliminar', [SaldosCuentaController::class, 'eliminar'])->name('saldosCuenta.eliminar');
 });

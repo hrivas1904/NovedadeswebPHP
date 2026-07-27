@@ -4,9 +4,9 @@
             Año:
         </span>
         <select id="selectAnioResumen" class="form-select form-select-sm" style="width:auto;">
-            <option>2024</option>
-            <option>2025</option>
-            <option selected>2026</option>
+            @foreach($anios as $a)
+            <option value="{{ $a }}" {{ (string) $a === (string) $anio ? 'selected' : '' }}>{{ $a }}</option>
+            @endforeach
         </select>
     </div>
 
@@ -14,96 +14,50 @@
         <div style="overflow-x:auto;">
             <table class="table table-sm mb-0" style="border-collapse: collapse; min-width:780px;">
 
-                {{-- HEADER --}}
                 <thead>
                     <tr style="background: var(--color-navy, #1B2A4A);">
-                        <th class="text-light" style="padding:8px 10px; text-align:left;">Mes</th>
-                        <th class="text-light" style="padding:8px 10px; text-align:right;">Saldo inicio</th>
-                        <th class="text-light" style="padding:8px 10px; text-align:right;">Ing. presup.</th>
-                        <th class="text-light" style="padding:8px 10px; text-align:right;">Egr. presup.</th>
-                        <th class="text-light" style="padding:8px 10px; text-align:right;">Neto presup.</th>
-                        <th class="text-white fw-semibold" style="padding:8px 10px; text-align:right;">Ing. ejecut.</th>
-                        <th class="text-white fw-semibold" style="padding:8px 10px; text-align:right;">Egr. ejecut.</th>
-                        <th class="text-white fw-semibold" style="padding:8px 10px; text-align:right;">Neto ejecut.</th>
-                        <th class="text-white fw-semibold" style="padding:8px 10px; text-align:right;">Saldo fin</th>
+                        <th class="" style="padding:8px 10px; text-align:left;">Mes</th>
+                        <th class="" style="padding:8px 10px; text-align:right;">Saldo inicio</th>
+                        <th class="" style="padding:8px 10px; text-align:right;">Ing. presup.</th>
+                        <th class="" style="padding:8px 10px; text-align:right;">Egr. presup.</th>
+                        <th class="" style="padding:8px 10px; text-align:right;">Neto presup.</th>
+                        <th class="fw-semibold" style="padding:8px 10px; text-align:right;">Ing. ejecut.</th>
+                        <th class="fw-semibold" style="padding:8px 10px; text-align:right;">Egr. ejecut.</th>
+                        <th class="fw-semibold" style="padding:8px 10px; text-align:right;">Neto ejecut.</th>
+                        <th class="fw-semibold" style="padding:8px 10px; text-align:right;">Saldo fin</th>
                     </tr>
                 </thead>
 
-                {{-- BODY --}}
                 <tbody>
-                    <tr style="background:#FFFFFF; border-bottom:1px solid #dee2e6;">
-                        <td class="fw-semibold" style="padding:6px 10px; color:#1B2A4A;">Enero</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 1.100.000</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 4.400.000</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 2.700.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ 1.700.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ 4.350.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#dc3545;">$ 2.750.000</td>
-                        <td class="text-end fw-semibold" style="padding:6px 10px; color:#28a745;">$ 1.600.000</td>
-                        <td class="text-end fw-bold" style="padding:6px 10px; color:#28a745;">$ 2.150.000</td>
+                    @forelse($meses as $i => $m)
+                    <tr style="background:{{ $i % 2 === 0 ? '#FFFFFF' : '#F8F9FA' }}; border-bottom:1px solid #dee2e6;">
+                        <td class="fw-semibold" style="padding:6px 10px; color:#1B2A4A;">{{ $m->mes_nombre }}</td>
+                        <td class="text-end text-secondary" style="padding:6px 10px;">$ {{ number_format($m->saldo_inicio, 0, ',', '.') }}</td>
+                        <td class="text-end text-secondary" style="padding:6px 10px;">$ {{ number_format($m->presupuestado_ingresos, 0, ',', '.') }}</td>
+                        <td class="text-end text-secondary" style="padding:6px 10px;">$ {{ number_format($m->presupuestado_egresos, 0, ',', '.') }}</td>
+                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ {{ number_format($m->presupuestado_neto, 0, ',', '.') }}</td>
+                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ {{ number_format($m->ejecutado_ingresos, 0, ',', '.') }}</td>
+                        <td class="text-end fw-medium" style="padding:6px 10px; color:#dc3545;">$ {{ number_format($m->ejecutado_egresos, 0, ',', '.') }}</td>
+                        <td class="text-end fw-semibold" style="padding:6px 10px; color:#28a745;">$ {{ number_format($m->ejecutado_neto, 0, ',', '.') }}</td>
+                        <td class="text-end fw-bold" style="padding:6px 10px; color:#28a745;">$ {{ number_format($m->saldo_final, 0, ',', '.') }}</td>
                     </tr>
-
-                    <tr style="background:#F8F9FA; border-bottom:1px solid #dee2e6;">
-                        <td class="fw-semibold" style="padding:6px 10px; color:#1B2A4A;">Febrero</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 1.250.000</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 4.600.000</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 2.800.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ 1.800.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ 4.500.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#dc3545;">$ 2.800.000</td>
-                        <td class="text-end fw-semibold" style="padding:6px 10px; color:#28a745;">$ 1.700.000</td>
-                        <td class="text-end fw-bold" style="padding:6px 10px; color:#28a745;">$ 2.450.000</td>
+                    @empty
+                    <tr>
+                        <td colspan="9" class="text-muted text-center p-3">Sin datos para este año.</td>
                     </tr>
-
-                    <tr style="background:#FFFFFF; border-bottom:1px solid #dee2e6;">
-                        <td class="fw-semibold" style="padding:6px 10px; color:#1B2A4A;">Marzo</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 1.400.000</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 4.700.000</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">$ 2.900.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ 1.800.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ 4.800.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#dc3545;">$ 2.950.000</td>
-                        <td class="text-end fw-semibold" style="padding:6px 10px; color:#28a745;">$ 1.850.000</td>
-                        <td class="text-end fw-bold" style="padding:6px 10px; color:#28a745;">$ 2.500.000</td>
-                    </tr>
-
-                    <tr style="background:#F8F9FA; border-bottom:1px solid #dee2e6;">
-                        <td class="fw-semibold" style="padding:6px 10px; color:#1B2A4A;">Abril</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end fw-medium text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#28a745;">$ 4.980.000</td>
-                        <td class="text-end fw-medium" style="padding:6px 10px; color:#dc3545;">$ 2.950.000</td>
-                        <td class="text-end fw-semibold" style="padding:6px 10px; color:#28a745;">$ 2.030.000</td>
-                        <td class="text-end fw-bold" style="padding:6px 10px; color:#28a745;">$ 2.440.000</td>
-                    </tr>
-
-                    {{-- Meses futuros / sin ejecutar --}}
-                    <tr style="background:#FFFFFF; border-bottom:1px solid #dee2e6;">
-                        <td class="fw-semibold" style="padding:6px 10px; color:#1B2A4A;">Mayo</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end fw-medium text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end fw-semibold text-secondary" style="padding:6px 10px;">—</td>
-                        <td class="text-end fw-bold text-secondary" style="padding:6px 10px;">—</td>
-                    </tr>
+                    @endforelse
                 </tbody>
 
-                {{-- FOOTER: TOTALES --}}
                 <tfoot>
                     <tr style="background: var(--color-navy, #1B2A4A); border-top:2px solid #17a2b8;">
-                        <td class="fw-bold text-white" style="padding:7px 10px;">Total 2026</td>
+                        <td class="fw-bold" style="padding:7px 10px;">Total {{ $anio }}</td>
                         <td style="padding:7px 10px;"></td>
-                        <td class="text-end text-light" style="padding:7px 10px;">$ 18.680.000</td>
-                        <td class="text-end text-light" style="padding:7px 10px;">$ 11.350.000</td>
-                        <td class="text-end fw-semibold" style="padding:7px 10px; color:#7FFFC4;">$ 7.330.000</td>
-                        <td class="text-end fw-semibold" style="padding:7px 10px; color:#7FFFC4;">$ 18.630.000</td>
-                        <td class="text-end fw-semibold" style="padding:7px 10px; color:#FFB3B3;">$ 11.450.000</td>
-                        <td class="text-end fw-bold" style="padding:7px 10px; color:#7FFFC4;">$ 7.180.000</td>
+                        <td class="text-end" style="padding:7px 10px;">$ {{ number_format($totales['presupuestado_ingresos'], 0, ',', '.') }}</td>
+                        <td class="text-end" style="padding:7px 10px;">$ {{ number_format($totales['presupuestado_egresos'], 0, ',', '.') }}</td>
+                        <td class="text-end fw-semibold" style="padding:7px 10px;">$ {{ number_format($totales['presupuestado_neto'], 0, ',', '.') }}</td>
+                        <td class="text-end fw-semibold" style="padding:7px 10px;;">$ {{ number_format($totales['ejecutado_ingresos'], 0, ',', '.') }}</td>
+                        <td class="text-end fw-semibold" style="padding:7px 10px;">$ {{ number_format($totales['ejecutado_egresos'], 0, ',', '.') }}</td>
+                        <td class="text-end fw-bold" style="padding:7px 10px;">$ {{ number_format($totales['ejecutado_neto'], 0, ',', '.') }}</td>
                         <td style="padding:7px 10px;"></td>
                     </tr>
                 </tfoot>

@@ -1,3 +1,7 @@
+<div class="d-flex justify-content-end mb-2">
+    <input type="month" id="mesPresupEjecutado" class="form-control form-control-sm" style="width:150px;" value="{{ $mes }}">
+</div>
+
 <div class="card p-0" style="overflow:hidden;">
     <div style="overflow-x:auto;">
         <table class="table table-sm mb-0" style="border-collapse: collapse;">
@@ -12,37 +16,23 @@
             </thead>
 
             <tbody>
-                {{-- Fila 1 - fondo blanco (par) --}}
-                <tr style="background:#FFFFFF; border-bottom:1px solid #dee2e6;">
-                    <td style="padding:6px 8px;">Sueldos y Cargas Sociales</td>
-                    <td class="text-end text-secondary" style="padding:6px 8px;">$ 2.200.000</td>
-                    <td class="text-end" style="padding:6px 8px;">$ 2.100.000</td>
-                    <td class="text-end fw-semibold" style="padding:6px 8px; color:#28a745;">-100.000</td>
+                @forelse($filas as $i => $f)
+                @php
+                $desvio = (float) $f->desvio;
+                $signo = $desvio > 0 ? '+' : '';
+                $fondo = $i % 2 === 0 ? '#FFFFFF' : '#F8F9FA';
+                @endphp
+                <tr style="background:{{ $fondo }}; border-bottom:1px solid #dee2e6;">
+                    <td style="padding:6px 8px;">{{ $f->concepto }}</td>
+                    <td class="text-end text-secondary" style="padding:6px 8px;">$ {{ number_format(abs($f->presupuestado), 0, ',', '.') }}</td>
+                    <td class="text-end" style="padding:6px 8px;">$ {{ number_format(abs($f->ejecutado), 0, ',', '.') }}</td>
+                    <td class="text-end fw-semibold" style="padding:6px 8px;">{{ $signo }}{{ number_format($desvio, 0, ',', '.') }}</td>
                 </tr>
-
-                {{-- Fila 2 - fondo gris claro (impar) --}}
-                <tr style="background:#F8F9FA; border-bottom:1px solid #dee2e6;">
-                    <td style="padding:6px 8px;">Proveedores</td>
-                    <td class="text-end text-secondary" style="padding:6px 8px;">$ 850.000</td>
-                    <td class="text-end" style="padding:6px 8px;">$ 900.000</td>
-                    <td class="text-end fw-semibold" style="padding:6px 8px; color:#dc3545;">+50.000</td>
+                @empty
+                <tr>
+                    <td colspan="4" class="text-muted text-center p-3">Sin datos para este período.</td>
                 </tr>
-
-                {{-- Fila 3 - fondo blanco (par) --}}
-                <tr style="background:#FFFFFF; border-bottom:1px solid #dee2e6;">
-                    <td style="padding:6px 8px;">Inversión en Equipamiento</td>
-                    <td class="text-end text-secondary" style="padding:6px 8px;">$ 500.000</td>
-                    <td class="text-end" style="padding:6px 8px;">$ 500.000</td>
-                    <td class="text-end fw-semibold text-secondary" style="padding:6px 8px;">0</td>
-                </tr>
-
-                {{-- Fila 4 - fondo gris claro (impar) --}}
-                <tr style="background:#F8F9FA; border-bottom:1px solid #dee2e6;">
-                    <td style="padding:6px 8px;">Pago de Préstamos</td>
-                    <td class="text-end text-secondary" style="padding:6px 8px;">$ 300.000</td>
-                    <td class="text-end" style="padding:6px 8px;">$ 295.000</td>
-                    <td class="text-end fw-semibold" style="padding:6px 8px; color:#28a745;">-5.000</td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
