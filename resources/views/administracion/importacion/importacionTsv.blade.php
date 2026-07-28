@@ -8,7 +8,7 @@
     </label>
 
     <div>
-        <input type="file" class="form-control">
+        <input type="file" class="form-control" id="inputArchivoTsv" accept=".xlsx,.xls">
     </div>
 
     <div class="mt-2">

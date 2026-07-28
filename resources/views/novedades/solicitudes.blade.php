@@ -183,7 +183,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="formCargaSolicitud" action="{{ route('rrhh.novedades.store') }}" method="POST">
+                <form id="formCargaSolicitud">
 
                     <div class="section-divider mb-3">
                         <span>Información general</span>
@@ -249,7 +249,7 @@
 @push('scripts')
 <script src="{{ asset('js/novedades/solicitudes.js') }}"></script>
 <script>
-    const USER_LEGAJO = {{auth() -> user() -> legajo ?? 'null'}};
+    const USER_LEGAJO = "{{auth()->user()->legajo ?? 'null'}}";
     const USER_ROLE = "{{ auth()->user()->rol ?? 'null' }}";
 </script>
 @endpush

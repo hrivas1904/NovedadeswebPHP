@@ -151,6 +151,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/usuarios/crear', [PersonalController::class, 'crearUsuario']);
 
     Route::get('/usuarios/obtener/{legajo}', [PersonalController::class, 'obtener']);
+    
     Route::post('/usuarios/actualizar', [PersonalController::class, 'actualizar']);
 
     Route::post('/usuarios/baja', [PersonalController::class, 'baja']);

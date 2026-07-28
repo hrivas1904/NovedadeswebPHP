@@ -209,7 +209,7 @@ $("#btnGuardarUsuario").on("click", function () {
 $(document).on("click", ".btnEditar", function () {
     let legajo = $(this).data("id");
 
-    $.get(`/usuarios/obtener/${legajo}`, function (data) {
+    $.get(`/rrhh/usuarios/obtener/${legajo}`, function (data) {
         $("#edit_name").val(data.name);
         $("#edit_legajo").val(data.legajo);
         $("#edit_username").val(data.username);

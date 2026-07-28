@@ -18,7 +18,7 @@
     </div>
 
     <div>
-        <input type="file" class="form-control">
+        <input type="file" class="form-control" id="inputArchivoCaja" accept=".xlsx,.xls">
     </div>
 
     <div class="mt-2">

@@ -63,6 +63,29 @@ function procesarTsv() {
     });
 }
 
+function procesarArchivoTsv(archivo) {
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    $('#msgTsv').text('Leyendo archivo...').css('color', 'inherit');
+
+    $.ajax({
+        url: IMPORTACION_ROUTES.tsvPreview,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            filasTsv = data.rows;
+            $('#msgTsv').text(data.mensaje).css('color', filasTsv.some(r => r.valido) ? 'green' : 'inherit');
+            renderPreviewTsv();
+        },
+        error: function () {
+            $('#msgTsv').text('Error al leer el archivo.').css('color', 'red');
+        }
+    });
+}
+
 $(document).on('subvista:cargada', function () {
     if (!$('#contenidoTsv').length) return; // no es la sub-vista de TSV
     filasTsv = [];
@@ -70,6 +93,13 @@ $(document).on('subvista:cargada', function () {
 });
 
 $(document).on('input', '#contenidoTsv', debounce(procesarTsv, 400));
+
+$(document).on('change', '#inputArchivoTsv', function () {
+    if (this.files && this.files[0]) {
+        $('#contenidoTsv').val('');
+        procesarArchivoTsv(this.files[0]);
+    }
+});
 
 $(document).on('click', '#btnConfirmarTsv', function () {
     const filasValidas = filasTsv.filter(r => r.valido);

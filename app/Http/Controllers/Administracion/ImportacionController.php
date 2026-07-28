@@ -34,23 +34,32 @@ class ImportacionController extends Controller
     public function previewBancos(Request $request)
     {
         $request->validate([
-            'contenido' => 'required|string',
+            'contenido' => 'nullable|string',
+            'archivo'   => 'nullable|file|mimes:xlsx,xls',
             'banco'     => 'required|string',
             'formato'   => 'required|in:PEGADO,CONCILIACION',
         ]);
+
+        $contenido = $request->hasFile('archivo')
+            ? $this->excelToTsv($request->file('archivo'))
+            : (string) $request->input('contenido', '');
+
+        if (trim($contenido) === '') {
+            return response()->json(['rows' => [], 'mensaje' => 'No se recibió contenido ni archivo.']);
+        }
 
         $banco = $request->input('banco');
         $motor = new MotorClasificacion();
 
         if ($request->input('formato') === 'PEGADO') {
             $rows = match ($banco) {
-                'MACRO' => $this->parseMacroWeb($request->input('contenido'), $motor),
-                'NACION' => $this->parseNacionWeb($request->input('contenido'), $motor),
-                'FRANCES (986)', 'FRANCES (1001)' => $this->parseFrancesWeb($request->input('contenido'), $banco, $motor),
+                'MACRO' => $this->parseMacroWeb($contenido, $motor),
+                'NACION' => $this->parseNacionWeb($contenido, $motor),
+                'FRANCES (986)', 'FRANCES (1001)' => $this->parseFrancesWeb($contenido, $banco, $motor),
                 default => [],
             };
         } else {
-            $rows = $this->parseConciliacion($request->input('contenido'), $banco, $motor);
+            $rows = $this->parseConciliacion($contenido, $banco, $motor);
         }
 
         return response()->json([
@@ -396,10 +405,21 @@ class ImportacionController extends Controller
 
     public function previewCaja(Request $request)
     {
-        $request->validate(['contenido' => 'required|string']);
+        $request->validate([
+            'contenido' => 'nullable|string',
+            'archivo'   => 'nullable|file|mimes:xlsx,xls',
+        ]);
+
+        $contenido = $request->hasFile('archivo')
+            ? $this->excelToTsv($request->file('archivo'))
+            : (string) $request->input('contenido', '');
+
+        if (trim($contenido) === '') {
+            return response()->json(['rows' => [], 'mensaje' => 'No se recibió contenido ni archivo.']);
+        }
 
         $motor = new MotorClasificacion();
-        $rows = $this->parseCaja($request->input('contenido'), $motor);
+        $rows = $this->parseCaja($contenido, $motor);
 
         return response()->json([
             'rows'    => $rows,
@@ -513,9 +533,20 @@ class ImportacionController extends Controller
 
     public function previewTsv(Request $request)
     {
-        $request->validate(['contenido' => 'required|string']);
+        $request->validate([
+            'contenido' => 'nullable|string',
+            'archivo'   => 'nullable|file|mimes:xlsx,xls',
+        ]);
 
-        $rows = $this->parseTSV($request->input('contenido'));
+        $contenido = $request->hasFile('archivo')
+            ? $this->excelToTsv($request->file('archivo'))
+            : (string) $request->input('contenido', '');
+
+        if (trim($contenido) === '') {
+            return response()->json(['rows' => [], 'mensaje' => 'No se recibió contenido ni archivo.']);
+        }
+
+        $rows = $this->parseTSV($contenido);
         $validas = collect($rows)->where('valido', true)->count();
         $invalidas = count($rows) - $validas;
 
@@ -657,5 +688,41 @@ class ImportacionController extends Controller
         }
 
         return $rows;
+    }
+
+    /**
+     * Convierte un archivo Excel (.xlsx/.xls) en texto separado por tabs,
+     * exactamente como si el contenido se hubiera pegado del homebanking.
+     * Reutiliza el valor FORMATEADO de cada celda (no el crudo/serial), para
+     * que fechas y numeros salgan con el mismo formato visual que en Excel.
+     */
+    private function excelToTsv($archivo): string
+    {
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($archivo->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+        $lineas = [];
+
+        foreach ($sheet->getRowIterator() as $row) {
+            $celdas = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+
+            foreach ($cellIterator as $cell) {
+                // Las celdas de fecha se convierten a mano, en formato fijo dd/mm/yyyy.
+                // getFormattedValue() para fechas depende del codigo de formato guardado
+                // en el archivo, que puede no coincidir con como se ve en Excel localmente
+                // (eso fue justo la causa del bug: dias>12 quedaban interpretados como mes).
+                if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {
+                    $valor = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cell->getValue())->format('d/m/Y');
+                } else {
+                    $valor = $cell->getFormattedValue();
+                }
+                $celdas[] = trim((string) $valor);
+            }
+
+            $lineas[] = implode("\t", $celdas);
+        }
+
+        return implode("\n", $lineas);
     }
 }
