@@ -123,14 +123,14 @@
         </div>
         <div id="wrapperRecurrentes" style="display:none;" class="mt-3">
             <div class="table-responsive">
-                <table class="table table-sm">
+                <table class="table table-sm table-bordered table-hover align-middle nowrap">
                     <thead>
                         <tr>
-                            <th>Cuenta</th>
-                            <th>Concepto</th>
-                            <th>Descripción</th>
-                            <th class="text-end">Importe</th>
-                            <th></th>
+                            <th>CUENTA</th>
+                            <th>CONCEPTO</th>
+                            <th>DESCRIPCIÓN</th>
+                            <th class="text-end">IMPORTE</th>
+                            <th class="text-center"></th>
                         </tr>
                     </thead>
                     <tbody id="bodyRecurrentes"></tbody>
@@ -139,7 +139,9 @@
             <div class="d-flex align-items-center gap-3">
                 <span class="text-muted small"><span id="cantidadRecurrentes">0</span> líneas</span>
                 <input type="month" id="inputMesAplicarRecurrentes" class="form-control form-control-sm" style="width:150px;">
-                <button type="button" id="btnAplicarRecurrentes" class="btn btn-primary btn-sm">↓ Aplicar al mes</button>
+                <button type="button" id="btnAplicarRecurrentes" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-arrow-down"></i> Aplicar al mes
+                </button>
             </div>
         </div>
         <label class="text-muted mt-3" id="msgSinRecurrentes">Sin líneas recurrentes cargadas.</label>

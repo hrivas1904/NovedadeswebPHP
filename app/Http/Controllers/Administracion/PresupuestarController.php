@@ -227,33 +227,14 @@ class PresupuestarController extends Controller
         $request->validate(['mes' => 'required|date_format:Y-m']);
         $mes = $request->input('mes');
 
-        $recurrentes = DB::select('CALL SP_FF_RECURRENTE_LISTAR()');
+        $resultado = DB::select('CALL SP_FF_RECURRENTES_APLICAR(?,?)', [$mes, auth()->id()]);
+        $fila = $resultado[0];
 
-        $insertados = 0;
-        foreach ($recurrentes as $r) {
-            $operacion = ClasificadorOperacion::resolver(
-                $r->banco,
-                $r->concepto,
-                $r->seccion,
-                (float) $r->importe
-            );
+        $omitidas = $fila->total_activas - $fila->insertados;
 
-            DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
-                $mes . '-01',
-                $r->banco,
-                $r->concepto,
-                $r->subconcepto,
-                $r->detalle,
-                $r->importe,
-                'PRESUPUESTO',
-                $operacion,
-                $r->seccion,
-                'RECURRENTE',
-                auth()->id(),
-            ]);
-            $insertados++;
-        }
-
-        return response()->json(['insertados' => $insertados]);
+        return response()->json([
+            'insertados' => $fila->insertados,
+            'omitidas'   => $omitidas,
+        ]);
     }
 }
