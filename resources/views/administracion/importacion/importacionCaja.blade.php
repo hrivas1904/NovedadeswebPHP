@@ -11,6 +11,10 @@
                 color: var(--color-default);
                 backdrop-filter: blur(8px);
                 -webkit-backdrop-filter: blur(8px);">
+        <strong></strong>&nbsp;
+        Fecha &nbsp;|&nbsp; Comprobante &nbsp;|&nbsp; Caja &nbsp;|&nbsp; Tercero-Ing &nbsp;|&nbsp;
+        Tercero-Egr &nbsp;|&nbsp; Moneda &nbsp;|&nbsp; Ingreso &nbsp;|&nbsp; Egreso &nbsp;|&nbsp;
+        Saldo &nbsp;|&nbsp; Empresa
     </div>
 
     <div>
@@ -18,7 +22,9 @@
     </div>
 
     <div class="mt-2">
-        <textarea class="form-control" id="contenidoIvaVentas" name="contenidoIvaVentas"
+        <textarea class="form-control" id="contenidoCaja" name="contenidoCaja"
             placeholder="Pegá las filas de caja..." rows="5"></textarea>
     </div>
+
+    <label class="mt-2" id="msgCaja"></label>
 </div>

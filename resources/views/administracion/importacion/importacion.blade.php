@@ -32,6 +32,25 @@
 @endsection
 
 @push('scripts')
-<script src="/js/administracion/importacion/importacion.js"></script>
-<script src="/js/administracion/importacion/importacionBancos.js"></script>
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    const IMPORTACION_ROUTES = {
+        bancosPreview: @json(route('administracion.importacion.bancos.preview')),
+        bancosConfirmar: @json(route('administracion.importacion.bancos.confirmar')),
+        cajaPreview: @json(route('administracion.importacion.caja.preview')),
+        cajaConfirmar: @json(route('administracion.importacion.caja.confirmar')),
+        tsvPreview: @json(route('administracion.importacion.tsv.preview')),
+        tsvConfirmar: @json(route('administracion.importacion.tsv.confirmar')),
+    };
+    const CONCEPTOS_CATALOGO = @json($conceptos);
+</script>
+<script src="{{ asset('js/administracion/importacion/importacion.js') }}"></script>
+<script src="{{ asset('js/administracion/importacion/importacionBancos.js') }}"></script>
+<script src="{{ asset('js/administracion/importacion/importacionCaja.js') }}"></script>
+<script src="{{ asset('js/administracion/importacion/importacionTsv.js') }}"></script>
 @endpush

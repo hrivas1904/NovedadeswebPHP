@@ -12,7 +12,8 @@
     </div>
 
     <div class="mt-2">
-        <textarea class="form-control" id="contenidoIvaVentas" name="contenidoIvaVentas"
-            placeholder="O pegá el contenido acá..." rows="5"></textarea>
+        <textarea class="form-control" id="contenidoTsv" name="contenidoTsv" placeholder="O pegá el contenido acá..." rows="5"></textarea>
     </div>
+
+    <label class="mt-2" id="msgTsv"></label>
 </div>

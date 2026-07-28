@@ -186,7 +186,7 @@
                     @if (Auth::user()->rol != 'Colaborador/a')
                     <li class="nav-section-title section-administracion"><span class="section-dot"></span>Administración</li>
 
-                    @if (in_array(Auth::id(), [1,2,5,6]))
+                    @if (in_array(Auth::id(), [1,2,5,6,46,134]))
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-chart-pie"></i>
@@ -199,7 +199,7 @@
                             <li><a class="submenu-link" href="{{ route('administracion.homeAnalisisView') }}">Análisis</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.movimientosView') }}">Movimientos</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.saldosCuenta.index') }}">Saldos por cuenta</a></li>
-                            <li><a class="submenu-link d-none" href="{{ route('administracion.importacionView') }}">Importar</a></li>
+                            <li><a class="submenu-link" href="{{ route('administracion.importacionView') }}">Importar</a></li>
                             <li><a class="submenu-link d-none" href="{{ route('administracion.interbankingView') }}">Interbanking</a></li>
                         </ul>
                     </li>

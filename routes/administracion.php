@@ -77,6 +77,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/importMovBancariosView', [ImportacionController::class, 'importMovBancariosView'])->name('importMovBancariosView');
     Route::get('/importMovCajaView', [ImportacionController::class, 'importMovCajaView'])->name('importMovCajaView');
     Route::get('/importTsvView', [ImportacionController::class, 'importTsvView'])->name('importTsvView');
+    Route::post('/importacion/bancos/preview', [ImportacionController::class, 'previewBancos'])->name('importacion.bancos.preview');
+    Route::post('/importacion/bancos/confirmar', [ImportacionController::class, 'confirmarBancos'])->name('importacion.bancos.confirmar');
+    Route::post('/importacion/caja/preview', [ImportacionController::class, 'previewCaja'])->name('importacion.caja.preview');
+    Route::post('/importacion/caja/confirmar', [ImportacionController::class, 'confirmarCaja'])->name('importacion.caja.confirmar');
+    Route::post('/importacion/tsv/preview', [ImportacionController::class, 'previewTsv'])->name('importacion.tsv.preview');
+    Route::post('/importacion/tsv/confirmar', [ImportacionController::class, 'confirmarTsv'])->name('importacion.tsv.confirmar');
 
     //SALDOS POR CUENTAS
     Route::get('/saldos-cuenta', [SaldosCuentaController::class, 'index'])->name('saldosCuenta.index');

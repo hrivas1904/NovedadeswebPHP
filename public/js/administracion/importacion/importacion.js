@@ -20,7 +20,10 @@ function cargarSubVista(url) {
     $.get(url)
         .done(function (html) {
             $(".renderBodyImportacion").html(html);
-            inicializarComponentes();
+            // Avisa a los JS de cada sub-vista que su HTML se acaba de insertar,
+            // asi pueden resetear su propio estado interno (evita el desfasaje
+            // entre lo que se ve en pantalla y las variables JS de la vuelta anterior)
+            $(".renderBodyImportacion").trigger("subvista:cargada", [url]);
         })
         .fail(function () {
             $(".renderBodyImportacion").html(

@@ -14,33 +14,33 @@
                 -webkit-backdrop-filter: blur(8px);
             ">
         <label class="fw-bold">Banco:</label>
-        <button type="button" class="btn btn-outline-secondary btn-sm active btn-opcion-banco">
+        <button type="button" class="btn btn-outline-secondary btn-sm active btn-opcion-banco" data-banco="MACRO">
             MACRO
         </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm btn-opcion-banco">
+        <button type="button" class="btn btn-outline-secondary btn-sm btn-opcion-banco" data-banco="NACION">
             NACIÓN
         </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm btn-opcion-banco">
+        <button type="button" class="btn btn-outline-secondary btn-sm btn-opcion-banco" data-banco="FRANCES (986)">
             FRANCÉS (986)
         </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm btn-opcion-banco">
+        <button type="button" class="btn btn-outline-secondary btn-sm btn-opcion-banco" data-banco="FRANCES (1001)">
             FRANCÉS (1001)
         </button>
     </div>
 
     <div class="my-1 p-2 justify-content-between align-items-center">
         <label class="fw-bold">Formato:</label>
-        <button type="button" class="btn btn-outline-secondary btn-sm active btn-opcion-import">
+        <button type="button" class="btn btn-outline-secondary btn-sm active btn-opcion-import" data-formato="PEGADO">
             <i class="fa-solid fa-paste"></i>
             Pegado directamente del homebanking
         </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm btn-opcion-import">
+        <button type="button" class="btn btn-outline-secondary btn-sm btn-opcion-import" data-formato="CONCILIACION">
             <i class="fa-solid fa-file-excel"></i>
             Conciliación Excel
         </button>
     </div>
 
-    <div class="my-2 p-2 justify-content-between align-items-center" style="
+    <div class="my-2 p-2 justify-content-between align-items-center" id="headerColumnasBancos" style="
                 --color-second-rgb: 0, 137, 199;
                 background-color: rgba(var(--color-second-rgb), 0.15);
                 border: 2px solid var(--color-default);
@@ -57,7 +57,7 @@
     </div>
 
     <div class="mt-2">
-        <textarea class="form-control" id="contenidoIvaVentas" name="contenidoIvaVentas"
+        <textarea class="form-control" id="contenidoBancos" name="contenidoBancos"
             placeholder="Pegá los movimientos de MACRO..." rows="5"></textarea>
     </div>
 </div>
