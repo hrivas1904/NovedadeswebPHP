@@ -154,9 +154,18 @@
 
 @push('scripts')
 <script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     const MOVIMIENTOS_ROUTES = {
         data: @json(route('administracion.movimientosData')),
         manual: @json(route('administracion.movimientosGuardarManual')),
+        estado: @json(route('administracion.movimientos.estado', ':id')),
+        fecha: @json(route('administracion.movimientos.fecha', ':id')),
+        duplicar: @json(route('administracion.movimientos.duplicar', ':id')),
+        eliminar: @json(route('administracion.movimientos.eliminar', ':id')),
     };
     const CONCEPTOS_CATALOGO = @json($conceptos);
 </script>

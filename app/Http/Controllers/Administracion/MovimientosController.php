@@ -14,7 +14,7 @@ class MovimientosController extends Controller
         $cuentas = collect(DB::select('SELECT id, nombre FROM ff_cuentas WHERE activo = 1 ORDER BY orden'));
         $conceptos = collect(DB::select('SELECT nombre FROM ff_conceptos WHERE activo = 1 ORDER BY orden'))->pluck('nombre');
 
-        return view('administracion.movimientos.movimientos', compact('cuentas','conceptos'));
+        return view('administracion.movimientos.movimientos', compact('cuentas', 'conceptos'));
     }
 
     public function movimientosData(Request $request)
@@ -61,14 +61,14 @@ class MovimientosController extends Controller
             'detalle'     => 'required|string',
             'importe'     => 'required|numeric',
         ]);
- 
+
         $operacion = ClasificadorOperacion::resolver(
             $validated['cuenta'],
             $validated['concepto'],
             $validated['seccion'],
             (float) $validated['importe']
         );
- 
+
         $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
             $validated['fecha'],
             $validated['cuenta'],
@@ -82,7 +82,52 @@ class MovimientosController extends Controller
             'MANUAL',
             auth()->id(),
         ]);
- 
+
         return response()->json(['id' => $resultado[0]->id]);
+    }
+
+    public function actualizarEstado(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'ejecucion' => 'required|in:PRESUPUESTO,CUMPLIDO',
+        ]);
+
+        DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [
+            $id,
+            $validated['ejecucion'],
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function actualizarFecha(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'fecha' => 'required|date',
+        ]);
+
+        DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_FECHA(?,?)', [
+            $id,
+            $validated['fecha'],
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function duplicar(Request $request, $id)
+    {
+        $resultado = DB::select('CALL SP_FF_MOVIMIENTO_DUPLICAR(?,?)', [
+            $id,
+            auth()->id(),
+        ]);
+
+        return response()->json(['id' => $resultado[0]->id]);
+    }
+
+    public function eliminar($id)
+    {
+        DB::statement('CALL SP_FF_MOVIMIENTO_ELIMINAR(?)', [$id]);
+
+        return response()->json(['ok' => true]);
     }
 }

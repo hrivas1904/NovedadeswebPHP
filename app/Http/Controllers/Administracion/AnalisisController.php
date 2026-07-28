@@ -97,7 +97,7 @@ class AnalisisController extends Controller
 
         $filas = DB::select('CALL SP_FF_ANALISIS_PRESUP_VS_EJECUTADO(?)', [$mes]);
 
-        return view('administracion.analisis.presupejecutado', [
+        return view('administracion.analisis.presupEjecutado', [
             'mes'   => $mes,
             'filas' => $filas,
         ]);

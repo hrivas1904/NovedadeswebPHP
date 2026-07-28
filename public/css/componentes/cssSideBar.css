@@ -1,9 +1,3 @@
-/* =========================================================
-   SIDEBAR INTEGRADA CON TOPBAR - GESTIÓN HP3C
-   Overlay real: la sidebar se superpone al contenido y no lo empuja.
-   Estética plana, corporativa e integrada con la barra superior.
-   ========================================================= */
-
 :root {
     --sidebar-width: 272px;
     --sidebar-rail-width: 72px;
@@ -447,12 +441,10 @@ a {
 }
 
 @media (min-width: 992px) {
-    .sidebar.expanded .has-submenu:hover > .submenu,
     .sidebar.expanded .has-submenu.submenu-open > .submenu {
         max-height: 520px;
         opacity: 1;
         visibility: visible;
-
         transform: translateY(0);
     }
 }
@@ -885,7 +877,6 @@ a {
         transform 0.35s ease;
 }
 
-.sidebar.expanded .has-submenu:hover > .submenu > li,
 .sidebar.expanded .has-submenu.submenu-open > .submenu > li {
     opacity: 1;
     transform: translateX(0);

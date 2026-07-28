@@ -128,7 +128,7 @@
                     <!-- ===== SECCIÓN: CALIDAD ===== -->
                     @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
                     <li class="nav-section-title section-calidad"><span class="section-dot"></span>Calidad</li>
-
+                    <!--
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('rrhh.ayuda') }}">
                             <i class="fa-solid fa-user-tie"></i>
@@ -169,6 +169,7 @@
                             <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Seguridad</a></li>
                         </ul>
                     </li>
+                    -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-medal"></i>
@@ -185,6 +186,7 @@
                     @if (Auth::user()->rol != 'Colaborador/a')
                     <li class="nav-section-title section-administracion"><span class="section-dot"></span>Administración</li>
 
+                    @if (in_array(Auth::id(), [1,2,5,6]))
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-chart-pie"></i>
@@ -197,15 +199,16 @@
                             <li><a class="submenu-link" href="{{ route('administracion.homeAnalisisView') }}">Análisis</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.movimientosView') }}">Movimientos</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.saldosCuenta.index') }}">Saldos por cuenta</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.importacionView') }}">Importar</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.interbankingView') }}">Interbanking</a></li>
+                            <li><a class="submenu-link d-none" href="{{ route('administracion.importacionView') }}">Importar</a></li>
+                            <li><a class="submenu-link d-none" href="{{ route('administracion.interbankingView') }}">Interbanking</a></li>
                         </ul>
                     </li>
+                    @endif
 
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-cart-plus"></i>
-                            <span class="link-text">Compras</span>
+                            <span class="link-text">Gestión de compras</span>
                         </a>
                         <ul class="submenu">
                             <li><a class="submenu-link" href="{{ route('administracion.pedidosComprasView') }}">Cargar pedido de compras</a></li>
@@ -225,13 +228,6 @@
                         <a class="nav-link" href="{{ route('rrhh.administrarUsuarios') }}">
                             <i class="fa-solid fa-users-gear"></i>
                             <span class="link-text">Administrar usuarios</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('configuracion.rolesPermisosView') }}">
-                            <i class="fa-solid fa-users-gear"></i>
-                            <span class="link-text">Roles y permisos</span>
                         </a>
                     </li>
                     @endif

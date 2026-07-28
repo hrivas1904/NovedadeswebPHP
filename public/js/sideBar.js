@@ -119,15 +119,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submenuItems.forEach((item) => {
         const link = item.querySelector(":scope > .nav-link");
-
         if (!link) return;
 
-        // SOLO MOBILE
         link.addEventListener("click", function (e) {
-            if (isDesktop()) return;
-
             e.preventDefault();
-
             toggleSubmenu(item);
         });
     });

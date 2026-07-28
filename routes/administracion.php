@@ -57,6 +57,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/movimientosView', [MovimientosController::class, 'movimientosView'])->name('movimientosView');
     Route::get('/movimientos/data', [MovimientosController::class, 'movimientosData'])->name('movimientosData');
     Route::post('/movimientos/manual', [MovimientosController::class, 'movimientosGuardarManual'])->name('movimientosGuardarManual');
+    Route::post('/movimientos/{id}/estado', [MovimientosController::class, 'actualizarEstado'])->name('movimientos.estado');
+    Route::post('/movimientos/{id}/fecha', [MovimientosController::class, 'actualizarFecha'])->name('movimientos.fecha');
+    Route::post('/movimientos/{id}/duplicar', [MovimientosController::class, 'duplicar'])->name('movimientos.duplicar');
+    Route::post('/movimientos/{id}/eliminar', [MovimientosController::class, 'eliminar'])->name('movimientos.eliminar');
 
     //INTERBANKING
     Route::get('/interbankingView', [InterbankingController::class, 'interbankingView'])->name('interbankingView');

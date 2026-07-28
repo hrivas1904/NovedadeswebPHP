@@ -149,6 +149,11 @@
 
 @push('scripts')
 <script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     const PRESUPUESTAR_ROUTES = {
         previewGeclisa: @json(route('administracion.presupuestar.geclisa.preview')),
         confirmarGeclisa: @json(route('administracion.presupuestar.geclisa.confirmar')),
