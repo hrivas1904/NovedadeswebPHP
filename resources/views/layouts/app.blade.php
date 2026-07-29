@@ -200,7 +200,6 @@
                             <li><a class="submenu-link" href="{{ route('administracion.movimientosView') }}">Movimientos</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.saldosCuenta.index') }}">Saldos por cuenta</a></li>
                             <li><a class="submenu-link" href="{{ route('administracion.importacionView') }}">Importar</a></li>
-                            <li><a class="submenu-link d-none" href="{{ route('administracion.interbankingView') }}">Interbanking</a></li>
                         </ul>
                     </li>
                     @endif

@@ -10,12 +10,25 @@
     </label>
 
     <div>
-        <input type="file" class="form-control">
+        <input type="file" class="form-control" id="inputArchivoInterbanking" accept=".csv,.txt">
     </div>
 
     <div class="mt-2">
-        <textarea class="form-control" id="contenidoIvaVentas" name="contenidoIvaVentas"
+        <textarea class="form-control" id="contenidoInterbanking" name="contenidoInterbanking"
             placeholder="O pegá el contenido acá..." rows="5"></textarea>
     </div>
+
+    <label class="mt-2" id="msgInterbanking"></label>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    const INTERBANKING_ROUTES = {
+        preview: @json(route('administracion.interbanking.preview')),
+        confirmar: @json(route('administracion.interbanking.confirmar')),
+    };
+    const CONCEPTOS_CATALOGO = @json($conceptos);
+</script>
+<script src="{{ asset('js/administracion/interbanking/interbanking.js') }}"></script>
+@endpush

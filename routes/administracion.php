@@ -66,6 +66,8 @@ Route::middleware(['auth'])->group(function () {
 
     //INTERBANKING
     Route::get('/interbankingView', [InterbankingController::class, 'interbankingView'])->name('interbankingView');
+    Route::post('/interbanking/preview', [InterbankingController::class, 'preview'])->name('interbanking.preview');
+    Route::post('/interbanking/confirmar', [InterbankingController::class, 'confirmar'])->name('interbanking.confirmar');
 
     //ANALISIS
     Route::get('/homeAnalisisView', [AnalisisController::class, 'homeAnalisisView'])->name('homeAnalisisView');
