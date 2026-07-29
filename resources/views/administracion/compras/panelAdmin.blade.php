@@ -274,6 +274,21 @@
                 <div id="sinOCMsg" class="text-muted small d-none">
                     Este pedido no tiene una orden de compra asociada.
                 </div>
+
+                <h6 class="fw-bold mb-3 mt-4">
+                    Observaciones del pedido
+                </h6>
+
+                <div id="hiloObservaciones" class="border rounded p-3 mb-3" style="max-height: 250px; overflow-y: auto; background:#f8f9fa;">
+                    <!-- se completa dinámicamente -->
+                </div>
+
+                <div class="input-group">
+                    <textarea id="inputNuevaObservacion" class="form-control" rows="2" placeholder="Escribí una observación..."></textarea>
+                    <button type="button" class="btn btn-primary" id="btnEnviarObservacion">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="modal-footer">
@@ -305,9 +320,9 @@
 
 @push('scripts')
 <script>
-    const USER_ID = {{ Auth::id() }};
-    const PUEDE_AUTORIZAR_PEDIDOS = {{in_array(Auth::id(), [1, 2, 5, 6, 15]) ? 'true' : 'false'}};
-    const PUEDE_APROBAR_GERENCIA = {{in_array(Auth::id(), [1, 5]) ? 'true' : 'false' }};
+    const USER_ID = {{ Auth::id()}};
+    const PUEDE_AUTORIZAR_PEDIDOS = {{in_array(Auth::id(), [1, 2, 5, 6, 15])?'true':'false'}};
+    const PUEDE_APROBAR_GERENCIA = {{in_array(Auth::id(), [1, 5])?'true':'false'}};
 </script>
 <script src="{{ asset('js/administracion/compras/panelAdmin.js') }}"></script>
 <script src="{{ asset('js/administracion/compras/scriptComunAdmin.js') }}"></script>

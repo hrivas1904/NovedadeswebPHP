@@ -415,6 +415,7 @@ function verPedido(id) {
 
             cargarAdjuntosPedido(id);
             cargarOrdenesCompra(id);
+            cargarObservaciones(id);
             $("#modalDetallePedido").modal("show");
         },
     });
@@ -606,5 +607,53 @@ $(document).on("click", "#btnSubirOrdenCompra", function () {
                 "Ocurrió un error al subir el archivo.";
             Swal.fire("Error", msg, "error");
         },
+    });
+});
+
+let pedidoActualId = null;  
+
+function cargarObservaciones(pedidoId) {
+    pedidoActualId = pedidoId;
+    $.get(`/administracion/pedidos/${pedidoActualId}/listarObservaciones`, function (data) {
+        const $hilo = $('#hiloObservaciones').empty();
+        if (data.length === 0) {
+            $hilo.html('<div class="text-muted small">Sin observaciones todavía.</div>');
+            return;
+        }
+        data.forEach(obs => {
+            $hilo.append(`
+                <div class="mb-2">
+                    <div class="small text-muted"><strong>${obs.usuario_nombre}</strong> · ${obs.created_at}</div>
+                    <div>${obs.mensaje}</div>
+                </div>
+            `);
+        });
+        $hilo.scrollTop($hilo[0].scrollHeight);
+    });
+}
+
+$(document).on('click', '#btnEnviarObservacion', function () {
+    console.log("CLICK NATIVO");
+    const mensaje = $('#inputNuevaObservacion').val().trim();
+    console.log(mensaje);
+    if (!mensaje || !pedidoActualId) return;
+    console.log(pedidoActualId)
+    $.ajax({
+        url: `/administracion/pedidos/${pedidoActualId}/agregarObservaciones`,
+        method: 'POST',
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        data: { mensaje: mensaje },
+        success: function (obs) {
+            $('#hiloObservaciones').append(`
+                <div class="mb-2">
+                    <div class="small text-muted"><strong>${obs.usuario_nombre}</strong> · ${obs.created_at}</div>
+                    <div>${obs.mensaje}</div>
+                </div>
+            `);
+            $('#inputNuevaObservacion').val('');
+            $('#hiloObservaciones').scrollTop($('#hiloObservaciones')[0].scrollHeight);
+        }
     });
 });

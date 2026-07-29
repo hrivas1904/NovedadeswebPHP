@@ -446,4 +446,30 @@ class ComprasController extends Controller
             'success' => true
         ]);
     }
+
+    public function listarObservaciones($pedidoId)
+    {
+        $observaciones = DB::select('CALL sp_pedido_observaciones_listar(?)', [$pedidoId]);
+        return response()->json($observaciones);
+    }
+
+    public function crearObservacion(Request $request, $pedidoId)
+    {
+        $request->validate([
+            'mensaje' => 'required|string|max:2000',
+        ]);
+
+        $result = DB::select('CALL sp_pedido_observaciones_crear(?, ?, ?)', [
+            $pedidoId,
+            Auth::id(),
+            $request->input('mensaje'),
+        ]);
+
+        return response()->json([
+            'id' => $result[0]->id,
+            'usuario_nombre' => Auth::user()->name,
+            'mensaje' => $request->input('mensaje'),
+            'created_at' => now()->toDateTimeString(),
+        ]);
+    }
 }
