@@ -708,12 +708,10 @@ class ImportacionController extends Controller
             $cellIterator->setIterateOnlyExistingCells(false);
 
             foreach ($cellIterator as $cell) {
-                // Las celdas de fecha se convierten a mano, en formato fijo dd/mm/yyyy.
-                // getFormattedValue() para fechas depende del codigo de formato guardado
-                // en el archivo, que puede no coincidir con como se ve en Excel localmente
-                // (eso fue justo la causa del bug: dias>12 quedaban interpretados como mes).
                 if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {
                     $valor = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cell->getValue())->format('d/m/Y');
+                } elseif (is_numeric($cell->getValue())) {
+                    $valor = number_format((float) $cell->getValue(), 2, ',', '.');
                 } else {
                     $valor = $cell->getFormattedValue();
                 }
