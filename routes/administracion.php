@@ -9,6 +9,7 @@ use App\Http\Controllers\Administracion\InterbankingController;
 use App\Http\Controllers\Administracion\MovimientosController;
 use App\Http\Controllers\Administracion\PresupuestarController;
 use App\Http\Controllers\Administracion\SaldosCuentaController;
+use App\Http\Controllers\Administracion\ConciliacionesController;
 
 Route::middleware(['auth'])->group(function () {
     //COMPRAS
@@ -93,4 +94,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/saldos-cuenta/data', [SaldosCuentaController::class, 'data'])->name('saldosCuenta.data');
     Route::post('/saldos-cuenta/guardar', [SaldosCuentaController::class, 'guardar'])->name('saldosCuenta.guardar');
     Route::post('/saldos-cuenta/eliminar', [SaldosCuentaController::class, 'eliminar'])->name('saldosCuenta.eliminar');
+
+    //CONCILIACIONES
+    Route::get('/conciliacionesHomeView', [ConciliacionesController::class, 'conciliacionesHomeView'])->name('conciliacionesHomeView');
+    Route::get('/conciliacionesMacroView', [ConciliacionesController::class, 'conciliacionesMacroView'])->name('conciliacionesMacroView');
+    Route::get('/conciliacionesNacionView', [ConciliacionesController::class, 'conciliacionesNacionView'])->name('conciliacionesNacionView');
+    Route::get('/conciliacionesFrances986View', [ConciliacionesController::class, 'conciliacionesFrances986View'])->name('conciliacionesFrances986View');
+    Route::get('/conciliacionesFrances1001View', [ConciliacionesController::class, 'conciliacionesFrances1001View'])->name('conciliacionesFrances1001View');
+
+    Route::get('/conciliacion/data', [ConciliacionesController::class, 'data'])->name('conciliacion.data');
+    Route::post('/conciliacion/movimiento/{id}/estado', [ConciliacionesController::class, 'actualizarEstado'])->name('conciliacion.estado');
+    Route::post('/conciliacion/estado-masivo', [ConciliacionesController::class, 'actualizarEstadoMasivo'])->name('conciliacion.estadoMasivo');
+    Route::post('/conciliacion/movimiento/{id}/comprobante', [ConciliacionesController::class, 'actualizarComprobante'])->name('conciliacion.comprobante');
 });
