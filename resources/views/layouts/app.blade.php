@@ -186,7 +186,7 @@
                     @if (Auth::user()->rol != 'Colaborador/a')
                     <li class="nav-section-title section-administracion"><span class="section-dot"></span>Administración</li>
 
-                    @if (in_array(Auth::id(), [1,2,5,6]))
+                    @if (in_array(Auth::id(), [1,2,5,6,46,134]))
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#" role="button" aria-expanded="false">
                             <i class="fa-solid fa-chart-pie"></i>
