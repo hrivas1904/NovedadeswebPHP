@@ -54,7 +54,7 @@ let formatoConciliacion = 'PEGADO';
 
 function actualizarHeaderColumnasConc() {
     const cols = (COLUMNAS_POR_FORMATO_CONC[CONCILIACION_BANCO] || {})[formatoConciliacion] || '';
-    $('#headerColumnas').text(cols ? 'Columnas esperadas: ' + cols : '');
+    $('#headerColumnas').text(cols ? '' + cols : '');
 }
 
 $(document).on('click', '#btnPegado', function () {
