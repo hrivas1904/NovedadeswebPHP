@@ -12,7 +12,7 @@
             MACRO
         </button>
 
-        <button type="button" id="btnIrComparativo6Meses" class="btn btn-sm btn-analisis d-none" style="color: var(--color-default);"
+        <button type="button" id="btnIrComparativo6Meses" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
             data-url="{{ route('administracion.conciliacionesNacionView') }}">
             <i class="fa-solid fa-building-columns"></i>
             NACIÓN
@@ -50,10 +50,15 @@
         estado: @json(route('administracion.conciliacion.estado', ':id')),
         estadoMasivo: @json(route('administracion.conciliacion.estadoMasivo')),
         comprobante: @json(route('administracion.conciliacion.comprobante', ':id')),
+        extractoPreview: @json(route('administracion.importacion.bancos.preview')),
+        extractoConfirmar: @json(route('administracion.importacion.bancos.confirmar')),
+        pagosPreview: @json(route('administracion.conciliacion.pagos.preview')),
+        pagosConfirmar: @json(route('administracion.conciliacion.pagos.confirmar')),
     };
     const CONCEPTOS_CATALOGO = @json($conceptos);
 </script>
 
 <script src="/js/administracion/conciliaciones/conciliacionesHome.js"></script>
 <script src="{{ asset('js/administracion/conciliaciones/conciliacionMacro.js') }}"></script>
+<script src="{{ asset('js/administracion/conciliaciones/conciliacionNacion.js') }}"></script>
 @endpush
