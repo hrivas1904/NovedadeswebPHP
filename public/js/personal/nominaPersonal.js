@@ -265,6 +265,9 @@ function verLegajo(legajoColaborador, nombre) {
                 $("#inputNoche").val(d.NOCHE);
                 $("#inputUti").val(d.UTI);
 
+                $("#inputMotivoBaja").val(d.MOTIVO_BAJA);
+                $("#inputObservBaja").val(d.OBSERV_BAJA);
+
                 $("#modalLegajoColaborador").modal("show");
 
                 $("#modalLegajoColaborador")
@@ -389,7 +392,8 @@ $(document).ready(function () {
                         d.area_id = getAreasSeleccionadas().join(",") || null;
                     }
                     d.categ_id = getCategoriasSeleccionadas().join(",") || null;
-                    d.p_convenio = getConveniosSeleccionados().join(",") || null;
+                    d.p_convenio =
+                        getConveniosSeleccionados().join(",") || null;
                     d.p_estado = getEstadosSeleccionado();
                 },
             },

@@ -446,7 +446,7 @@
                                     <div class="col-lg-2">
                                         <label class="form-label">Servicio</label>
                                         <select name="servicio_id" id="servicio"
-                                            class="form-select js-select-servicio" disabled>
+                                            class="form-select js-select-servicio">
                                             <option selected value="">Seleccione servicio</option>
                                         </select>
                                     </div>
@@ -728,7 +728,7 @@
                                     <div class="col-xl-3 col-lg-4 col-md-6 col-12">
                                         <label class="form-label">Servicio</label>
                                         <select name="servicio_id" id="inputServicio"
-                                            class="form-select w-100 editAllowed">
+                                            class="form-select w-100">
                                         </select>
                                     </div>
                                     <div class="col-xl-3 col-lg-4 col-md-6 col-12">
@@ -802,6 +802,14 @@
                                             <option value="1">SI</option>
                                             <option value="0">NO</option>
                                         </select>
+                                    </div>
+                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+                                        <label class="form-label">Motivo de Baja</label>
+                                        <input id="inputMotivoBaja" name="motivoBaja" class="form-control" readonly>
+                                    </div>
+                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+                                        <label class="form-label">Observaciones de Baja</label>
+                                        <input id="inputObservBaja" name="observacionesBaja" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
