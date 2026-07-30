@@ -37,8 +37,8 @@ const COLUMNAS_POR_FORMATO_CONC = {
         EXCEL:  'Fecha | Operación | Concepto | Detalle | Nro | Importe | Saldo',
     },
     NACION: {
-        PEGADO: 'Fecha+Hora | Descripción | Crédito | Débito',
-        EXCEL:  'Fecha | — | Concepto | Detalle | Importe (con signo) | Saldo',
+        PEGADO: 'Fecha | Descripción | Crédito | Débito',
+        EXCEL:  'Fecha | — | Concepto | Detalle | Importe | Saldo',
     },
     'FRANCES (986)': {
         PEGADO: 'Fecha | Descripción | CódOp | Crédito | Débito | Saldo',
@@ -54,7 +54,7 @@ let formatoConciliacion = 'PEGADO';
 
 function actualizarHeaderColumnasConc() {
     const cols = (COLUMNAS_POR_FORMATO_CONC[CONCILIACION_BANCO] || {})[formatoConciliacion] || '';
-    $('#headerColumnas').text(cols ? '' + cols : '');
+    $('#headerColumnas').text(cols ? 'Columnas esperadas: ' + cols : '');
 }
 
 $(document).on('click', '#btnPegado', function () {
@@ -259,4 +259,181 @@ $(document).on('subvista:cargada', function () {
     actualizarHeaderColumnasConc();
     $('#inputFechaHasta').val(new Date().toISOString().slice(0, 10));
     cargarConciliacion();
+});
+
+// =====================================================================
+// EXTRACTO -- reutiliza los mismos endpoints de Importacion > Bancos
+// (mismo motor de clasificacion, mismo aprendizaje de reglas al confirmar)
+// =====================================================================
+let filasExtracto = [];
+
+function renderPreviewExtracto() {
+    if (!filasExtracto.length) {
+        $('#previewExtractoWrapper').hide();
+        return;
+    }
+
+    let opts = '';
+    CONCEPTOS_CATALOGO.forEach(function (c) {
+        opts += '<option value="' + c + '">' + c + '</option>';
+    });
+
+    let html = '';
+    filasExtracto.forEach(function (r, i) {
+        let optsFila = opts.replace('value="' + r.concepto + '"', 'value="' + r.concepto + '" selected');
+        html += '<tr>' +
+            '<td>' + r.fecha + '</td>' +
+            '<td><select class="form-select form-select-sm select-concepto-extracto" data-idx="' + i + '">' + optsFila + '</select></td>' +
+            '<td><input type="text" class="form-control form-control-sm input-subconcepto-extracto" data-idx="' + i + '" value="' + (r.subconcepto || '') + '"></td>' +
+            '<td>' + r.detalle + '</td>' +
+            '<td class="text-end fw-bold ' + (r.importe >= 0 ? 'text-success' : 'text-danger') + '">' + fmtPesos(r.importe) + '</td>' +
+            '</tr>';
+    });
+
+    $('#previewExtractoBody').html(html);
+    $('#cantidadExtracto, #cantidadExtracto2').text(filasExtracto.length);
+    $('#previewExtractoWrapper').show();
+}
+
+function procesarExtracto() {
+    const contenido = $('#textAreaArchivo').val();
+    if (!contenido.trim()) {
+        filasExtracto = [];
+        renderPreviewExtracto();
+        $('#msgExtracto').text('');
+        return;
+    }
+
+    $.post(CONCILIACION_ROUTES.extractoPreview, {
+        contenido: contenido,
+        banco: CONCILIACION_BANCO,
+        formato: formatoConciliacion,
+    }, function (data) {
+        filasExtracto = data.rows;
+        $('#msgExtracto').text(data.mensaje).css('color', filasExtracto.length ? 'green' : 'inherit');
+        renderPreviewExtracto();
+    });
+}
+
+$(document).on('input', '#textAreaArchivo', debounce(procesarExtracto, 400));
+
+$(document).on('change', '#inputArchivo', function () {
+    if (!this.files || !this.files[0]) return;
+    const formData = new FormData();
+    formData.append('archivo', this.files[0]);
+    formData.append('banco', CONCILIACION_BANCO);
+    formData.append('formato', formatoConciliacion);
+
+    $.ajax({
+        url: CONCILIACION_ROUTES.extractoPreview,
+        type: 'POST', data: formData, processData: false, contentType: false,
+        success: function (data) {
+            filasExtracto = data.rows;
+            $('#msgExtracto').text(data.mensaje).css('color', filasExtracto.length ? 'green' : 'inherit');
+            renderPreviewExtracto();
+        },
+    });
+});
+
+$(document).on('change', '.select-concepto-extracto', function () {
+    filasExtracto[$(this).data('idx')].concepto = $(this).val();
+});
+
+$(document).on('input', '.input-subconcepto-extracto', function () {
+    filasExtracto[$(this).data('idx')].subconcepto = $(this).val();
+});
+
+$(document).on('click', '#btnConfirmarExtracto', function () {
+    if (!filasExtracto.length) return;
+
+    $.post(CONCILIACION_ROUTES.extractoConfirmar, { rows: filasExtracto }, function (data) {
+        $('#msgExtracto').text('✓ ' + data.insertados + ' movimientos importados.').css('color', 'green');
+        $('#textAreaArchivo').val('');
+        filasExtracto = [];
+        renderPreviewExtracto();
+        cargarConciliacion(); // refresca la tabla de abajo con los movimientos recien importados
+    });
+});
+
+// =====================================================================
+// PAGOS A PROVEEDORES (solo MACRO)
+// =====================================================================
+let resultadosPagos = [];
+
+function renderPreviewPagos() {
+    if (!resultadosPagos.length) {
+        $('#previewPagosWrapper').hide();
+        return;
+    }
+
+    let html = '';
+    resultadosPagos.forEach(function (res, i) {
+        const hayMatch = res.matches.length > 0;
+        const match = res.matches[0];
+        html += '<tr>' +
+            '<td class="text-center"><input type="checkbox" class="chk-pago" data-idx="' + i + '" ' + (res.confirmado ? 'checked' : '') + ' ' + (hayMatch ? '' : 'disabled') + '></td>' +
+            '<td>' + res.pago.nombre + '</td>' +
+            '<td>' + (res.pago.fechaPago || '') + '</td>' +
+            '<td class="text-end text-danger fw-bold">' + fmtPesos(-res.pago.importe) + '</td>' +
+            '<td>' + (hayMatch ? '<span class="text-success">✓ ' + match.detalle + ' (' + match.fecha + ')</span>' : '<span class="text-warning">Sin match</span>') + '</td>' +
+            '<td>' + (hayMatch ? match.ejecucion : '—') + '</td>' +
+            '</tr>';
+    });
+
+    $('#previewPagosBody').html(html);
+    const nConfirmados = resultadosPagos.filter(r => r.confirmado).length;
+    $('#resumenPagos').text(resultadosPagos.length + ' pagos · ' + nConfirmados + ' a confirmar');
+    $('#previewPagosWrapper').show();
+}
+
+function procesarPagos() {
+    const contenido = $('#textAreaArchivoProv').val();
+    if (!contenido.trim()) {
+        resultadosPagos = [];
+        renderPreviewPagos();
+        $('#msgPagos').text('');
+        return;
+    }
+
+    $.post(CONCILIACION_ROUTES.pagosPreview, { contenido: contenido }, function (data) {
+        resultadosPagos = data.resultados;
+        $('#msgPagos').text(data.mensaje).css('color', 'inherit');
+        renderPreviewPagos();
+    });
+}
+
+$(document).on('input', '#textAreaArchivoProv', debounce(procesarPagos, 400));
+
+$(document).on('change', '#inputArchivoPagoProv', function () {
+    if (!this.files || !this.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+        $('#textAreaArchivoProv').val(ev.target.result);
+        procesarPagos();
+    };
+    reader.readAsText(this.files[0], 'UTF-8');
+});
+
+$(document).on('change', '.chk-pago', function () {
+    resultadosPagos[$(this).data('idx')].confirmado = $(this).is(':checked');
+    renderPreviewPagos();
+});
+
+$(document).on('click', '#btnConfirmarPagos', function () {
+    let ids = [];
+    resultadosPagos.forEach(function (r) {
+        if (r.confirmado) {
+            r.matches.forEach(function (m) { ids.push(m.id); });
+        }
+    });
+
+    if (!ids.length) return;
+
+    $.post(CONCILIACION_ROUTES.pagosConfirmar, { ids: ids }, function (data) {
+        $('#msgPagos').text('✓ ' + data.actualizados + ' presupuesto(s) marcado(s) como CUMPLIDO.').css('color', 'green');
+        $('#textAreaArchivoProv').val('');
+        resultadosPagos = [];
+        renderPreviewPagos();
+        cargarConciliacion(); // refresca, por si alguno de esos movimientos aparece en la tabla
+    });
 });

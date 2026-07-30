@@ -29,6 +29,20 @@
                 <input id="inputArchivo" type="file" class="form-control"></input>
                 <textarea id="textAreaArchivo" rows="2" class="form-control" placeholder="Pegar aquí el extracto de MACRO..."></textarea>
             </div>
+
+            <label class="mt-2" id="msgExtracto"></label>
+            <div id="previewExtractoWrapper" style="display:none;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small"><span id="cantidadExtracto">0</span> movimientos</span>
+                    <button type="button" id="btnConfirmarExtracto" class="btn btn-primary btn-sm">Importar <span id="cantidadExtracto2">0</span> movimientos</button>
+                </div>
+                <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
+                    <table class="table table-sm">
+                        <thead><tr><th>Fecha</th><th>Concepto</th><th>Sub-concepto</th><th>Detalle</th><th class="text-end">Importe</th></tr></thead>
+                        <tbody id="previewExtractoBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -47,6 +61,20 @@
             <div class="d-flex flex-column gap-2">
                 <input id="inputArchivoPagoProv" type="file" class="form-control"></input>
                 <textarea id="textAreaArchivoProv" rows="2" class="form-control" placeholder="O pegá el contenido acá..."></textarea>
+            </div>
+
+            <label class="mt-2" id="msgPagos"></label>
+            <div id="previewPagosWrapper" style="display:none;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small" id="resumenPagos"></span>
+                    <button type="button" id="btnConfirmarPagos" class="btn btn-primary btn-sm">✓ Confirmar seleccionados</button>
+                </div>
+                <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
+                    <table class="table table-sm">
+                        <thead><tr><th>✓</th><th>Proveedor (pago)</th><th>Fecha pago</th><th class="text-end">Importe</th><th>Match en presupuesto</th><th>Estado</th></tr></thead>
+                        <tbody id="previewPagosBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

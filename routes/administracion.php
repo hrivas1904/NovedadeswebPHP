@@ -106,4 +106,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/conciliacion/movimiento/{id}/estado', [ConciliacionesController::class, 'actualizarEstado'])->name('conciliacion.estado');
     Route::post('/conciliacion/estado-masivo', [ConciliacionesController::class, 'actualizarEstadoMasivo'])->name('conciliacion.estadoMasivo');
     Route::post('/conciliacion/movimiento/{id}/comprobante', [ConciliacionesController::class, 'actualizarComprobante'])->name('conciliacion.comprobante');
+    Route::post('/conciliacion/pagos/preview', [ConciliacionesController::class, 'previewPagos'])->name('conciliacion.pagos.preview');
+    Route::post('/conciliacion/pagos/confirmar', [ConciliacionesController::class, 'confirmarPagos'])->name('conciliacion.pagos.confirmar');
 });
