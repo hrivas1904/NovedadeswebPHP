@@ -84,38 +84,47 @@
             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
                 <div id="publicarNotificacion" class="row mb-4">
                     <div class="col-12">
-                        <div class="card p-3">
-                            <div class="d-flex align-items-start gap-3 my-3">
-                                <div class="icon-box" style="background: var(--color-default); color: var(--bg-card);">
-                                    <i class="fa-solid fa-pen"></i>
-                                </div>
-                                <div>
-                                    <h3 class="tituloVista mb-0">Publicar nuevo aviso</h3>
-                                    <p class="mb-0 text-muted">Escribí el asunto y el contenido del aviso.</p>
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-start my-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="icon-box" style="background: var(--color-default); color: var(--bg-card);">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="tituloVista mb-0">Publicar nuevo aviso</h3>
+                                            <p class="mb-0 text-muted">Escribí el asunto y el contenido del aviso.</p>
+                                        </div>
+                                    </div>
+                                    <div>
+
+                                    </div>
                                 </div>
                             </div>
-                            <input id="txtNotificacionTitulo" class="form-control mb-2" placeholder="Escriba el asunto...">
-                            <div id="editorComunicado" style="height:150px; font-family:1rem;"></div>
-                            <input type="hidden" id="txtNotificacion">
+                            <div class="card-body d-none">
+                                <input id="txtNotificacionTitulo" class="form-control mb-2" placeholder="Escriba el asunto...">
+                                <div id="editorComunicado" style="height:150px; font-family:1rem;"></div>
+                                <input type="hidden" id="txtNotificacion">
 
-                            <div id="emojiPicker" class="border rounded p-2 shadow-sm"
-                                style="display:none; position:absolute; z-index:1000; background:#fff;">
-                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">❗</span>
-                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">📌</span>
-                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">⚠️</span>
-                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">✅</span>
-                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">📅</span>
-                                <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">🔔</span>
-                            </div>
+                                <div id="emojiPicker" class="border rounded p-2 shadow-sm"
+                                    style="display:none; position:absolute; z-index:1000; background:#fff;">
+                                    <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">❗</span>
+                                    <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">📌</span>
+                                    <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">⚠️</span>
+                                    <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">✅</span>
+                                    <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">📅</span>
+                                    <span class="emoji-option" style="cursor:pointer; font-size:1.4rem; margin:2px;">🔔</span>
+                                </div>                          
 
-                            <div class="d-flex justify-content-end mt-3 gap-3">
-                                <button type="button" id='btnCancelarRedactarComunicado' class="btn btn-secondary">
-                                    Cancelar
-                                </button>
-                                <button type="button" id='btnRedactarComunicado' class="btn btn-primary">
-                                    <i class="fa-solid fa-bullhorn"></i>
-                                    Publicar
-                                </button>
+                                <div class="d-flex justify-content-end mt-3 gap-3">
+                                    <button type="button" id='btnCancelarRedactarComunicado' class="btn btn-secondary">
+                                        Cancelar
+                                    </button>
+                                    <button type="button" id='btnRedactarComunicado' class="btn btn-primary">
+                                        <i class="fa-solid fa-bullhorn"></i>
+                                        Publicar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
