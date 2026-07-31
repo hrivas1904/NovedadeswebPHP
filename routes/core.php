@@ -6,6 +6,7 @@ use App\Http\Controllers\Core\HomeController;
 use App\Http\Controllers\Core\PushController;
 use App\Http\Controllers\Core\AlertasController;
 use App\Http\Controllers\Core\NotificacionController;
+use App\Http\Controllers\Core\LogController;
 
 //loggeo
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
@@ -35,3 +36,6 @@ Route::post('/calendario/agendarEvento', [NotificacionController::class, 'agenda
 Route::get('/eventosProgramados/verDetalle/{idEvento}', [NotificacionController::class, 'verDetalleEventoProgramado']);
 Route::post('/eventosProgramados/editar', [NotificacionController::class, 'editarEventoProgramado']);
 Route::post('/eventosProgramados/eliminar', [NotificacionController::class, 'eliminarEventoProgramado']);
+
+//log transacciones
+Route::get('/log/vista', [LogController::class, 'logTransactView'])->name('logTransactView');

@@ -300,6 +300,12 @@
                         <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
                     </div>
 
+                    @if (Auth::user()->rol == 'Administrador/a')
+                    <a class="btn btn-light position-relative" id="btnVerLog" title="ver Log" href="{{ route('logTransactView') }}">
+                        <i class="fa-solid fa-table-list"></i>
+                    </a>
+                    @endif
+
                 </div>
             </header>
 

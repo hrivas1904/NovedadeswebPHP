@@ -14,7 +14,7 @@
 
     <div class="container-fluid">
 
-        <div class="d-flex align-items-start gap-3 my-3">
+        <div class="d-flex align-items-start gap-3 mb-2">
             <div class="icon-box">
                 <i class="fa-regular fa-user"></i>
             </div>
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="card p-4 mb-3">
+        <div class="card p-4 mb-2">
             @if (in_array(Auth::user()->rol, ['Administrador/a']))
                 <div class="row g-3 mb-3">
                     <div class="col-xl-3 col-md-6 col-12">
@@ -82,11 +82,11 @@
                 </div>
             @endif
             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
-                <div id="publicarNotificacion" class="row mb-4">
+                <div id="publicarNotificacion" class="row mb-2">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <div class="d-flex align-items-start my-3">
+                            <div class="card-header" style="cursor: pointer;" id="divHeaderPublicarAviso">
+                                <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-start gap-3">
                                         <div class="icon-box" style="background: var(--color-default); color: var(--bg-card);">
                                             <i class="fa-solid fa-pen"></i>
@@ -96,12 +96,10 @@
                                             <p class="mb-0 text-muted">Escribí el asunto y el contenido del aviso.</p>
                                         </div>
                                     </div>
-                                    <div>
-
-                                    </div>
+                                    <i style="color: var(--color-default)" id="iconPublicarAviso" class="fs-3 fa-solid fa-circle-arrow-down"></i>
                                 </div>
                             </div>
-                            <div class="card-body d-none">
+                            <div class="card-body d-none" id="divCardBodyPublicarAviso">
                                 <input id="txtNotificacionTitulo" class="form-control mb-2" placeholder="Escriba el asunto...">
                                 <div id="editorComunicado" style="height:150px; font-family:1rem;"></div>
                                 <input type="hidden" id="txtNotificacion">
@@ -134,7 +132,7 @@
             <div class="row d-flex">
                 <div class="col-xl-9 col-12 d-flex">
                     <div class="col-12">
-                        <div class="card card-header-fixed p-2">
+                        <div class="card card-header-fixed">
                             <div class="card-header">
                                 <div class="d-flex gap-3 align-items-center">
                                     <div class="icon-box d-flex align-items-center justify-content-center"
@@ -162,7 +160,7 @@
                 </div>
 
                 <div class="col-xl-2 col-md-6 col-12 d-none">
-                    <div class="card p-2">
+                    <div class="card">
                         <div class="card-header">
                             <div class="d-flex gap-3 align-items-center">
                                 <div class="icon-box d-flex align-items-center justify-content-center"
@@ -237,7 +235,7 @@
                 </div>
 
                 <div class="col-xl-3 col-12 d-flex">
-                    <div class="card card-header-fixed p-2">
+                    <div class="card card-header-fixed">
                         <div class="card-header">
                             <div class="d-flex gap-3 align-items-center justify-content-between">
                                 <div class="icon-box d-flex align-items-center justify-content-center"
@@ -263,8 +261,9 @@
                                 @endif
                             </div>
                         </div>
-                        <div
-                            class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
+                        <div class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
+                            <div id="divProximoEvento"></div>
+                            <hr class="my-3">
                             <div id="divCardFeriado">
                             </div>
                         </div>

@@ -47,50 +47,186 @@ function obtenerFeriados() {
         url: "/eventosProgramados/lista",
         type: "GET",
         success: function (res) {
-            if (res.success) {
-                let html = ``;
-                res.data.forEach(function (res) {
-                    const botonesAdmin =
-                        USER_ROLE === "Administrador/a" ||
-                        USER_ROLE === "Supervisor/a Calidad"
-                            ? `
-                            <button type="button" class="btn text-muted btnEditarEvento" data-id="${res.idEvento}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                            </button>
-                            <button type="button" class="btn text-muted btnEliminarEvento" data-id="${res.idEvento}">
-                                <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                        `
-                            : "";
 
-                    html += `
-                        <div class="d-flex align-items-start gap-2 mb-2 empleado-box p-1">
-                            <div>
-                                <div style="width:60px; background-color:#1DAC8A; color:white;" class="border border-radius rounded-2 d-flex flex-column text-center justify-content-center align-items-center py-2">
-                                    <h2 class="fw-bolder mb-0">${obtenerDia(res.fechaEvento)}</h2>
-                                    <h6>${obtenerMes(res.fechaEvento)}</h6>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 style="color: var(--color-default)" class="fw-bolder">${res.tituloEvento}</h6>
-                                <p class="text-muted">${formatearFechaLarga(res.fechaEvento)}</p>
-                                ${botonesAdmin}
-                            </div>
-                        </div>
-                    `;
-                });
-
-                $("#divCardFeriado").html(html);
-            } else {
+            if (!res.success) {
                 Swal.fire({
                     title: "Error",
                     text: "Error de conexión",
                     icon: "error",
                     confirmButtonColor: "#1DAC8A",
                 });
+                return;
             }
-            console.log(res.data);
+
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            // ordenar cronológicamente
+            const eventos = [...res.data].sort((a, b) => {
+                return new Date(a.fechaEvento) - new Date(b.fechaEvento);
+            });
+
+            // buscar el evento actual o próximo
+            let proximoEvento = eventos.find(e => {
+                const fecha = new Date(e.fechaEvento);
+                fecha.setHours(0,0,0,0);
+                return fecha >= hoy;
+            });
+
+            if (!proximoEvento) {
+                proximoEvento = eventos[0];
+            }
+
+            //----------------------------------------------------
+            // CARD DESTACADA
+            //----------------------------------------------------
+
+            let htmlProximo = "";
+
+            if (proximoEvento) {
+
+                const fecha = new Date(proximoEvento.fechaEvento);
+                fecha.setHours(0,0,0,0);
+
+                const diferenciaDias = Math.floor(
+                    (fecha - hoy) / (1000 * 60 * 60 * 24)
+                );
+
+                let badge = "";
+                if (diferenciaDias === 0) {
+                    badge = `<span class="badge bg-success">HOY</span>`;
+                }
+                else if (diferenciaDias === 1) {
+                    badge = `<span class="badge bg-warning text-dark">MAÑANA</span>`;
+                }
+                else {
+                    badge = `<span class="badge bg-primary">EN ${diferenciaDias} DÍAS</span>`;
+                }
+
+                htmlProximo = `
+                    <div class="card border-0 shadow-sm mb-2"
+                        style="background:#f7fffd;border-left:5px solid #1DAC8A;">
+
+                        <div class="card-body p-3">
+
+                            <div class="d-flex justify-content-between align-items-start">
+
+                                <div>
+                                    ${badge}
+                                    <h6 class="fw-bold mt-2 mb-1"
+                                        style="color:var(--color-default)">
+                                        ${proximoEvento.tituloEvento}
+                                    </h6>
+                                </div>
+                                <div
+                                    style="
+                                        width:65px;
+                                        background:#1DAC8A;
+                                        color:white;
+                                        border-radius:10px;
+                                    "
+                                    class="text-center p-2">
+                                    <h2 class="mb-0 fw-bold">
+                                        ${obtenerDia(proximoEvento.fechaEvento)}
+                                    </h2>
+                                    <small>
+                                        ${obtenerMes(proximoEvento.fechaEvento)}
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+            }
+
+            $("#divProximoEvento").html(htmlProximo);
+
+            //----------------------------------------------------
+            // LISTADO
+            //----------------------------------------------------
+
+            let html = "";
+
+            eventos.forEach(function (evento) {
+
+                const botonesAdmin =
+                    USER_ROLE === "Administrador/a" ||
+                    USER_ROLE === "Supervisor/a Calidad"
+                        ? `
+                            <button
+                                class="btn text-muted btnEditarEvento"
+                                data-id="${evento.idEvento}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
+
+                            <button
+                                class="btn text-muted btnEliminarEvento"
+                                data-id="${evento.idEvento}">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        `
+                        : "";
+
+                const destacado =
+                    evento.idEvento === proximoEvento.idEvento;
+
+                html += `
+                    <div class="d-flex align-items-start gap-2 mb-2 empleado-box p-2
+                        ${destacado ? "evento-destacado" : ""}">
+
+                        <div>
+
+                            <div
+                                style="
+                                    width:60px;
+                                    background:#1DAC8A;
+                                    color:white;
+                                "
+                                class="rounded-2 d-flex flex-column justify-content-center align-items-center py-2">
+
+                                <h2 class="fw-bolder mb-0">
+                                    ${obtenerDia(evento.fechaEvento)}
+                                </h2>
+
+                                <h6 class="mb-0">
+                                    ${obtenerMes(evento.fechaEvento)}
+                                </h6>
+
+                            </div>
+
+                        </div>
+
+                        <div class="flex-grow-1">
+
+                            <h6 class="fw-bold"
+                                style="color:var(--color-default)">
+                                ${evento.tituloEvento}
+                            </h6>
+
+                            ${
+                                evento.descripcionEvento
+                                    ? `<small class="text-muted">${evento.descripcionEvento}</small>`
+                                    : ""
+                            }
+
+                            <div class="mt-1">
+                                ${botonesAdmin}
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+            });
+
+            $("#divCardFeriado").html(html);
+
         },
+
         error: function () {
             Swal.fire({
                 title: "Error",
@@ -525,6 +661,13 @@ $("#btnEditarEvento").on("click", function () {
             });
         },
     });
+});
+
+$("#divHeaderPublicarAviso").on("click", function () {
+    $("#divCardBodyPublicarAviso").toggleClass("d-none");
+    $("#iconPublicarAviso").toggleClass(
+        "fa-circle-arrow-down fa-circle-arrow-up",
+    );
 });
 
 $(document).ready(function () {
