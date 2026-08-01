@@ -18,9 +18,9 @@
 }
 
 .scroll-admin{
-    max-height: 350px;
+    height: 57vh;
 }
 
 .scroll-user{
-    max-height: 600px;
+    height: 75vh;
 }

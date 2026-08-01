@@ -47,7 +47,6 @@ function obtenerFeriados() {
         url: "/eventosProgramados/lista",
         type: "GET",
         success: function (res) {
-
             if (!res.success) {
                 Swal.fire({
                     title: "Error",
@@ -67,9 +66,9 @@ function obtenerFeriados() {
             });
 
             // buscar el evento actual o próximo
-            let proximoEvento = eventos.find(e => {
+            let proximoEvento = eventos.find((e) => {
                 const fecha = new Date(e.fechaEvento);
-                fecha.setHours(0,0,0,0);
+                fecha.setHours(0, 0, 0, 0);
                 return fecha >= hoy;
             });
 
@@ -84,22 +83,19 @@ function obtenerFeriados() {
             let htmlProximo = "";
 
             if (proximoEvento) {
-
                 const fecha = new Date(proximoEvento.fechaEvento);
-                fecha.setHours(0,0,0,0);
+                fecha.setHours(0, 0, 0, 0);
 
                 const diferenciaDias = Math.floor(
-                    (fecha - hoy) / (1000 * 60 * 60 * 24)
+                    (fecha - hoy) / (1000 * 60 * 60 * 24),
                 );
 
                 let badge = "";
                 if (diferenciaDias === 0) {
                     badge = `<span class="badge bg-success">HOY</span>`;
-                }
-                else if (diferenciaDias === 1) {
+                } else if (diferenciaDias === 1) {
                     badge = `<span class="badge bg-warning text-dark">MAÑANA</span>`;
-                }
-                else {
+                } else {
                     badge = `<span class="badge bg-primary">EN ${diferenciaDias} DÍAS</span>`;
                 }
 
@@ -152,7 +148,6 @@ function obtenerFeriados() {
             let html = "";
 
             eventos.forEach(function (evento) {
-
                 const botonesAdmin =
                     USER_ROLE === "Administrador/a" ||
                     USER_ROLE === "Supervisor/a Calidad"
@@ -171,8 +166,7 @@ function obtenerFeriados() {
                         `
                         : "";
 
-                const destacado =
-                    evento.idEvento === proximoEvento.idEvento;
+                const destacado = evento.idEvento === proximoEvento.idEvento;
 
                 html += `
                     <div class="d-flex align-items-start gap-2 mb-2 empleado-box p-2
@@ -224,7 +218,6 @@ function obtenerFeriados() {
             });
 
             $("#divCardFeriado").html(html);
-
         },
 
         error: function () {
@@ -318,55 +311,88 @@ $(document).on("click", ".btnEliminarEvento", function () {
     });
 });
 
-$("#btnRedactarComunicado").click(function () {
-    let contenido = quill.root.innerHTML;
-    let titulo = $("#txtNotificacionTitulo").val().trim();
+function editarNotificacion(id) {
+    const titulo = $("#txtNotificacionTitulo").val().trim();
+    const contenido = quill.root.innerHTML;
 
-    if (quill.getText().trim().length === 0) {
+    if (!titulo) {
         Swal.fire({
-            title: "Debe escribir un mensaje",
             icon: "warning",
+            title: "Asunto requerido",
+            text: "Debe ingresar un asunto.",
+        });
+        return;
+    }
+
+    if (!quill.getText().trim()) {
+        Swal.fire({
+            icon: "warning",
+            title: "Contenido requerido",
+            text: "Debe ingresar el contenido del aviso.",
         });
         return;
     }
 
     $.ajax({
-        url: "/notificaciones/publicar",
+        url: NOTIFICACIONES_ROUTES.editar,
         type: "POST",
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-        },
+        dataType: "json",
+
         data: {
-            contenido: contenido,
+            id: id,
             titulo: titulo,
-            _token: $('meta[name="csrf-token"]').attr("content"),
+            contenido: contenido,
+            _token: $("meta[name='csrf-token']").attr("content"),
         },
-        success: function (data) {
-            if (data.success) {
-                Swal.fire({
-                    title: data.mensaje,
-                    icon: "success",
-                    customClass: {
-                        confirmButtonColor: "btn-primary btn",
-                    },
-                });
 
-                quill.setContents([]); // limpia el editor
-                $("#txtNotificacionTitulo").val("");
+        beforeSend: function () {
+            $("#btnRedactarComunicado").prop("disabled", true).html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Guardando...
+                `);
+        },
 
-                cargarNotificaciones();
-            } else {
+        success: function (res) {
+            if (!res.success) {
                 Swal.fire({
-                    title: data.mensaje,
                     icon: "error",
-                    customClass: {
-                        confirmButtonColor: "btn-primary btn",
-                    },
+                    title: "Error",
+                    text: res.message,
                 });
+
+                return;
             }
+
+            Swal.fire({
+                icon: "success",
+                title: "¡Operación exitosa!",
+                text: res.message,
+                timer: 1200,
+                showConfirmButton: false,
+            });
+
+            limpiarFormularioNotificacion();
+            cargarNotificaciones();
+        },
+
+        error: function (xhr) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    xhr.responseJSON?.message ??
+                    "No fue posible actualizar la notificación.",
+            });
+        },
+
+        complete: function () {
+            $("#btnRedactarComunicado").prop("disabled", false).html(`
+                    <i id="iconBtnRedactar" class="fa-solid fa-floppy-disk"></i>
+                    Guardar cambios
+                `);
         },
     });
-});
+}
 
 function cargarNotificaciones() {
     $.ajax({
@@ -382,24 +408,6 @@ function cargarNotificaciones() {
             } else {
                 response.forEach((n) => {
                     if (n.estado) {
-                    }
-
-                    if (USER_ROLE === "Administrador/a") {
-                        botones = `
-                            <div class="d-flex justify-content-end">
-                                <!--<button type="button" class="btn">
-                                    <i class="fa-regular fa-pen-to-square"></i> Editar
-                                </button>
-
-                                <button type="button" class="btn">
-                                    <i class="fa-regular fa-eye"></i> Mostrar
-                                </button>-->
-
-                                <button type="button" class="btn btn-Eliminar" data-id="${n.id_notificacion}">
-                                    <i class="fa-regular fa-trash-can"></i> Eliminar
-                                </button>
-                            </div>
-                        `;
                     }
 
                     contenedor.append(`
@@ -443,10 +451,13 @@ function cargarNotificaciones() {
                                     USER_ROLE === "Administrador/a" ||
                                     USER_ROLE === "Supervisor/a Calidad"
                                         ? `
-                                    <div class="d-flex justify-content-end">
+                                    <div class="d-flex justify-content-end gap-2">
                                         <button type="button" class="btn btn-sm text-danger btn-Eliminar" data-id="${n.id_notificacion}">
                                             <i class="fa-regular fa-trash-can"></i> Eliminar
                                         </button>
+                                        <button type="button" class="btn btn-sm text-primary btn-HabilitarEdicion" data-id="${n.id_notificacion}">
+                                            <i class="fa-regular fa-pen-to-square"></i> Editar
+                                        </button>                                        
                                     </div>
                                 `
                                         : ""
@@ -469,6 +480,14 @@ function cargarNotificaciones() {
         const idNotificacion = $(this).data("id");
         console.log("Id recibido: " + idNotificacion);
         eliminarNotificacion(idNotificacion);
+    });
+
+    $(document).on("click", ".btn-HabilitarEdicion", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const idNotificacion = $(this).data("id");
+        console.log("Id recibido: " + idNotificacion);
+        habilitarEdicionNotificacion(idNotificacion);
     });
 }
 
@@ -509,6 +528,215 @@ function eliminarNotificacion(idNotificacion) {
                 },
             });
         }
+    });
+}
+
+function habilitarEdicionNotificacion(idNotificacion) {
+    $.ajax({
+        url: "/notificaciones/ver/" + idNotificacion,
+        type: "GET",
+        dataType: "json",
+
+        beforeSend: function () {
+            $("#btnRedactarComunicado")
+                .prop("disabled", true)
+                .html(
+                    '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...',
+                );
+        },
+
+        success: function (res) {
+            console.log("Respuesta completa:", res);
+
+            if (!res.success || !res.notificacion) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "No se pudo cargar",
+                    text:
+                        res.message ||
+                        "No se encontró la notificación seleccionada.",
+                });
+
+                return;
+            }
+
+            const notificacion = res.notificacion;
+
+            console.log("Notificación:", notificacion);
+
+            modoEdicion = true;
+            idNotificacionEditar = notificacion.id_notificacion;
+
+            $("#txtIdNotificacionEditar").val(notificacion.id_notificacion);
+
+            $("#txtNotificacionTitulo").val(notificacion.titulo ?? "");
+
+            quill.root.innerHTML = notificacion.contenido ?? "";
+
+            $("#lblTituloFormularioAviso").text("Editar aviso");
+
+            $("#lblSubtituloFormularioAviso").text(
+                "Modificá el asunto o el contenido del aviso.",
+            );
+
+            $("#iconBtnRedactar")
+                .removeClass("fa-bullhorn")
+                .addClass("fa-floppy-disk");
+
+            $("#btnRedactarComunicado")
+                .prop("disabled", false)
+                .html(
+                    '<i id="iconBtnRedactar" class="fa-solid fa-floppy-disk"></i> Guardar cambios',
+                );
+
+            $("#divCardBodyPublicarAviso").removeClass("d-none");
+
+            $("#iconPublicarAviso")
+                .removeClass("fa-circle-arrow-down")
+                .addClass("fa-circle-arrow-up");
+
+            document.getElementById("publicarNotificacion").scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        },
+
+        error: function (xhr) {
+            console.error("Error AJAX:", xhr);
+            console.error("Respuesta:", xhr.responseText);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    xhr.responseJSON?.error ||
+                    xhr.responseJSON?.message ||
+                    "No se pudo cargar la notificación.",
+            });
+        },
+
+        complete: function () {
+            if (!modoEdicion) {
+                $("#btnRedactarComunicado")
+                    .prop("disabled", false)
+                    .html(
+                        '<i id="iconBtnRedactar" class="fa-solid fa-bullhorn"></i> Publicar',
+                    );
+            }
+        },
+    });
+}
+
+$("#btnCancelarRedactarComunicado").on("click", function () {
+    limpiarFormularioNotificacion();
+});
+
+function limpiarFormularioNotificacion() {
+    modoEdicion = false;
+    idNotificacionEditar = null;
+
+    $("#txtIdNotificacionEditar").val("");
+    $("#txtNotificacionTitulo").val("");
+    $("#txtNotificacion").val("");
+
+    quill.setContents([]);
+
+    $("#lblTituloFormularioAviso").text("Publicar nuevo aviso");
+
+    $("#lblSubtituloFormularioAviso").text(
+        "Escribí el asunto y el contenido del aviso.",
+    );
+
+    $("#btnRedactarComunicado").html(`
+        <i id="iconBtnRedactar" class="fa-solid fa-bullhorn"></i>
+        Publicar
+    `);
+
+    $("#divCardBodyPublicarAviso").addClass("d-none");
+
+    $("#iconPublicarAviso")
+        .removeClass("fa-circle-arrow-up")
+        .addClass("fa-circle-arrow-down");
+}
+
+function publicarNotificacion() {
+    const titulo = $("#txtNotificacionTitulo").val().trim();
+    const contenido = quill.root.innerHTML;
+
+    if (!titulo) {
+        Swal.fire({
+            icon: "warning",
+            title: "Falta el asunto",
+            text: "Ingresá un asunto para el aviso.",
+        });
+        return;
+    }
+
+    if (!quill.getText().trim()) {
+        Swal.fire({
+            icon: "warning",
+            title: "Falta el contenido",
+            text: "Ingresá el contenido del aviso.",
+        });
+        return;
+    }
+
+    $.ajax({
+        url: "/notificaciones/publicar",
+        type: "POST",
+        dataType: "json",
+
+        data: {
+            titulo: titulo,
+            contenido: contenido,
+            _token: $("meta[name='csrf-token']").attr("content"),
+        },
+
+        beforeSend: function () {
+            $("#btnRedactarComunicado").prop("disabled", true).html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Publicando...
+                `);
+        },
+
+        success: function (res) {
+            if (!res.success) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res.mensaje,
+                });
+                return;
+            }
+
+            Swal.fire({
+                icon: "success",
+                title: "¡Operación exitosa!",
+                text: res.mensaje,
+                timer: 1200,
+                showConfirmButton: false,
+            });
+
+            limpiarFormularioNotificacion();
+            cargarNotificaciones();
+        },
+
+        error: function (xhr) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    xhr.responseJSON?.mensaje ??
+                    "No fue posible publicar la notificación.",
+            });
+        },
+
+        complete: function () {
+            $("#btnRedactarComunicado").prop("disabled", false).html(`
+                    <i id="iconBtnRedactar" class="fa-solid fa-bullhorn"></i>
+                    Publicar
+                `);
+        },
     });
 }
 

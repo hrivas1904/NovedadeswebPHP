@@ -115,6 +115,63 @@ class NotificacionController extends Controller
         }
     }
 
+    public function verNotificacion($id)
+    {
+        try {
+            $resultado = DB::select(
+                "CALL SP_VER_NOTIFICACION(?)",
+                [$id]
+            );
+
+            if (empty($resultado)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'La notificación no existe.'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'notificacion' => $resultado[0]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editarNotificacion(Request $request)
+    {
+        try {
+
+            $mensaje = '';
+
+            DB::statement(
+                "CALL SP_EDITAR_NOTIFICACION(?, ?, ?, @p_mensaje)",
+                [
+                    $request->id,
+                    $request->titulo,
+                    $request->contenido
+                ]
+            );
+
+            $resultado = DB::select("SELECT @p_mensaje AS mensaje");
+
+            return response()->json([
+                'success' => true,
+                'message' => $resultado[0]->mensaje
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function obtenerFeriados()
     {
         $year = now()->year;

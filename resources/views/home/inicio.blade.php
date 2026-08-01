@@ -24,9 +24,9 @@
             </div>
         </div>
 
-        <div class="card p-4 mb-2">
+        <div class="">
             @if (in_array(Auth::user()->rol, ['Administrador/a']))
-                <div class="row g-3 mb-3">
+                <div class="row g-3 mb-4">
                     <div class="col-xl-3 col-md-6 col-12">
                         <div class="card  p-2" id="cardKpiColabActivos" style="cursor: pointer; color:var(--color-default);">
                             <div class="d-flex gap-3">
@@ -82,7 +82,7 @@
                 </div>
             @endif
             @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
-                <div id="publicarNotificacion" class="row mb-2">
+                <div id="publicarNotificacion" class="row mb-4">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header" style="cursor: pointer;" id="divHeaderPublicarAviso">
@@ -92,8 +92,8 @@
                                             <i class="fa-solid fa-pen"></i>
                                         </div>
                                         <div>
-                                            <h3 class="tituloVista mb-0">Publicar nuevo aviso</h3>
-                                            <p class="mb-0 text-muted">Escribí el asunto y el contenido del aviso.</p>
+                                            <h3 id="lblTituloFormularioAviso" class="tituloVista mb-0">Publicar nuevo aviso</h3>
+                                            <p id="lblSubtituloFormularioAviso" class="mb-0 text-muted">Escribí el asunto y el contenido del aviso.</p>
                                         </div>
                                     </div>
                                     <i style="color: var(--color-default)" id="iconPublicarAviso" class="fs-3 fa-solid fa-circle-arrow-down"></i>
@@ -102,6 +102,7 @@
                             <div class="card-body d-none" id="divCardBodyPublicarAviso">
                                 <input id="txtNotificacionTitulo" class="form-control mb-2" placeholder="Escriba el asunto...">
                                 <div id="editorComunicado" style="height:150px; font-family:1rem;"></div>
+                                <input type="hidden" id="txtIdNotificacionEditar">
                                 <input type="hidden" id="txtNotificacion">
 
                                 <div id="emojiPicker" class="border rounded p-2 shadow-sm"
@@ -119,7 +120,7 @@
                                         Cancelar
                                     </button>
                                     <button type="button" id='btnRedactarComunicado' class="btn btn-primary">
-                                        <i class="fa-solid fa-bullhorn"></i>
+                                        <i id="iconBtnRedactar" class="fa-solid fa-bullhorn"></i>
                                         Publicar
                                     </button>
                                 </div>
@@ -150,8 +151,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div
-                                class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}"">
+                            <div class="card-body contenedor-scroll {{ in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']) ? 'scroll-admin' : 'scroll-user' }}">
                                 <div id="listaNotificaciones">
                                 </div>
                             </div>
@@ -178,7 +178,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body" style="height: 400px">
+                        <div class="card-body" style="height: 600px">
                             <div class="d-flex gap-3 align-items-start my-2" id="kpiMisNovedades"
                                 style="cursor: pointer;">
                                 <div class="icon-box d-flex align-items-center justify-content-center"
@@ -372,60 +372,67 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/home/mensajes.js') }}"></script>
+<script src="{{ asset('js/home/mensajes.js') }}"></script>
 
-    <script>
-        const USER_ROLE = "{{ Auth::user()->rol }}";
-    </script>
+<script>
+    const USER_ROLE = "{{ Auth::user()->rol }}";
 
-    <script>
-        const icons = Quill.import('ui/icons');
-        icons['emoji'] = '<i class="fa-regular fa-face-smile"></i>'; // usa Font Awesome que ya tenés
+    const NOTIFICACIONES_ROUTES = {
+        editar: @json(route('notificaciones.editar'))
+    };
 
-        const quill = new Quill('#editorComunicado', {
-            theme: 'snow',
-            placeholder: 'Escriba el comunicado...',
-            modules: {
-                toolbar: {
-                    container: [
-                        ['bold', 'italic', 'underline'],
-                        [{
-                            'list': 'ordered'
-                        }, {
-                            'list': 'bullet'
-                        }],
-                        [{
-                            'align': []
-                        }],
-                        ['emoji']
-                    ],
-                    handlers: {
-                        emoji: function() {
-                            const bounds = this.quill.getBounds(this.quill.getSelection()?.index || 0);
-                            const toolbar = document.querySelector('.ql-toolbar');
-                            const picker = document.getElementById('emojiPicker');
+    // Variables globales   
+    let modoEdicion = false;
+    let idNotificacionEditar = null;
 
-                            picker.style.top = (toolbar.offsetTop + toolbar.offsetHeight) + 'px';
-                            picker.style.left = toolbar.offsetLeft + 'px';
-                            picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
-                        }
+    const icons = Quill.import('ui/icons');
+    icons['emoji'] = '<i class="fa-regular fa-face-smile"></i>';
+
+    const quill = new Quill('#editorComunicado', {
+        theme: 'snow',
+        placeholder: 'Escriba el comunicado...',
+        modules: {
+            toolbar: {
+                container: [
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [{ align: [] }],
+                    ['emoji']
+                ],
+                handlers: {
+                    emoji: function () {
+                        const toolbar = document.querySelector('.ql-toolbar');
+                        const picker = document.getElementById('emojiPicker');
+
+                        picker.style.top = (toolbar.offsetTop + toolbar.offsetHeight) + 'px';
+                        picker.style.left = toolbar.offsetLeft + 'px';
+                        picker.style.display =
+                            picker.style.display === 'none' ? 'block' : 'none';
                     }
                 }
             }
-        });
+        }
+    });
 
-        // Insertar emoji al hacer clic
-        document.querySelectorAll('.emoji-option').forEach(el => {
-            el.addEventListener('click', function() {
-                const range = quill.getSelection(true);
-                quill.insertText(range.index, this.textContent, 'user');
-                quill.setSelection(range.index + this.textContent.length);
-                document.getElementById('emojiPicker').style.display = 'none';
-            });
-        });
+    document.querySelectorAll('.emoji-option').forEach(el => {
+        el.addEventListener('click', function () {
+            const range = quill.getSelection(true);
 
-        $("#btnRedactarComunicado").click(function() {
-            $("#txtNotificacion").val(quill.root.innerHTML);
+            quill.insertText(range.index, this.textContent, 'user');
+            quill.setSelection(range.index + this.textContent.length);
+
+            document.getElementById('emojiPicker').style.display = 'none';
         });
-    </script>
+    });
+
+    $("#btnRedactarComunicado").click(function () {
+        $("#txtNotificacion").val(quill.root.innerHTML);
+        if (modoEdicion) {
+            editarNotificacion(idNotificacionEditar);
+        } else {
+            publicarNotificacion();
+        }
+
+    });
+</script>
 @endpush
