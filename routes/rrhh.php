@@ -7,7 +7,7 @@ use App\Http\Controllers\RRHH\CalendarioServController;
 use App\Http\Controllers\RRHH\DashboardController;
 use App\Http\Controllers\RRHH\GeoController;
 use App\Http\Controllers\Core\TicketController;
-use App\Http\Controllers\ParametrosController;
+use App\Http\Controllers\RRHH\ParametrosController;
 
 use Illuminate\Support\Facades\Route;
 

@@ -88,7 +88,7 @@ $(document).ready(function () {
             scrollX: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: "58vh",
+            scrollY: "68vh",
         });
     }
 

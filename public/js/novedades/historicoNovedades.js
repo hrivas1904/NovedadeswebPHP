@@ -1,7 +1,7 @@
 let tablaControl;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "53vh";
+    return window.innerWidth < 768 ? "40vh" : "64vh";
 }
 
 flatpickr("#filtroDesde, #filtroHasta", {
