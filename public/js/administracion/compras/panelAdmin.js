@@ -12,7 +12,7 @@ function formatearFechaArgentina(fecha) {
 }
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "30vh" : "57vh";
+    return window.innerWidth < 768 ? "30vh" : "68vh";
 }
 
 function filtrarPedidos() {
@@ -63,9 +63,9 @@ $("#tablaPedidosCompras").DataTable({
                 return formatearFechaArgentina(data);
             },
         },
-        { data: "prioridad", width: "7%" },
+        { data: "prioridad", width: "4%" },
         { data: "solicitante" },
-        { data: "sector" },
+        { data: "sector", },
         { data: "proveedor" },
         { data: "descripcion" },
         { data: "lineas", visible: false },
@@ -313,7 +313,11 @@ function exportarExcel() {
         ids.push($(this).val());
     });
 
-    if (ids.length == 0) {
+    exportarPedidosExcel(ids);
+}
+
+function exportarPedidosExcel(ids) {
+    if (!ids || ids.length === 0) {
         Swal.fire({
             icon: "warning",
             title: "Seleccione al menos un pedido.",
@@ -335,7 +339,7 @@ function exportarExcel() {
             type: "hidden",
             name: "_token",
             value: $('meta[name="csrf-token"]').attr("content"),
-        }),
+        })
     );
 
     ids.forEach(function (id) {
@@ -344,12 +348,15 @@ function exportarExcel() {
                 type: "hidden",
                 name: "ids[]",
                 value: id,
-            }),
+            })
         );
     });
 
     $("body").append(form);
     form.submit();
+    form.remove();
+
+    $("#tablaPedidosCompras").DataTable().ajax.reload(null, false);
 }
 
 $(document).on("change", "#checkTodosPedidos", function () {
@@ -366,6 +373,12 @@ $(document).on("change", ".chkPedido", function () {
     );
 });
 
+$("#btnRegenerarExcelFinnegans").on("click", function () {
+    const id = $("#idPedido").val();
+
+    exportarPedidosExcel([id]);
+});
+
 function verPedido(id) {
     $.ajax({
         url: "/administracion/compras/ver/" + id,
@@ -373,6 +386,7 @@ function verPedido(id) {
         dataType: "json",
         success: function (response) {
             let c = response.cabecera;
+            $("#idPedido").val(c.id);
             $("#verSolicitante").val(c.solicitante);
             $("#verFecha").val(formatearFechaArgentina(c.fecha));
             $("#verPrioridad").val(c.prioridad);
@@ -417,6 +431,14 @@ function verPedido(id) {
             cargarOrdenesCompra(id);
             cargarObservaciones(id);
             $("#modalDetallePedido").modal("show");
+
+            if ($("#verEstado").val()==='GENERADO'){
+                $("#btnRegenerarExcelFinnegans").removeClass("d-none");
+            }
+
+            else {
+                $("#btnRegenerarExcelFinnegans").addClass("d-none");
+            }
         },
     });
 }

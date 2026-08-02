@@ -370,3 +370,61 @@ function enviarPedido() {
         },
     });
 }
+
+function cancelarEdicion() {
+    Swal.fire({
+        title: "¿Limpiar el formulario?",
+        text: "Se perderán todos los datos ingresados.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, limpiar",
+        cancelButtonText: "Cancelar",
+        customClass: {
+            confirmButton: "btn btn-primary me-2",
+            cancelButton: "btn btn-secondary",
+        },
+        buttonsStyling: false,
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        // Fecha
+        $("#fFecha").val("");
+
+        // Combos
+        $("#cmbCentroCosto").val(null).trigger("change");
+        $("#cmbProveedor").val(null).trigger("change");
+
+        // Prioridad (Media por defecto)
+        setPrioridad("");
+
+        // Descripción
+        $("#fDescripcion").val("");
+
+        // Productos
+        $("#lineasBody").empty();
+        agregarLinea();
+
+        // Adjuntos
+        $("#fAdjuntos").val("");
+        $("#adjuntosList").empty();
+
+        // Si manejás un array de adjuntos
+        if (typeof archivosAdjuntos !== "undefined") {
+            archivosAdjuntos = [];
+        }
+
+        // Scroll al inicio
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+
+        Swal.fire({
+            icon: "success",
+            title: "Se ha reestablecido el formulario!",
+            text: "Puede comenzar un nuevo pedido.",
+            timer: 1500,
+            showConfirmButton: false,
+        });
+    });
+}

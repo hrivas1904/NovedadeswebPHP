@@ -147,7 +147,7 @@
 
 @push('modals')
 <div class="modal fade" id="modalDetallePedido" tabindex="-1">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -161,9 +161,9 @@
             </div>
             <div class="modal-body">
                 <div class="row g-3 mb-4">
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold">Solicitante</label>
-                        <input class="form-control" id="verSolicitante" readonly>
+                    <div class="col-md-1">
+                        <label class="form-label fw-bold">Pedido N°</label>
+                        <input class="form-control" id="idPedido" readonly>
                     </div>
 
                     <div class="col-md-2">
@@ -171,12 +171,17 @@
                         <input class="form-control" id="verFecha" readonly>
                     </div>
 
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Solicitante</label>
+                        <input class="form-control" id="verSolicitante" readonly>
+                    </div>                    
+
                     <div class="col-md-2">
                         <label class="form-label fw-bold">Prioridad</label>
                         <input class="form-control" id="verPrioridad" readonly>
                     </div>
 
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Centro de costo</label>
                         <input class="form-control" id="verCentroCosto" readonly>
                     </div>
@@ -292,6 +297,12 @@
             </div>
 
             <div class="modal-footer">
+                @if (in_array(Auth::id(), [1,2,5,6]))
+                <button class="btn btn-primary d-none" id="btnRegenerarExcelFinnegans">
+                    <i class="fa-solid fa-file-excel"></i>
+                    Regenerar Excel
+                </button>
+                @endif
                 <button class="btn btn-secondary" data-bs-dismiss="modal">
                     Cerrar
                 </button>
