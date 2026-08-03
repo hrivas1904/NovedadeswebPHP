@@ -1,4 +1,4 @@
-<div class="p-2" style="overflow:hidden;">
+<div class="p-2" data-conciliacion-banco="MACRO" style="overflow:hidden;">
 
     <div class="card mb-3" id="divExtractoMacro">
         <div class="card-header collapsible-header" style="cursor: pointer; color:var(--color-default)">

@@ -1,3 +1,4 @@
+(function () {
 // =====================================================================
 // conciliacionMacro.js -- version con DataTables
 // Para Nacion/Francés 986/Francés 1001: duplicar y cambiar SOLO la
@@ -5,6 +6,7 @@
 // =====================================================================
 
 const CONCILIACION_BANCO = 'MACRO';
+const SCOPE = '[data-conciliacion-banco="' + CONCILIACION_BANCO + '"] ';
 
 let filasConciliacion = [];
 let resumenConciliacion = { saldo_inicio: 0, primer_mes: null };
@@ -25,7 +27,7 @@ function debounce(fn, wait) {
 }
 
 // ── Collapse de las cards ────────────────────────────────────────────
-$(document).on('click', '.collapsible-header', function () {
+$(document).on('click', SCOPE + '.collapsible-header', function () {
     $(this).siblings('.card-body').toggleClass('d-none');
     $(this).find('i').toggleClass('fa-circle-chevron-down fa-circle-chevron-up');
 });
@@ -57,14 +59,14 @@ function actualizarHeaderColumnasConc() {
     $('#headerColumnas').text(cols ? 'Columnas esperadas: ' + cols : '');
 }
 
-$(document).on('click', '#btnPegado', function () {
+$(document).on('click', SCOPE + '#btnPegado', function () {
     $('#btnPegado, #btnExcel').removeClass('active');
     $(this).addClass('active');
     formatoConciliacion = 'PEGADO';
     actualizarHeaderColumnasConc();
 });
 
-$(document).on('click', '#btnExcel', function () {
+$(document).on('click', SCOPE + '#btnExcel', function () {
     $('#btnPegado, #btnExcel').removeClass('active');
     $(this).addClass('active');
     formatoConciliacion = 'EXCEL';
@@ -206,7 +208,7 @@ function renderFiltroPendientes() {
     $('#filtroPendientesWrapper').html(html);
 }
 
-$(document).on('click', '.btn-filtro-pendiente', function () {
+$(document).on('click', SCOPE + '.btn-filtro-pendiente', function () {
     filtroPendientes = $(this).data('valor');
     renderFiltroPendientes();
     renderTablaConciliacion();
@@ -249,13 +251,13 @@ function poblarSelectsConciliacion() {
     $('#selectorOperaciones').html(optsOp);
 }
 
-$(document).on('change', '#selectorConcepto, #selectorOperaciones, #inputFechaDesde', renderTablaConciliacion);
-$(document).on('input', '#inputSubconceptos, #inputBuscador', debounce(renderTablaConciliacion, 300));
-$(document).on('change', '#inputFechaHasta', cargarConciliacion);
+$(document).on('change', SCOPE + '#selectorConcepto' + ', ' + SCOPE + '#selectorOperaciones' + ', ' + SCOPE + '#inputFechaDesde', renderTablaConciliacion);
+$(document).on('input', SCOPE + '#inputSubconceptos' + ', ' + SCOPE + '#inputBuscador', debounce(renderTablaConciliacion, 300));
+$(document).on('change', SCOPE + '#inputFechaHasta', cargarConciliacion);
 
 // ── Marcar F / QR ─────────────────────────────────────────────────────
 // ── Comprobante editable ──────────────────────────────────────────────
-$(document).on('blur', '.input-comprobante', function () {
+$(document).on('blur', SCOPE + '.input-comprobante', function () {
     const $input = $(this);
     const id = $input.data('id');
     const valor = $input.val().trim();
@@ -287,9 +289,9 @@ function actualizarSumaSeleccionados() {
     $('#sumaSeleccionados').text(ids.length + ' seleccionados · ' + fmtPesos(suma));
 }
 
-$(document).on('change', '.chk-conc', actualizarSumaSeleccionados);
+$(document).on('change', SCOPE + '.chk-conc', actualizarSumaSeleccionados);
 
-$(document).on('change', '#chkSeleccionarTodos', function () {
+$(document).on('change', SCOPE + '#chkSeleccionarTodos', function () {
     const checked = $(this).is(':checked');
     tablaConciliacion.rows({ search: 'applied' }).nodes().to$().find('.chk-conc').prop('checked', checked);
     actualizarSumaSeleccionados();
@@ -320,18 +322,18 @@ function aplicarEstadoMasivo(estado) {
     });
 }
 
-$(document).on('click', '#btnMarcarFinnMasivo', function () { aplicarEstadoMasivo('FINN'); });
-$(document).on('click', '#btnMarcarQrMasivo', function () { aplicarEstadoMasivo('QR'); });
-$(document).on('click', '#btnLimpiarEstadoMasivo', function () { aplicarEstadoMasivo(''); });
+$(document).on('click', SCOPE + '#btnMarcarFinnMasivo', function () { aplicarEstadoMasivo('FINN'); });
+$(document).on('click', SCOPE + '#btnMarcarQrMasivo', function () { aplicarEstadoMasivo('QR'); });
+$(document).on('click', SCOPE + '#btnLimpiarEstadoMasivo', function () { aplicarEstadoMasivo(''); });
 
 // Boton de exportar propio (con tu estilo) -- dispara el mecanismo de
 // exportacion de DataTables sin mostrar el boton automatico duplicado.
-$(document).on('click', '#btnExportarExcel', function () {
+$(document).on('click', SCOPE + '#btnExportarExcel', function () {
     tablaConciliacion.button(0).trigger();
 });
 
 $(document).on('subvista:cargada', function () {
-    if (!$('#tbMovimientos').length) return; // no es la sub-vista de Conciliacion de este banco
+    if (!$('[data-conciliacion-banco="' + CONCILIACION_BANCO + '"]').length) return; // no es la sub-vista de este banco especifico
 
     poblarSelectsConciliacion();
     actualizarHeaderColumnasConc();
@@ -393,9 +395,9 @@ function procesarExtracto() {
     });
 }
 
-$(document).on('input', '#textAreaArchivo', debounce(procesarExtracto, 400));
+$(document).on('input', SCOPE + '#textAreaArchivo', debounce(procesarExtracto, 400));
 
-$(document).on('change', '#inputArchivo', function () {
+$(document).on('change', SCOPE + '#inputArchivo', function () {
     if (!this.files || !this.files[0]) return;
     const formData = new FormData();
     formData.append('archivo', this.files[0]);
@@ -413,19 +415,19 @@ $(document).on('change', '#inputArchivo', function () {
     });
 });
 
-$(document).on('change', '.select-concepto-extracto', function () {
+$(document).on('change', SCOPE + '.select-concepto-extracto', function () {
     filasExtracto[$(this).data('idx')].concepto = $(this).val();
 });
 
-$(document).on('input', '.input-subconcepto-extracto', function () {
+$(document).on('input', SCOPE + '.input-subconcepto-extracto', function () {
     filasExtracto[$(this).data('idx')].subconcepto = $(this).val();
 });
 
-$(document).on('input', '.input-detalle-extracto', function () {
+$(document).on('input', SCOPE + '.input-detalle-extracto', function () {
     filasExtracto[$(this).data('idx')].detalle = $(this).val();
 });
 
-$(document).on('click', '#btnConfirmarExtracto', function () {
+$(document).on('click', SCOPE + '#btnConfirmarExtracto', function () {
     if (!filasExtracto.length) return;
 
     $.post(CONCILIACION_ROUTES.extractoConfirmar, { rows: filasExtracto, origenConciliacion: true }, function (data) {
@@ -484,9 +486,9 @@ function procesarPagos() {
     });
 }
 
-$(document).on('input', '#textAreaArchivoProv', debounce(procesarPagos, 400));
+$(document).on('input', SCOPE + '#textAreaArchivoProv', debounce(procesarPagos, 400));
 
-$(document).on('change', '#inputArchivoPagoProv', function () {
+$(document).on('change', SCOPE + '#inputArchivoPagoProv', function () {
     if (!this.files || !this.files[0]) return;
     const reader = new FileReader();
     reader.onload = function (ev) {
@@ -496,12 +498,12 @@ $(document).on('change', '#inputArchivoPagoProv', function () {
     reader.readAsText(this.files[0], 'UTF-8');
 });
 
-$(document).on('change', '.chk-pago', function () {
+$(document).on('change', SCOPE + '.chk-pago', function () {
     resultadosPagos[$(this).data('idx')].confirmado = $(this).is(':checked');
     renderPreviewPagos();
 });
 
-$(document).on('click', '#btnConfirmarPagos', function () {
+$(document).on('click', SCOPE + '#btnConfirmarPagos', function () {
     let ids = [];
     resultadosPagos.forEach(function (r) {
         if (r.confirmado) {
@@ -519,3 +521,4 @@ $(document).on('click', '#btnConfirmarPagos', function () {
         cargarConciliacion(); // refresca, por si alguno de esos movimientos aparece en la tabla
     });
 });
+})();

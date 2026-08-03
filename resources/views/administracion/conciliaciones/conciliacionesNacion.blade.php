@@ -1,4 +1,4 @@
-<div class="p-2" style="overflow:hidden;">
+<div class="p-2" data-conciliacion-banco="NACION" style="overflow:hidden;">
 
     <div class="card mb-3" id="divExtractoNacion">
         <div class="card-header collapsible-header" style="cursor: pointer; color:var(--color-default)">
@@ -103,7 +103,7 @@
             <button type="button" id="btnMarcarFinnMasivo" class="btn btn-sm btn-primary">Marcar Finnegans</button>
             <button type="button" id="btnMarcarQrMasivo" class="btn btn-sm btn-secondary">Marcar QR</button>
             <button type="button" id="btnLimpiarEstadoMasivo" class="btn btn-sm btn-outline-secondary">Limpiar estado</button>
-            <span class="ms-3 fw-bold" id="sumaSeleccionados">0 seleccionados</span>
+            <span class="ms-3 fw-bold" id="sumaSeleccionados">0 SELECCIONADOS</span>
         </div>
         <div>
             <button type="button" id="btnExportarExcel" class="btn btn-sm btn-primary">Exportar</button>
