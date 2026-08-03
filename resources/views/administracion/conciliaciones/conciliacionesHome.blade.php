@@ -18,13 +18,13 @@
             NACIÓN
         </button>
 
-        <button type="button" id="btnIrPresupuestoEjecutado" class="btn btn-sm btn-analisis d-none" style="color: var(--color-default);"
+        <button type="button" id="btnIrPresupuestoEjecutado" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
             data-url="{{ route('administracion.conciliacionesFrances986View') }}">
             <i class="fa-solid fa-building-columns"></i>
             FRANCÉS 986
         </button>
 
-        <button type="button" id="btnIrResumenAnual" class="btn btn-sm btn-analisis d-none" style="color: var(--color-default);"
+        <button type="button" id="btnIrResumenAnual" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
             data-url="{{ route('administracion.conciliacionesFrances1001View') }}">
             <i class="fa-solid fa-building-columns"></i>
             FRANCÉS 1001
@@ -61,4 +61,6 @@
 <script src="/js/administracion/conciliaciones/conciliacionesHome.js"></script>
 <script src="{{ asset('js/administracion/conciliaciones/conciliacionMacro.js') }}"></script>
 <script src="{{ asset('js/administracion/conciliaciones/conciliacionNacion.js') }}"></script>
+<script src="{{ asset('js/administracion/conciliaciones/conciliacionFrances986.js') }}"></script>
+<script src="{{ asset('js/administracion/conciliaciones/conciliacionFrances1001.js') }}"></script>
 @endpush
