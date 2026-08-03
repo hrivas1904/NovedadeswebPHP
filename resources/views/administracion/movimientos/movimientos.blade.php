@@ -34,7 +34,6 @@
         </select>
         <input type="text" class="form-control" id="inputSubconcepto" placeholder="Sub-concepto...">
         <button type="button" class="btn btn-sm btn-primary" id="btnAbrirManual" data-bs-toggle="modal" data-bs-target="#modalMovimientoManual">
-            <i class="fa-regular fa-square-plus"></i>
             Manual
         </button>
     </div>
@@ -53,27 +52,27 @@
         </div>
         <div class="col-1 d-flex">
             <button type="button" class="btn btn-sm btn-secondary w-100" id="btnLimpiarFiltros">
-                <i class="fa-solid fa-eraser"></i>
                 Limpiar
             </button>
         </div>
     </div>
 
     <div class="card p-1">
-        <table id="tablaMovimientos" class="table table-bordered table-hover align-middle nowrap">
+        <table id="tablaMovimientos" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
             <thead>
                 <tr>
                     <th>
                         <input type="checkbox">
                     </th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Operación</th>
-                    <th>Cuenta</th>
-                    <th>Concepto</th>
-                    <th>Sub-concepto</th>
-                    <th>Detalle</th>
-                    <th>Importe</th>
+                    <th>FECHA</th>
+                    <th>ESTADO</th>
+                    <th>OPERACIÓN</th>
+                    <th>CUENTA</th>
+                    <th>CONCEPTO</th>
+                    <th>SUB-CONCEPTO</th>
+                    <th>DETALLE</th>
+                    <th>IMPORTE</th>
+                    <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>

@@ -1,7 +1,7 @@
 <div class="p-2" style="overflow:hidden;">
 
     <div class="card mb-3" id="divExtractoMacro">
-        <div class="card-header collapsible-header" style="cursor: pointer;">
+        <div class="card-header collapsible-header" style="cursor: pointer; color:var(--color-default)">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="fe-bold">Extracto MACRO</h5>
                 <i class="fs-5 fa-solid fa-circle-chevron-down"></i>
@@ -47,7 +47,7 @@
     </div>
 
     <div class="card" id="divPagosProveedores">
-        <div class="card-header collapsible-header" style="cursor: pointer;">
+        <div class="card-header collapsible-header" style="cursor: pointer; color:var(--color-default)">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="fe-bold">Pagos a Proveedores - MACRO</h5>
                 <i class="fs-5 fa-solid fa-circle-chevron-down"></i>
@@ -97,34 +97,34 @@
     </div>
 
     <div class="d-flex gap-3 mb-3">
-        <div class="card w-100">
+        <div class="card w-100"  style="background-color: var(--color-second);">
             <div class="card-body">
-                <label class="form-label">SALDO INICIAL</label>
-                <h4 class="fw-bold" id="importeSaldoInicial">$0,00</h4>
+                <label class="text-white">SALDO INICIAL</label>
+                <h4 class="fw-bold text-white" id="importeSaldoInicial">$0,00</h4>
             </div>
         </div>
-        <div class="card w-100">
+        <div class="card w-100"  style="background-color: var(--color-second);">
             <div class="card-body">
-                <label class="form-label">SALDO EXTRACTO</label>
-                <h4 class="fw-bold" id="importeSaldoExtracto">$0,00</h4>
+                <label class="text-white">SALDO EXTRACTO</label>
+                <h4 class="fw-bold text-white" id="importeSaldoExtracto">$0,00</h4>
             </div>
         </div>
-        <div class="card w-100">
+        <div class="card w-100"  style="background-color: var(--color-second);">
             <div class="card-body">
-                <label class="form-label">PEND. FINNEGANS</label>
-                <h4 class="fw-bold" id="importePendFinnegans">-</h4>
+                <label class="text-white">PEND. FINNEGANS</label>
+                <h4 class="fw-bold text-white" id="importePendFinnegans">-</h4>
             </div>
         </div>
-        <div class="card w-100">
+        <div class="card w-100"  style="background-color: var(--color-second);">
             <div class="card-body">
-                <label class="form-label">PEND. QR</label>
-                <h4 class="fw-bold" id="importePendQr">-</h4>
+                <label class="text-white">PEND. QR</label>
+                <h4 class="fw-bold text-white" id="importePendQr">-</h4>
             </div>
         </div>
-        <div class="card w-100">
+        <div class="card w-100"  style="background-color: var(--color-second);">
             <div class="card-body">
-                <label class="form-label">SALDO CONTABLE</label>
-                <h4 class="fw-bold" id="importeSaldoContable">$0,00</h4>
+                <label class="text-white">SALDO CONTABLE</label>
+                <h4 class="fw-bold text-white" id="importeSaldoContable">$0,00</h4>
             </div>
         </div>
     </div>
@@ -137,28 +137,19 @@
 
     <div>
         <div class="card">
-            <div class="card-header d-flex gap-4 justify-content-between align-content-center">
-                <div>
-                    <h5 class="fw-bold form-label" style="color: var(--color-default);">MOVIMIENTOS</h5>
-                </div>
-                <div class="d-flex gap-4">
-                    <label class="fs-6 fw-bold form-label">F = Pend. Finnegans</label>
-                    <label class="fs-6 fw-bold form-label">QR = Pend. QR</label>
-                </div>
-            </div>
             <div class="card-body">
-                <table id="tbMovimientos" class="table table-bordered table-hover align-middle nowrap">
+                <table id="tbMovimientos" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
                     <thead>
                         <tr>
-                            <th>Estado</th>
-                            <th>Fecha</th>
-                            <th>Nro Comp</th>
-                            <th>Operación</th>
-                            <th>Concepto</th>
-                            <th>Sub-concepto</th>
-                            <th>Detalle</th>
-                            <th>Importe</th>
-                            <th>Saldo acumulado</th>
+                            <th>ESTADO</th>
+                            <th>FECHA</th>
+                            <th>NRO COMP</th>
+                            <th>OPERACIÓN</th>
+                            <th>CONCEPTO</th>
+                            <th>SUB-CONCEPTO</th>
+                            <th>DETALLE</th>
+                            <th>IMPORTE</th>
+                            <th>SALDO ACUMULADO</th>
                         </tr>
                     </thead>
                     <tbody>

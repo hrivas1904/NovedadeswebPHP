@@ -1,7 +1,7 @@
 let tablaMovimientos;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "50vh";
+    return window.innerWidth < 768 ? "28vh" : "61vh";
 }
 
 $("#btnLimpiarFiltros").on("click", function () {
@@ -122,23 +122,23 @@ $(document).ready(function () {
                     let html = "";
                     if (row.ejecucion === "PRESUPUESTO") {
                         html +=
-                            '<button type="button" class="btn btn-sm btn-primary btn-cambiar-estado" data-id="' +
+                            '<button type="button" class="btn btn-cambiar-estado" data-id="' +
                             row.id +
-                            '" data-nuevo="CUMPLIDO" title="Marcar cumplido"><i class="fa-solid fa-check"></i></button> ';
+                            '" data-nuevo="CUMPLIDO" title="Marcar cumplido" style="color: var(--color-accent-green);"><i class="fs-5 fa-solid fa-check"></i></button> ';
                     } else if (row.ejecucion === "CUMPLIDO") {
                         html +=
-                            '<button type="button" class="btn btn-sm btn-secondary btn-cambiar-estado" data-id="' +
+                            '<button type="button" class="btn btn-cambiar-estado" data-id="' +
                             row.id +
-                            '" data-nuevo="PRESUPUESTO" title="Volver a presupuesto"><i class="fa-solid fa-rotate-left"></i></button> ';
+                            '" data-nuevo="PRESUPUESTO" title="Volver a presupuesto" style="color: var(--color-default);"><i class="fs-5 fa-solid fa-rotate-left"></i></button> ';
                     }
                     html +=
-                        '<button type="button" class="btn btn-sm btn-secondary btn-duplicar" data-id="' +
+                        '<button type="button" class="btn btn-duplicar" data-id="' +
                         row.id +
-                        '" title="Duplicar"><i class="fa-solid fa-copy"></i></button> ';
+                        '" title="Duplicar" style="color: var(--color-default);"><i class="fs-5 fa-solid fa-copy"></i></button> ';
                     html +=
-                        '<button type="button" class="btn btn-sm btn-danger btn-eliminar-movimiento" data-id="' +
+                        '<button type="button" class="btn btn-eliminar-movimiento" data-id="' +
                         row.id +
-                        '" title="Eliminar"><i class="fa-solid fa-trash"></i></button>';
+                        '" title="Eliminar" style="color: var(--color-accent-red);"><i class="fs-5 fa-regular fa-trash-can"></i></button>';
                     return html;
                 },
             },

@@ -225,7 +225,7 @@ class PersonalController extends Controller
                 $request->contacto_emerg2,
                 $request->parentesco_emerg2,
                 $request->padreColaborador,
-                $request->madreColaborador
+                $request->madreColaborador,
             ]);
 
             // ... después del CALL ...

@@ -117,11 +117,11 @@ $(document).ready(function () {
                         return "";
                     }
                     return `
-                        <button class="btn btn-primary btnEditar" data-id="${data.legajo}">
-                            <i class="fa fa-edit"></i>
+                        <button class="btn btnEditar" data-id="${data.legajo}" style="color: var(--color-default);" title="Editar usuario">
+                            <i class="fs-5 fa fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger btnEliminar" data-id="${data.legajo}">
-                            <i class="fa fa-user-slash"></i>
+                        <button class="btn btnEliminar" data-id="${data.legajo}" style="color: var(--color-accent-red);" title="Dar de baja"> 
+                            <i class="fs-5 fa fa-user-slash"></i>
                         </button>
                     `;
                 },

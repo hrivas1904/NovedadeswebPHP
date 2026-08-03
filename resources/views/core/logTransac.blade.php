@@ -15,14 +15,10 @@
             <select id="selectorModulo" class="form-select w-auto">
                 <option value="">Seleccionar módulo</option>
             </select>
-            <button id="btnExportarLog" class="btn btn-sm btn-primary">
-                <i class="fa-solid fa-file-excel"></i>
-                Exportar Log
-            </button>
         </div>
     </div>
     <div class="card-body">
-        <table id="tbTransact" class="table table-bordered table-hover align-middle nowrap">
+        <table id="tbTransact" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
             <thead>
                 <tr>
                     <th>ID</th>
