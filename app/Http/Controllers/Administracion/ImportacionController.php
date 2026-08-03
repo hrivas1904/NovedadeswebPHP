@@ -83,11 +83,17 @@ class ImportacionController extends Controller
             'rows.*.operacion'  => 'required|string',
             'rows.*.sugerido_concepto'    => 'nullable|string',
             'rows.*.sugerido_subconcepto' => 'nullable|string',
+            'origenConciliacion' => 'nullable|boolean',
         ]);
+
+        // Si el import viene desde "Extracto" en Conciliaciones (no desde
+        // Importacion), los movimientos nuevos se marcan para que la vista
+        // de conciliacion los resalte hasta que se revisen.
+        $origenConciliacion = (bool) $request->input('origenConciliacion', false);
 
         $insertados = 0;
         foreach ($request->input('rows') as $r) {
-            DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+            $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
                 $r['fecha'],
                 $r['banco'],
                 $r['concepto'],
@@ -97,10 +103,14 @@ class ImportacionController extends Controller
                 'EJECUTADO',
                 $r['operacion'],
                 $r['seccion'],
-                'IMPORTACION_BANCO',
+                $origenConciliacion ? 'CONCILIACION_EXTRACTO' : 'IMPORTACION_BANCO',
                 auth()->id(),
             ]);
             $insertados++;
+
+            if ($origenConciliacion && !empty($resultado[0]->id)) {
+                DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
+            }
 
             // Aprendizaje: si el usuario corrigio lo sugerido, el sistema lo recuerda
             $conceptoFinal = $r['concepto'];

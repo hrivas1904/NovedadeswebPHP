@@ -101,7 +101,7 @@ $(document).ready(function () {
                             "</span>"
                         );
                     }
-                    return valor; // EJECUTADO / PENDIENTE quedan como texto plano, sin color pedido
+                    return valor;
                 },
             },
             { data: "operacion" },
@@ -124,7 +124,7 @@ $(document).ready(function () {
                         html +=
                             '<button type="button" class="btn btn-cambiar-estado" data-id="' +
                             row.id +
-                            '" data-nuevo="CUMPLIDO" title="Marcar cumplido" style="color: var(--color-accent-green);"><i class="fs-5 fa-solid fa-check"></i></button> ';
+                            '" data-nuevo="CUMPLIDO" title="Marcar cumplido" style="color: var(--color-accent-green);"><i class="fs-5 fa-regular fa-square-check"></i></button> ';
                     } else if (row.ejecucion === "CUMPLIDO") {
                         html +=
                             '<button type="button" class="btn btn-cambiar-estado" data-id="' +

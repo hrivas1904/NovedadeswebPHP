@@ -129,10 +129,19 @@
         </div>
     </div>
 
-    <div class="d-flex gap-2 mb-2">
-        <button type="button" id="btnMarcarFinnMasivo" class="btn btn-sm btn-primary">Marcar Finnegans</button>
-        <button type="button" id="btnMarcarQrMasivo" class="btn btn-sm btn-secondary">Marcar QR</button>
-        <button type="button" id="btnLimpiarEstadoMasivo" class="btn btn-sm btn-outline-secondary">Limpiar estado</button>
+    <div class="mb-2" id="filtroPendientesWrapper"></div>
+
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" id="btnMarcarFinnMasivo" class="btn btn-sm btn-primary">Marcar Finnegans</button>
+            <button type="button" id="btnMarcarQrMasivo" class="btn btn-sm btn-secondary">Marcar QR</button>
+            <button type="button" id="btnLimpiarEstadoMasivo" class="btn btn-sm btn-outline-secondary">Limpiar estado</button>
+            <span class="ms-3 fw-bold" id="sumaSeleccionados">0 SELECCIONADOS</span>
+        </div>
+        <div>
+            <button type="button" id="btnExportarExcel" class="btn btn-sm btn-primary">Exportar</button>
+        </div>
+        
     </div>
 
     <div>
@@ -141,7 +150,7 @@
                 <table id="tbMovimientos" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
                     <thead>
                         <tr>
-                            <th>ESTADO</th>
+                            <th><input type="checkbox" id="chkSeleccionarTodos"></th>
                             <th>FECHA</th>
                             <th>NRO COMP</th>
                             <th>OPERACIÓN</th>

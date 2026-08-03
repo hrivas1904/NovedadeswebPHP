@@ -3,83 +3,81 @@
 @section('title', 'Gestión Financiera')
 
 @section('content')
-<div class="container-fluid">
-    <h3 class="tituloVista">MOVIMIENTOS</h3>
-    <div class="d-flex gap-3">
-        <select class="form-select" id="selectCuentas">
-            <option value="">Cuentas</option>
-            @foreach($cuentas as $c)
-            <option value="{{ $c->id }}">{{ $c->nombre }}</option>
-            @endforeach
-        </select>
-        <select class="form-select" id="selectEstados">
-            <option value="">Estados</option>
-            <option value="Ejecutado">Ejecutado</option>
-            <option value="Presupuesto">Presupuesto</option>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Cumplido">Cumplido</option>
-        </select>
-        <select class="form-select" id="selectOperaciones">
-            <option value="">Operaciones</option>
-            <option value="Ingreso">Ingreso</option>
-            <option value="Transferencias">Transferencias</option>
-            <option value="Cheque">Cheque</option>
-            <option value="Efectivo">Efectivo</option>
-        </select>
-        <select class="form-select" id="selectConceptos">
-            <option value="">Conceptos</option>
-            @foreach($conceptos as $c)
-            <option value="{{ $c }}">{{ $c }}</option>
-            @endforeach
-        </select>
-        <input type="text" class="form-control" id="inputSubconcepto" placeholder="Sub-concepto...">
-        <button type="button" class="btn btn-sm btn-primary" id="btnAbrirManual" data-bs-toggle="modal" data-bs-target="#modalMovimientoManual">
-            Manual
+<h3 class="tituloVista">MOVIMIENTOS</h3>
+<div class="d-flex gap-3">
+    <select class="form-select" id="selectCuentas">
+        <option value="">Cuentas</option>
+        @foreach($cuentas as $c)
+        <option value="{{ $c->id }}">{{ $c->nombre }}</option>
+        @endforeach
+    </select>
+    <select class="form-select" id="selectEstados">
+        <option value="">Estados</option>
+        <option value="Ejecutado">Ejecutado</option>
+        <option value="Presupuesto">Presupuesto</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="Cumplido">Cumplido</option>
+    </select>
+    <select class="form-select" id="selectOperaciones">
+        <option value="">Operaciones</option>
+        <option value="Ingreso">Ingreso</option>
+        <option value="Transferencias">Transferencias</option>
+        <option value="Cheque">Cheque</option>
+        <option value="Efectivo">Efectivo</option>
+    </select>
+    <select class="form-select" id="selectConceptos">
+        <option value="">Conceptos</option>
+        @foreach($conceptos as $c)
+        <option value="{{ $c }}">{{ $c }}</option>
+        @endforeach
+    </select>
+    <input type="text" class="form-control" id="inputSubconcepto" placeholder="Sub-concepto...">
+    <button type="button" class="btn btn-sm btn-primary" id="btnAbrirManual" data-bs-toggle="modal" data-bs-target="#modalMovimientoManual">
+        Manual
+    </button>
+</div>
+
+<div class="row d-flex my-2">
+    <div class="col-2 d-flex gap-3 align-items-end">
+        <label class="form-label h6 fw-bold" style="color: var(--color-default);">Desde: </label>
+        <input type="date" class="form-control" id="inputFechaDesde">
+    </div>
+    <div class="col-2 d-flex gap-3 align-items-end">
+        <label class="form-label h6 fw-bold" style="color: var(--color-default);">Hasta: </label>
+        <input type="date" class="form-control" id="inputFechaHasta">
+    </div>
+    <div class="col-7 d-flex">
+        <input class="form-control w-100" id="inputBuscador" placeholder="Buscar...">
+    </div>
+    <div class="col-1 d-flex">
+        <button type="button" class="btn btn-sm btn-secondary w-100" id="btnLimpiarFiltros">
+            Limpiar
         </button>
     </div>
+</div>
 
-    <div class="row d-flex my-2">
-        <div class="col-2 d-flex gap-3 align-items-end">
-            <label class="form-label h6 fw-bold" style="color: var(--color-default);">Desde: </label>
-            <input type="date" class="form-control" id="inputFechaDesde">
-        </div>
-        <div class="col-2 d-flex gap-3 align-items-end">
-            <label class="form-label h6 fw-bold" style="color: var(--color-default);">Hasta: </label>
-            <input type="date" class="form-control" id="inputFechaHasta">
-        </div>
-        <div class="col-7 d-flex">
-            <input class="form-control w-100" id="inputBuscador" placeholder="Buscar...">
-        </div>
-        <div class="col-1 d-flex">
-            <button type="button" class="btn btn-sm btn-secondary w-100" id="btnLimpiarFiltros">
-                Limpiar
-            </button>
-        </div>
-    </div>
+<div class="card p-1">
+    <table id="tablaMovimientos" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox">
+                </th>
+                <th>FECHA</th>
+                <th>ESTADO</th>
+                <th>OPERACIÓN</th>
+                <th>CUENTA</th>
+                <th>CONCEPTO</th>
+                <th>SUB-CONCEPTO</th>
+                <th>DETALLE</th>
+                <th>IMPORTE</th>
+                <th>ACCIONES</th>
+            </tr>
+        </thead>
+        <tbody>
 
-    <div class="card p-1">
-        <table id="tablaMovimientos" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
-            <thead>
-                <tr>
-                    <th>
-                        <input type="checkbox">
-                    </th>
-                    <th>FECHA</th>
-                    <th>ESTADO</th>
-                    <th>OPERACIÓN</th>
-                    <th>CUENTA</th>
-                    <th>CONCEPTO</th>
-                    <th>SUB-CONCEPTO</th>
-                    <th>DETALLE</th>
-                    <th>IMPORTE</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-        </table>
-    </div>
+        </tbody>
+    </table>
 </div>
 @endsection
 
