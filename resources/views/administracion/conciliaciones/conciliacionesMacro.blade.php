@@ -147,7 +147,7 @@
     <div>
         <div class="card">
             <div class="card-body">
-                <table id="tbMovimientos" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
+                <table id="tbMovimientos" class="table table-hover align-middle table-header-hp3c nowrap">
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="chkSeleccionarTodos"></th>

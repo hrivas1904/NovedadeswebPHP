@@ -141,8 +141,13 @@ function renderTablaConciliacion() {
         rowCallback: function (row, data) {
             const estado = data.estado_conciliacion || '';
             const esNuevo = data.nuevo_en_conciliacion == 1;
-            const bg = esNuevo ? '#EBF5FB' : (estado === 'FINN' ? '#FFFDE7' : estado === 'QR' ? '#FFF0ED' : '');
-            $(row).css('background-color', bg);
+            // Mismo color que el badge de F/QR, pero con transparencia para
+            // que el texto de la fila siga siendo legible.
+            const bg = esNuevo ? 'rgba(26, 92, 168, 0.12)'
+                : estado === 'FINN' ? 'rgba(249, 168, 37, 0.18)'
+                : estado === 'QR' ? 'rgba(229, 90, 58, 0.18)'
+                : '';
+            $(row).find('td').css('background-color', bg); // pinta las celdas, no el <tr> -- table-striped/hover pintan las celdas encima
         },
     });
 }

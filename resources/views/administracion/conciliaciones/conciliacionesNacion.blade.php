@@ -1,7 +1,7 @@
 <div class="p-2" style="overflow:hidden;">
 
     <div class="card mb-3" id="divExtractoNacion">
-        <div class="card-header collapsible-header" style="cursor: pointer;">
+        <div class="card-header collapsible-header" style="cursor: pointer; color:var(--color-default)">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="fe-bold">Extracto NACION</h5>
                 <i class="fs-5 fa-solid fa-circle-chevron-down"></i>
@@ -29,9 +29,23 @@
                 <input id="inputArchivo" type="file" class="form-control"></input>
                 <textarea id="textAreaArchivo" rows="2" class="form-control" placeholder="Pegar aquí el extracto de NACIÓN..."></textarea>
             </div>
+
+            <label class="mt-2" id="msgExtracto"></label>
+            <div id="previewExtractoWrapper" style="display:none;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small"><span id="cantidadExtracto">0</span> movimientos</span>
+                    <button type="button" id="btnConfirmarExtracto" class="btn btn-primary btn-sm">Importar <span id="cantidadExtracto2">0</span> movimientos</button>
+                </div>
+                <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
+                    <table class="table table-sm">
+                        <thead><tr><th>Fecha</th><th>Concepto</th><th>Sub-concepto</th><th>Detalle</th><th class="text-end">Importe</th></tr></thead>
+                        <tbody id="previewExtractoBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-    
+
     <hr class="my-3">
 
     <div class="d-flex align-content-center gap-3 mb-3">
@@ -50,60 +64,59 @@
     </div>
 
     <div class="d-flex gap-3 mb-3">
-        <div class="card w-100">
+        <div class="card w-100" style="background-color: var(--color-second); color:white;">
             <div class="card-body">
-                <label class="form-label">SALDO INICIAL</label>
+                <label class="text-white">SALDO INICIAL</label>
                 <h4 class="fw-bold" id="importeSaldoInicial">$0,00</h4>
             </div>
         </div>
-        <div class="card w-100">
+        <div class="card w-100" style="background-color: var(--color-second); color:white;">
             <div class="card-body">
-                <label class="form-label">SALDO EXTRACTO</label>
+                <label class="text-white">SALDO EXTRACTO</label>
                 <h4 class="fw-bold" id="importeSaldoExtracto">$0,00</h4>
             </div>
         </div>
         <div class="card w-100">
-            <div class="card-body">
-                <label class="form-label">PEND. FINNEGANS</label>
+            <div class="card-body" style="background-color: var(--color-second); color:white;">
+                <label class="text-white">PEND. FINNEGANS</label>
                 <h4 class="fw-bold" id="importePendFinnegans">-</h4>
             </div>
         </div>
-        <div class="card w-100">
+        <div class="card w-100" style="background-color: var(--color-second); color:white;">
             <div class="card-body">
-                <label class="form-label">PEND. QR</label>
+                <label class="text-white">PEND. QR</label>
                 <h4 class="fw-bold" id="importePendQr">-</h4>
             </div>
         </div>
-        <div class="card w-100">
+        <div class="card w-100" style="background-color: var(--color-second); color:white;">
             <div class="card-body">
-                <label class="form-label">SALDO CONTABLE</label>
+                <label class="text-white">SALDO CONTABLE</label>
                 <h4 class="fw-bold" id="importeSaldoContable">$0,00</h4>
             </div>
         </div>
     </div>
 
-    <div class="d-flex gap-2 mb-2">
-        <button type="button" id="btnMarcarFinnMasivo" class="btn btn-sm btn-primary">Marcar Finnegans</button>
-        <button type="button" id="btnMarcarQrMasivo" class="btn btn-sm btn-secondary">Marcar QR</button>
-        <button type="button" id="btnLimpiarEstadoMasivo" class="btn btn-sm btn-outline-secondary">Limpiar estado</button>
+    <div class="mb-2" id="filtroPendientesWrapper"></div>
+
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" id="btnMarcarFinnMasivo" class="btn btn-sm btn-primary">Marcar Finnegans</button>
+            <button type="button" id="btnMarcarQrMasivo" class="btn btn-sm btn-secondary">Marcar QR</button>
+            <button type="button" id="btnLimpiarEstadoMasivo" class="btn btn-sm btn-outline-secondary">Limpiar estado</button>
+            <span class="ms-3 fw-bold" id="sumaSeleccionados">0 seleccionados</span>
+        </div>
+        <div>
+            <button type="button" id="btnExportarExcel" class="btn btn-sm btn-primary">Exportar</button>
+        </div>
     </div>
 
     <div>
         <div class="card">
-            <div class="card-header d-flex gap-4 justify-content-between align-content-center">
-                <div>
-                    <h5 class="fw-bold form-label" style="color: var(--color-default);">MOVIMIENTOS</h5>
-                </div>
-                <div class="d-flex gap-4">
-                    <label class="fs-6 fw-bold form-label">F = Pend. Finnegans</label>
-                    <label class="fs-6 fw-bold form-label">QR = Pend. QR</label>
-                </div>
-            </div>
             <div class="card-body">
-                <table id="tbMovimientos" class="table table-bordered table-hover align-middle nowrap">
+                <table id="tbMovimientos" class="table table-hover align-middle table-header-hp3c nowrap">
                     <thead>
                         <tr>
-                            <th>Estado</th>
+                            <th><input type="checkbox" id="chkSeleccionarTodos"></th>
                             <th>Fecha</th>
                             <th>Nro Comp</th>
                             <th>Operación</th>

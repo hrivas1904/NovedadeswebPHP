@@ -37,8 +37,8 @@ const COLUMNAS_POR_FORMATO_CONC = {
         EXCEL:  'Fecha | Operación | Concepto | Detalle | Nro | Importe | Saldo',
     },
     NACION: {
-        PEGADO: 'Fecha+Hora | Descripción | Crédito | Débito',
-        EXCEL:  'Fecha | — | Concepto | Detalle | Importe (con signo) | Saldo',
+        PEGADO: 'Fecha | Descripción | Crédito | Débito',
+        EXCEL:  'Fecha | — | Concepto | Detalle | Importe | Saldo',
     },
     'FRANCES (986)': {
         PEGADO: 'Fecha | Descripción | CódOp | Crédito | Débito | Saldo',
@@ -54,7 +54,7 @@ let formatoConciliacion = 'PEGADO';
 
 function actualizarHeaderColumnasConc() {
     const cols = (COLUMNAS_POR_FORMATO_CONC[CONCILIACION_BANCO] || {})[formatoConciliacion] || '';
-    $('#headerColumnas').text(cols ? 'Columnas esperadas: ' + cols : '');
+    $('#headerColumnas').text(cols ? '' + cols : '');
 }
 
 $(document).on('click', '#btnPegado', function () {
@@ -85,16 +85,32 @@ function renderTablaConciliacion() {
 
     tablaConciliacion = $('#tbMovimientos').DataTable({
         data: filas,
-        language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-AR.json' },
-        pageLength: 25,
+        language: { url: '/js/es-ES.json' },
+        lengthMenu: [10, 15, 25, 50, 75, 100, { label: 'Todos', value: -1 }],
+        pageLength: 10,
         order: [[1, 'desc']],
+        dom: "<'d-flex justify-content-start mb-2'l>t<'d-flex justify-content-between mt-2'ip>",
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: 'Exportar',
+                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] }, // sin la columna de checkbox/estado
+            },
+        ],
         columns: [
             {
                 data: null, orderable: false, className: 'text-center', width: '110px',
                 render: function (row) {
-                    return '<input type="checkbox" class="chk-conc me-1" data-id="' + row.id + '">' +
-                        '<button type="button" class="btn btn-sm btn-outline-warning btn-marcar-conc" data-id="' + row.id + '" data-estado="FINN" title="Pendiente Finnegans">F</button> ' +
-                        '<button type="button" class="btn btn-sm btn-outline-danger btn-marcar-conc" data-id="' + row.id + '" data-estado="QR" title="Pendiente QR">QR</button>';
+                    const badgeNuevo = row.nuevo_en_conciliacion == 1
+                        ? '<span class="badge" style="background:#1A5CA8; font-size:0.65rem;">NUEVO</span> '
+                        : '';
+                    const estado = row.estado_conciliacion;
+                    const badgeEstado = estado === 'FINN'
+                        ? '<span class="badge" style="background:#F9A825; font-size:0.65rem;">F</span> '
+                        : estado === 'QR'
+                        ? '<span class="badge" style="background:#E55A3A; font-size:0.65rem;">QR</span> '
+                        : '';
+                    return badgeNuevo + badgeEstado + '<input type="checkbox" class="chk-conc" data-id="' + row.id + '">';
                 }
             },
             { data: 'fecha' },
@@ -124,7 +140,14 @@ function renderTablaConciliacion() {
         ],
         rowCallback: function (row, data) {
             const estado = data.estado_conciliacion || '';
-            $(row).css('background-color', estado === 'FINN' ? '#FFFDE7' : estado === 'QR' ? '#FFF0ED' : '');
+            const esNuevo = data.nuevo_en_conciliacion == 1;
+            // Mismo color que el badge de F/QR, pero con transparencia para
+            // que el texto de la fila siga siendo legible.
+            const bg = esNuevo ? 'rgba(26, 92, 168, 0.12)'
+                : estado === 'FINN' ? 'rgba(249, 168, 37, 0.18)'
+                : estado === 'QR' ? 'rgba(229, 90, 58, 0.18)'
+                : '';
+            $(row).find('td').css('background-color', bg); // pinta las celdas, no el <tr> -- table-striped/hover pintan las celdas encima
         },
     });
 }
@@ -137,6 +160,7 @@ function cargarConciliacion() {
         resumenConciliacion = data.resumen;
         filasConciliacion = data.movimientos;
         renderResumen();
+        renderFiltroPendientes();
         renderTablaConciliacion();
     });
 }
@@ -157,6 +181,37 @@ function renderResumen() {
     $('#importeSaldoContable').text(fmtPesos(saldoExtracto - totalFinn - totalQR));
 }
 
+let filtroPendientes = ''; // '' | 'NUEVO' | 'FINN' | 'QR' | 'AMBOS'
+
+function renderFiltroPendientes() {
+    const nNuevos = filasConciliacion.filter(r => r.nuevo_en_conciliacion == 1).length;
+    const nFinn   = filasConciliacion.filter(r => r.estado_conciliacion === 'FINN').length;
+    const nQR     = filasConciliacion.filter(r => r.estado_conciliacion === 'QR').length;
+    const nAmbos  = nFinn + nQR;
+
+    const opciones = [
+        ['', 'Todos'],
+        ['NUEVO', 'Nuevos (' + nNuevos + ')'],
+        ['FINN', 'F (' + nFinn + ')'],
+        ['QR', 'QR (' + nQR + ')'],
+        ['AMBOS', 'Ambos (' + nAmbos + ')'],
+    ];
+
+    let html = '<span class="text-muted small me-2">Pendientes:</span>';
+    opciones.forEach(function (op) {
+        const activo = filtroPendientes === op[0];
+        html += '<button type="button" class="btn btn-sm ' + (activo ? 'btn-primary' : 'btn-outline-secondary') + ' btn-filtro-pendiente me-1" data-valor="' + op[0] + '">' + op[1] + '</button>';
+    });
+
+    $('#filtroPendientesWrapper').html(html);
+}
+
+$(document).on('click', '.btn-filtro-pendiente', function () {
+    filtroPendientes = $(this).data('valor');
+    renderFiltroPendientes();
+    renderTablaConciliacion();
+});
+
 function filasFiltradas() {
     const concepto = $('#selectorConcepto').val();
     const operacion = $('#selectorOperaciones').val();
@@ -170,6 +225,10 @@ function filasFiltradas() {
         if (sub && !(r.subconcepto || '').toLowerCase().includes(sub)) return false;
         if (texto && !((r.detalle || '').toLowerCase().includes(texto) || (r.nro_comprobante || '').toLowerCase().includes(texto))) return false;
         if (desde && r.fecha < desde) return false;
+        if (filtroPendientes === 'NUEVO' && !(r.nuevo_en_conciliacion == 1)) return false;
+        if (filtroPendientes === 'FINN' && r.estado_conciliacion !== 'FINN') return false;
+        if (filtroPendientes === 'QR' && r.estado_conciliacion !== 'QR') return false;
+        if (filtroPendientes === 'AMBOS' && !(r.estado_conciliacion === 'FINN' || r.estado_conciliacion === 'QR')) return false;
         return true;
     });
 }
@@ -195,19 +254,6 @@ $(document).on('input', '#inputSubconceptos, #inputBuscador', debounce(renderTab
 $(document).on('change', '#inputFechaHasta', cargarConciliacion);
 
 // ── Marcar F / QR ─────────────────────────────────────────────────────
-$(document).on('click', '.btn-marcar-conc', function () {
-    const id = $(this).data('id');
-    const estadoClickeado = $(this).data('estado');
-    const fila = filasConciliacion.find(r => r.id === id);
-    const nuevoEstado = fila.estado_conciliacion === estadoClickeado ? '' : estadoClickeado;
-
-    $.post(CONCILIACION_ROUTES.estado.replace(':id', id), { estado: nuevoEstado }, function () {
-        fila.estado_conciliacion = nuevoEstado || null;
-        renderResumen();
-        renderTablaConciliacion();
-    });
-});
-
 // ── Comprobante editable ──────────────────────────────────────────────
 $(document).on('blur', '.input-comprobante', function () {
     const $input = $(this);
@@ -222,14 +268,34 @@ $(document).on('blur', '.input-comprobante', function () {
     });
 });
 
-// ── Acciones masivas ──────────────────────────────────────────────────
+// ── Seleccion multiple (checkbox), suma de seleccionados, seleccionar todos ──
+// Usa la API de DataTables (no jQuery plano) para que "seleccionar todos"
+// funcione sobre TODAS las filas filtradas, no solo las de la pagina actual.
 function idsSeleccionados() {
     let ids = [];
-    $('.chk-conc:checked').each(function () {
+    tablaConciliacion.rows({ search: 'applied' }).nodes().to$().find('.chk-conc:checked').each(function () {
         ids.push($(this).data('id'));
     });
     return ids;
 }
+
+function actualizarSumaSeleccionados() {
+    const ids = idsSeleccionados();
+    const suma = filasConciliacion
+        .filter(r => ids.includes(r.id))
+        .reduce((a, r) => a + Number(r.importe), 0);
+    $('#sumaSeleccionados').text(ids.length + ' seleccionados · ' + fmtPesos(suma));
+}
+
+$(document).on('change', '.chk-conc', actualizarSumaSeleccionados);
+
+$(document).on('change', '#chkSeleccionarTodos', function () {
+    const checked = $(this).is(':checked');
+    tablaConciliacion.rows({ search: 'applied' }).nodes().to$().find('.chk-conc').prop('checked', checked);
+    actualizarSumaSeleccionados();
+});
+
+// ── Acciones masivas ──────────────────────────────────────────────────
 
 function aplicarEstadoMasivo(estado) {
     const ids = idsSeleccionados();
@@ -241,16 +307,28 @@ function aplicarEstadoMasivo(estado) {
     $.post(CONCILIACION_ROUTES.estadoMasivo, { ids: ids, estado: estado }, function () {
         ids.forEach(function (id) {
             const fila = filasConciliacion.find(r => r.id === id);
-            if (fila) fila.estado_conciliacion = estado || null;
+            if (fila) {
+                fila.estado_conciliacion = estado || null;
+                fila.nuevo_en_conciliacion = 0;
+            }
         });
         renderResumen();
+        renderFiltroPendientes();
         renderTablaConciliacion();
+        $('#chkSeleccionarTodos').prop('checked', false);
+        actualizarSumaSeleccionados(); // vuelve a 0, la tabla se redibujo y perdio la seleccion
     });
 }
 
 $(document).on('click', '#btnMarcarFinnMasivo', function () { aplicarEstadoMasivo('FINN'); });
 $(document).on('click', '#btnMarcarQrMasivo', function () { aplicarEstadoMasivo('QR'); });
 $(document).on('click', '#btnLimpiarEstadoMasivo', function () { aplicarEstadoMasivo(''); });
+
+// Boton de exportar propio (con tu estilo) -- dispara el mecanismo de
+// exportacion de DataTables sin mostrar el boton automatico duplicado.
+$(document).on('click', '#btnExportarExcel', function () {
+    tablaConciliacion.button(0).trigger();
+});
 
 $(document).on('subvista:cargada', function () {
     if (!$('#tbMovimientos').length) return; // no es la sub-vista de Conciliacion de este banco
@@ -259,4 +337,102 @@ $(document).on('subvista:cargada', function () {
     actualizarHeaderColumnasConc();
     $('#inputFechaHasta').val(new Date().toISOString().slice(0, 10));
     cargarConciliacion();
+});
+
+// =====================================================================
+// EXTRACTO -- reutiliza los mismos endpoints de Importacion > Bancos
+// (mismo motor de clasificacion, mismo aprendizaje de reglas al confirmar)
+// =====================================================================
+let filasExtracto = [];
+
+function renderPreviewExtracto() {
+    if (!filasExtracto.length) {
+        $('#previewExtractoWrapper').hide();
+        return;
+    }
+
+    let opts = '';
+    CONCEPTOS_CATALOGO.forEach(function (c) {
+        opts += '<option value="' + c + '">' + c + '</option>';
+    });
+
+    let html = '';
+    filasExtracto.forEach(function (r, i) {
+        let optsFila = opts.replace('value="' + r.concepto + '"', 'value="' + r.concepto + '" selected');
+        html += '<tr>' +
+            '<td>' + r.fecha + '</td>' +
+            '<td><select class="form-select form-select-sm select-concepto-extracto" data-idx="' + i + '">' + optsFila + '</select></td>' +
+            '<td><input type="text" class="form-control form-control-sm input-subconcepto-extracto" data-idx="' + i + '" value="' + (r.subconcepto || '') + '"></td>' +
+            '<td><input type="text" class="form-control form-control-sm input-detalle-extracto" data-idx="' + i + '" value="' + (r.detalle || '').replace(/"/g, '&quot;') + '"></td>' +
+            '<td class="text-end fw-bold ' + (r.importe >= 0 ? 'text-success' : 'text-danger') + '">' + fmtPesos(r.importe) + '</td>' +
+            '</tr>';
+    });
+
+    $('#previewExtractoBody').html(html);
+    $('#cantidadExtracto, #cantidadExtracto2').text(filasExtracto.length);
+    $('#previewExtractoWrapper').show();
+}
+
+function procesarExtracto() {
+    const contenido = $('#textAreaArchivo').val();
+    if (!contenido.trim()) {
+        filasExtracto = [];
+        renderPreviewExtracto();
+        $('#msgExtracto').text('');
+        return;
+    }
+
+    $.post(CONCILIACION_ROUTES.extractoPreview, {
+        contenido: contenido,
+        banco: CONCILIACION_BANCO,
+        formato: formatoConciliacion,
+    }, function (data) {
+        filasExtracto = data.rows;
+        $('#msgExtracto').text(data.mensaje).css('color', filasExtracto.length ? 'green' : 'inherit');
+        renderPreviewExtracto();
+    });
+}
+
+$(document).on('input', '#textAreaArchivo', debounce(procesarExtracto, 400));
+
+$(document).on('change', '#inputArchivo', function () {
+    if (!this.files || !this.files[0]) return;
+    const formData = new FormData();
+    formData.append('archivo', this.files[0]);
+    formData.append('banco', CONCILIACION_BANCO);
+    formData.append('formato', formatoConciliacion);
+
+    $.ajax({
+        url: CONCILIACION_ROUTES.extractoPreview,
+        type: 'POST', data: formData, processData: false, contentType: false,
+        success: function (data) {
+            filasExtracto = data.rows;
+            $('#msgExtracto').text(data.mensaje).css('color', filasExtracto.length ? 'green' : 'inherit');
+            renderPreviewExtracto();
+        },
+    });
+});
+
+$(document).on('change', '.select-concepto-extracto', function () {
+    filasExtracto[$(this).data('idx')].concepto = $(this).val();
+});
+
+$(document).on('input', '.input-subconcepto-extracto', function () {
+    filasExtracto[$(this).data('idx')].subconcepto = $(this).val();
+});
+
+$(document).on('input', '.input-detalle-extracto', function () {
+    filasExtracto[$(this).data('idx')].detalle = $(this).val();
+});
+
+$(document).on('click', '#btnConfirmarExtracto', function () {
+    if (!filasExtracto.length) return;
+
+    $.post(CONCILIACION_ROUTES.extractoConfirmar, { rows: filasExtracto, origenConciliacion: true }, function (data) {
+        $('#msgExtracto').text('✓ ' + data.insertados + ' movimientos importados.').css('color', 'green');
+        $('#textAreaArchivo').val('');
+        filasExtracto = [];
+        renderPreviewExtracto();
+        cargarConciliacion(); // refresca la tabla de abajo con los movimientos recien importados
+    });
 });
