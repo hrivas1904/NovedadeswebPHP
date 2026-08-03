@@ -187,12 +187,6 @@ function verDetalleNovedad(idRegistro) {
     });
 }
 
-/*$("#inputFechaDesde, #inputFechaHasta").on("change",function(){
-    if ($("#tipoValor").val()==='Horas'){
-        calcularHorasHabiles();
-    }
-})*/
-
 //carga dt novedades
 $(document).ready(function () {
     tablaControl = $("#tb_control");
@@ -210,13 +204,6 @@ $(document).ready(function () {
                     console.log(d.paraFinnegans);
                 },
             },
-            columnDefs: [
-                {
-                    targets: [5, 6, 8, 9, 10, 11, 12, 16, 17, 18, 19, 20, 21],
-                    visible: false,
-                    searchable: false,
-                },
-            ],
             order: [[0, "desc"]],
             columns: [
                 { data: "REGISTRO" },
@@ -229,20 +216,7 @@ $(document).ready(function () {
                 { data: "AREA", width: "%4" },
                 { data: "REGISTRANTE" },
                 { data: "COLABORADOR" },
-                {
-                    data: "LEGAJO",
-                    render: function (data, type, row) {
-                        return data.toString().padStart(5, "0");
-                    },
-                },
-                {
-                    data: "CODIGO_NOVEDAD",
-                    width: "3%",
-                    className: "text-start",
-                    title: "NOVEDAD",
-                },
                 { data: "NOVEDAD_NOMBRE" },
-                { data: "CENTRO_COSTO" },
                 {
                     data: "DURACION",
                     className: "text-end",
@@ -257,15 +231,6 @@ $(document).ready(function () {
                         return data;
                     },
                 },
-                { data: "VALOR2" },
-                {
-                    data: "FECHA_APLICACION",
-                    className: "text-end",
-                    render: function (data) {
-                        return formatearFechaArgentina(data);
-                    },
-                },
-                { data: "EMPRESA" },
                 {
                     data: "FECHA_DESDE",
                     className: "text-end",
@@ -281,30 +246,6 @@ $(document).ready(function () {
                     },
                 },
                 {
-                    data: "DURACION",
-                    render: function (data, type, row) {
-                        tipoValorNov = row.TIPO_VALOR;
-
-                        if (tipoValorNov === "Pesos") {
-                            return formatearPesos(data);
-                        } else {
-                            return parseInt(data);
-                        }
-                        return data;
-                    },
-                },
-                { data: "DESCRIPCION" },
-                { data: "ANNIO" },
-                {
-                    data: "LEGAJO",
-                    render: function (data, type, row) {
-                        return data.toString().padStart(5, "0");
-                    },
-                },
-                { data: "TIPO" },
-                { data: "COLABORADOR" },
-                { data: "NOVEDAD_NOMBRE" },
-                {
                     data: "REGISTRO",
                     className: "text-end",
                     orderable: false,
@@ -314,10 +255,11 @@ $(document).ready(function () {
                             return `
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <button type="button" 
-                                        class="btn btn-danger btn-AnularNovedad" 
+                                        class="btn btn-AnularNovedad" 
                                         data-id="${data}" 
-                                        title="Anular novedad">
-                                        <i class="fa-solid fa-trash"></i>
+                                        title="Anular novedad"
+                                        style='color: var(--color-accent-red)'>
+                                        <i class="fs-5 fa-regular fa-trash-can"></i>
                                     </button>
                                     <div class="text-center">
                                         <input type="checkbox" 
@@ -330,10 +272,11 @@ $(document).ready(function () {
                             return `
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <button type="button" 
-                                        class="btn btn-danger btn-AnularNovedad" 
+                                        class="btn btn-AnularNovedad" 
                                         data-id="${data}" 
-                                        title="Anular novedad">
-                                        <i class="fa-solid fa-trash"></i>
+                                        title="Anular novedad"
+                                        style='color: var(--color-accent-red)'>
+                                        <i class="fs-5 fa-regular fa-trash-can"></i>
                                     </button>
                                 </div>
                             `;
@@ -529,6 +472,7 @@ $(document).ready(function () {
             $("#toggleAreas span").text("Áreas");
             $("#toggleNov span").text("Novedades");
             $("#toggleFinnegans span").text("Finnegans");
+            $("#searchRegistro").val("");
             tablaControl.search("").draw();
             tablaControl.ajax.reload();
         });
@@ -536,11 +480,6 @@ $(document).ready(function () {
         $("#searchRegistro").on("keyup", function () {
             let valor = $(this).val();
             tablaControl.search(valor).draw();
-        });
-
-        $("#btnClearSearch").on("click", function () {
-            $("#searchRegistro").val("");
-            tablaControl.search("").draw();
         });
 
         setTimeout(function () {

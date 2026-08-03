@@ -458,11 +458,12 @@ $(document).ready(function () {
                         ) {
                             botones += `
                                 <button 
-                                    class="btn btn-danger btn-DarBaja"
+                                    class="btn btn-DarBaja"
                                     data-id="${data.LEGAJO}"
                                     title='Dar de baja'
-                                    data-nombre="${data.COLABORADOR}">
-                                    <i class="fa-solid fa-square-xmark"></i>
+                                    data-nombre="${data.COLABORADOR}"
+                                    style='color: var(--color-accent-red)'>
+                                    <i class="fs-5 fa-regular fa-trash-can"></i>
                                 </button>
                             `;
                         }
@@ -476,10 +477,11 @@ $(document).ready(function () {
                         ) {
                             botones += `
                             <button 
-                                class="btn btn-primary btn-RegNovedad"
+                                class="btn btn-RegNovedad"
                                 title='Cargar novedad'
-                                data-id="${data.LEGAJO}">
-                                <i class="fa-solid fa-floppy-disk"></i>
+                                data-id="${data.LEGAJO}"
+                                style='color: var(--color-default)'>
+                                <i class="fs-5 fa-solid fa-floppy-disk"></i>
                             </button>
                         `;
                         }

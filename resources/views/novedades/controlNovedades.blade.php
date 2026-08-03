@@ -3,9 +3,8 @@
 @section('title', 'Registro de Novedades')
 
 @section('content')
-<div class="container-fluid">
     <div class="text-start mb-2">
-        <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="d-flex align-items-center justify-content-between">
             <div>
                 <h3 class="tituloVista mb-0">REGISTRO DE NOVEDADES MENSUALES</h3>
                 <p class="mb-0 text-muted">Carga de novedades próximas a liquidar.</p>
@@ -15,7 +14,7 @@
 
     <div class="row d-flex justify-content-start align-items-start">
         <div class="col-2 d-none d-xl-block">
-            <div class="card" style="border-radius:15px;">
+            <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
@@ -63,109 +62,77 @@
                     @endif
                     <div class="col-12">
                         <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
-                            <i class="fa-solid fa-eraser"></i> Limpiar
+                            Limpiar filtros
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-12 col-xl-10 col-xxl-10">
-            <div class="card" style="border-radius:15px;">
+        <div class="col-12 col-xl-10">
+            <div class="card">
                 <div class="card-header">
-                    <div class="row d-flex g-2">
-                        <div class="col-6 col-sm-12 col-md-6 col-lg-1">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-6 col-md-3 col-lg-1">
                             <input id="filtroDesde" class="form-control" type="text" placeholder="Desde" required>
                         </div>
-
-                        <div class="col-6 col-sm-12 col-md-6 col-lg-1">
+                        <div class="col-6 col-md-3 col-lg-1">
                             <input id="filtroHasta" class="form-control" type="text" placeholder="Hasta" required>
                         </div>
-
                         @if (Auth::user()->rol == 'Administrador/a' ||
                         Auth::user()->rol == 'Coordinador/a' ||
                         Auth::user()->rol == 'Coordinador/a L2')
-                        <div class="col-6 col-sm-12 col-md-6 col-lg-2">
+                        <div class="col-6 col-md-3 col-lg-2">
                             <button type="button" id="btnCargaMasiva" class="btn btn-primary w-100">
-                                <i class="fa-solid fa-database"></i> Carga masiva
+                                Carga masiva
                             </button>
                         </div>
                         @endif
-
                         @if (Auth::user()->rol == 'Administrador/a')
-                        <div class="col-6 col-sm-12 col-md-6 col-lg-1">
+                        <div class="col-6 col-md-3 col-lg-1">
                             <button type="button" id="btnLiquidarNovedadesSelec" class="btn btn-primary w-100">
-                                <i class="fa-solid fa-file-invoice-dollar"></i> Liquidar
+                                Liquidar
                             </button>
                         </div>
-
-                        <div class="col-6 col-sm-12 col-md-6 col-lg-1">
+                        <div class="col-6 col-md-3 col-lg-1">
                             <button type="button" id="btnExportExcel" class="btn btn-primary w-100">
-                                <i class="fa-solid fa-file-excel"></i> Excel
+                                Exportar
                             </button>
                         </div>
                         @endif
-
-                        <div class="col-6 col-sm-12 col-md-6 col-lg-2">
-                            <div class="input-group buscador-personal">
-                                <span class="input-group-text bg-white">
-                                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
-                                </span>
-
-                                <input type="text" id="searchRegistro" class="form-control"
-                                    placeholder="Buscar registro...">
-
-                                <button class="btn btn-secondary" id="btnClearSearch" type="button">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </div>
+                         <div class="col-12 col-md-6 col-lg-6">
+                            <input type="text" id="searchRegistro" class="form-control" placeholder="Buscar registro...">
                         </div>
                     </div>
-                </div>
-                <div class="table-responsive">
-                    <div class="card-body">
-                        <table id="tb_control" class="table table-bordered table-hover align-middle nowrap">
-                            <thead>
-                                <tr>
-                                    <th>N°</th>
-                                    <th>FECHA</th>
-                                    <th>AREA</th>
-                                    <th>REGISTRANTE</th>
-                                    <th>COLABORADOR</th>
-                                    <th>LEGAJO</th>
-                                    <th>CODIGO</th>
-                                    <th>NOVEDAD</th>
-                                    <th>CENTROCOSTO</th>
-                                    <th>CANTIDAD</th>
-                                    <th>VALOR2</th>
-                                    <th>FECHAAPLICACION</th>
-                                    <th>EMPRESA</th>
-                                    <th>DESDE</th>
-                                    <th>HASTA</th>
-                                    <th>VALOR</th>
-                                    <th>DESCRIPCION</th>
-                                    <th>AÑO</th>
-                                    <th>LEGAJO</th>
-                                    <th>TIPO</th>
-                                    <th>COLABORADOR</th>
-                                    <th>CONCEPTO</th>
-                                    <th class="text-end">
-                                        <div class="d-flex align-items-start justify-content-center gap-2">
-                                            <span>ACCIONES</span>
-                                            @if (Auth::user()->rol === 'Administrador/a')
-                                            <input type="checkbox" class="form-check-input" id="checkAll">
-                                            @endif
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                </div>                
+                <div class="card-body">
+                    <table id="tb_control" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>FECHA</th>
+                                <th>AREA</th>
+                                <th>REGISTRANTE</th>
+                                <th>COLABORADOR</th>
+                                <th>NOVEDAD</th>
+                                <th>DESDE</th>
+                                <th>HASTA</th>
+                                <th>VALOR</th>
+                                <th class="text-end">
+                                    <div class="d-flex align-items-start justify-content-center gap-2">
+                                        <span>ACCIONES</span>
+                                        @if (Auth::user()->rol === 'Administrador/a')
+                                        <input type="checkbox" class="form-check-input" id="checkAll">
+                                        @endif
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @push('modals')
@@ -384,7 +351,7 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <label class="form-label">Código Finnegans</label>
+                                        <label class="form-label">Código novedad</label>
                                         <input type="text" class="form-control" id="codigoFinnegans" readonly>
                                     </div>
 

@@ -79,7 +79,7 @@
                     </div>
                     <div class="col-12 mt-3">
                         <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
-                            <i class="fa-solid fa-eraser"></i> Limpiar
+                            Limpiar filtros
                         </button>
                     </div>
                 </div>
@@ -105,7 +105,6 @@
                         @if (in_array(Auth::id(), [1,2,5,6]))
                         <div class="col-6 col-sm-12 col-md-6 col-lg-2">
                             <button type="button" class="btn btn-primary w-100" onclick="exportarExcel()">
-                                <i class="fa-solid fa-file-excel me-2"></i>
                                 Exportar a Excel
                             </button>
                         </div>
@@ -115,19 +114,19 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="tablaPedidosCompras" class="table table-bordered table-hover align-middle nowrap">
+                        <table id="tablaPedidosCompras" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Fecha</th>
-                                    <th>Prioridad</th>
-                                    <th>Solicitante</th>
-                                    <th>Sector</th>
-                                    <th>Proveedor</th>
-                                    <th>Descripción</th>
+                                    <th>FECHA</th>
+                                    <th>PRIORIDAD</th>
+                                    <th>SOLICITANTE</th>
+                                    <th>SECTOR</th>
+                                    <th>PROVEEDOR</th>
+                                    <th>DESCRIPCIÓN</th>
                                     <th class="text-center">Líneas</th>
                                     <th class="text-center">Adjuntos</th>
-                                    <th class="text-center">Autorización</th>
-                                    <th class="text-center">Estado</th>
+                                    <th class="text-center">AUTORIZACIÓN</th>
+                                    <th class="text-center">ESTADO</th>
                                     <th class="text-center" style="width: 40px;">
                                         <input type="checkbox" id="checkTodosPedidos" class="form-check-input">
                                     </th>

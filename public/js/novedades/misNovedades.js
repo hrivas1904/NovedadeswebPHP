@@ -152,10 +152,11 @@ $(document).ready(function () {
                             return `
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <button type="button" 
-                                        class="btn btn-secondary btn-VerDetalleNovedad" 
+                                        class="btn btn-VerDetalleNovedad" 
                                         data-id="${data}" 
                                         title="Detalle de novedad">
-                                        <i class="fa-solid fa-eye"></i>
+                                        style='color: var(--color-default)'>
+                                        <i class="fs-5 fa-regular fa-trash-can"></i>
                                     </button>
                                 </div>
                             `;
@@ -170,10 +171,11 @@ $(document).ready(function () {
                                     </button>
 
                                     <button type="button" 
-                                        class="btn btn-danger btn-AnularNovedad" 
+                                        class="btn btn-AnularNovedad" 
                                         data-id="${data}" 
                                         title="Anular novedad">
-                                        <i class="fa-solid fa-trash"></i>
+                                        style='color: var(--color-accent-red)'>
+                                        <i class="fs-5 fa-regular fa-trash-can"></i>
                                     </button>
                                 </div>
                             `;
@@ -323,21 +325,6 @@ $(document).ready(function () {
                             $("is t", this).text(headers[i]);
                         });
                     },
-                },
-                {
-                    extend: "pdfHtml5",
-                    text: '<i class="fa-solid fa-file-pdf"></i> PDF',
-                    className: "btn-export-pdf dt-buttons",
-                    exportOptions: { columns: ":visible" },
-                },
-                {
-                    extend: "print",
-                    text: '<i class="fa-solid fa-print"></i> Imprimir',
-                    title: "Registro de novedades",
-                    orientation: "landscape",
-                    pageSize: "A4",
-                    exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
-                    className: "btn-printer dt-buttons",
                 },
             ],
         });

@@ -208,7 +208,7 @@ class NovedadesController extends Controller
                 $areaId = ($request->area_id && $request->area_id !== "") ? $request->area_id : null;
             }
 
-            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS(?,?,?,?,?,?,?,?)", [
+            $ListaNovedades = DB::select("CALL SP_LISTA_NOVEDADES_REGISTRADAS_TABLA(?,?,?,?,?,?,?,?)", [
                 $areaId,
                 $idNovedad,
                 $paraFinnegans,

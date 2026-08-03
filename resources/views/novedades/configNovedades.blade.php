@@ -16,7 +16,7 @@
                 <div class="col-xl-6 col-12 mb-3">
                     <div class="card" style="border-radius:15px;">
                         <div class="card-body">
-                            <table id="tb_configuracion" class="table table-striped table-bordered">
+                            <table id="tb_configuracion" class="table table-striped table-hover align-middle table-header-hp3c">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -80,8 +80,7 @@
                                 </div>
                                 <div class="col-12 text-end">
                                     <button type="submit" class="btn btn-primary" id="btnCrearNovedad">
-                                        <i class="fa-solid fa-plus me-1"></i>
-                                        Crear nueva novedad
+                                        Crear nuevo concepto
                                     </button>
                                 </div>
                             </form>

@@ -22,14 +22,13 @@
             </select>
         </div>
         <div class="col-12 col-sm-12 col-md-3 col-xl-3 col-xxl-2">
-            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
-                data-bs-target="#modalNuevoUsuario">
-                <i class="fa-solid fa-user-plus"></i> Nuevo usuario
+            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario">
+                Nuevo usuario
             </button>
         </div>
         <div class="col-12 col-sm-12 col-md-3 col-xl-3 col-xxl-2">
             <button id="btnLimpiarFiltros" class="btn btn-secondary w-100">
-                <i class="fa fa-eraser"></i> Limpiar
+                Limpiar filtros
             </button>
         </div>
     </div>
@@ -37,7 +36,7 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tb_usuarios" class="table table-bordered table-hover align-middle">
+                <table id="tb_usuarios" class="table table-striped table-hover align-middle table-header-hp3c">
                     <thead class="thead-dark">
                         <tr>
                             <th>LEGAJO</th>

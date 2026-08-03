@@ -6,10 +6,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-height: 38px;
+    gap: 4px;
+
+    min-height: 34px;
+
     font-weight: 500;
-}
+    border-radius: 4px;
+    line-height: 1.2;
+}   
 
 .btn i {
     font-size: 14px;
@@ -319,4 +323,51 @@
   transform: scale(1.1);
   background-color: var(--color-default);
   border-color: var(--color-default);
+}
+
+/*BOTONES DT*/
+.dt-button,
+.btn-export-excel,
+.btn-export-pdf,
+.btn-printer {
+    border: none !important;
+    border-radius: 4px !important;
+    font-weight: 500;
+    padding: 4px 14px !important;
+    margin-right: 8px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Excel */
+.btn-export-excel {
+    background-color: #00b18d !important;
+    color: #fff !important;
+}
+
+.btn-export-excel:hover {
+    background-color: #009c7c !important;
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* PDF */
+.btn-export-pdf {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+}
+
+.btn-export-pdf:hover {
+    background-color: #d64545 !important;
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Imprimir */
+.btn-printer {
+    background-color: #004a7c !important;
+    color: #fff !important;
+}
+
+.btn-printer:hover {
+    background-color: #0b3c6d !important;
+    box-shadow: 0 3px 8px rgba(108, 117, 125, 0.3);
 }

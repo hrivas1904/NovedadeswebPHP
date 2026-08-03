@@ -8,7 +8,7 @@
 
     <div class="row d-flex justify-content-start align-items-start">
         <div class="col-2 d-none d-xl-block">
-            <div class="card" style="border-radius:15px;">
+            <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
@@ -81,21 +81,21 @@
                     </div>
                     <div class="col-12">
                         <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
-                            <i class="fa-solid fa-eraser"></i> Limpiar
+                            Limpiar filtros
                         </button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-12 col-xl-10 col-xxl-10">
-            <div class="card" style="border-radius:15px;">
+            <div class="card">
                 <div class="card-header">
                     <div
                         class="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-2">
 
                         @if (Auth::user()->rol === 'Administrador/a')
                         <button type="button" class="btn btn-primary" onclick="abrirModal()">
-                            <i class="fa-solid fa-user me-2"></i>
+                            
                             Nuevo Colaborador
                         </button>
                         @endif
@@ -105,8 +105,8 @@
                             <!-- SOLO DESKTOP -->
                             <button type="button" id="btnExportExcel"
                                 class="btn btn-primary d-none d-md-inline-flex align-items-center">
-                                <i class="fa-regular fa-file-excel me-2"></i>
-                                Excel
+                                
+                                Exportar nómina
                             </button>
 
                             <!-- BUSCADOR -->
@@ -128,8 +128,8 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive px-2">
-                        <table id="tb_personal" class="table table-bordered table-hover align-middle">
-                            <thead class="thead-dark">
+                        <table id="tb_personal" class="table table-striped table-hover align-middle table-header-hp3c">
+                            <thead>
                                 <tr>
                                     <th>LEGAJO</th>
                                     <th>COLABORADOR</th>

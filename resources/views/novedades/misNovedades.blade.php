@@ -37,31 +37,29 @@
 
                 <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
                     <button type="button" id="btnLimpiarFiltros" class="btn btn-secondary w-100">
-                        <i class="fa-solid fa-eraser"></i> Limpiar
+                        Limpiar filtros
                     </button>
                 </div>
             </div>
         </div>
-        <div class="table-responsive">
-            <div class="card-body">
-                <table id="tb_control" class="table table-bordered table-hover align-middle nowrap">
-                    <thead>
-                        <tr>
-                            <th>N°</th>
-                            <th>FECHA</th>
-                            <th>REGISTRANTE</th>
-                            <th>CODIGO</th>
-                            <th>NOVEDAD</th>
-                            <th>COLABORADOR</th>
-                            <th>DESDE</th>
-                            <th>HASTA</th>
-                            <th>VALOR</th>
-                            <th>DESCRIPCION</th>
-                            <th>ACCIONES</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
+        <div class="card-body">
+            <table id="tb_control" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>FECHA</th>
+                        <th>REGISTRANTE</th>
+                        <th>CODIGO</th>
+                        <th>NOVEDAD</th>
+                        <th>COLABORADOR</th>
+                        <th>DESDE</th>
+                        <th>HASTA</th>
+                        <th>VALOR</th>
+                        <th>DESCRIPCION</th>
+                        <th>ACCIONES</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>

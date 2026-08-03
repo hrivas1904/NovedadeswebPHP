@@ -123,8 +123,8 @@ $(document).ready(function () {
                     render: function(data, type, row){
                         if (USER_ROLE==='Administrador/a'){
                             return(
-                                `<button class="btn btn-danger btn-eliminar" data-id="${row.REGISTRO}">
-                                    <i class="fa-solid fa-trash"></i>
+                                `<button class="btn btn-eliminar" data-id="${row.REGISTRO}" style='color: var(--color-accent-red)'>
+                                    <i class="fs-5 fa-regular fa-trash-can"></i>
                                 </button>`
                             );
                         };
@@ -307,6 +307,7 @@ $(document).ready(function () {
             $("#toggleAreas span").text("Áreas");
             $("#toggleNov span").text("Novedades");
             $("#toggleFinnegans span").text("Finnegans");
+            $("#searchRegistro").val("");
             tablaControl.search("").draw();
             tablaControl.ajax.reload();
         });
@@ -314,12 +315,7 @@ $(document).ready(function () {
         $("#searchRegistro").on("keyup", function () {
             let valor = $(this).val();
             tablaControl.search(valor).draw();
-        });
-
-        $("#btnClearSearch").on("click", function () {
-            $("#searchRegistro").val("");
-            tablaControl.search("").draw();
-        });
+        }); 
 
         setTimeout(function () {
             if ($("#area").val() !== "" && $("#area").val() !== null) {

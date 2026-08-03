@@ -29,7 +29,6 @@
     <link rel="stylesheet" href="{{ asset('css/paletaColores.css') }}">
     <link rel="stylesheet" href="{{ asset('css/botones.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/styleDt.css') }}">
     <link rel="stylesheet" href="{{ asset('css/modales.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cronograma.css') }}">

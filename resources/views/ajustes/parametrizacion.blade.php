@@ -13,7 +13,7 @@
                         <div class="col-xl-7 col-12 mb-3">
                             <div class="card" style="border-radius:15px;">
                                 <div class="card-body">
-                                    <table id="tb_areas" class="table table-striped table-bordered">
+                                    <table id="tb_areas" class="table table-striped table-hover align-middle table-header-hp3c">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -48,7 +48,6 @@
 
                                             <div class="col-12 text-end">
                                                 <button type="submit" class="btn btn-primary" id="btnCrearArea">
-                                                    <i class="fa-solid fa-plus me-1"></i>
                                                     Crear nueva área
                                                 </button>
                                             </div>
@@ -67,7 +66,7 @@
                         <div class="col-xl-7 col-12 mb-3">
                             <div class="card" style="border-radius:15px;">
                                 <div class="card-body">
-                                    <table id="tb_categ" class="table table-striped table-bordered">
+                                    <table id="tb_categ" class="table table-striped table-hover align-middle table-header-hp3c">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -101,7 +100,6 @@
 
                                             <div class="col-12 text-end">
                                                 <button type="submit" class="btn btn-primary" id="btnCrearCateg">
-                                                    <i class="fa-solid fa-plus me-1"></i>
                                                     Crear nueva categoría
                                                 </button>
                                             </div>
@@ -120,7 +118,7 @@
                         <div class="col-xl-6 col-12 mb-3">
                             <div class="card" style="border-radius:15px;">
                                 <div class="card-body">
-                                    <table id="tb_servicios" class="table table-striped table-bordered">
+                                    <table id="tb_servicios" class="table table-striped table-hover align-middle table-header-hp3c">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -162,7 +160,6 @@
 
                                             <div class="col-12 text-end">
                                                 <button type="submit" class="btn btn-primary" id="btnCrearServicio">
-                                                    <i class="fa-solid fa-plus me-1"></i>
                                                     Crear nuevo servicio
                                                 </button>
                                             </div>

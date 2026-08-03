@@ -633,7 +633,7 @@ $(document).ready(function () {
                     className: "text-start",
                     render: function (data) {
                         let clase = "bg-secondary";
-                        if (data === "PENDIENTE") clase = "bg-warning";
+                        if (data === "PENDIENTE") clase = "bg-secondary";
                         if (data === "APROBADA") clase = "bg-success";
                         if (data === "RECHAZADA") clase = "bg-danger";
                         return `<span style="font-size:.80rem" class="badge ${clase}">${data}</span>`;
@@ -656,35 +656,11 @@ $(document).ready(function () {
                 },
             ],
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
-                    <'d-flex flex-column flex-sm-row gap-2'B> \
-                    <'ms-md-auto mt-2 mt-md-0'f> \
+                    <'d-flex flex-column flex-sm-row gap-2'> \
+                    <'ms-md-auto mt-2 mt-md-0'> \
                 > \
                 <'my-2'rt> \
                 <'d-bottom d-flex justify-content-center'i>",
-            buttons: [
-                {
-                    extend: "excelHtml5",
-                    text: '<i class="fa-solid fa-file-excel"></i> Excel',
-                    className: "btn-export-excel dt-buttons",
-                    exportOptions: {
-                        columns: [2, 3, 4, 6, 7, 9, 10, 11, 12],
-                        format: {
-                            body: function (data, row, column, node) {
-                                // Limpiar HTML y obtener solo el texto
-                                const tmp = document.createElement("div");
-                                tmp.innerHTML = data;
-                                const texto =
-                                    tmp.textContent || tmp.innerText || data;
-
-                                if (/^\d{11,}$/.test(texto)) {
-                                    return "'" + texto;
-                                }
-                                return texto;
-                            },
-                        },
-                    },
-                },
-            ],
         });
     }
 
@@ -695,6 +671,31 @@ $(document).ready(function () {
     $("#selectDepositado").on("change", function () {
         tablaSolicitudes.ajax.reload();
     });
+
+    let searchTimeout;
+    $(document).off("keyup.searchSolicitudes", "#inputSearchSolicitudes");
+    $(document).on("keyup.searchSolicitudes", "#inputSearchSolicitudes", function () {
+        clearTimeout(searchTimeout);
+        const valor = this.value;
+        searchTimeout = setTimeout(() => {
+            tablaSolicitudes.search(valor).draw();
+        }, 300);
+    });
+
+});
+
+$(document).off("click.exportExcel", "#btnExportarExcel");
+$(document).on("click.exportExcel", "#btnExportarExcel", function () {
+    const url = $(this).data("url");
+
+    const params = new URLSearchParams({
+        estado: getEstadosSeleccionados().join(",") || "",
+        depositado: getDepositoSeleccionado() ?? "",
+        fechaDesde: $("#fechaDesde").val() || "",
+        fechaHasta: $("#fechaHasta").val() || "",
+    });
+
+    window.location.href = url + "?" + params.toString();
 });
 
 $("#btnLimpiarFiltros").on("click", function (e) {
@@ -703,7 +704,8 @@ $("#btnLimpiarFiltros").on("click", function (e) {
     $("#selectDepositado").val(0);
     document.querySelector("#fechaDesde")._flatpickr.clear();
     document.querySelector("#fechaHasta")._flatpickr.clear();
-    tablaSolicitudes.search("").draw(); // opcional: limpia búsqueda global
+    $("#inputSearchSolicitudes").val("");
+    tablaSolicitudes.search("").draw();
     tablaSolicitudes.ajax.reload(null, false);
 });
 

@@ -114,42 +114,6 @@ body[data-theme="dark"] {
     background-color: var(--border-color);
 }
 
-/*DATATABLE*/
-/* TEXTO GENERAL */
-.dataTables_wrapper,
-table.dataTable {
-    color: var(--text-main) !important;
-}
-
-/* HEADER */
-table.dataTable thead th {
-    color: var(--text-main) !important;
-    background-color: var(--bg-card) !important;
-}
-
-/* FILAS */
-table.dataTable tbody td {
-    color: var(--text-main) !important;
-}
-
-table.dataTable tbody tr {
-    background-color: var(--bg-card) !important;
-}
-
-table.dataTable tbody tr:hover {
-    background-color: var(--border-color) !important;
-}
-
-/* INFO (ej: "Mostrando 1 a 10") */
-.dataTables_info {
-    color: var(--text-main) !important;
-}
-
-/* PAGINACIÓN */
-.dataTables_wrapper .paginate_button {
-    color: var(--text-main) !important;
-}
-
 /* INPUTS READONLY */
 .form-control:read-only {
     background-color: var(--bg-input) !important;
@@ -313,4 +277,23 @@ table.dataTable tbody tr:hover {
 .evento-destacado:hover{
     transform:translateY(-2px);
     box-shadow:0 .35rem .8rem rgba(29,172,138,.18);
+}
+
+.table tbody tr {
+    cursor: pointer;
+}
+
+.table-header-hp3c th{
+    background: var(--color-second) !important;
+    color: #fff !important;
+    border-color: var(--color-default);
+    font-weight: 600;
+}
+
+.table tfoot th{
+    background: white !important;
+    color: black !important;
+    border-color: var(--color-default);
+    font-weight: 600;
+    border-color: lightgrey;
 }

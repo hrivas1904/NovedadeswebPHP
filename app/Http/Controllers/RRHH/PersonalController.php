@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use Illuminate\Support\Facades\Storage;
 
 class PersonalController extends Controller
@@ -1081,6 +1083,77 @@ class PersonalController extends Controller
                 'mensaje' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function exportarSolicitudesExcel(Request $request)
+    {
+        $fechaDesde = $request->input('fechaDesde'); // 'YYYY-MM-DD' o null
+        $fechaHasta = $request->input('fechaHasta');
+        $estado     = $request->input('estado');      // string CSV o null (FIND_IN_SET)
+        $area       = $request->input('area');        // int o null
+        $depositado = $request->input('depositado');  // 0/1 o null
+
+        $rol    = Auth::user()->rol;
+        $legajo = ($rol !== 'Administrador/a') ? Auth::user()->legajo : null;
+
+        $resultados = DB::select('CALL SP_LISTA_SOLICITUDES(?, ?, ?, ?, ?, ?, ?)', [
+            $fechaDesde,
+            $fechaHasta,
+            $estado,
+            $area,
+            $legajo,
+            $rol,
+            $depositado,
+        ]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Solicitudes');
+
+        $encabezados = ['LEGAJO', 'CUIL', 'COLABORADOR', 'CUENTA', 'CBU', 'IMPORTE', 'COMPROBANTE', 'BANCO', 'OBSERVACIONES'];
+        $sheet->fromArray($encabezados, null, 'A1');
+
+        // Estilo del header
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:I1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $fila = 2;
+        foreach ($resultados as $r) {
+            // Legajo con padding a 5 dígitos, forzado como texto para no perder los ceros
+            $legajoFormateado = str_pad((string) $r->legajo, 5, '0', STR_PAD_LEFT);
+
+            $sheet->setCellValueExplicit('A' . $fila, $legajoFormateado, DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit('B' . $fila, (string) $r->cuil, DataType::TYPE_STRING);
+            $sheet->setCellValue('C' . $fila, $r->colaborador);
+            // Cuenta y CBU como texto explícito para que Excel no los interprete como número/notación científica
+            $sheet->setCellValueExplicit('D' . $fila, (string) $r->numero_cuenta, DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit('E' . $fila, (string) $r->cbu, DataType::TYPE_STRING);
+            $sheet->setCellValue('F' . $fila, (float) $r->monto);
+            $sheet->setCellValue('G' . $fila, $r->comprobante);
+            $sheet->setCellValue('H' . $fila, $r->banco);
+            $sheet->setCellValue('I' . $fila, $r->observaciones);
+
+            $fila++;
+        }
+
+        // Formato numérico para la columna IMPORTE
+        $sheet->getStyle('F2:F' . ($fila - 1))
+            ->getNumberFormat()
+            ->setFormatCode('0.00');
+
+        // Auto-ancho de columnas
+        foreach (range('A', 'I') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $nombreArchivo = 'Solicitudes_' . now()->format('Y-m-d_His') . '.xlsx';
+
+        $writer = new Xlsx($spreadsheet);
+
+        $tempPath = tempnam(sys_get_temp_dir(), 'solicitudes_');
+        $writer->save($tempPath);
+
+        return response()->download($tempPath, $nombreArchivo)->deleteFileAfterSend(true);
     }
 
     public function aprobarSolicitud(Request $request)

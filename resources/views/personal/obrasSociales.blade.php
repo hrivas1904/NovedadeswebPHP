@@ -11,7 +11,7 @@
         <div class="col-xl-6 col-12">
             <div class="card" style="border-radius:15px;">
                 <div class="card-body">
-                    <table id="tb_obraSocial" class="table table-striped table-bordered">
+                    <table id="tb_obraSocial" class="table table-striped table-hover align-middle table-header-hp3c">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -52,7 +52,6 @@
 
                             <div class="col-12 text-end">
                                 <button type="submit" class="btn btn-primary" id="btnCrearOs">
-                                    <i class="fa-solid fa-plus me-1"></i>
                                     Crear nueva OS
                                 </button>
                             </div>

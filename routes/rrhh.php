@@ -292,6 +292,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/personal/listarSolicitudes', [PersonalController::class, 'listarSolicitudes'])
         ->name('personal.listarSolicitudes');
 
+    Route::get('/solicitudes/exportar-excel', [PersonalController::class, 'exportarSolicitudesExcel'])
+    ->name('solicitudes.exportarExcel');
+
     Route::post('/personal/aprobarSolicitud', [PersonalController::class, 'aprobarSolicitud'])
         ->name('personal.aprobarSolicitud');
 
