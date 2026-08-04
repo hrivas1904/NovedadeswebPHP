@@ -13,8 +13,20 @@ class MovimientosController extends Controller
     {
         $cuentas = collect(DB::select('SELECT id, nombre FROM ff_cuentas WHERE activo = 1 ORDER BY orden'));
         $conceptos = collect(DB::select('SELECT nombre FROM ff_conceptos WHERE activo = 1 ORDER BY orden'))->pluck('nombre');
+        $subconceptosPorConcepto = $this->obtenerSubconceptosPorConcepto();
 
-        return view('administracion.movimientos.movimientos', compact('cuentas', 'conceptos'));
+        return view('administracion.movimientos.movimientos', compact('cuentas', 'conceptos', 'subconceptosPorConcepto'));
+    }
+
+    private function obtenerSubconceptosPorConcepto()
+    {
+        $rows = DB::select('CALL SP_FF_SUBCONCEPTOS_LISTAR_TODOS()');
+
+        $out = [];
+        foreach ($rows as $r) {
+            $out[$r->concepto][] = $r->subconcepto;
+        }
+        return $out;
     }
 
     public function movimientosData(Request $request)
@@ -167,5 +179,54 @@ class MovimientosController extends Controller
         }
 
         return response()->json(['ok' => true, 'eliminados' => count($request->input('ids'))]);
+    }
+
+    public function actualizarCuenta(Request $request, $id)
+    {
+        $request->validate(['cuenta' => 'required|string']);
+        DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_CUENTA(?,?)', [$id, $request->input('cuenta')]);
+        return response()->json(['ok' => true]);
+    }
+
+    public function actualizarConcepto(Request $request, $id)
+    {
+        $request->validate(['concepto' => 'required|string']);
+        DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_CONCEPTO(?,?)', [$id, $request->input('concepto')]);
+        return response()->json(['ok' => true]);
+    }
+
+    public function actualizarTexto(Request $request, $id)
+    {
+        $request->validate([
+            'campo' => 'required|in:detalle,subconcepto',
+            'valor' => 'nullable|string|max:255',
+        ]);
+        DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_TEXTO(?,?,?)', [
+            $id,
+            $request->input('campo'),
+            $request->input('valor'),
+        ]);
+        return response()->json(['ok' => true]);
+    }
+
+    public function actualizarImporte(Request $request, $id)
+    {
+        $request->validate(['importe' => 'required|numeric']);
+        DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_IMPORTE(?,?)', [$id, $request->input('importe')]);
+        return response()->json(['ok' => true]);
+    }
+
+    public function actualizarFechaMasiva(Request $request)
+    {
+        $request->validate([
+            'ids'   => 'required|array|min:1',
+            'fecha' => 'required|date',
+        ]);
+
+        foreach ($request->input('ids') as $id) {
+            DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_FECHA(?,?)', [$id, $request->input('fecha')]);
+        }
+
+        return response()->json(['ok' => true, 'actualizados' => count($request->input('ids'))]);
     }
 }

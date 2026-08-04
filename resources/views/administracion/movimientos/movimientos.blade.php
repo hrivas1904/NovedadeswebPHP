@@ -71,7 +71,10 @@
 
     <button type="button" class="btn btn-secondary " id="btnVolverPresupuesto" title="Volver a presupuesto">
         <i class="fs-5 fa-solid fa-rotate-left"></i>
-    </button>       
+    </button>
+    
+    <input class="form-control w-auto" type="date" id="inputCambioFechaMasiva">
+    <button type="button" class="btn btn-primary" id="btnCambiarFechaMasiva">Cambiar fecha</button>
 
     <label class="fw-bold fs-6" id="labelSeleccionadosMovimientos">0 SELECCIONADOS</label>       
 </div>
@@ -185,9 +188,17 @@
         estado: @json(route('administracion.movimientos.estado', ':id')),
         fecha: @json(route('administracion.movimientos.fecha', ':id')),
         duplicar: @json(route('administracion.movimientos.duplicar', ':id')),
-        eliminar: @json(route('administracion.movimientos.eliminar', ':id')),        
+        eliminar: @json(route('administracion.movimientos.eliminar', ':id')),
+        cuenta: @json(route('administracion.movimientos.cuenta', ':id')),
+        concepto: @json(route('administracion.movimientos.concepto', ':id')),
+        texto: @json(route('administracion.movimientos.texto', ':id')),
+        importe: @json(route('administracion.movimientos.importe', ':id')),
+        fechaMasiva: @json(route('administracion.movimientos.fechaMasiva')),        
     };
+
+    const CUENTAS_CATALOGO = @json($cuentas->pluck('nombre'));
     const CONCEPTOS_CATALOGO = @json($conceptos);
+    const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
 </script>
 
 <script src="{{ asset('js/administracion/movimientos/movimientos.js') }}"></script>

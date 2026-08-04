@@ -114,14 +114,54 @@ $(document).ready(function () {
                 },
             },
             { data: "operacion" },
-            { data: "cuenta" },
-            { data: "concepto" },
-            { data: "subconcepto" },
-            { data: "detalle" },
+            {
+                data: "cuenta",
+                render: function (cuenta, type, row) {
+                    if (type !== "display") return cuenta;
+                    let opts = "";
+                    CUENTAS_CATALOGO.forEach(function (c) {
+                        opts += '<option value="' + c + '"' + (c === cuenta ? " selected" : "") + ">" + c + "</option>";
+                    });
+                    return '<select class="form-select form-select-sm select-cuenta-movimiento" data-id="' + row.id + '">' + opts + "</select>";
+                },
+            },
+            {
+                data: "concepto",
+                render: function (concepto, type, row) {
+                    if (type !== "display") return concepto;
+                    let opts = "";
+                    CONCEPTOS_CATALOGO.forEach(function (c) {
+                        opts += '<option value="' + c + '"' + (c === concepto ? " selected" : "") + ">" + c + "</option>";
+                    });
+                    return '<select class="form-select form-select-sm select-concepto-movimiento" data-id="' + row.id + '">' + opts + "</select>";
+                },
+            },
+            {
+                data: "subconcepto",
+                render: function (subconcepto, type, row) {
+                    if (type !== "display") return subconcepto;
+                    const lista = SUBCONCEPTOS_POR_CONCEPTO[row.concepto] || [];
+                    let opts = "";
+                    lista.forEach(function (s) {
+                        opts += '<option value="' + s + '"' + (s === subconcepto ? " selected" : "") + ">" + s + "</option>";
+                    });
+                    return '<select class="form-select form-select-sm select-subconcepto-movimiento" data-id="' + row.id + '">' + opts + "</select>";
+                },
+            },
+            {
+                data: "detalle",
+                render: function (detalle, type, row) {
+                    if (type !== "display") return detalle;
+                    return '<input type="text" class="form-control form-control-sm input-detalle-movimiento" data-id="' + row.id + '" value="' + (detalle || "").replace(/"/g, "&quot;") + '">';
+                },
+            },
             {
                 data: "importe",
                 className: "text-end",
-                render: (v) => fmtPesos(v),
+                render: function (importe, type, row) {
+                    if (type !== "display") return importe;
+                    return '<input type="text" class="form-control form-control-sm text-end input-importe-movimiento" data-id="' + row.id + '" value="' + Number(importe).toFixed(2) + '" data-original="' + Number(importe).toFixed(2) + '">';
+                },
             },
             {
                 data: null,
@@ -299,8 +339,52 @@ $(document).on("click", ".btn-eliminar-movimiento", function () {
     });
 });
 
-// =====================================================================
-// ACCIONES MASIVAS - Movimientos
+$(document).on("change", ".select-cuenta-movimiento", function () {
+    const id = $(this).data("id");
+    $.post(MOVIMIENTOS_ROUTES.cuenta.replace(":id", id), { cuenta: $(this).val() });
+});
+
+$(document).on("change", ".select-concepto-movimiento", function () {
+    const id = $(this).data("id");
+    const nuevoConcepto = $(this).val();
+
+    $.post(MOVIMIENTOS_ROUTES.concepto.replace(":id", id), { concepto: nuevoConcepto });
+
+    // El subconcepto ya no es valido para el concepto nuevo -- se repuebla
+    // el select de esa misma fila con la lista correcta, sin arrastrar el anterior.
+    const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
+    let opts = "";
+    lista.forEach(function (s) { opts += '<option value="' + s + '">' + s + "</option>"; });
+    const $selectSub = $('.select-subconcepto-movimiento[data-id="' + id + '"]');
+    $selectSub.html(opts);
+
+    if (lista.length) {
+        $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "subconcepto", valor: lista[0] });
+    }
+});
+
+$(document).on("change", ".select-subconcepto-movimiento", function () {
+    const id = $(this).data("id");
+    $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "subconcepto", valor: $(this).val() });
+});
+
+$(document).on("blur", ".input-detalle-movimiento", function () {
+    const id = $(this).data("id");
+    $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "detalle", valor: $(this).val() });
+});
+
+$(document).on("blur", ".input-importe-movimiento", function () {
+    const $input = $(this);
+    const raw = $input.val().trim();
+    if (raw === String($input.data("original"))) return; // no cambio, no disparamos nada
+
+    const id = $input.data("id");
+    const importe = raw.replace(/\./g, "").replace(",", ".");
+
+    $.post(MOVIMIENTOS_ROUTES.importe.replace(":id", id), { importe: importe }, function () {
+        $input.data("original", Number(importe).toFixed(2));
+    });
+});
 // Como la tabla es server-side (paginada), se guarda id+importe de cada
 // fila tildada en un objeto que persiste aunque cambies de pagina, para
 // que el contador y la suma sean correctos sin importar que pagina mires.
@@ -342,8 +426,6 @@ $(document).on("change", ".chk-movimiento", function () {
     actualizarResumenSeleccionMovimientos();
 });
 
-// "Seleccionar todos" aplica solo a la pagina actualmente visible
-// (con server-side no hay forma de tildar filas que no estan cargadas)
 $(document).on("change", "#checkSeleccionarTodo", function () {
     const checked = $(this).is(":checked");
     $(".chk-movimiento").each(function () {
@@ -403,7 +485,7 @@ $(document).on("click", "#btnDuplicar", function () {
     $.post(MOVIMIENTOS_ROUTES.duplicarMasivo, { ids: ids }, function (data) {
         limpiarSeleccionMovimientos();
         tablaMovimientos.ajax.reload(null, false);
-        swal.fire({
+        Swal.fire({
             title: 'Operación exitosa!',
             text: data.duplicados + " movimiento(s) duplicado(s).",
             icon: 'success',
@@ -413,17 +495,55 @@ $(document).on("click", "#btnDuplicar", function () {
     });
 });
 
-$(document).on("click", "#btnEliminar", function () {
+$(document).on("click", "#btnCambiarFechaMasiva", function () {
     const ids = idsSeleccionadosMovimientos();
     if (!ids.length) {
-        return;
-        swal.fire({
+        Swal.fire({
             title: 'Atención',
             text: "Seleccioná al menos un movimiento.",
             icon: 'warning',
             timer: 1200,
             showConfirmButton: false
-        })
+        });
+        return;
+    }
+
+    const fecha = $("#inputCambioFechaMasiva").val();
+    if (!fecha) {
+        Swal.fire({
+            title: 'Atención',
+            text: "Elegí una fecha primero.",
+            icon: 'warning',
+            timer: 1200,
+            showConfirmButton: false
+        });
+        return;
+    }
+
+    $.post(MOVIMIENTOS_ROUTES.fechaMasiva, { ids: ids, fecha: fecha }, function (data) {
+        limpiarSeleccionMovimientos();
+        tablaMovimientos.ajax.reload(null, false);
+        Swal.fire({
+            title: 'Operación exitosa!',
+            text: data.actualizados + " movimiento(s) reprogramado(s).",
+            icon: 'success',
+            timer: 1200,
+            showConfirmButton: false
+        });
+    });
+});
+
+$(document).on("click", "#btnEliminar", function () {
+    const ids = idsSeleccionadosMovimientos();
+    if (!ids.length) {
+        Swal.fire({
+            title: 'Atención',
+            text: "Seleccioná al menos un movimiento.",
+            icon: 'warning',
+            timer: 1200,
+            showConfirmButton: false
+        });
+        return;
     }
 
     Swal.fire({

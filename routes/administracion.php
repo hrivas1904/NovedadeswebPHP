@@ -64,11 +64,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/movimientos/masivo/estado', [MovimientosController::class, 'actualizarEstadoMasivo'])->name('movimientos.estadoMasivo');
     Route::post('/movimientos/masivo/duplicar', [MovimientosController::class, 'duplicarMasivo'])->name('movimientos.duplicarMasivo');
     Route::post('/movimientos/masivo/eliminar', [MovimientosController::class, 'eliminarMasivo'])->name('movimientos.eliminarMasivo');
+    Route::post('/movimientos/masivo/fecha', [MovimientosController::class, 'actualizarFechaMasiva'])->name('movimientos.fechaMasiva');
 
     Route::post('/movimientos/{id}/estado', [MovimientosController::class, 'actualizarEstado'])->name('movimientos.estado');
     Route::post('/movimientos/{id}/fecha', [MovimientosController::class, 'actualizarFecha'])->name('movimientos.fecha');
     Route::post('/movimientos/{id}/duplicar', [MovimientosController::class, 'duplicar'])->name('movimientos.duplicar');
     Route::post('/movimientos/{id}/eliminar', [MovimientosController::class, 'eliminar'])->name('movimientos.eliminar');
+
+    Route::post('/movimientos/{id}/cuenta', [MovimientosController::class, 'actualizarCuenta'])->name('movimientos.cuenta');
+    Route::post('/movimientos/{id}/concepto', [MovimientosController::class, 'actualizarConcepto'])->name('movimientos.concepto');
+    Route::post('/movimientos/{id}/texto', [MovimientosController::class, 'actualizarTexto'])->name('movimientos.texto');
+    Route::post('/movimientos/{id}/importe', [MovimientosController::class, 'actualizarImporte'])->name('movimientos.importe');
 
     //INTERBANKING
     Route::get('/interbankingView', [InterbankingController::class, 'interbankingView'])->name('interbankingView');
