@@ -20,9 +20,9 @@
     </select>
     <select class="form-select" id="selectOperaciones">
         <option value="">Operaciones</option>
-        <option value="Ingreso">Ingreso</option>
+        <option value="Ingresos">Ingresos</option>
         <option value="Transferencias">Transferencias</option>
-        <option value="Cheque">Cheque</option>
+        <option value="Cheques">Cheques</option>
         <option value="Efectivo">Efectivo</option>
     </select>
     <select class="form-select" id="selectConceptos">
@@ -37,7 +37,7 @@
     </button>
 </div>
 
-<div class="row d-flex my-2">
+<div class="row d-flex mt-2 mb-4">
     <div class="col-2 d-flex gap-3 align-items-end">
         <label class="form-label h6 fw-bold" style="color: var(--color-default);">Desde: </label>
         <input type="date" class="form-control" id="inputFechaDesde">
@@ -56,12 +56,32 @@
     </div>
 </div>
 
+<div class="d-flex mb-2 align-items-center gap-3">
+    <button type="button" class="btn btn-primary" id="btnMarcarCumplido" title="Marcar cumplido">
+        <i class="fs-5 fa-regular fa-square-check"></i>
+    </button>      
+
+    <button type="button" class="btn btn-secondary" id="btnDuplicar" title="Duplicar">
+        <i class="fs-5 fa-solid fa-copy"></i>
+    </button>    
+
+    <button type="button" class="btn btn-danger" id="btnEliminar" title="Eliminar">
+        <i class="fs-5 fa-regular fa-trash-can"></i>
+    </button>       
+
+    <button type="button" class="btn btn-secondary " id="btnVolverPresupuesto" title="Volver a presupuesto">
+        <i class="fs-5 fa-solid fa-rotate-left"></i>
+    </button>       
+
+    <label class="fw-bold fs-6" id="labelSeleccionadosMovimientos">0 SELECCIONADOS</label>       
+</div>
+
 <div class="card p-1">
     <table id="tablaMovimientos" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
         <thead>
             <tr>
                 <th>
-                    <input type="checkbox">
+                    <input type="checkbox" id="checkSeleccionarTodo">
                 </th>
                 <th>FECHA</th>
                 <th>ESTADO</th>
@@ -159,10 +179,13 @@
     const MOVIMIENTOS_ROUTES = {
         data: @json(route('administracion.movimientosData')),
         manual: @json(route('administracion.movimientosGuardarManual')),
+        estadoMasivo: @json(route('administracion.movimientos.estadoMasivo')),
+        duplicarMasivo: @json(route('administracion.movimientos.duplicarMasivo')),
+        eliminarMasivo: @json(route('administracion.movimientos.eliminarMasivo')),
         estado: @json(route('administracion.movimientos.estado', ':id')),
         fecha: @json(route('administracion.movimientos.fecha', ':id')),
         duplicar: @json(route('administracion.movimientos.duplicar', ':id')),
-        eliminar: @json(route('administracion.movimientos.eliminar', ':id')),
+        eliminar: @json(route('administracion.movimientos.eliminar', ':id')),        
     };
     const CONCEPTOS_CATALOGO = @json($conceptos);
 </script>

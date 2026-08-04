@@ -130,4 +130,42 @@ class MovimientosController extends Controller
 
         return response()->json(['ok' => true]);
     }
+
+    public function actualizarEstadoMasivo(Request $request)
+    {
+        $request->validate([
+            'ids'       => 'required|array|min:1',
+            'ejecucion' => 'required|in:PRESUPUESTO,CUMPLIDO',
+        ]);
+
+        foreach ($request->input('ids') as $id) {
+            DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$id, $request->input('ejecucion')]);
+        }
+
+        return response()->json(['ok' => true, 'actualizados' => count($request->input('ids'))]);
+    }
+
+    public function duplicarMasivo(Request $request)
+    {
+        $request->validate(['ids' => 'required|array|min:1']);
+
+        $duplicados = 0;
+        foreach ($request->input('ids') as $id) {
+            DB::select('CALL SP_FF_MOVIMIENTO_DUPLICAR(?,?)', [$id, auth()->id()]);
+            $duplicados++;
+        }
+
+        return response()->json(['ok' => true, 'duplicados' => $duplicados]);
+    }
+
+    public function eliminarMasivo(Request $request)
+    {
+        $request->validate(['ids' => 'required|array|min:1']);
+
+        foreach ($request->input('ids') as $id) {
+            DB::statement('CALL SP_FF_MOVIMIENTO_ELIMINAR(?)', [$id]);
+        }
+
+        return response()->json(['ok' => true, 'eliminados' => count($request->input('ids'))]);
+    }
 }

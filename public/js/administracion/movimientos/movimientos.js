@@ -1,7 +1,7 @@
 let tablaMovimientos;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "61vh";
+    return window.innerWidth < 768 ? "28vh" : "56vh";
 }
 
 $("#btnLimpiarFiltros").on("click", function () {
@@ -65,11 +65,20 @@ $(document).ready(function () {
                 data: "id",
                 orderable: false,
                 className: "text-center",
-                visible: false,
-                render: (id) =>
-                    '<input type="checkbox" class="chk-movimiento" data-id="' +
-                    id +
-                    '">',
+                render: function (id, type, row) {
+                    const checked = seleccionadosMovimientos.hasOwnProperty(id)
+                        ? "checked"
+                        : "";
+                    return (
+                        '<input type="checkbox" class="chk-movimiento" data-id="' +
+                        id +
+                        '" data-importe="' +
+                        row.importe +
+                        '" ' +
+                        checked +
+                        ">"
+                    );
+                },
             },
             {
                 data: "fecha",
@@ -283,6 +292,159 @@ $(document).on("click", ".btn-eliminar-movimiento", function () {
                 MOVIMIENTOS_ROUTES.eliminar.replace(":id", id),
                 {},
                 function () {
+                    tablaMovimientos.ajax.reload(null, false);
+                },
+            );
+        }
+    });
+});
+
+// =====================================================================
+// ACCIONES MASIVAS - Movimientos
+// Como la tabla es server-side (paginada), se guarda id+importe de cada
+// fila tildada en un objeto que persiste aunque cambies de pagina, para
+// que el contador y la suma sean correctos sin importar que pagina mires.
+// =====================================================================
+let seleccionadosMovimientos = {}; // { id: importe }
+
+function idsSeleccionadosMovimientos() {
+    return Object.keys(seleccionadosMovimientos).map(Number);
+}
+
+function actualizarResumenSeleccionMovimientos() {
+    const ids = idsSeleccionadosMovimientos();
+    const suma = Object.values(seleccionadosMovimientos).reduce(
+        (a, b) => a + b,
+        0,
+    );
+    $("#labelSeleccionadosMovimientos").text(
+        ids.length +
+            " SELECCIONADOS" +
+            (ids.length ? " · " + fmtPesos(suma) : ""),
+    );
+}
+
+function limpiarSeleccionMovimientos() {
+    seleccionadosMovimientos = {};
+    $("#checkSeleccionarTodo").prop("checked", false);
+    actualizarResumenSeleccionMovimientos();
+}
+
+$(document).on("change", ".chk-movimiento", function () {
+    const id = $(this).data("id");
+    const importe = Number($(this).data("importe"));
+
+    if ($(this).is(":checked")) {
+        seleccionadosMovimientos[id] = importe;
+    } else {
+        delete seleccionadosMovimientos[id];
+    }
+    actualizarResumenSeleccionMovimientos();
+});
+
+// "Seleccionar todos" aplica solo a la pagina actualmente visible
+// (con server-side no hay forma de tildar filas que no estan cargadas)
+$(document).on("change", "#checkSeleccionarTodo", function () {
+    const checked = $(this).is(":checked");
+    $(".chk-movimiento").each(function () {
+        const id = $(this).data("id");
+        const importe = Number($(this).data("importe"));
+        $(this).prop("checked", checked);
+        if (checked) {
+            seleccionadosMovimientos[id] = importe;
+        } else {
+            delete seleccionadosMovimientos[id];
+        }
+    });
+    actualizarResumenSeleccionMovimientos();
+});
+
+$(document).on("click", "#btnMarcarCumplido", function () {
+    const ids = idsSeleccionadosMovimientos();
+    if (!ids.length) {
+        alert("Seleccioná al menos un movimiento.");
+        return;
+    }
+
+    $.post(
+        MOVIMIENTOS_ROUTES.estadoMasivo,
+        { ids: ids, ejecucion: "CUMPLIDO" },
+        function () {
+            limpiarSeleccionMovimientos();
+            tablaMovimientos.ajax.reload(null, false);
+        },
+    );
+});
+
+$(document).on("click", "#btnVolverPresupuesto", function () {
+    const ids = idsSeleccionadosMovimientos();
+    if (!ids.length) {
+        alert("Seleccioná al menos un movimiento.");
+        return;
+    }
+
+    $.post(
+        MOVIMIENTOS_ROUTES.estadoMasivo,
+        { ids: ids, ejecucion: "PRESUPUESTO" },
+        function () {
+            limpiarSeleccionMovimientos();
+            tablaMovimientos.ajax.reload(null, false);
+        },
+    );
+});
+
+$(document).on("click", "#btnDuplicar", function () {
+    const ids = idsSeleccionadosMovimientos();
+    if (!ids.length) {
+        alert("Seleccioná al menos un movimiento.");
+        return;
+    }
+
+    $.post(MOVIMIENTOS_ROUTES.duplicarMasivo, { ids: ids }, function (data) {
+        limpiarSeleccionMovimientos();
+        tablaMovimientos.ajax.reload(null, false);
+        swal.fire({
+            title: 'Operación exitosa!',
+            text: data.duplicados + " movimiento(s) duplicado(s).",
+            icon: 'success',
+            timer: 1200,
+            showConfirmButton: false
+        })
+    });
+});
+
+$(document).on("click", "#btnEliminar", function () {
+    const ids = idsSeleccionadosMovimientos();
+    if (!ids.length) {
+        return;
+        swal.fire({
+            title: 'Atención',
+            text: "Seleccioná al menos un movimiento.",
+            icon: 'warning',
+            timer: 1200,
+            showConfirmButton: false
+        })
+    }
+
+    Swal.fire({
+        title: "¿Eliminar " + ids.length + " movimiento(s)?",
+        text: "Se eliminaran los siguientes registros.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: "btn btn-danger me-2",
+            cancelButton: "btn btn-secondary",
+        },
+    }).then(function (result) {
+        if (result.isConfirmed) {
+            $.post(
+                MOVIMIENTOS_ROUTES.eliminarMasivo,
+                { ids: ids },
+                function () {
+                    limpiarSeleccionMovimientos();
                     tablaMovimientos.ajax.reload(null, false);
                 },
             );

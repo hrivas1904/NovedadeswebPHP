@@ -201,17 +201,17 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Requiere Autorización Gerente</label>
+                        <label class="form-label fw-bold">Requiere Autorización Gerencia</label>
                         <input class="form-control" id="reqAutGerente" readonly>
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Estado Autorización Gerente</label>
+                        <label class="form-label fw-bold">Estado Autorización Gerencia</label>
                         <input class="form-control" id="estadoAutGerente" readonly>
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Autorizado/Rechazado/Derivado por</label>
+                        <label class="form-label fw-bold">Autorizado / Rechazado / Derivado por</label>
                         <input class="form-control" id="auditorPedido" readonly>
                     </div>
 

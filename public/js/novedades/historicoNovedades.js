@@ -116,7 +116,7 @@ $(document).ready(function () {
                         return data;
                     },
                 },
-                { data: "DESCRIPCION", width: "auto", className: "text-wrap" },                
+                { data: "DESCRIPCION", width: "auto", className: "text-wrap", visible:false },                
                 { data: null,
                     orderable: false,
                     className: "text-center",

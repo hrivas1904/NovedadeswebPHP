@@ -60,6 +60,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/movimientosView', [MovimientosController::class, 'movimientosView'])->name('movimientosView');
     Route::get('/movimientos/data', [MovimientosController::class, 'movimientosData'])->name('movimientosData');
     Route::post('/movimientos/manual', [MovimientosController::class, 'movimientosGuardarManual'])->name('movimientosGuardarManual');
+
+    Route::post('/movimientos/masivo/estado', [MovimientosController::class, 'actualizarEstadoMasivo'])->name('movimientos.estadoMasivo');
+    Route::post('/movimientos/masivo/duplicar', [MovimientosController::class, 'duplicarMasivo'])->name('movimientos.duplicarMasivo');
+    Route::post('/movimientos/masivo/eliminar', [MovimientosController::class, 'eliminarMasivo'])->name('movimientos.eliminarMasivo');
+
     Route::post('/movimientos/{id}/estado', [MovimientosController::class, 'actualizarEstado'])->name('movimientos.estado');
     Route::post('/movimientos/{id}/fecha', [MovimientosController::class, 'actualizarFecha'])->name('movimientos.fecha');
     Route::post('/movimientos/{id}/duplicar', [MovimientosController::class, 'duplicar'])->name('movimientos.duplicar');
