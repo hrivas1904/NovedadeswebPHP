@@ -359,12 +359,22 @@ function renderPreviewExtracto() {
     });
 
     let html = '';
+    function optsSubconcepto(concepto, actual) {
+        const lista = SUBCONCEPTOS_POR_CONCEPTO[concepto] || [];
+        let out = '';
+        lista.forEach(function (s) {
+            out += '<option value="' + s + '"' + (s === actual ? ' selected' : '') + '>' + s + '</option>';
+        });
+        return out;
+    }
+
     filasExtracto.forEach(function (r, i) {
         let optsFila = opts.replace('value="' + r.concepto + '"', 'value="' + r.concepto + '" selected');
         html += '<tr>' +
             '<td>' + r.fecha + '</td>' +
+            '<td>' + (r.nro_comprobante || '') + '</td>' +
             '<td><select class="form-select form-select-sm select-concepto-extracto" data-idx="' + i + '">' + optsFila + '</select></td>' +
-            '<td><input type="text" class="form-control form-control-sm input-subconcepto-extracto" data-idx="' + i + '" value="' + (r.subconcepto || '') + '"></td>' +
+            '<td><select class="form-select form-select-sm select-subconcepto-extracto" data-idx="' + i + '">' + optsSubconcepto(r.concepto, r.subconcepto) + '</select></td>' +
             '<td><input type="text" class="form-control form-control-sm input-detalle-extracto" data-idx="' + i + '" value="' + (r.detalle || '').replace(/"/g, '&quot;') + '"></td>' +
             '<td class="text-end fw-bold ' + (r.importe >= 0 ? 'text-success' : 'text-danger') + '">' + fmtPesos(r.importe) + '</td>' +
             '</tr>';
@@ -416,10 +426,22 @@ $(document).on('change', SCOPE + '#inputArchivo', function () {
 });
 
 $(document).on('change', SCOPE + '.select-concepto-extracto', function () {
-    filasExtracto[$(this).data('idx')].concepto = $(this).val();
+    const idx = $(this).data('idx');
+    const nuevoConcepto = $(this).val();
+    filasExtracto[idx].concepto = nuevoConcepto;
+
+    // Al cambiar el concepto, el subconcepto ya no es valido -- se repuebla
+    // el select con la lista del concepto nuevo, sin preseleccionar nada
+    // (fuerza a elegir uno coherente en vez de arrastrar el anterior).
+    const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
+    let opts = '';
+    lista.forEach(function (s) { opts += '<option value="' + s + '">' + s + '</option>'; });
+    const $selectSub = $('.select-subconcepto-extracto[data-idx="' + idx + '"]');
+    $selectSub.html(opts);
+    filasExtracto[idx].subconcepto = lista[0] || '';
 });
 
-$(document).on('input', SCOPE + '.input-subconcepto-extracto', function () {
+$(document).on('change', SCOPE + '.select-subconcepto-extracto', function () {
     filasExtracto[$(this).data('idx')].subconcepto = $(this).val();
 });
 

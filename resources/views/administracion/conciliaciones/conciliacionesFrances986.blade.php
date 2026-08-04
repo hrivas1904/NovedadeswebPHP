@@ -38,7 +38,7 @@
                 </div>
                 <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
                     <table class="table table-sm">
-                        <thead><tr><th>Fecha</th><th>Concepto</th><th>Sub-concepto</th><th>Detalle</th><th class="text-end">Importe</th></tr></thead>
+                        <thead><tr><th>Fecha</th><th>Nro Comp</th><th>Concepto</th><th>Sub-concepto</th><th>Detalle</th><th class="text-end">Importe</th></tr></thead>
                         <tbody id="previewExtractoBody"></tbody>
                     </table>
                 </div>

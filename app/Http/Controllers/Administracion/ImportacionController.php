@@ -31,6 +31,9 @@ class ImportacionController extends Controller
         return view('administracion.importacion.importacionTsv');
     }
 
+    // -------------------------------------------------------------
+    // BANCOS - Pegado directo del homebanking
+    // -------------------------------------------------------------
     public function previewBancos(Request $request)
     {
         $request->validate([
@@ -108,6 +111,13 @@ class ImportacionController extends Controller
             ]);
             $insertados++;
 
+            if (!empty($resultado[0]->id) && !empty($r['nro_comprobante'])) {
+                DB::statement('UPDATE ff_movimientos SET nro_comprobante = ? WHERE id = ?', [
+                    $r['nro_comprobante'],
+                    $resultado[0]->id,
+                ]);
+            }
+
             if ($origenConciliacion && !empty($resultado[0]->id)) {
                 DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
             }
@@ -169,6 +179,7 @@ class ImportacionController extends Controller
                 'detalle' => $detalleAjustado,
                 'importe' => $importe,
                 'operacion' => $operacion,
+                'nro_comprobante' => $columna2 !== '' ? $columna2 : null,
                 'sugerido_concepto' => $cat,
                 'sugerido_subconcepto' => $sub,
             ];
@@ -325,6 +336,9 @@ class ImportacionController extends Controller
             $concepto = trim($c[2] ?? '');
             $detalle = trim($c[3] ?? '');
             $impRaw = $banco === 'MACRO' ? trim($c[5] ?? '') : trim($c[4] ?? '');
+            // Solo el formato Excel de MACRO trae columna de numero (Nro) en el indice 4.
+            // Nacion/Frances (Excel) no tienen esta columna en su formato.
+            $nroComprobante = $banco === 'MACRO' ? trim($c[4] ?? '') : '';
 
             $importe = $this->parseImporteAR($impRaw);
             if ($importe == 0) continue;
@@ -368,6 +382,7 @@ class ImportacionController extends Controller
                 'detalle' => $detalleAjustado,
                 'importe' => $importe,
                 'operacion' => $operacion,
+                'nro_comprobante' => $nroComprobante !== '' ? $nroComprobante : null,
                 'sugerido_concepto' => $cat,
                 'sugerido_subconcepto' => $sub,
             ];
@@ -394,25 +409,9 @@ class ImportacionController extends Controller
         return $rows;
     }
 
-    private function parseFecha(string $raw): ?string
-    {
-        $s = preg_replace('/ .*/', '', trim($raw));
-        $p = explode('/', $s);
-        if (count($p) !== 3) return null;
-        return sprintf('%04d-%02d-%02d', $p[2], $p[1], $p[0]);
-    }
-
-    private function parseImporteAR(string $raw): float
-    {
-        $s = str_replace(['$', ' '], '', trim($raw));
-        if ($s === '') return 0.0;
-        $neg = str_starts_with($s, '-');
-        $s = str_replace('-', '', $s);
-        $s = str_replace(['.', ','], ['', '.'], $s);
-        $v = (float) $s;
-        return $neg ? -$v : $v;
-    }
-
+    // -------------------------------------------------------------
+    // CAJA
+    // -------------------------------------------------------------
     public function previewCaja(Request $request)
     {
         $request->validate([
@@ -541,6 +540,9 @@ class ImportacionController extends Controller
         return $rows;
     }
 
+    // -------------------------------------------------------------
+    // TSV
+    // -------------------------------------------------------------
     public function previewTsv(Request $request)
     {
         $request->validate([
@@ -718,19 +720,31 @@ class ImportacionController extends Controller
             $cellIterator->setIterateOnlyExistingCells(false);
 
             foreach ($cellIterator as $cell) {
-                if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {
-                    $valor = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cell->getValue())->format('d/m/Y');
-                } elseif (is_numeric($cell->getValue())) {
-                    $valor = number_format((float) $cell->getValue(), 2, ',', '.');
-                } else {
-                    $valor = $cell->getFormattedValue();
-                }
-                $celdas[] = trim((string) $valor);
+                $celdas[] = trim((string) $cell->getFormattedValue());
             }
 
             $lineas[] = implode("\t", $celdas);
         }
 
         return implode("\n", $lineas);
+    }
+
+    private function parseFecha(string $raw): ?string
+    {
+        $s = preg_replace('/ .*/', '', trim($raw));
+        $p = explode('/', $s);
+        if (count($p) !== 3) return null;
+        return sprintf('%04d-%02d-%02d', $p[2], $p[1], $p[0]);
+    }
+
+    private function parseImporteAR(string $raw): float
+    {
+        $s = str_replace(['$', ' '], '', trim($raw));
+        if ($s === '') return 0.0;
+        $neg = str_starts_with($s, '-');
+        $s = str_replace('-', '', $s);
+        $s = str_replace(['.', ','], ['', '.'], $s);
+        $v = (float) $s;
+        return $neg ? -$v : $v;
     }
 }

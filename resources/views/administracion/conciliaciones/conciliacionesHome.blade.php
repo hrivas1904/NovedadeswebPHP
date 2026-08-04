@@ -56,6 +56,7 @@
         pagosConfirmar: @json(route('administracion.conciliacion.pagos.confirmar')),
     };
     const CONCEPTOS_CATALOGO = @json($conceptos);
+    const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
 </script>
 
 <script src="/js/administracion/conciliaciones/conciliacionesHome.js"></script>

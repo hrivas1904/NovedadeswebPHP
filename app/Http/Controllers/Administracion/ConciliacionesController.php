@@ -13,7 +13,8 @@ class ConciliacionesController extends Controller
     public function conciliacionesHomeView()
     {
         return view('administracion.conciliaciones.conciliacionesHome', [
-            'conceptos' => $this->obtenerConceptos()
+            'conceptos' => $this->obtenerConceptos(),
+            'subconceptosPorConcepto' => $this->obtenerSubconceptosPorConcepto(),
         ]);
     }
 
@@ -21,6 +22,7 @@ class ConciliacionesController extends Controller
     {
         return view('administracion.conciliaciones.conciliacionesMacro', [
             'conceptos' => $this->obtenerConceptos(),
+            'subconceptosPorConcepto' => $this->obtenerSubconceptosPorConcepto(),
         ]);
     }
 
@@ -28,6 +30,7 @@ class ConciliacionesController extends Controller
     {
         return view('administracion.conciliaciones.conciliacionesNacion', [
             'conceptos' => $this->obtenerConceptos(),
+            'subconceptosPorConcepto' => $this->obtenerSubconceptosPorConcepto(),
         ]);
     }
 
@@ -35,6 +38,7 @@ class ConciliacionesController extends Controller
     {
         return view('administracion.conciliaciones.conciliacionesFrances986', [
             'conceptos' => $this->obtenerConceptos(),
+            'subconceptosPorConcepto' => $this->obtenerSubconceptosPorConcepto(),
         ]);
     }
 
@@ -42,6 +46,7 @@ class ConciliacionesController extends Controller
     {
         return view('administracion.conciliaciones.conciliacionesFrances1001', [
             'conceptos' => $this->obtenerConceptos(),
+            'subconceptosPorConcepto' => $this->obtenerSubconceptosPorConcepto(),
         ]);
     }
 
@@ -49,6 +54,17 @@ class ConciliacionesController extends Controller
     {
         return collect(DB::select('SELECT nombre FROM ff_conceptos WHERE activo = 1 ORDER BY orden'))
             ->pluck('nombre');
+    }
+
+    private function obtenerSubconceptosPorConcepto()
+    {
+        $rows = DB::select('CALL SP_FF_SUBCONCEPTOS_LISTAR_TODOS()');
+
+        $out = [];
+        foreach ($rows as $r) {
+            $out[$r->concepto][] = $r->subconcepto;
+        }
+        return $out;
     }
 
     public function data(Request $request)
