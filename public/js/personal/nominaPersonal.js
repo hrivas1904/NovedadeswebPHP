@@ -432,7 +432,7 @@ $(document).ready(function () {
                 {
                     data: "ESTADO",
                     width: "3%",
-                    orderable: false,
+                    orderable: true,
                     className: "text-center",
                     render: function (data) {
                         let clase =
