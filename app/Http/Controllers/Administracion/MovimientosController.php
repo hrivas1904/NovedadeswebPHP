@@ -229,4 +229,18 @@ class MovimientosController extends Controller
 
         return response()->json(['ok' => true, 'actualizados' => count($request->input('ids'))]);
     }
+
+    public function actualizarOperacion(Request $request, $id)
+    {
+        $request->validate([
+            'operacion' => 'required|in:INGRESOS,TRANSFERENCIAS,CHEQUES,EFECTIVO',
+        ]);
+
+        DB::select('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_OPERACION(?, ?)', [
+            $id,
+            $request->input('operacion'),
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
 }

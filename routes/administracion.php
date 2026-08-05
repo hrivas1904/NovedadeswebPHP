@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/movimientos/{id}/fecha', [MovimientosController::class, 'actualizarFecha'])->name('movimientos.fecha');
     Route::post('/movimientos/{id}/duplicar', [MovimientosController::class, 'duplicar'])->name('movimientos.duplicar');
     Route::post('/movimientos/{id}/eliminar', [MovimientosController::class, 'eliminar'])->name('movimientos.eliminar');
+    Route::post('/movimientos/{id}/operacion', [MovimientosController::class, 'actualizarOperacion'])->name('movimientos.operacion');
 
     Route::post('/movimientos/{id}/cuenta', [MovimientosController::class, 'actualizarCuenta'])->name('movimientos.cuenta');
     Route::post('/movimientos/{id}/concepto', [MovimientosController::class, 'actualizarConcepto'])->name('movimientos.concepto');

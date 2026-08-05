@@ -113,7 +113,17 @@ $(document).ready(function () {
                     return valor;
                 },
             },
-            { data: "operacion" },
+            {
+                data: "operacion",
+                render: function (operacion, type, row) {
+                    if (type !== "display") return operacion;
+                    let opts = "";
+                    OPERACIONES_CATALOGO.forEach(function (o) {
+                        opts += '<option value="' + o + '"' + (o === operacion ? " selected" : "") + ">" + o + "</option>";
+                    });
+                    return '<select class="form-select form-select-sm select-operacion-movimiento" data-id="' + row.id + '">' + opts + "</select>";
+                },
+            },
             {
                 data: "cuenta",
                 render: function (cuenta, type, row) {
@@ -127,6 +137,7 @@ $(document).ready(function () {
             },
             {
                 data: "concepto",
+                width:'15%',
                 render: function (concepto, type, row) {
                     if (type !== "display") return concepto;
                     let opts = "";
@@ -192,6 +203,7 @@ $(document).ready(function () {
                 },
             },
         ],
+        autoWidth:false,
         language: { url: "/js/es-ES.json" },
         order: [[1, "desc"]],
         pageLength: 25,
@@ -265,30 +277,41 @@ $("#btnGuardarManual").on("click", function () {
         });
 });
 
+const debounceFechaPorFila = {};
+
 $(document).on("change", ".input-fecha-movimiento", function () {
     const id = $(this).data("id");
     const fecha = $(this).val();
 
     if (!fecha) return;
 
-    $.post(MOVIMIENTOS_ROUTES.fecha.replace(":id", id), { fecha: fecha })
-        .done(function () {
-            Swal.fire({
-                icon: "success",
-                title: "¡Operación exitosa!",
-                text: "Fecha reprogramada correctamente.",
-                timer: 2000,
-                timerProgressBar: true,
-                showConfirmButton: false,
+    clearTimeout(debounceFechaPorFila[id]);
+    debounceFechaPorFila[id] = setTimeout(function () {
+        $.post(MOVIMIENTOS_ROUTES.fecha.replace(":id", id), { fecha: fecha })
+            .done(function () {
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Operación exitosa!",
+                    text: "Fecha reprogramada correctamente.",
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+            })
+            .fail(function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "No se pudo actualizar la fecha.",
+                });
             });
-        })
-        .fail(function () {
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "No se pudo actualizar la fecha.",
-            });
-        });
+    }, 600);
+});
+
+$(document).on("change", ".select-operacion-movimiento", function () {
+    const id = $(this).data("id");
+    $.post(MOVIMIENTOS_ROUTES.operacion.replace(":id", id), { operacion: $(this).val() });
+    tablaMovimientos.ajax.reload();
 });
 
 $(document).on("click", ".btn-cambiar-estado", function () {
@@ -342,6 +365,7 @@ $(document).on("click", ".btn-eliminar-movimiento", function () {
 $(document).on("change", ".select-cuenta-movimiento", function () {
     const id = $(this).data("id");
     $.post(MOVIMIENTOS_ROUTES.cuenta.replace(":id", id), { cuenta: $(this).val() });
+    tablaMovimientos.ajax.reload();
 });
 
 $(document).on("change", ".select-concepto-movimiento", function () {
@@ -360,17 +384,20 @@ $(document).on("change", ".select-concepto-movimiento", function () {
 
     if (lista.length) {
         $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "subconcepto", valor: lista[0] });
+        tablaMovimientos.ajax.reload();
     }
 });
 
 $(document).on("change", ".select-subconcepto-movimiento", function () {
     const id = $(this).data("id");
     $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "subconcepto", valor: $(this).val() });
+    tablaMovimientos.ajax.reload();
 });
 
 $(document).on("blur", ".input-detalle-movimiento", function () {
     const id = $(this).data("id");
     $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "detalle", valor: $(this).val() });
+    tablaMovimientos.ajax.reload();
 });
 
 $(document).on("blur", ".input-importe-movimiento", function () {
@@ -383,6 +410,7 @@ $(document).on("blur", ".input-importe-movimiento", function () {
 
     $.post(MOVIMIENTOS_ROUTES.importe.replace(":id", id), { importe: importe }, function () {
         $input.data("original", Number(importe).toFixed(2));
+        tablaMovimientos.ajax.reload();
     });
 });
 // Como la tabla es server-side (paginada), se guarda id+importe de cada

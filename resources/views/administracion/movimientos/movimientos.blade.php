@@ -193,12 +193,14 @@
         concepto: @json(route('administracion.movimientos.concepto', ':id')),
         texto: @json(route('administracion.movimientos.texto', ':id')),
         importe: @json(route('administracion.movimientos.importe', ':id')),
-        fechaMasiva: @json(route('administracion.movimientos.fechaMasiva')),        
+        fechaMasiva: @json(route('administracion.movimientos.fechaMasiva')),  
+        operacion: "{{ route('administracion.movimientos.operacion', ':id') }}",      
     };
 
     const CUENTAS_CATALOGO = @json($cuentas->pluck('nombre'));
     const CONCEPTOS_CATALOGO = @json($conceptos);
     const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
+    const OPERACIONES_CATALOGO = ['INGRESOS', 'TRANSFERENCIAS', 'CHEQUES', 'EFECTIVO'];
 </script>
 
 <script src="{{ asset('js/administracion/movimientos/movimientos.js') }}"></script>
