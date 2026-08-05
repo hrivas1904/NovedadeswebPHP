@@ -452,7 +452,7 @@ $(document).on('input', SCOPE + '.input-detalle-extracto', function () {
 $(document).on('click', SCOPE + '#btnConfirmarExtracto', function () {
     if (!filasExtracto.length) return;
 
-    $.post(CONCILIACION_ROUTES.extractoConfirmar, { rows: filasExtracto, origenConciliacion: true }, function (data) {
+    $.post(CONCILIACION_ROUTES.extractoConfirmar, { rows: filasExtracto, origenConciliacion: 1 }, function (data) {
         $('#msgExtracto').text('✓ ' + data.insertados + ' movimientos importados.').css('color', 'green');
         $('#textAreaArchivo').val('');
         filasExtracto = [];

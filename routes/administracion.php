@@ -120,4 +120,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/conciliacion/movimiento/{id}/comprobante', [ConciliacionesController::class, 'actualizarComprobante'])->name('conciliacion.comprobante');
     Route::post('/conciliacion/pagos/preview', [ConciliacionesController::class, 'previewPagos'])->name('conciliacion.pagos.preview');
     Route::post('/conciliacion/pagos/confirmar', [ConciliacionesController::class, 'confirmarPagos'])->name('conciliacion.pagos.confirmar');
+
+    Route::post('/conciliacion/extracto/preview', [ImportacionController::class, 'previewBancos'])->name('conciliacion.extracto.preview');
+    Route::post('/conciliacion/extracto/confirmar', [ImportacionController::class, 'confirmarBancos'])->name('conciliacion.extracto.confirmar');
 });

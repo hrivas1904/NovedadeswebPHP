@@ -59,24 +59,24 @@
 <div class="d-flex mb-2 align-items-center gap-3">
     <button type="button" class="btn btn-primary" id="btnMarcarCumplido" title="Marcar cumplido">
         <i class="fs-5 fa-regular fa-square-check"></i>
-    </button>      
+    </button>
 
     <button type="button" class="btn btn-secondary" id="btnDuplicar" title="Duplicar">
         <i class="fs-5 fa-solid fa-copy"></i>
-    </button>    
+    </button>
 
     <button type="button" class="btn btn-danger" id="btnEliminar" title="Eliminar">
         <i class="fs-5 fa-regular fa-trash-can"></i>
-    </button>       
+    </button>
 
     <button type="button" class="btn btn-secondary " id="btnVolverPresupuesto" title="Volver a presupuesto">
         <i class="fs-5 fa-solid fa-rotate-left"></i>
     </button>
-    
+
     <input class="form-control w-auto" type="date" id="inputCambioFechaMasiva">
     <button type="button" class="btn btn-primary" id="btnCambiarFechaMasiva">Cambiar fecha</button>
 
-    <label class="fw-bold fs-6" id="labelSeleccionadosMovimientos">0 SELECCIONADOS</label>       
+    <label class="fw-bold fs-6" id="labelSeleccionadosMovimientos">0 SELECCIONADOS</label>
 </div>
 
 <div class="card p-1">
@@ -193,11 +193,13 @@
         concepto: @json(route('administracion.movimientos.concepto', ':id')),
         texto: @json(route('administracion.movimientos.texto', ':id')),
         importe: @json(route('administracion.movimientos.importe', ':id')),
-        fechaMasiva: @json(route('administracion.movimientos.fechaMasiva')),  
-        operacion: "{{ route('administracion.movimientos.operacion', ':id') }}",      
+        fechaMasiva: @json(route('administracion.movimientos.fechaMasiva')),
+        operacion: "{{ route('administracion.movimientos.operacion', ':id') }}",
+        extractoPreview: @json(route('administracion.conciliacion.extracto.preview')),
+        extractoConfirmar: @json(route('administracion.conciliacion.extracto.confirmar')),
     };
 
-    const CUENTAS_CATALOGO = @json($cuentas->pluck('nombre'));
+    const CUENTAS_CATALOGO = @json($cuentas - > pluck('nombre'));
     const CONCEPTOS_CATALOGO = @json($conceptos);
     const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
     const OPERACIONES_CATALOGO = ['INGRESOS', 'TRANSFERENCIAS', 'CHEQUES', 'EFECTIVO'];
