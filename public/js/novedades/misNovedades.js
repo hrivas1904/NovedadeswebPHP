@@ -95,7 +95,6 @@ $(document).ready(function () {
                     d.idNovedad = $("#idNovedad").val();
                     d.desde = $("#filtroDesde").val();
                     d.hasta = $("#filtroHasta").val();
-                    d.liquidada = $("#liquidada").val();
                 },
             },
             order: [[0, "desc"]],
@@ -154,7 +153,7 @@ $(document).ready(function () {
                                     <button type="button" 
                                         class="btn btn-VerDetalleNovedad" 
                                         data-id="${data}" 
-                                        title="Detalle de novedad">
+                                        title="Detalle de novedad"
                                         style='color: var(--color-default)'>
                                         <i class="fs-5 fa-regular fa-trash-can"></i>
                                     </button>
@@ -164,16 +163,17 @@ $(document).ready(function () {
                             return `
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <button type="button" 
-                                        class="btn btn-secondary btn-VerDetalleNovedad" 
+                                        class="btn btn-VerDetalleNovedad" 
                                         data-id="${data}" 
-                                        title="Detalle de novedad">
-                                        <i class="fa-solid fa-eye"></i>
+                                        title="Detalle de novedad"
+                                        style='color: var(--color-default)'>
+                                        <i class="fs-5 fa-solid fa-eye"></i>
                                     </button>
 
                                     <button type="button" 
                                         class="btn btn-AnularNovedad" 
                                         data-id="${data}" 
-                                        title="Anular novedad">
+                                        title="Anular novedad"
                                         style='color: var(--color-accent-red)'>
                                         <i class="fs-5 fa-regular fa-trash-can"></i>
                                     </button>

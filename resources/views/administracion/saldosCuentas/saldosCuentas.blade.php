@@ -39,7 +39,7 @@
                 <tr>
                     <th>Cuenta</th>
                     <th>Saldo mensual</th>                    
-                    <th>-</th>                    
+                    <th>Movimientos ejecutados</th>                    
                     <th>Total USD</th>                    
                 </tr>
             </thead>
@@ -48,7 +48,7 @@
                 <tr>
                     <th>Total USD</th>
                     <th class="text-end" id="totalUsdInicial"></th>
-                    <th></th>
+                    <th class="text-end" id="totalUsdMov"></th>
                     <th class="text-end" id="totalUsdActual"></th>
                 </tr>
             </tfoot>

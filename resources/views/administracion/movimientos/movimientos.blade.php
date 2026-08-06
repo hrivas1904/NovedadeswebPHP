@@ -145,17 +145,21 @@
                             <option value="6 SEÑAS">6 SEÑAS</option>
                         </select>
                     </div>
-                    <div class="col-12">
+                    <div class="col-6">
                         <label class="form-label small">Concepto</label>
                         <select class="form-select" id="manualConcepto"></select>
                     </div>
                     <div class="col-6">
                         <label class="form-label small">Sub-concepto</label>
-                        <input type="text" class="form-control" id="manualSubconcepto">
+                        <select type="text" class="form-control" id="manualSubconcepto"></select>
                     </div>
                     <div class="col-6">
                         <label class="form-label small">Importe</label>
                         <input type="text" class="form-control" id="manualImporte">
+                    </div>
+                    <div class="col-6" id="wrapperContrapartidaManual">
+                        <label class="form-label">Cuenta contrapartida (transferencia)</label>
+                        <select class="form-control" id="manualCuentaContrapartida"></select>
                     </div>
                     <div class="col-12">
                         <label class="form-label small">Detalle</label>
@@ -199,7 +203,7 @@
         extractoConfirmar: @json(route('administracion.conciliacion.extracto.confirmar')),
     };
 
-    const CUENTAS_CATALOGO = @json($cuentas - > pluck('nombre'));
+    const CUENTAS_CATALOGO = @json($cuentas->pluck('nombre'));
     const CONCEPTOS_CATALOGO = @json($conceptos);
     const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
     const OPERACIONES_CATALOGO = ['INGRESOS', 'TRANSFERENCIAS', 'CHEQUES', 'EFECTIVO'];

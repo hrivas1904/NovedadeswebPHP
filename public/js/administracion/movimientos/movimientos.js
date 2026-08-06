@@ -119,9 +119,22 @@ $(document).ready(function () {
                     if (type !== "display") return operacion;
                     let opts = "";
                     OPERACIONES_CATALOGO.forEach(function (o) {
-                        opts += '<option value="' + o + '"' + (o === operacion ? " selected" : "") + ">" + o + "</option>";
+                        opts +=
+                            '<option value="' +
+                            o +
+                            '"' +
+                            (o === operacion ? " selected" : "") +
+                            ">" +
+                            o +
+                            "</option>";
                     });
-                    return '<select class="form-select form-select-sm select-operacion-movimiento" data-id="' + row.id + '">' + opts + "</select>";
+                    return (
+                        '<select class="form-select form-select-sm select-operacion-movimiento" data-id="' +
+                        row.id +
+                        '">' +
+                        opts +
+                        "</select>"
+                    );
                 },
             },
             {
@@ -130,21 +143,47 @@ $(document).ready(function () {
                     if (type !== "display") return cuenta;
                     let opts = "";
                     CUENTAS_CATALOGO.forEach(function (c) {
-                        opts += '<option value="' + c + '"' + (c === cuenta ? " selected" : "") + ">" + c + "</option>";
+                        opts +=
+                            '<option value="' +
+                            c +
+                            '"' +
+                            (c === cuenta ? " selected" : "") +
+                            ">" +
+                            c +
+                            "</option>";
                     });
-                    return '<select class="form-select form-select-sm select-cuenta-movimiento" data-id="' + row.id + '">' + opts + "</select>";
+                    return (
+                        '<select class="form-select form-select-sm select-cuenta-movimiento" data-id="' +
+                        row.id +
+                        '">' +
+                        opts +
+                        "</select>"
+                    );
                 },
             },
             {
                 data: "concepto",
-                width:'15%',
+                width: "15%",
                 render: function (concepto, type, row) {
                     if (type !== "display") return concepto;
                     let opts = "";
                     CONCEPTOS_CATALOGO.forEach(function (c) {
-                        opts += '<option value="' + c + '"' + (c === concepto ? " selected" : "") + ">" + c + "</option>";
+                        opts +=
+                            '<option value="' +
+                            c +
+                            '"' +
+                            (c === concepto ? " selected" : "") +
+                            ">" +
+                            c +
+                            "</option>";
                     });
-                    return '<select class="form-select form-select-sm select-concepto-movimiento" data-id="' + row.id + '">' + opts + "</select>";
+                    return (
+                        '<select class="form-select form-select-sm select-concepto-movimiento" data-id="' +
+                        row.id +
+                        '">' +
+                        opts +
+                        "</select>"
+                    );
                 },
             },
             {
@@ -154,16 +193,35 @@ $(document).ready(function () {
                     const lista = SUBCONCEPTOS_POR_CONCEPTO[row.concepto] || [];
                     let opts = "";
                     lista.forEach(function (s) {
-                        opts += '<option value="' + s + '"' + (s === subconcepto ? " selected" : "") + ">" + s + "</option>";
+                        opts +=
+                            '<option value="' +
+                            s +
+                            '"' +
+                            (s === subconcepto ? " selected" : "") +
+                            ">" +
+                            s +
+                            "</option>";
                     });
-                    return '<select class="form-select form-select-sm select-subconcepto-movimiento" data-id="' + row.id + '">' + opts + "</select>";
+                    return (
+                        '<select class="form-select form-select-sm select-subconcepto-movimiento" data-id="' +
+                        row.id +
+                        '">' +
+                        opts +
+                        "</select>"
+                    );
                 },
             },
             {
                 data: "detalle",
                 render: function (detalle, type, row) {
                     if (type !== "display") return detalle;
-                    return '<input type="text" class="form-control form-control-sm input-detalle-movimiento" data-id="' + row.id + '" value="' + (detalle || "").replace(/"/g, "&quot;") + '">';
+                    return (
+                        '<input type="text" class="form-control form-control-sm input-detalle-movimiento" data-id="' +
+                        row.id +
+                        '" value="' +
+                        (detalle || "").replace(/"/g, "&quot;") +
+                        '">'
+                    );
                 },
             },
             {
@@ -171,7 +229,15 @@ $(document).ready(function () {
                 className: "text-end",
                 render: function (importe, type, row) {
                     if (type !== "display") return importe;
-                    return '<input type="text" class="form-control form-control-sm text-end input-importe-movimiento" data-id="' + row.id + '" value="' + Number(importe).toFixed(2) + '" data-original="' + Number(importe).toFixed(2) + '">';
+                    return (
+                        '<input type="text" class="form-control form-control-sm text-end input-importe-movimiento" data-id="' +
+                        row.id +
+                        '" value="' +
+                        Number(importe).toFixed(2) +
+                        '" data-original="' +
+                        Number(importe).toFixed(2) +
+                        '">'
+                    );
                 },
             },
             {
@@ -203,7 +269,7 @@ $(document).ready(function () {
                 },
             },
         ],
-        autoWidth:false,
+        autoWidth: false,
         language: { url: "/js/es-ES.json" },
         order: [[1, "desc"]],
         pageLength: 25,
@@ -231,7 +297,21 @@ function poblarConceptosManual() {
         opts += '<option value="' + c + '">' + c + "</option>";
     });
     $("#manualConcepto").html(opts);
+    poblarSubconceptosManual(CONCEPTOS_CATALOGO[0]);
 }
+
+function poblarSubconceptosManual(concepto) {
+    const lista = SUBCONCEPTOS_POR_CONCEPTO[concepto] || [];
+    let opts = "";
+    lista.forEach(function (s) {
+        opts += '<option value="' + s + '">' + s + "</option>";
+    });
+    $("#manualSubconcepto").html(opts);
+}
+
+$(document).on("change", "#manualConcepto", function () {
+    poblarSubconceptosManual($(this).val());
+});
 
 function limpiarFormManual() {
     $("#manualFecha").val(new Date().toISOString().slice(0, 10));
@@ -260,6 +340,7 @@ $("#btnGuardarManual").on("click", function () {
         seccion: $("#manualSeccion").val(),
         concepto: $("#manualConcepto").val(),
         subconcepto: $("#manualSubconcepto").val(),
+        cuentaContrapartida: $("#manualCuentaContrapartida").val(),
         detalle: detalle,
         importe: importeRaw.replace(/\./g, "").replace(",", "."),
     })
@@ -310,7 +391,9 @@ $(document).on("change", ".input-fecha-movimiento", function () {
 
 $(document).on("change", ".select-operacion-movimiento", function () {
     const id = $(this).data("id");
-    $.post(MOVIMIENTOS_ROUTES.operacion.replace(":id", id), { operacion: $(this).val() });
+    $.post(MOVIMIENTOS_ROUTES.operacion.replace(":id", id), {
+        operacion: $(this).val(),
+    });
     tablaMovimientos.ajax.reload();
 });
 
@@ -364,7 +447,9 @@ $(document).on("click", ".btn-eliminar-movimiento", function () {
 
 $(document).on("change", ".select-cuenta-movimiento", function () {
     const id = $(this).data("id");
-    $.post(MOVIMIENTOS_ROUTES.cuenta.replace(":id", id), { cuenta: $(this).val() });
+    $.post(MOVIMIENTOS_ROUTES.cuenta.replace(":id", id), {
+        cuenta: $(this).val(),
+    });
     tablaMovimientos.ajax.reload();
 });
 
@@ -372,31 +457,46 @@ $(document).on("change", ".select-concepto-movimiento", function () {
     const id = $(this).data("id");
     const nuevoConcepto = $(this).val();
 
-    $.post(MOVIMIENTOS_ROUTES.concepto.replace(":id", id), { concepto: nuevoConcepto });
+    $.post(MOVIMIENTOS_ROUTES.concepto.replace(":id", id), {
+        concepto: nuevoConcepto,
+    });
 
     // El subconcepto ya no es valido para el concepto nuevo -- se repuebla
     // el select de esa misma fila con la lista correcta, sin arrastrar el anterior.
     const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
     let opts = "";
-    lista.forEach(function (s) { opts += '<option value="' + s + '">' + s + "</option>"; });
-    const $selectSub = $('.select-subconcepto-movimiento[data-id="' + id + '"]');
+    lista.forEach(function (s) {
+        opts += '<option value="' + s + '">' + s + "</option>";
+    });
+    const $selectSub = $(
+        '.select-subconcepto-movimiento[data-id="' + id + '"]',
+    );
     $selectSub.html(opts);
 
     if (lista.length) {
-        $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "subconcepto", valor: lista[0] });
+        $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), {
+            campo: "subconcepto",
+            valor: lista[0],
+        });
         tablaMovimientos.ajax.reload();
     }
 });
 
 $(document).on("change", ".select-subconcepto-movimiento", function () {
     const id = $(this).data("id");
-    $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "subconcepto", valor: $(this).val() });
+    $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), {
+        campo: "subconcepto",
+        valor: $(this).val(),
+    });
     tablaMovimientos.ajax.reload();
 });
 
 $(document).on("blur", ".input-detalle-movimiento", function () {
     const id = $(this).data("id");
-    $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), { campo: "detalle", valor: $(this).val() });
+    $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), {
+        campo: "detalle",
+        valor: $(this).val(),
+    });
     tablaMovimientos.ajax.reload();
 });
 
@@ -408,10 +508,14 @@ $(document).on("blur", ".input-importe-movimiento", function () {
     const id = $input.data("id");
     const importe = raw.replace(/\./g, "").replace(",", ".");
 
-    $.post(MOVIMIENTOS_ROUTES.importe.replace(":id", id), { importe: importe }, function () {
-        $input.data("original", Number(importe).toFixed(2));
-        tablaMovimientos.ajax.reload();
-    });
+    $.post(
+        MOVIMIENTOS_ROUTES.importe.replace(":id", id),
+        { importe: importe },
+        function () {
+            $input.data("original", Number(importe).toFixed(2));
+            tablaMovimientos.ajax.reload();
+        },
+    );
 });
 // Como la tabla es server-side (paginada), se guarda id+importe de cada
 // fila tildada en un objeto que persiste aunque cambies de pagina, para
@@ -514,12 +618,12 @@ $(document).on("click", "#btnDuplicar", function () {
         limpiarSeleccionMovimientos();
         tablaMovimientos.ajax.reload(null, false);
         Swal.fire({
-            title: 'Operación exitosa!',
+            title: "Operación exitosa!",
             text: data.duplicados + " movimiento(s) duplicado(s).",
-            icon: 'success',
+            icon: "success",
             timer: 1200,
-            showConfirmButton: false
-        })
+            showConfirmButton: false,
+        });
     });
 });
 
@@ -527,11 +631,11 @@ $(document).on("click", "#btnCambiarFechaMasiva", function () {
     const ids = idsSeleccionadosMovimientos();
     if (!ids.length) {
         Swal.fire({
-            title: 'Atención',
+            title: "Atención",
             text: "Seleccioná al menos un movimiento.",
-            icon: 'warning',
+            icon: "warning",
             timer: 1200,
-            showConfirmButton: false
+            showConfirmButton: false,
         });
         return;
     }
@@ -539,37 +643,41 @@ $(document).on("click", "#btnCambiarFechaMasiva", function () {
     const fecha = $("#inputCambioFechaMasiva").val();
     if (!fecha) {
         Swal.fire({
-            title: 'Atención',
+            title: "Atención",
             text: "Elegí una fecha primero.",
-            icon: 'warning',
+            icon: "warning",
             timer: 1200,
-            showConfirmButton: false
+            showConfirmButton: false,
         });
         return;
     }
 
-    $.post(MOVIMIENTOS_ROUTES.fechaMasiva, { ids: ids, fecha: fecha }, function (data) {
-        limpiarSeleccionMovimientos();
-        tablaMovimientos.ajax.reload(null, false);
-        Swal.fire({
-            title: 'Operación exitosa!',
-            text: data.actualizados + " movimiento(s) reprogramado(s).",
-            icon: 'success',
-            timer: 1200,
-            showConfirmButton: false
-        });
-    });
+    $.post(
+        MOVIMIENTOS_ROUTES.fechaMasiva,
+        { ids: ids, fecha: fecha },
+        function (data) {
+            limpiarSeleccionMovimientos();
+            tablaMovimientos.ajax.reload(null, false);
+            Swal.fire({
+                title: "Operación exitosa!",
+                text: data.actualizados + " movimiento(s) reprogramado(s).",
+                icon: "success",
+                timer: 1200,
+                showConfirmButton: false,
+            });
+        },
+    );
 });
 
 $(document).on("click", "#btnEliminar", function () {
     const ids = idsSeleccionadosMovimientos();
     if (!ids.length) {
         Swal.fire({
-            title: 'Atención',
+            title: "Atención",
             text: "Seleccioná al menos un movimiento.",
-            icon: 'warning',
+            icon: "warning",
             timer: 1200,
-            showConfirmButton: false
+            showConfirmButton: false,
         });
         return;
     }
@@ -599,3 +707,22 @@ $(document).on("click", "#btnEliminar", function () {
         }
     });
 });
+
+function evaluarContrapartidaManual() {
+    const cuenta = $("#manualCuenta").val();
+    const concepto = $("#manualConcepto").val();
+
+    let opts = '<option value="">(sin contrapartida)</option>';
+    CUENTAS_CATALOGO.forEach(function (c) {
+        if (c !== cuenta)
+            opts += '<option value="' + c + '">' + c + "</option>";
+        $("#manualCuentaContrapartida").html(opts);
+        $("#wrapperContrapartidaManual").show();
+    });
+}
+
+$(document).on(
+    "change",
+    "#manualCuenta, #manualConcepto",
+    evaluarContrapartidaManual,
+);

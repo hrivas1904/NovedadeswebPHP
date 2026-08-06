@@ -64,21 +64,22 @@ class MovimientosController extends Controller
     public function movimientosGuardarManual(Request $request)
     {
         $validated = $request->validate([
-            'fecha'       => 'required|date',
-            'ejecucion'   => 'required|in:EJECUTADO,PRESUPUESTO,PENDIENTE,CUMPLIDO',
-            'cuenta'      => 'required|string',
-            'seccion'     => 'required|in:2 INGRESOS,3 EGRESOS,4 TARJETAS D/C,5 TRANSFERENCIAS,6 SEÑAS',
-            'concepto'    => 'required|string',
-            'subconcepto' => 'nullable|string',
-            'detalle'     => 'required|string',
-            'importe'     => 'required|numeric',
+            'fecha'               => 'required|date',
+            'ejecucion'           => 'required|string',
+            'cuenta'              => 'required|string',
+            'seccion'             => 'required|string',
+            'concepto'            => 'required|string',
+            'subconcepto'         => 'nullable|string',
+            'detalle'             => 'required|string',
+            'importe'             => 'required|numeric',
+            'cuentaContrapartida' => 'nullable|string',
         ]);
 
         $operacion = ClasificadorOperacion::resolver(
             $validated['cuenta'],
             $validated['concepto'],
             $validated['seccion'],
-            (float) $validated['importe']
+            $validated['importe']
         );
 
         $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
@@ -94,6 +95,33 @@ class MovimientosController extends Controller
             'MANUAL',
             auth()->id(),
         ]);
+
+        // Contrapartida -- SOLO al dar de alta (esto nunca se llama en una edicion),
+        // y solo si el usuario eligio explicitamente una cuenta del otro lado.
+        if (!empty($validated['cuentaContrapartida'])) {
+            $importeContra = -$validated['importe'];
+            $seccionContra = $importeContra >= 0 ? '2 INGRESOS' : '3 EGRESOS';
+            $operacionContra = ClasificadorOperacion::resolver(
+                $validated['cuentaContrapartida'],
+                $validated['concepto'],
+                $seccionContra,
+                $importeContra
+            );
+
+            DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+                $validated['fecha'],
+                $validated['cuentaContrapartida'],
+                $validated['concepto'],
+                $validated['subconcepto'] ?? null,
+                $validated['detalle'],
+                $importeContra,
+                $validated['ejecucion'],
+                $operacionContra,
+                $seccionContra,
+                'MANUAL',
+                auth()->id(),
+            ]);
+        }
 
         return response()->json(['id' => $resultado[0]->id]);
     }

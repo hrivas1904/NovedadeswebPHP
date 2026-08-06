@@ -81,7 +81,9 @@ $(document).on('click', SCOPE + '#btnExcel', function () {
 function renderTablaConciliacion() {
     const filas = filasFiltradas();
 
+    let paginaActual = 0;
     if ($.fn.DataTable.isDataTable('#tbMovimientos')) {
+        paginaActual = $('#tbMovimientos').DataTable().page();
         $('#tbMovimientos').DataTable().destroy();
     }
 
