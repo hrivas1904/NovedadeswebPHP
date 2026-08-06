@@ -1,3 +1,8 @@
+function getScrollY() {
+    return window.innerWidth < 768 ? "40vh" : "70vh";
+}
+
+
 $(document).on("keydown", function (e) {
 
     if (e.key === "Escape") {
@@ -149,3 +154,4 @@ $(document).on("click", "#btnLimpiarAlertas", function (e) {
         }
     });
 });
+

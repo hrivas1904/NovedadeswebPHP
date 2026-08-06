@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Dom\Document;
 
 class AlertasController extends Controller
 {
@@ -27,6 +28,40 @@ class AlertasController extends Controller
         ]);
     }
 
+    public function listarTodasAlertas(Request $request)
+    {
+        $userId = Auth::id();
+        $fechaDesde = $request->fechaDesde;
+        $fechaHasta = $request->fechaHasta;
+
+        $alertas = DB::select("
+        SELECT
+            id,
+            mensaje,
+            modulo,
+            idReferencia,
+            fecha,
+            url,
+            leida
+        FROM alertas_usuario
+        WHERE usuario_destino = ?
+            AND (? IS NULL OR DATE(fecha) >= ?)
+            AND (? IS NULL OR DATE(fecha) <= ?)
+            AND leida=0
+        ORDER BY id DESC
+    ", [
+            $userId,
+            $fechaDesde,
+            $fechaDesde,
+            $fechaHasta,
+            $fechaHasta
+        ]);
+
+        return response()->json([
+            'data' => $alertas
+        ]);
+    }
+
     public function marcarLeida(Request $request)
     {
         DB::update("
@@ -34,6 +69,21 @@ class AlertasController extends Controller
         SET leida = 1
         WHERE id = ?
     ", [$request->id]);
+
+        return response()->json([
+            'ok' => true
+        ]);
+    }
+
+    public function marcarLeidaMasivo(Request $request)
+    {
+        $placeholders = implode(',', array_fill(0, count($request->ids), '?'));
+
+        DB::update("
+        UPDATE alertas_usuario
+        SET leida = 1
+        WHERE id IN ($placeholders)
+    ", $request->ids);
 
         return response()->json([
             'ok' => true

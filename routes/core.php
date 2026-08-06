@@ -24,7 +24,9 @@ Route::post('/restaurarPassword', [HomeController::class, 'restaurarPassword'])-
 
 //alertas
 Route::get('/alertas/listar', [AlertasController::class, 'listar']);
+Route::get('/alertas/listarTodasAlertas', [AlertasController::class, 'listarTodasAlertas']);
 Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
+Route::post('/alertas/marcarLeidaMasivo', [AlertasController::class, 'marcarLeidaMasivo']);
 Route::post('/alertas/limpiar', [AlertasController::class, 'limpiarTodas']);
 Route::post('/avisos/enviar', [AlertasController::class, 'enviar'])->name('avisos.enviar')->middleware('auth');
 
