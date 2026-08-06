@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Sistema')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="vapid-key" content="{{ config('services.vapid.public_key') }}">
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
@@ -292,11 +293,20 @@
                     </button>
 
                     <div id="dropdownAlertas" class="dropdown-alertas">
-                        <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
-                            <span class="fw-semibold">Notificaciones</span>
-                            <button id="btnLimpiarAlertas" class="btn btn-sm text-danger p-0">Limpiar</button>
-                        </div>
-                        <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-semibold">Notificaciones</span>
+                                    <button id="btnLimpiarAlertas" class="btn btn-sm text-danger p-0">Limpiar</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
+                            </div>
+                            <div class="card-footer d-flex justify-content-center">
+                                <a type="button" href="{{route('notificaciones.panel')}}" class="btn btn-sm btn-primary w-100">Panel de Notificaciones</a>
+                            </div>
+                        </div>                      
                     </div>
 
                     @if (Auth::user()->rol == 'Administrador/a')
@@ -366,7 +376,7 @@
     </script>
 
     <script>
-        const VAPID_PUBLIC_KEY = "{{ env('VAPID_PUBLIC_KEY') }}";
+        const VAPID_PUBLIC_KEY = $('meta[name="vapid-key"]').attr('content');
     </script>
 
     <script src="/js/push.js"></script>

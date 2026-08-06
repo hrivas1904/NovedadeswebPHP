@@ -21,13 +21,13 @@
         <button type="button" id="btnIrPresupuestoEjecutado" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
             data-url="{{ route('administracion.conciliacionesFrances986View') }}">
             <i class="fa-solid fa-building-columns"></i>
-            FRANCÉS 986
+            FRANCÉS (986)
         </button>
 
         <button type="button" id="btnIrResumenAnual" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
             data-url="{{ route('administracion.conciliacionesFrances1001View') }}">
             <i class="fa-solid fa-building-columns"></i>
-            FRANCÉS 1001
+            FRANCÉS (1001)
         </button>
     </div>
     <hr style="color: var(--color-default); border: 1px solid;" />

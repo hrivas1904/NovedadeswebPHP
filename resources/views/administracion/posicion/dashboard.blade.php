@@ -139,7 +139,7 @@
 
     <div class="row d-flex mt-5">
         <div class="col-12 col-md-6">
-            <div class="card icon-kpi" style="background-color:var(--color-default); color:white;">
+            <div class="card icon-kpi" style="background-color:var(--color-second); color:white;">
                 <div class="card-body flex-column">
                     <div>
                         <label class="h6" style="font-size:0.8rem;">TOTAL DISPONIBLE EN PESOS</label>
@@ -154,7 +154,7 @@
             </div>
         </div>
         <div class="col-12 col-md-6">
-            <div class="card icon-kpi" style="background-color:var(--color-default); color:white;">
+            <div class="card icon-kpi" style="background-color:var(--color-second); color:white;">
                 <div class="card-body flex-column">
                     <div>
                         <label class="h6" style="font-size:0.8rem;">POSICIÓN EN DOLARES</label>

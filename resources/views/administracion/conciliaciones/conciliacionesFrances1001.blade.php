@@ -3,7 +3,7 @@
     <div class="card mb-3" id="divExtractoFrances986">
         <div class="card-header collapsible-header" style="cursor: pointer; color:var(--color-default)">
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="fe-bold">Extracto FRANCÉS (986)</h5>
+                <h5 class="fe-bold">Extracto FRANCÉS (1001)</h5>
                 <i class="fs-5 fa-solid fa-circle-chevron-down"></i>
             </div>
         </div>
@@ -27,7 +27,7 @@
 
             <div class="d-flex flex-column gap-2">
                 <input id="inputArchivo" type="file" class="form-control"></input>
-                <textarea id="textAreaArchivo" rows="2" class="form-control" placeholder="Pegar aquí el extracto de FRANCÉS (986)..."></textarea>
+                <textarea id="textAreaArchivo" rows="2" class="form-control" placeholder="Pegar aquí el extracto de FRANCÉS (1001)..."></textarea>
             </div>
 
             <label class="mt-2" id="msgExtracto"></label>

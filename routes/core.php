@@ -7,6 +7,7 @@ use App\Http\Controllers\Core\PushController;
 use App\Http\Controllers\Core\AlertasController;
 use App\Http\Controllers\Core\NotificacionController;
 use App\Http\Controllers\Core\LogController;
+use Illuminate\Console\View\Components\Alert;
 
 //loggeo
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
@@ -25,8 +26,10 @@ Route::post('/restaurarPassword', [HomeController::class, 'restaurarPassword'])-
 Route::get('/alertas/listar', [AlertasController::class, 'listar']);
 Route::post('/alertas/leida', [AlertasController::class, 'marcarLeida']);
 Route::post('/alertas/limpiar', [AlertasController::class, 'limpiarTodas']);
+Route::post('/avisos/enviar', [AlertasController::class, 'enviar'])->name('avisos.enviar')->middleware('auth');
 
 //mensajes
+Route::get('/notificaciones/panel', [NotificacionController::class, 'verPanelNotificaciones'])->name('notificaciones.panel');
 Route::post('/notificaciones/publicar', [NotificacionController::class, 'registrarNotificacion']);
 Route::get('/notificaciones/lista', [NotificacionController::class, 'listarNotificaciones'])->name('notificaciones.lista');
 Route::post('/notificaciones/borrar', [NotificacionController::class, 'eliminarNotificacion']);

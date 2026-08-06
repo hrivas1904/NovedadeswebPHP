@@ -12,6 +12,11 @@ use App\Http\Controllers\Controller;
 
 class NotificacionController extends Controller
 {
+
+    public function verPanelNotificaciones(){
+        return view('core.panelNotificaciones');
+    }
+
     public function registrarNotificacion(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -37,15 +42,6 @@ class NotificacionController extends Controller
             );
 
             $resultado = DB::select("SELECT @p_mensaje AS mensaje");
-
-            /*$push = new WebPushService();
-
-            $push->send(
-                Auth::id(),
-                "PRUEBA PUSH",
-                "Si ves esto funciona",
-                "/"
-            );*/
 
             return response()->json([
                 'success' => true,

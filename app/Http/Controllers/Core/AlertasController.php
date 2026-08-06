@@ -55,4 +55,34 @@ class AlertasController extends Controller
             'ok' => true
         ]);
     }
+
+    public function enviar(Request $request)
+    {
+        if (!in_array(Auth::user()->rol, ['ADMINISTRADOR', 'SUPERVISOR_CALIDAD'])) {
+            return response()->json(['ok' => false, 'error' => 'No autorizado'], 403);
+        }
+
+        $request->validate([
+            'mensaje' => 'required|string|max:500',
+            'url' => 'nullable|string|max:500',
+        ]);
+
+        DB::insert("
+            INSERT INTO alertas_usuario
+                (tipo, modulo, mensaje, idReferencia, leida, fecha, usuario_destino, usuario_origen, url, push_enviado)
+            SELECT
+                'AVISO', 'COMUNICADOS', ?, 0, 0, NOW(), id, ?, ?, 0
+            FROM users
+            WHERE estado = 'ACTIVO'
+        ", [
+            $request->mensaje,
+            Auth::id(),
+            $request->url ?? '/',
+        ]);
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => 'Aviso enviado a los usuarios activos'
+        ]);
+    }
 }
