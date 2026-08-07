@@ -15,4 +15,24 @@ class LogController extends Controller
     {
         return view('core.logTransac');
     }
+
+    public function listarLogTransact(Request $request){
+        try {
+
+            $fechaDesde=$request->fechaDesde;
+            $fechaHasta=$request->fechaHasta;
+
+            $logTransact = DB::select(
+                'CALL SP_LISTAR_LOG_TRANSACT(?,?)',
+                [$fechaDesde, $fechaHasta]
+            );
+
+            return response()->json($logTransact);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => 'Error al obtener log de transacciones'
+            ], 500);
+        }
+    }
 }

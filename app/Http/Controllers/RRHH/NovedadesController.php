@@ -515,6 +515,7 @@ class NovedadesController extends Controller
             $annio = $request->annio;
             $idNovedad = $request->idNovedad;
             $fechaAplicacion = $request->fechaAplicacion;
+            $id = Auth::user()->id;
 
             $duracion = str_replace('$', '', $duracion);
             $duracion = str_replace('.', '', $duracion);
@@ -522,7 +523,7 @@ class NovedadesController extends Controller
             $duracion = trim($duracion);
 
             DB::statement(
-                "CALL SP_ACTUALIZAR_NOVEDAD(?,?,?,?,?,?,?,?,?,?,?,?,@p_mensaje)",
+                "CALL SP_ACTUALIZAR_NOVEDAD(?,?,?,?,?,?,?,?,?,?,?,?,?,@p_mensaje)",
                 [
                     $idRegistro,
                     $fechaDesde,
@@ -536,6 +537,7 @@ class NovedadesController extends Controller
                     $annio,
                     $idNovedad,
                     $fechaAplicacion,
+                    $id,
                 ]
             );
 

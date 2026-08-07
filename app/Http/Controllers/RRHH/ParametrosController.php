@@ -36,8 +36,8 @@ class ParametrosController extends Controller
             DB::statement("SET @mensaje = ''");
 
             DB::statement(
-                "CALL SP_CREAR_NUEVA_AREA(?, @codigo, @mensaje)",
-                [$request->nombreArea]
+                "CALL SP_CREAR_NUEVA_AREA(?,?, @codigo, @mensaje)",
+                [$request->nombreArea, Auth::user()->id]
             );
 
             $resultado = DB::selectOne(

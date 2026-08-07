@@ -12,25 +12,25 @@
             <input class="form-control w-auto" id="inputFechaDesde" type="date">
             <label for="inputFechaHasta" class="form-label">Hasta</label>
             <input class="form-control w-auto" id="inputFechaHasta" type="date">
-            <select id="selectorModulo" class="form-select w-auto">
-                <option value="">Seleccionar módulo</option>
-            </select>
+            <button type="button" class="btn btn-secondary" id="btnLimpiarFiltros">Limpiar filtros</button>
+            <button type="button" class="btn btn-primary" id="btnExportarLog">Exportar Log</button>
         </div>
     </div>
     <div class="card-body">
-        <table id="tbTransact" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
+        <table id="tbTransacciones" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>FECHA</th>
-                    <th>USUARIO</th>
-                    <th>MÓDULO</th>
-                    <th>ACCIÓN</th>
-                    <th>DETALLE</th>
+                    <th class="text-start">ID</th>
+                    <th class="text-start">FECHA</th>
+                    <th class="text-start">ACCIÓN</th>
+                    <th class="text-start">USUARIO</th>                    
+                    <th class="text-start">MÓDULO</th>
+                    <th class="text-start">TABLA AFECTADA</th>
+                    <th class="text-start">REGISTRO AFECTADO</th>                    
+                    <th class="text-start">DESCRIPCIÓN</th>                    
                 </tr>
             </thead>
             <tbody>
-
             </tbody>
         </table>
     </div>

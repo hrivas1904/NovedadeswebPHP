@@ -664,12 +664,13 @@ class PersonalController extends Controller
             ]);
 
             $res = DB::select(
-                'CALL SP_CREAR_CUENTA_BANCARIA(?, ?, ?, ?)',
+                'CALL SP_CREAR_CUENTA_BANCARIA(?, ?, ?, ?, ?)',
                 [
                     $request->legajo,
                     $request->numero_cuenta,
                     $request->cbu,
-                    $request->banco
+                    $request->banco,
+                    Auth::user()->id,
                 ]
             );
 
@@ -1233,8 +1234,9 @@ class PersonalController extends Controller
             ]);
 
             $idSolicitud = $request->idSolicitud;
+            $id = Auth::user()->id;
 
-            DB::statement("CALL SP_ANULAR_SOLICITUD(?, @p_msj)", [$idSolicitud]);
+            DB::statement("CALL SP_ANULAR_SOLICITUD(?,?, @p_msj)", [$idSolicitud, $id]);
 
             $mensaje = DB::selectOne("SELECT @p_msj as mensaje");
 
@@ -1552,8 +1554,9 @@ class PersonalController extends Controller
         try {
 
             $legajo = $request->legajo;
+            $id=Auth::user()->id;
 
-            DB::statement('CALL SP_BAJA_USUARIO(?, @p_mensaje)', [$legajo]);
+            DB::statement('CALL SP_BAJA_USUARIO(?,?, @p_mensaje)', [$legajo, $id]);
 
             $resultado = DB::select('SELECT @p_mensaje as mensaje');
             $mensaje = $resultado[0]->mensaje ?? 'ERROR';

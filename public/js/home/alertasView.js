@@ -1,3 +1,7 @@
+function getScrollY() {
+    return window.innerWidth < 768 ? "40vh" : "70vh";
+}
+
 $("#tbTodasAlertas").DataTable({
     destroy: true,
     ajax: {
@@ -6,6 +10,7 @@ $("#tbTodasAlertas").DataTable({
         data: function (d) {
             d.fechaDesde = $("#inputFechaDesde").val();
             d.fechaHasta = $("#inputFechaHasta").val();
+            d.leidas = $("#selectorLeidas").val();
         },
     },
     language: {
@@ -17,12 +22,13 @@ $("#tbTodasAlertas").DataTable({
     paging: false,
     scrollCollapse: true,
     dom: "tir",
+    order:[0,'desc'],
     columns: [
         { data: "id" },
         { data: "fecha" },
         { data: "modulo" },
         { data: "mensaje" },
-        { data: "idReferencia", visible:false, },
+        { data: "idReferencia", visible: false },
         { data: "url", visible: false },
         {
             data: null,
@@ -30,15 +36,23 @@ $("#tbTodasAlertas").DataTable({
             orderable: false,
             searchable: false,
             render: function (data, type, row) {
+                if (row.leida == 1) {
+                    return "";
+                }
+
                 return `<input type="checkbox" class="checkAlertas" data-id="${row.id}">`;
             },
         },
     ],
 });
 
-$(document).on("change", "#inputFechaDesde, #inputFechaHasta", function () {
-    $("#tbTodasAlertas").DataTable().ajax.reload();
-});
+$(document).on(
+    "change",
+    "#inputFechaDesde, #inputFechaHasta, #selectorLeidas",
+    function () {
+        $("#tbTodasAlertas").DataTable().ajax.reload();
+    },
+);
 
 $(document).on("click", "#seleccionarTodasAlertas", function () {
     let isChecked = $(this).is(":checked");

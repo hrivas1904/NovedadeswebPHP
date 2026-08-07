@@ -47,3 +47,4 @@ Route::post('/eventosProgramados/eliminar', [NotificacionController::class, 'eli
 
 //log transacciones
 Route::get('/log/vista', [LogController::class, 'logTransactView'])->name('logTransactView');
+Route::get('/log/listarLogTransaccional', [LogController::class, 'listarLogTransact'])->name('listarLogTransact');

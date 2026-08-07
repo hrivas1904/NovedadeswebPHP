@@ -12,6 +12,11 @@
             <input class="form-control w-auto" id="inputFechaDesde" type="date">
             <label for="inputFechaHasta" class="form-label">Hasta</label>
             <input class="form-control w-auto" id="inputFechaHasta" type="date">
+            <select class="form-select w-auto" id="selectorLeidas">
+                <option value="">TODAS</option>
+                <option value="1">LEÍDAS</option>
+                <option value="0">NO LEÍDAS</option>
+            </select>
             <button type="button" class="btn btn-primary" id="btnMarcarLeidas">Marcar como leída</button>
         </div>
     </div>

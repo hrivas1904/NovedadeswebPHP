@@ -33,6 +33,7 @@ class AlertasController extends Controller
         $userId = Auth::id();
         $fechaDesde = $request->fechaDesde;
         $fechaHasta = $request->fechaHasta;
+        $leidas = $request->leidas;
 
         $alertas = DB::select("
         SELECT
@@ -47,14 +48,16 @@ class AlertasController extends Controller
         WHERE usuario_destino = ?
             AND (? IS NULL OR DATE(fecha) >= ?)
             AND (? IS NULL OR DATE(fecha) <= ?)
-            AND leida=0
+            AND (? IS NULL OR leida = ?)
         ORDER BY id DESC
     ", [
             $userId,
             $fechaDesde,
             $fechaDesde,
             $fechaHasta,
-            $fechaHasta
+            $fechaHasta,
+            $leidas,
+            $leidas,
         ]);
 
         return response()->json([
