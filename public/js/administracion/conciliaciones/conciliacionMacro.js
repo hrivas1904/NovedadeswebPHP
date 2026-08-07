@@ -76,6 +76,8 @@ function renderTablaConciliacion() {
         language: { url: '/js/es-ES.json' },
         lengthMenu: [10, 15, 25, 50, 75, 100, { label: 'Todos', value: -1 }],
         pageLength: 10,
+        scrollY: getScrollY(),
+        scrollCollapse:true,
         order: [[1, 'desc']],
         dom: "<'d-flex justify-content-start mb-2'l>t<'d-flex justify-content-between mt-2'ip>",
         buttons: [
@@ -555,3 +557,4 @@ $(document).on('click', SCOPE + '#btnConfirmarPagos', function () {
         cargarConciliacion();
     });
 });
+})();

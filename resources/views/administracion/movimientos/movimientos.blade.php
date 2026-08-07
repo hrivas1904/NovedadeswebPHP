@@ -5,33 +5,29 @@
 @section('content')
 <h3 class="tituloVista">MOVIMIENTOS</h3>
 <div class="d-flex gap-3">
-    <select class="form-select" id="selectCuentas">
+    <select class="form-select w-auto" id="selectCuentas">
         <option value="">Cuentas</option>
         @foreach($cuentas as $c)
         <option value="{{ $c->id }}">{{ $c->nombre }}</option>
         @endforeach
     </select>
-    <select class="form-select" id="selectEstados">
-        <option value="">Estados</option>
-        <option value="Ejecutado">Ejecutado</option>
-        <option value="Presupuesto">Presupuesto</option>
-        <option value="Pendiente">Pendiente</option>
-        <option value="Cumplido">Cumplido</option>
-    </select>
-    <select class="form-select" id="selectOperaciones">
+    <select class="form-select w-auto" id="selectOperaciones">
         <option value="">Operaciones</option>
         <option value="Ingresos">Ingresos</option>
         <option value="Transferencias">Transferencias</option>
         <option value="Cheques">Cheques</option>
         <option value="Efectivo">Efectivo</option>
     </select>
-    <select class="form-select" id="selectConceptos">
+    <select class="form-select w-auto" id="selectConceptos">
         <option value="">Conceptos</option>
         @foreach($conceptos as $c)
         <option value="{{ $c }}">{{ $c }}</option>
         @endforeach
     </select>
     <input type="text" class="form-control" id="inputSubconcepto" placeholder="Sub-concepto...">
+
+    <input class="form-control" id="inputBuscador" placeholder="Buscar...">
+
     <button type="button" class="btn btn-sm btn-primary" id="btnAbrirManual" data-bs-toggle="modal" data-bs-target="#modalMovimientoManual">
         Manual
     </button>
@@ -46,8 +42,40 @@
         <label class="form-label h6 fw-bold" style="color: var(--color-default);">Hasta: </label>
         <input type="date" class="form-control" id="inputFechaHasta">
     </div>
-    <div class="col-7 d-flex">
-        <input class="form-control w-100" id="inputBuscador" placeholder="Buscar...">
+    <div class="col-auto d-flex">
+        <div class="form-control">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <span class="fw-semibold">ESTADOS:</span>
+
+                <div class="form-check mb-0">
+                    <input class="form-check-input chkEstado" type="checkbox" id="chkEjecutado" value="EJECUTADO">
+                    <label class="form-check-label" for="chkEjecutado">
+                        Ejecutado
+                    </label>
+                </div>
+
+                <div class="form-check mb-0">
+                    <input class="form-check-input chkEstado" type="checkbox" id="chkPresupuesto" value="PRESUPUESTO">
+                    <label class="form-check-label" for="chkPresupuesto">
+                        Presupuesto
+                    </label>
+                </div>
+
+                <div class="form-check mb-0">
+                    <input class="form-check-input chkEstado" type="checkbox" id="chkCumplido" value="CUMPLIDO">
+                    <label class="form-check-label" for="chkCumplido">
+                        Cumplido
+                    </label>
+                </div>
+
+                <div class="form-check mb-0">
+                    <input class="form-check-input chkEstado" type="checkbox" id="chkTodos" value="" checked>
+                    <label class="form-check-label" for="chkTodos">
+                        Todos
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-1 d-flex">
         <button type="button" class="btn btn-sm btn-secondary w-100" id="btnLimpiarFiltros">

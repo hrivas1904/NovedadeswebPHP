@@ -4,11 +4,34 @@ function getScrollY() {
     return window.innerWidth < 768 ? "28vh" : "56vh";
 }
 
+function getEstadosSeleccionados() {
+    return $('.chkEstado:not(#chkTodos):checked').map(function () {
+        return $(this).val();
+    }).get();
+}
+ 
+// "Todos" es excluyente con los demas: tildarlo destilda el resto (no
+// tiene sentido filtrar por estados puntuales Y "todos" a la vez).
+$(document).on('change', '#chkTodos', function () {
+    if ($(this).is(':checked')) {
+        $('.chkEstado').not('#chkTodos').prop('checked', false);
+    }
+    tablaMovimientos.ajax.reload();
+});
+ 
+$(document).on('change', '.chkEstado:not(#chkTodos)', function () {
+    if ($(this).is(':checked')) {
+        $('#chkTodos').prop('checked', false);
+    }
+    tablaMovimientos.ajax.reload();
+});
+
 $("#btnLimpiarFiltros").on("click", function () {
     $("#inputFechaDesde").val("");
     $("#inputFechaHasta").val("");
     $("#selectCuentas").val("");
-    $("#selectEstados").val("");
+    $('.chkEstado').prop('checked', false);
+    $('#chkEjecutado, #chkPresupuesto').prop('checked', true); // o los que sean el estado inicial por defecto
     $("#selectOperaciones").val("");
     $("#selectConceptos").val("");
     $("#inputSubconcepto").val("");
@@ -53,7 +76,7 @@ $(document).ready(function () {
                 d.fecha_desde = $("#inputFechaDesde").val();
                 d.fecha_hasta = $("#inputFechaHasta").val();
                 d.cuenta = $("#selectCuentas").val();
-                d.estado = $("#selectEstados").val();
+                d.estado = $('#chkTodos').is(':checked') ? '' : getEstadosSeleccionados().join(',');
                 d.operacion = $("#selectOperaciones").val();
                 d.concepto = $("#selectConceptos").val();
                 d.subconcepto = $("#inputSubconcepto").val();

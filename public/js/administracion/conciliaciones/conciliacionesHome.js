@@ -1,3 +1,7 @@
+function getScrollY() {
+    return window.innerWidth < 768 ? "28vh" : "56vh";
+}
+
 $(document).ready(function() {
     $('.btn-analisis').on('click', function() {
         const $btn = $(this);

@@ -151,27 +151,34 @@ class ConciliacionesController extends Controller
         foreach ($pagos as $pago) {
             $matches = $candidatos->filter(function ($c) use ($pago) {
                 $nombreOk = $this->matchNombrePago($pago['nombre'], $c->detalle ?? '');
-                $importeOk = abs(abs((float) $c->importe) - $pago['importe']) <= 1;
+
+                // Tolerancia de retencion: el pago real puede ser hasta un 10%
+                // menor al presupuestado (empresas agentes de retencion). Se
+                // acepta entre el 90% y el 100% del monto presupuestado.
+                // (+$1 de margen extra solo para redondeos de centavos)
+                $presupuestado = abs((float) $c->importe);
+                $pagado = $pago['importe'];
+                $importeOk = $presupuestado > 0
+                    && $pagado <= ($presupuestado + 1)
+                    && $pagado >= ($presupuestado * 0.90);
+
                 return $nombreOk && $importeOk;
             })->values();
 
             $hayMatch = $matches->count() > 0;
 
-            // Sugerencia de concepto/subconcepto -- se usa tanto para mostrar en
-            // el preview de las filas sin match, como valor por defecto si la
-            // aux decide tildarlas igual (ella puede corregir antes de confirmar).
             $clasif = $motor->clasificar($pago['nombre'], $pago['nombre'], fn() => $motor->mapConcepto($pago['nombre']));
 
             $resultados[] = [
                 'pago'        => $pago,
                 'matches'     => $matches,
-                'confirmado'  => $hayMatch, // por defecto: tildado SOLO si hay match
+                'confirmado'  => true, // por defecto todo tildado (con match: aplica; sin match: se crea EJECUTADO)
                 'concepto'    => $clasif['concepto'],
                 'subconcepto' => $clasif['subconcepto'],
             ];
         }
 
-        $nM = collect($resultados)->where('matches.0', '!=', null)->count();
+        $nM = collect($resultados)->filter(fn($r) => count($r['matches']) > 0)->count();
         $mensaje = count($pagos) . ' pagos · ' . $nM . ' con match · ' . (count($pagos) - $nM) . ' sin match.';
 
         return response()->json(['resultados' => $resultados, 'mensaje' => $mensaje]);
@@ -187,21 +194,20 @@ class ConciliacionesController extends Controller
 
         foreach ($request->input('resultados') as $r) {
             $hayMatch = !empty($r['matches']) && count($r['matches']) > 0;
-            $confirmado = !empty($r['confirmado']);
+            $incluir = !empty($r['confirmado']); // si esta tildada o no
+
+            if (!$incluir) continue; // destildada = se omite, sea con match o sin match
 
             if ($hayMatch) {
-                if (!$confirmado) continue; // la aux destildo el match, no se toca nada
-
                 $idMatch = $r['matches'][0]['id'];
 
                 // 1) El movimiento original pasa a CUMPLIDO
                 DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$idMatch, 'CUMPLIDO']);
                 $actualizados++;
 
-                // 2) Se duplica como EJECUTADO -- ese es el que representa la
-                // transaccion real que ya paso por el banco. Se vuelve a leer
-                // de la base (no se confia en lo que mando el navegador), por
-                // seguridad con datos financieros reales.
+                // 2) Se duplica como EJECUTADO -- la transaccion real que ya paso
+                // por el banco. Se relee de la base (no se confia en lo que
+                // mando el navegador), por seguridad con datos financieros.
                 $original = DB::selectOne("
                 SELECT c.nombre AS banco, k.nombre AS concepto, m.subconcepto,
                        m.detalle, m.importe, m.seccion, m.operacion, m.fecha
@@ -231,8 +237,9 @@ class ConciliacionesController extends Controller
                 continue;
             }
 
-            // Sin match: siempre se crea un movimiento nuevo (tildada=CUMPLIDO, sin tildar=EJECUTADO)
-            $ejecucion = $confirmado ? 'CUMPLIDO' : 'EJECUTADO';
+            // Sin match: SIEMPRE se crea como EJECUTADO (nunca CUMPLIDO -- no hay
+            // forma manual de revertir eso). La aux despues busca el presupuesto
+            // a mano si corresponde y lo marca CUMPLIDO ella misma.
             $importe = -abs((float) $r['pago']['importe']);
             $operacion = \App\Support\ClasificadorOperacion::resolver('MACRO', $r['concepto'], '3 EGRESOS', $importe);
 
@@ -243,7 +250,7 @@ class ConciliacionesController extends Controller
                 $r['subconcepto'] ?? null,
                 $r['pago']['nombre'],
                 $importe,
-                $ejecucion,
+                'EJECUTADO',
                 $operacion,
                 '3 EGRESOS',
                 'CONCILIACION_PAGOS',
