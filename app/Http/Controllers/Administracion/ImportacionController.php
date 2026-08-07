@@ -230,8 +230,10 @@ class ImportacionController extends Controller
             $desc = trim($c[1] ?? '');
             if ($desc === '') continue;
 
-            $credRaw = trim($c[2] ?? '');
-            $debRaw = trim($c[3] ?? '');
+            // Columnas del formato Pegado de NACION: Fecha | Descripcion | Debito | Credito
+            // (antes estaba al reves -- confirmado por la aux de administracion)
+            $debRaw = trim($c[2] ?? '');
+            $credRaw = trim($c[3] ?? '');
             $importe = 0.0;
             if ($credRaw !== '' && $credRaw !== '-') $importe = abs($this->parseImporteAR($credRaw));
             if ($debRaw !== '' && $debRaw !== '-') $importe = -abs($this->parseImporteAR($debRaw));
@@ -257,6 +259,25 @@ class ImportacionController extends Controller
                 'sugerido_concepto' => $cat,
                 'sugerido_subconcepto' => $sub,
             ];
+
+            // Contrapartida automatica a FCI (misma logica que ya teniamos para
+            // MACRO -- antes no estaba en Nacion, era el hueco real).
+            if ($motor->esFCI($desc) && $cat === 'TRANSF. ENTRE CUENTAS') {
+                $catContra = 'TRANSF. ENTRE CUENTAS';
+                $subContra = $motor->resolverSubconcepto($desc, $catContra);
+                $rows[] = [
+                    'fecha' => $fecha,
+                    'banco' => 'FONDO COMUN DE INVERSION',
+                    'seccion' => (-$importe >= 0) ? '2 INGRESOS' : '3 EGRESOS',
+                    'concepto' => $catContra,
+                    'subconcepto' => $subContra,
+                    'detalle' => $desc,
+                    'importe' => -$importe,
+                    'operacion' => 'TRANSFERENCIAS',
+                    'sugerido_concepto' => $catContra,
+                    'sugerido_subconcepto' => $subContra,
+                ];
+            }
         }
 
         return $rows;

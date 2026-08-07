@@ -378,6 +378,7 @@ $(document).on("change", ".input-fecha-movimiento", function () {
                     timerProgressBar: true,
                     showConfirmButton: false,
                 });
+                tablaMovimientos.ajax.reload(null, false);
             })
             .fail(function () {
                 Swal.fire({
@@ -394,7 +395,7 @@ $(document).on("change", ".select-operacion-movimiento", function () {
     $.post(MOVIMIENTOS_ROUTES.operacion.replace(":id", id), {
         operacion: $(this).val(),
     });
-    tablaMovimientos.ajax.reload();
+    tablaMovimientos.ajax.reload(null, false);
 });
 
 $(document).on("click", ".btn-cambiar-estado", function () {
@@ -450,7 +451,7 @@ $(document).on("change", ".select-cuenta-movimiento", function () {
     $.post(MOVIMIENTOS_ROUTES.cuenta.replace(":id", id), {
         cuenta: $(this).val(),
     });
-    tablaMovimientos.ajax.reload();
+    tablaMovimientos.ajax.reload(null, false);
 });
 
 $(document).on("change", ".select-concepto-movimiento", function () {
@@ -478,7 +479,7 @@ $(document).on("change", ".select-concepto-movimiento", function () {
             campo: "subconcepto",
             valor: lista[0],
         });
-        tablaMovimientos.ajax.reload();
+        tablaMovimientos.ajax.reload(null, false);
     }
 });
 
@@ -488,7 +489,7 @@ $(document).on("change", ".select-subconcepto-movimiento", function () {
         campo: "subconcepto",
         valor: $(this).val(),
     });
-    tablaMovimientos.ajax.reload();
+    tablaMovimientos.ajax.reload(null, false);
 });
 
 $(document).on("blur", ".input-detalle-movimiento", function () {
@@ -497,7 +498,7 @@ $(document).on("blur", ".input-detalle-movimiento", function () {
         campo: "detalle",
         valor: $(this).val(),
     });
-    tablaMovimientos.ajax.reload();
+    tablaMovimientos.ajax.reload(null, false);
 });
 
 $(document).on("blur", ".input-importe-movimiento", function () {
@@ -513,7 +514,7 @@ $(document).on("blur", ".input-importe-movimiento", function () {
         { importe: importe },
         function () {
             $input.data("original", Number(importe).toFixed(2));
-            tablaMovimientos.ajax.reload();
+            tablaMovimientos.ajax.reload(null, false);
         },
     );
 });

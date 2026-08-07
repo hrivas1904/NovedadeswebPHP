@@ -34,21 +34,9 @@ $(document).on('click', SCOPE + '.collapsible-header', function () {
 
 // ── Formato del extracto ─────────────────────────────────────────────
 const COLUMNAS_POR_FORMATO_CONC = {
-    MACRO: {
+    'MACRO': {
         PEGADO: 'Fecha | Nro | CódOp | Descripción | Importe | Saldo',
         EXCEL:  'Fecha | Operación | Concepto | Detalle | Nro | Importe | Saldo',
-    },
-    NACION: {
-        PEGADO: 'Fecha | Descripción | Crédito | Débito',
-        EXCEL:  'Fecha | — | Concepto | Detalle | Importe | Saldo',
-    },
-    'FRANCES (986)': {
-        PEGADO: 'Fecha | Descripción | CódOp | Crédito | Débito | Saldo',
-        EXCEL:  'Fecha | — | Concepto | Detalle | Importe (con signo) | Saldo',
-    },
-    'FRANCES (1001)': {
-        PEGADO: 'Fecha | Descripción | CódOp | Crédito | Débito | Saldo',
-        EXCEL:  'Fecha | — | Concepto | Detalle | Importe (con signo) | Saldo',
     },
 };
 
@@ -74,10 +62,6 @@ $(document).on('click', SCOPE + '#btnExcel', function () {
 });
 
 // ── DataTable ─────────────────────────────────────────────────────────
-// En vez de mantener la tabla "viva" y solo actualizarle las filas,
-// la destruimos y reconstruimos entera cada vez que hay datos nuevos.
-// Es mas defensivo: evita cualquier desfasaje entre el objeto guardado
-// en tablaConciliacion y la tabla real que existe en el DOM en ese momento.
 function renderTablaConciliacion() {
     const filas = filasFiltradas();
 
@@ -98,7 +82,7 @@ function renderTablaConciliacion() {
             {
                 extend: 'excelHtml5',
                 text: 'Exportar',
-                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] }, // sin la columna de checkbox/estado
+                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] },
             },
         ],
         columns: [
@@ -145,15 +129,17 @@ function renderTablaConciliacion() {
         rowCallback: function (row, data) {
             const estado = data.estado_conciliacion || '';
             const esNuevo = data.nuevo_en_conciliacion == 1;
-            // Mismo color que el badge de F/QR, pero con transparencia para
-            // que el texto de la fila siga siendo legible.
             const bg = esNuevo ? 'rgba(26, 92, 168, 0.12)'
                 : estado === 'FINN' ? 'rgba(249, 168, 37, 0.18)'
                 : estado === 'QR' ? 'rgba(229, 90, 58, 0.18)'
                 : '';
-            $(row).find('td').css('background-color', bg); // pinta las celdas, no el <tr> -- table-striped/hover pintan las celdas encima
+            $(row).find('td').css('background-color', bg);
         },
     });
+
+    if (paginaActual > 0) {
+        tablaConciliacion.page(paginaActual).draw(false);
+    }
 }
 
 // ── Carga de datos ────────────────────────────────────────────────────
@@ -185,7 +171,7 @@ function renderResumen() {
     $('#importeSaldoContable').text(fmtPesos(saldoExtracto - totalFinn - totalQR));
 }
 
-let filtroPendientes = ''; // '' | 'NUEVO' | 'FINN' | 'QR' | 'AMBOS'
+let filtroPendientes = '';
 
 function renderFiltroPendientes() {
     const nNuevos = filasConciliacion.filter(r => r.nuevo_en_conciliacion == 1).length;
@@ -237,7 +223,6 @@ function filasFiltradas() {
     });
 }
 
-// ── Selects de concepto/operacion ────────────────────────────────────
 function poblarSelectsConciliacion() {
     let optsConceptos = '<option value="">Conceptos</option>';
     CONCEPTOS_CATALOGO.forEach(function (c) {
@@ -257,8 +242,6 @@ $(document).on('change', SCOPE + '#selectorConcepto' + ', ' + SCOPE + '#selector
 $(document).on('input', SCOPE + '#inputSubconceptos' + ', ' + SCOPE + '#inputBuscador', debounce(renderTablaConciliacion, 300));
 $(document).on('change', SCOPE + '#inputFechaHasta', cargarConciliacion);
 
-// ── Marcar F / QR ─────────────────────────────────────────────────────
-// ── Comprobante editable ──────────────────────────────────────────────
 $(document).on('blur', SCOPE + '.input-comprobante', function () {
     const $input = $(this);
     const id = $input.data('id');
@@ -272,9 +255,6 @@ $(document).on('blur', SCOPE + '.input-comprobante', function () {
     });
 });
 
-// ── Seleccion multiple (checkbox), suma de seleccionados, seleccionar todos ──
-// Usa la API de DataTables (no jQuery plano) para que "seleccionar todos"
-// funcione sobre TODAS las filas filtradas, no solo las de la pagina actual.
 function idsSeleccionados() {
     let ids = [];
     tablaConciliacion.rows({ search: 'applied' }).nodes().to$().find('.chk-conc:checked').each(function () {
@@ -299,8 +279,6 @@ $(document).on('change', SCOPE + '#chkSeleccionarTodos', function () {
     actualizarSumaSeleccionados();
 });
 
-// ── Acciones masivas ──────────────────────────────────────────────────
-
 function aplicarEstadoMasivo(estado) {
     const ids = idsSeleccionados();
     if (!ids.length) {
@@ -320,7 +298,7 @@ function aplicarEstadoMasivo(estado) {
         renderFiltroPendientes();
         renderTablaConciliacion();
         $('#chkSeleccionarTodos').prop('checked', false);
-        actualizarSumaSeleccionados(); // vuelve a 0, la tabla se redibujo y perdio la seleccion
+        actualizarSumaSeleccionados();
     });
 }
 
@@ -328,14 +306,12 @@ $(document).on('click', SCOPE + '#btnMarcarFinnMasivo', function () { aplicarEst
 $(document).on('click', SCOPE + '#btnMarcarQrMasivo', function () { aplicarEstadoMasivo('QR'); });
 $(document).on('click', SCOPE + '#btnLimpiarEstadoMasivo', function () { aplicarEstadoMasivo(''); });
 
-// Boton de exportar propio (con tu estilo) -- dispara el mecanismo de
-// exportacion de DataTables sin mostrar el boton automatico duplicado.
 $(document).on('click', SCOPE + '#btnExportarExcel', function () {
     tablaConciliacion.button(0).trigger();
 });
 
 $(document).on('subvista:cargada', function () {
-    if (!$('[data-conciliacion-banco="' + CONCILIACION_BANCO + '"]').length) return; // no es la sub-vista de este banco especifico
+    if (!$('[data-conciliacion-banco="' + CONCILIACION_BANCO + '"]').length) return;
 
     poblarSelectsConciliacion();
     actualizarHeaderColumnasConc();
@@ -344,8 +320,7 @@ $(document).on('subvista:cargada', function () {
 });
 
 // =====================================================================
-// EXTRACTO -- reutiliza los mismos endpoints de Importacion > Bancos
-// (mismo motor de clasificacion, mismo aprendizaje de reglas al confirmar)
+// EXTRACTO
 // =====================================================================
 let filasExtracto = [];
 
@@ -432,9 +407,6 @@ $(document).on('change', SCOPE + '.select-concepto-extracto', function () {
     const nuevoConcepto = $(this).val();
     filasExtracto[idx].concepto = nuevoConcepto;
 
-    // Al cambiar el concepto, el subconcepto ya no es valido -- se repuebla
-    // el select con la lista del concepto nuevo, sin preseleccionar nada
-    // (fuerza a elegir uno coherente en vez de arrastrar el anterior).
     const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
     let opts = '';
     lista.forEach(function (s) { opts += '<option value="' + s + '">' + s + '</option>'; });
@@ -459,7 +431,7 @@ $(document).on('click', SCOPE + '#btnConfirmarExtracto', function () {
         $('#textAreaArchivo').val('');
         filasExtracto = [];
         renderPreviewExtracto();
-        cargarConciliacion(); // refresca la tabla de abajo con los movimientos recien importados
+        cargarConciliacion();
     });
 });
 
@@ -474,17 +446,42 @@ function renderPreviewPagos() {
         return;
     }
 
+    let optsConcepto = '';
+    CONCEPTOS_CATALOGO.forEach(function (c) {
+        optsConcepto += '<option value="' + c + '">' + c + '</option>';
+    });
+
+    function optsSubconcepto(concepto, actual) {
+        const lista = SUBCONCEPTOS_POR_CONCEPTO[concepto] || [];
+        let out = '';
+        lista.forEach(function (s) {
+            out += '<option value="' + s + '"' + (s === actual ? ' selected' : '') + '>' + s + '</option>';
+        });
+        return out;
+    }
+
     let html = '';
     resultadosPagos.forEach(function (res, i) {
         const hayMatch = res.matches.length > 0;
         const match = res.matches[0];
+        const optsFila = optsConcepto.replace('value="' + res.concepto + '"', 'value="' + res.concepto + '" selected');
+
+        // Con match: se ve el destino del match (no editable, es un update).
+        // Sin match: concepto/subconcepto EDITABLE (va a ser un insert nuevo).
+        const columnaClasificacion = hayMatch
+            ? '<span class="text-success">✓ ' + match.detalle + ' (' + match.fecha + ')</span>'
+            : '<div class="d-flex gap-1">' +
+                '<select class="form-select form-select-sm select-concepto-pago" data-idx="' + i + '">' + optsFila + '</select>' +
+                '<select class="form-select form-select-sm select-subconcepto-pago" data-idx="' + i + '">' + optsSubconcepto(res.concepto, res.subconcepto) + '</select>' +
+              '</div>';
+
         html += '<tr>' +
-            '<td class="text-center"><input type="checkbox" class="chk-pago" data-idx="' + i + '" ' + (res.confirmado ? 'checked' : '') + ' ' + (hayMatch ? '' : 'disabled') + '></td>' +
+            '<td class="text-center"><input type="checkbox" class="chk-pago" data-idx="' + i + '" ' + (res.confirmado ? 'checked' : '') + '></td>' +
             '<td>' + res.pago.nombre + '</td>' +
             '<td>' + (res.pago.fechaPago || '') + '</td>' +
             '<td class="text-end text-danger fw-bold">' + fmtPesos(-res.pago.importe) + '</td>' +
-            '<td>' + (hayMatch ? '<span class="text-success">✓ ' + match.detalle + ' (' + match.fecha + ')</span>' : '<span class="text-warning">Sin match</span>') + '</td>' +
-            '<td>' + (hayMatch ? match.ejecucion : '—') + '</td>' +
+            '<td>' + columnaClasificacion + '</td>' +
+            '<td>' + (hayMatch ? match.ejecucion : (res.confirmado ? 'Nuevo · CUMPLIDO' : 'Nuevo · EJECUTADO')) + '</td>' +
             '</tr>';
     });
 
@@ -527,22 +524,34 @@ $(document).on('change', SCOPE + '.chk-pago', function () {
     renderPreviewPagos();
 });
 
+$(document).on('change', SCOPE + '.select-concepto-pago', function () {
+    const idx = $(this).data('idx');
+    const nuevoConcepto = $(this).val();
+    resultadosPagos[idx].concepto = nuevoConcepto;
+
+    const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
+    let opts = '';
+    lista.forEach(function (s) { opts += '<option value="' + s + '">' + s + '</option>'; });
+    $('.select-subconcepto-pago[data-idx="' + idx + '"]').html(opts);
+    resultadosPagos[idx].subconcepto = lista[0] || '';
+});
+
+$(document).on('change', SCOPE + '.select-subconcepto-pago', function () {
+    resultadosPagos[$(this).data('idx')].subconcepto = $(this).val();
+});
+
 $(document).on('click', SCOPE + '#btnConfirmarPagos', function () {
-    let ids = [];
-    resultadosPagos.forEach(function (r) {
-        if (r.confirmado) {
-            r.matches.forEach(function (m) { ids.push(m.id); });
-        }
-    });
+    if (!resultadosPagos.length) return;
 
-    if (!ids.length) return;
-
-    $.post(CONCILIACION_ROUTES.pagosConfirmar, { ids: ids }, function (data) {
-        $('#msgPagos').text('✓ ' + data.actualizados + ' presupuesto(s) marcado(s) como CUMPLIDO.').css('color', 'green');
+    $.post(CONCILIACION_ROUTES.pagosConfirmar, { resultados: resultadosPagos }, function (data) {
+        $('#msgPagos').text(
+            '✓ ' + data.actualizados + ' marcado(s) CUMPLIDO · ' +
+            data.duplicados + ' duplicado(s) como EJECUTADO · ' +
+            data.insertados + ' nuevo(s) creado(s).'
+        ).css('color', 'green');
         $('#textAreaArchivoProv').val('');
         resultadosPagos = [];
         renderPreviewPagos();
-        cargarConciliacion(); // refresca, por si alguno de esos movimientos aparece en la tabla
+        cargarConciliacion();
     });
 });
-})();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administracion;
 
 use App\Http\Controllers\Controller;
+use App\Support\MotorClasificacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -144,6 +145,8 @@ class ConciliacionesController extends Controller
         WHERE m.ejecucion IN ('PRESUPUESTO','PENDIENTE') AND m.deleted_at IS NULL
     "));
 
+        $motor = new MotorClasificacion();
+
         $resultados = [];
         foreach ($pagos as $pago) {
             $matches = $candidatos->filter(function ($c) use ($pago) {
@@ -152,14 +155,23 @@ class ConciliacionesController extends Controller
                 return $nombreOk && $importeOk;
             })->values();
 
+            $hayMatch = $matches->count() > 0;
+
+            // Sugerencia de concepto/subconcepto -- se usa tanto para mostrar en
+            // el preview de las filas sin match, como valor por defecto si la
+            // aux decide tildarlas igual (ella puede corregir antes de confirmar).
+            $clasif = $motor->clasificar($pago['nombre'], $pago['nombre'], fn() => $motor->mapConcepto($pago['nombre']));
+
             $resultados[] = [
-                'pago'       => $pago,
-                'matches'    => $matches,
-                'confirmado' => $matches->count() > 0,
+                'pago'        => $pago,
+                'matches'     => $matches,
+                'confirmado'  => $hayMatch, // por defecto: tildado SOLO si hay match
+                'concepto'    => $clasif['concepto'],
+                'subconcepto' => $clasif['subconcepto'],
             ];
         }
 
-        $nM = collect($resultados)->where('confirmado', true)->count();
+        $nM = collect($resultados)->where('matches.0', '!=', null)->count();
         $mensaje = count($pagos) . ' pagos · ' . $nM . ' con match · ' . (count($pagos) - $nM) . ' sin match.';
 
         return response()->json(['resultados' => $resultados, 'mensaje' => $mensaje]);
@@ -167,13 +179,85 @@ class ConciliacionesController extends Controller
 
     public function confirmarPagos(Request $request)
     {
-        $request->validate(['ids' => 'required|array|min:1']);
+        $request->validate(['resultados' => 'required|array|min:1']);
 
-        foreach ($request->input('ids') as $id) {
-            DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$id, 'CUMPLIDO']);
+        $actualizados = 0;
+        $duplicados = 0;
+        $insertados = 0;
+
+        foreach ($request->input('resultados') as $r) {
+            $hayMatch = !empty($r['matches']) && count($r['matches']) > 0;
+            $confirmado = !empty($r['confirmado']);
+
+            if ($hayMatch) {
+                if (!$confirmado) continue; // la aux destildo el match, no se toca nada
+
+                $idMatch = $r['matches'][0]['id'];
+
+                // 1) El movimiento original pasa a CUMPLIDO
+                DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$idMatch, 'CUMPLIDO']);
+                $actualizados++;
+
+                // 2) Se duplica como EJECUTADO -- ese es el que representa la
+                // transaccion real que ya paso por el banco. Se vuelve a leer
+                // de la base (no se confia en lo que mando el navegador), por
+                // seguridad con datos financieros reales.
+                $original = DB::selectOne("
+                SELECT c.nombre AS banco, k.nombre AS concepto, m.subconcepto,
+                       m.detalle, m.importe, m.seccion, m.operacion, m.fecha
+                FROM ff_movimientos m
+                JOIN ff_cuentas c ON c.id = m.id_cuenta
+                JOIN ff_conceptos k ON k.id = m.id_concepto
+                WHERE m.id = ? AND m.deleted_at IS NULL
+            ", [$idMatch]);
+
+                if ($original) {
+                    DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+                        $original->fecha,
+                        $original->banco,
+                        $original->concepto,
+                        $original->subconcepto,
+                        $original->detalle,
+                        $original->importe,
+                        'EJECUTADO',
+                        $original->operacion,
+                        $original->seccion,
+                        'CONCILIACION_PAGOS',
+                        auth()->id(),
+                    ]);
+                    $duplicados++;
+                }
+
+                continue;
+            }
+
+            // Sin match: siempre se crea un movimiento nuevo (tildada=CUMPLIDO, sin tildar=EJECUTADO)
+            $ejecucion = $confirmado ? 'CUMPLIDO' : 'EJECUTADO';
+            $importe = -abs((float) $r['pago']['importe']);
+            $operacion = \App\Support\ClasificadorOperacion::resolver('MACRO', $r['concepto'], '3 EGRESOS', $importe);
+
+            DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+                $r['pago']['fechaPago'] ?: $r['pago']['fechaEmision'],
+                'MACRO',
+                $r['concepto'],
+                $r['subconcepto'] ?? null,
+                $r['pago']['nombre'],
+                $importe,
+                $ejecucion,
+                $operacion,
+                '3 EGRESOS',
+                'CONCILIACION_PAGOS',
+                auth()->id(),
+            ]);
+            $insertados++;
         }
 
-        return response()->json(['ok' => true, 'actualizados' => count($request->input('ids'))]);
+        return response()->json([
+            'ok' => true,
+            'actualizados' => $actualizados,
+            'duplicados' => $duplicados,
+            'insertados' => $insertados,
+        ]);
     }
 
     // Misma heuristica de matching por nombre que el artefacto original
@@ -196,7 +280,14 @@ class ConciliacionesController extends Controller
         $lines = preg_split('/\r?\n/', trim($text));
         if (count($lines) < 2) return [];
 
-        $header = array_map(fn($h) => mb_strtolower(preg_replace('/[\s\/]/', '', trim($h))), explode("\t", $lines[0]));
+        // Normaliza sacando espacios, "/", Y ACENTOS -- antes solo sacaba
+        // espacios y "/", por eso "emisión" nunca matcheaba contra "emision".
+        $normalizar = function (string $h): string {
+            $h = mb_strtolower(preg_replace('/[\s\/]/', '', trim($h)));
+            return str_replace(['á', 'é', 'í', 'ó', 'ú', 'ñ'], ['a', 'e', 'i', 'o', 'u', 'n'], $h);
+        };
+
+        $header = array_map($normalizar, explode("\t", $lines[0]));
         $ix = function (string $needle) use ($header): int {
             foreach ($header as $i => $h) {
                 if (str_contains($h, $needle)) return $i;
@@ -208,7 +299,17 @@ class ConciliacionesController extends Controller
         $iNombre   = $ix('nombre');
         $iDoc      = $ix('documento');
         $iFechaEm  = $ix('emision');
-        $iFechaPag = $ix('pago');
+
+        // "Fecha de pago" necesita las DOS palabras juntas -- si buscara solo
+        // "pago", agarraria "Orden de pago" o "Forma de pago" antes que esta.
+        $iFechaPag = -1;
+        foreach ($header as $i => $h) {
+            if (str_contains($h, 'fecha') && str_contains($h, 'pago')) {
+                $iFechaPag = $i;
+                break;
+            }
+        }
+
         $iImporte  = $ix('importe');
 
         $pagos = [];

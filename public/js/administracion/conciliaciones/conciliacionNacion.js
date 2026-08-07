@@ -34,21 +34,9 @@ $(document).on('click', SCOPE + '.collapsible-header', function () {
 
 // ── Formato del extracto ─────────────────────────────────────────────
 const COLUMNAS_POR_FORMATO_CONC = {
-    MACRO: {
-        PEGADO: 'Fecha | Nro | CódOp | Descripción | Importe | Saldo',
-        EXCEL:  'Fecha | Operación | Concepto | Detalle | Nro | Importe | Saldo',
-    },
-    NACION: {
-        PEGADO: 'Fecha | Descripción | Crédito | Débito',
+    'NACION': {
+        PEGADO: 'Fecha | Descripción | Débito | Crédito',
         EXCEL:  'Fecha | — | Concepto | Detalle | Importe | Saldo',
-    },
-    'FRANCES (986)': {
-        PEGADO: 'Fecha | Descripción | CódOp | Crédito | Débito | Saldo',
-        EXCEL:  'Fecha | — | Concepto | Detalle | Importe (con signo) | Saldo',
-    },
-    'FRANCES (1001)': {
-        PEGADO: 'Fecha | Descripción | CódOp | Crédito | Débito | Saldo',
-        EXCEL:  'Fecha | — | Concepto | Detalle | Importe (con signo) | Saldo',
     },
 };
 
@@ -81,6 +69,9 @@ $(document).on('click', SCOPE + '#btnExcel', function () {
 function renderTablaConciliacion() {
     const filas = filasFiltradas();
 
+    // Recordamos en que pagina estaba antes de reconstruir la tabla, para
+    // volver ahi despues -- sin esto, cada accion (marcar F/QR, etc.)
+    // te tiraba de nuevo a la pagina 1, perdiendo donde estabas parado.
     let paginaActual = 0;
     if ($.fn.DataTable.isDataTable('#tbMovimientos')) {
         paginaActual = $('#tbMovimientos').DataTable().page();
@@ -122,7 +113,7 @@ function renderTablaConciliacion() {
                 data: 'nro_comprobante', orderable: false,
                 render: function (val, type, row) {
                     if (type !== 'display') return val || '';
-                    return '<input readonly type="text" class="form-control form-control-sm input-comprobante" data-id="' + row.id + '" value="' + (val || '') + '" data-original="' + (val || '') + '">';
+                    return '<input type="text" class="form-control form-control-sm input-comprobante" data-id="' + row.id + '" value="' + (val || '') + '" data-original="' + (val || '') + '">';
                 }
             },
             { data: 'operacion', render: (v) => v || '' },
@@ -154,6 +145,10 @@ function renderTablaConciliacion() {
             $(row).find('td').css('background-color', bg); // pinta las celdas, no el <tr> -- table-striped/hover pintan las celdas encima
         },
     });
+
+    if (paginaActual > 0) {
+        tablaConciliacion.page(paginaActual).draw(false); // false = no recalcular info/paginado desde cero
+    }
 }
 
 // ── Carga de datos ────────────────────────────────────────────────────
