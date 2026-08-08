@@ -521,6 +521,15 @@ $(document).on('change', SCOPE + '#inputArchivoPagoProv', function () {
     reader.readAsText(this.files[0], 'UTF-8');
 });
 
+$(document).on('change', SCOPE + '#chkSeleccionarTodosPagos', function () {
+    const checked = $(this).is(':checked');
+    $('.chk-pago').each(function () {
+        $(this).prop('checked', checked);
+        resultadosPagos[$(this).data('idx')].confirmado = checked;
+    });
+    renderPreviewPagos();
+});
+
 $(document).on('change', SCOPE + '.chk-pago', function () {
     resultadosPagos[$(this).data('idx')].confirmado = $(this).is(':checked');
     renderPreviewPagos();

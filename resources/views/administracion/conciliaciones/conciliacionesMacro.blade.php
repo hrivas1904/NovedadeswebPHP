@@ -71,7 +71,7 @@
                 </div>
                 <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
                     <table class="table table-sm">
-                        <thead><tr><th>✓</th><th>Proveedor (pago)</th><th>Fecha pago</th><th class="text-end">Importe</th><th>Match en presupuesto</th><th>Estado</th></tr></thead>
+                        <thead><tr><th><input type="checkbox" id="chkSeleccionarTodosPagos"></th><th>Proveedor (pago)</th><th>Fecha pago</th><th class="text-end">Importe</th><th>Match en presupuesto</th><th>Estado</th></tr></thead>
                         <tbody id="previewPagosBody"></tbody>
                     </table>
                 </div>

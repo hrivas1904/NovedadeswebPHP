@@ -172,7 +172,7 @@ class ConciliacionesController extends Controller
             $resultados[] = [
                 'pago'        => $pago,
                 'matches'     => $matches,
-                'confirmado'  => true, // por defecto todo tildado (con match: aplica; sin match: se crea EJECUTADO)
+                'confirmado'  => $hayMatch, // por defecto todo tildado (con match: aplica; sin match: se crea EJECUTADO)
                 'concepto'    => $clasif['concepto'],
                 'subconcepto' => $clasif['subconcepto'],
             ];
