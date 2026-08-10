@@ -581,8 +581,8 @@ class PersonalController extends Controller
             $numeroCuenta = $request->numero_cuenta;
 
             $resultado = DB::select(
-                'CALL SP_EDITAR_DATOS_CUENTAS_BANCARIAS(?, ?, ?)',
-                [$id, $numeroCuenta, $cbu]
+                'CALL SP_EDITAR_DATOS_CUENTAS_BANCARIAS(?, ?, ?, ?)',
+                [$id, $numeroCuenta, $cbu, Auth::user()->id]
             );
 
             if (!empty($resultado)) {
@@ -849,7 +849,7 @@ class PersonalController extends Controller
             $dni = $request->dni;
             $fechaNacimiento = $request->fechaNacimiento;
 
-            DB::statement("CALL SP_EDITAR_HIJOS(?,?,?,?,?)", [$idHijo, $legajo, $nombre, $dni, $fechaNacimiento]);
+            DB::statement("CALL SP_EDITAR_HIJOS(?,?,?,?,?,?)", [$idHijo, $legajo, $nombre, $dni, $fechaNacimiento, Auth::user()->id]);
 
             return response()->json([
                 'success' => true
@@ -910,16 +910,17 @@ class PersonalController extends Controller
             $fechaBaja = $request->fechaBaja;
             $motivo = $request->motivo;
             $observaciones = $request->observaciones;
-            $registrante = auth()->user()->name;
+            $registrante = Auth::user()->name;
 
             DB::statement(
-                "CALL SP_DAR_BAJA_EMPLEADO(?, ?, ?, ?, ?, @mensaje)",
+                "CALL SP_DAR_BAJA_EMPLEADO(?, ?, ?, ?, ?, ?, @mensaje)",
                 [
                     $legajo,
                     $fechaBaja,
                     $motivo,
                     $observaciones,
-                    $registrante
+                    $registrante,
+                    Auth::user()->id
                 ]
             );
 
@@ -1268,7 +1269,7 @@ class PersonalController extends Controller
 
         try {
             foreach ($ids as $id) {
-                DB::statement('CALL SP_DEPOSITAR_SOLICITUDES_ADELANTOS(?)', [$id]);
+                DB::statement('CALL SP_DEPOSITAR_SOLICITUDES_ADELANTOS(?,?)', [$id, Auth::user()->id]);
             }
 
             DB::commit();
@@ -1606,9 +1607,10 @@ class PersonalController extends Controller
             $nombre = $request->input('nombreOs');
             $codigo = $request->input('codigoOs');
 
-            DB::statement('CALL SP_CREAR_OBRA_SOCIAL(?, ?)', [
+            DB::statement('CALL SP_CREAR_OBRA_SOCIAL(?, ?, ?)', [
                 $nombre,
-                $codigo
+                $codigo,
+                Auth::user()->id
             ]);
 
             return response()->json([

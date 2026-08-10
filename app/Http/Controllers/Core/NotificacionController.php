@@ -145,11 +145,12 @@ class NotificacionController extends Controller
             $mensaje = '';
 
             DB::statement(
-                "CALL SP_EDITAR_NOTIFICACION(?, ?, ?, @p_mensaje)",
+                "CALL SP_EDITAR_NOTIFICACION(?, ?, ?, ?, @p_mensaje)",
                 [
                     $request->id,
                     $request->titulo,
-                    $request->contenido
+                    $request->contenido,
+                    Auth::user()->id
                 ]
             );
 
@@ -270,13 +271,14 @@ class NotificacionController extends Controller
         try {
 
             DB::statement(
-                'CALL SP_EDITAR_EVENTO_PROGRAMADO(?,?,?,?,?)',
+                'CALL SP_EDITAR_EVENTO_PROGRAMADO(?,?,?,?,?,?)',
                 [
                     $request->idEvento,
                     $request->fechaEvento,
                     $request->tipoEvento,
                     $request->tituloEvento,
-                    $request->descripcionEvento
+                    $request->descripcionEvento,
+                    Auth::user()->id
                 ]
             );
 

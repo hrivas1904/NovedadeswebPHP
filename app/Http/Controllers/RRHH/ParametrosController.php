@@ -82,9 +82,10 @@ class ParametrosController extends Controller
     public function editarArea(Request $request)
     {
         try {
-            DB::statement('CALL SP_MODIFICAR_AREA(?, ?)', [
+            DB::statement('CALL SP_MODIFICAR_AREA(?, ?, ?)', [
                 $request->idArea,
-                $request->nombre
+                $request->nombre,
+                Auth::user()->id
             ]);
 
             return response()->json([
@@ -102,7 +103,7 @@ class ParametrosController extends Controller
     public function eliminarArea($id)
     {
         try {
-            DB::statement("CALL SP_ELIMINAR_AREA(?)", [$id]);
+            DB::statement("CALL SP_ELIMINAR_AREA(?,?)", [$id, Auth::user()->id]);
 
             return response()->json([
                 'success' => true,
@@ -124,8 +125,8 @@ class ParametrosController extends Controller
             DB::statement("SET @mensaje = ''");
 
             DB::statement(
-                "CALL SP_CREAR_NUEVA_CATEG(?, @codigo, @mensaje)",
-                [$request->nombreCateg]
+                "CALL SP_CREAR_NUEVA_CATEG(?,?, @codigo, @mensaje)",
+                [$request->nombreCateg, Auth::user()->id]
             );
 
             $resultado = DB::selectOne(
@@ -190,7 +191,7 @@ class ParametrosController extends Controller
     public function eliminarCateg($id)
     {
         try {
-            DB::statement("CALL SP_ELIMINAR_CATEGORIA(?)", [$id]);
+            DB::statement("CALL SP_ELIMINAR_CATEGORIA(?,?)", [$id, Auth::user()->id]);
 
             return response()->json([
                 'success' => true,
@@ -270,8 +271,8 @@ class ParametrosController extends Controller
             DB::statement("SET @mensaje = ''");
 
             DB::statement(
-                "CALL SP_CREAR_NUEVO_SERVICIO(?,?, @codigo, @mensaje)",
-                [$request->servicio, $request->area]
+                "CALL SP_CREAR_NUEVO_SERVICIO(?,?,?, @codigo, @mensaje)",
+                [$request->servicio, $request->area, Auth::user()->id]
             );
 
             $resultado = DB::selectOne(

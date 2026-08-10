@@ -359,8 +359,8 @@ class ComprasController extends Controller
 
         try {
             DB::statement(
-                "CALL SP_EDITAR_PRODUCTO(?,?,?)",
-                [$request->idProducto, $request->nombreProducto, $request->codigoProducto]
+                "CALL SP_EDITAR_PRODUCTO(?,?,?,?)",
+                [$request->idProducto, $request->nombreProducto, $request->codigoProducto, Auth::user()->id]
             );
 
             return response()->json(['success' => true]);
@@ -413,13 +413,14 @@ class ComprasController extends Controller
 
         try {
             DB::statement(
-                "CALL SP_EDITAR_PROVEEDOR(?,?,?,?,?)",
+                "CALL SP_EDITAR_PROVEEDOR(?,?,?,?,?,?)",
                 [
                     $request->idProveedor,
                     $request->nombreProveedor,
                     $request->razonSocial,
                     $request->cuitProveedor,
                     $request->codigoProveedor,
+                    Auth::user()->id
                 ]
             );
 
