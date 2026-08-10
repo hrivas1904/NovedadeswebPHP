@@ -222,12 +222,21 @@ function filasFiltradas() {
     const sub = ($('#inputSubconceptos').val() || '').toLowerCase();
     const texto = ($('#inputBuscador').val() || '').toLowerCase();
     const desde = $('#inputFechaDesde').val();
-
+ 
     return filasConciliacion.filter(function (r) {
         if (concepto && r.concepto !== concepto) return false;
         if (operacion && r.operacion !== operacion) return false;
         if (sub && !(r.subconcepto || '').toLowerCase().includes(sub)) return false;
-        if (texto && !((r.detalle || '').toLowerCase().includes(texto) || (r.nro_comprobante || '').toLowerCase().includes(texto))) return false;
+        if (texto) {
+            const importeCrudo = String(r.importe);
+            const importeFormateado = fmtPesos(r.importe).toLowerCase();
+            const coincideTexto =
+                (r.detalle || '').toLowerCase().includes(texto) ||
+                (r.nro_comprobante || '').toLowerCase().includes(texto) ||
+                importeCrudo.includes(texto) ||
+                importeFormateado.includes(texto);
+            if (!coincideTexto) return false;
+        }
         if (desde && r.fecha < desde) return false;
         if (filtroPendientes === 'NUEVO' && !(r.nuevo_en_conciliacion == 1)) return false;
         if (filtroPendientes === 'FINN' && r.estado_conciliacion !== 'FINN') return false;
@@ -236,7 +245,6 @@ function filasFiltradas() {
         return true;
     });
 }
-
 // ── Selects de concepto/operacion ────────────────────────────────────
 function poblarSelectsConciliacion() {
     let optsConceptos = '<option value="">Conceptos</option>';

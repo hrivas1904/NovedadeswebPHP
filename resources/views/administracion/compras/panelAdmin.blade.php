@@ -177,17 +177,21 @@
 
                     <div class="col-md-2">
                         <label class="form-label fw-bold">Prioridad</label>
-                        <input class="form-control" id="verPrioridad" readonly>
+                        <select class="form-control" id="verPrioridad" disabled>
+                            <option value="BAJA">BAJA</option>
+                            <option value="MEDIA">MEDIA</option>
+                            <option value="URGENTE">URGENTE</option>
+                        </select>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Centro de costo</label>
-                        <input class="form-control" id="verCentroCosto" readonly>
+                        <select class="form-control" id="verCentroCosto" disabled></select>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Proveedor</label>
-                        <input class="form-control" id="verProveedor" readonly>
+                        <select class="form-control" id="verProveedor" disabled></select>
                     </div>
 
                     <div class="col-md-2">
@@ -246,8 +250,8 @@
                 </h6>
 
                 <div id="detalleAdjuntosBody" class="row g-2">
-                    <!-- se completa dinámicamente -->
                 </div>
+
                 <div id="sinAdjuntosMsg" class="text-muted small d-none">
                     Este pedido no tiene archivos adjuntos.
                 </div>
@@ -272,7 +276,6 @@
                 </div>
 
                 <div id="detalleOCBody" class="row g-2">
-                    <!-- Se completa dinámicamente -->
                 </div>
 
                 <div id="sinOCMsg" class="text-muted small d-none">
@@ -284,7 +287,6 @@
                 </h6>
 
                 <div id="hiloObservaciones" class="border rounded p-3 mb-3" style="max-height: 250px; overflow-y: auto; background:#f8f9fa;">
-                    <!-- se completa dinámicamente -->
                 </div>
 
                 <div class="input-group">
@@ -296,11 +298,16 @@
             </div>
 
             <div class="modal-footer">
-                @if (in_array(Auth::id(), [1,2,5,6]))
+                @if (in_array(Auth::id(), [1,2,5,6]))                
                 <button class="btn btn-primary d-none" id="btnRegenerarExcelFinnegans">
-                    <i class="fa-solid fa-file-excel"></i>
                     Regenerar Excel
                 </button>
+                <button class="btn btn-secondary" id="btnHabilitarEdicionPedido">
+                    Editar
+                </button>
+                <button class="btn btn-primary d-none" id="btnGuardarCambiosPedidos">
+                    Guardar cambios
+                </button>                
                 @endif
                 <button class="btn btn-secondary" data-bs-dismiss="modal">
                     Cerrar
@@ -334,6 +341,8 @@
     const PUEDE_AUTORIZAR_PEDIDOS = {{in_array(Auth::id(), [1, 2, 5, 6, 15])?'true':'false'}};
     const PUEDE_APROBAR_GERENCIA = {{in_array(Auth::id(), [1, 5])?'true':'false'}};
 </script>
+<script src="{{ asset('js/administracion/compras/cargarPedido.js') }}"></script>
+<script src="{{ asset('js/administracion/compras/edicionPedidos.js') }}"></script>
 <script src="{{ asset('js/administracion/compras/panelAdmin.js') }}"></script>
 <script src="{{ asset('js/administracion/compras/scriptComunAdmin.js') }}"></script>
 @endpush

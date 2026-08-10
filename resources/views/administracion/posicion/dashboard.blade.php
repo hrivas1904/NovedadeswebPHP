@@ -105,14 +105,14 @@
     <label class="fw-bolder text-muted mt-4 mb-2" style="font-size:0.8rem;">POSICIÓN EN DOLARES Y EFECTIVO</label>
 
     <div class="row d-flex">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-4">
             <div class="card" style="color:var(--color-default);">
                 <div class="card-body flex-column">
                     <div>
-                        <label class="h6 text-muted" style="font-size:0.8rem;">TOTAL USD (FCI + EFECTIVO)</label>
+                        <label class="h6 text-muted" style="font-size:0.8rem;">FCI USD</label>
                     </div>
                     <div>
-                        <label class="h3 fw-bolder" id="cardBodyTotalUsdFci">$0,00</label>
+                        <label class="h3 fw-bolder" id="cardBodyFciUsd">$0,00</label>
                     </div>
                     <div>
                         <label class="h6 text-muted" style="font-size:0.8rem;">Carga mensual</label>
@@ -120,7 +120,22 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-4">
+            <div class="card" style="color:var(--color-default);">
+                <div class="card-body flex-column">
+                    <div>
+                        <label class="h6 text-muted" style="font-size:0.8rem;">EFECTIVO USD</label>
+                    </div>
+                    <div>
+                        <label class="h3 fw-bolder" id="cardBodyEfectivoUsd">$0,00</label>
+                    </div>
+                    <div>
+                        <label class="h6 text-muted" style="font-size:0.8rem;">Carga mensual</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
             <div class="card icon-kpi" style="color: var(--color-default)">
                 <div class="card-body flex-column">
                     <div>

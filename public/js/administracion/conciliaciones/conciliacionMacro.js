@@ -204,6 +204,9 @@ $(document).on('click', SCOPE + '.btn-filtro-pendiente', function () {
     renderTablaConciliacion();
 });
 
+// Reemplazo del bloque de filtro de texto dentro de filasFiltradas(),
+// en conciliacionMacro.js (y los otros 3 bancos)
+
 function filasFiltradas() {
     const concepto = $('#selectorConcepto').val();
     const operacion = $('#selectorOperaciones').val();
@@ -215,7 +218,16 @@ function filasFiltradas() {
         if (concepto && r.concepto !== concepto) return false;
         if (operacion && r.operacion !== operacion) return false;
         if (sub && !(r.subconcepto || '').toLowerCase().includes(sub)) return false;
-        if (texto && !((r.detalle || '').toLowerCase().includes(texto) || (r.nro_comprobante || '').toLowerCase().includes(texto))) return false;
+        if (texto) {
+            const importeCrudo = String(r.importe);
+            const importeFormateado = fmtPesos(r.importe).toLowerCase();
+            const coincideTexto =
+                (r.detalle || '').toLowerCase().includes(texto) ||
+                (r.nro_comprobante || '').toLowerCase().includes(texto) ||
+                importeCrudo.includes(texto) ||
+                importeFormateado.includes(texto);
+            if (!coincideTexto) return false;
+        }
         if (desde && r.fecha < desde) return false;
         if (filtroPendientes === 'NUEVO' && !(r.nuevo_en_conciliacion == 1)) return false;
         if (filtroPendientes === 'FINN' && r.estado_conciliacion !== 'FINN') return false;

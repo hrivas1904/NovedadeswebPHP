@@ -55,7 +55,7 @@ class MotorClasificacion
     }
 
     /** OVERRIDES_FIJOS del artefacto original */
-    public function aplicarOverrideFijo(string $texto): ?array
+    public function aplicarOverrideFijo(string $texto, ?float $importe = null): ?array
     {
         $t = mb_strtolower($texto);
 
@@ -67,6 +67,12 @@ class MotorClasificacion
         }
         if (str_contains($t, 'dr.') || str_contains($t, 'dra.')) {
             return ['concepto' => 'HONORARIOS MÉDICOS', 'sub' => 'LIQUIDACIONES'];
+        }
+        // Transferencia de un particular (paciente) -- SOLO si es plata entrando
+        // (importe positivo) y NO es un traspaso interno a FCI (eso sigue
+        // siendo TRANSF. ENTRE CUENTAS, para no romper la contrapartida automatica).
+        if ($importe !== null && $importe > 0 && str_contains($t, 'transf') && !$this->esFCI($t)) {
+            return ['concepto' => 'INGRESOS PARTICULARES', 'sub' => 'INGRESOS PARTICULARES'];
         }
         return null;
     }
@@ -136,16 +142,20 @@ class MotorClasificacion
     {
         $t = mb_strtolower($texto);
         return str_contains($t, 'fondo comun') || str_contains($t, 'fondo común')
-            || str_contains($t, 'fci') || str_contains($t, 'pionero');
+            || str_contains($t, 'fci') || str_contains($t, 'pionero')
+            || str_contains($t, 'liq.susc') || str_contains($t, 'sol.resc');
     }
 
     /** clasificarOperacion() del artefacto: SOLO para movimientos bancarios (no Caja) */
     public function clasificarOperacionBancaria(string $detalle, string $columna2, float $importe): string
     {
         $c2 = mb_strtolower($columna2);
-        if (str_contains($c2, 'cheque')) return 'CHEQUES';
+        $d  = mb_strtolower($detalle);
+        // Antes solo miraba columna2 -- ahora tambien el detalle, a pedido
+        // de la aux de administracion (algunos extractos ponen "CHEQUE" ahi).
+        if (str_contains($c2, 'cheque') || str_contains($d, 'cheque')) return 'CHEQUES';
         if ($importe > 0) return 'INGRESOS';
-        if (str_contains(mb_strtolower($detalle), 'reintegro')) return 'INGRESOS';
+        if (str_contains($d, 'reintegro')) return 'INGRESOS';
         return 'TRANSFERENCIAS';
     }
 
@@ -161,10 +171,10 @@ class MotorClasificacion
      *   (en el artefacto varia segun parser: a veces es solo detalle, a veces concepto+detalle).
      * $heuristica: closure que devuelve el concepto por heuristica si no hay override ni regla.
      */
-    public function clasificar(string $detalleParaHash, string $textoParaOverride, \Closure $heuristica): array
+    public function clasificar(string $detalleParaHash, string $textoParaOverride, \Closure $heuristica, ?float $importe = null): array
     {
         $hash = self::hash($detalleParaHash);
-        $override = $this->aplicarOverrideFijo($textoParaOverride);
+        $override = $this->aplicarOverrideFijo($textoParaOverride, $importe);
 
         if ($override) {
             $concepto = $override['concepto'];

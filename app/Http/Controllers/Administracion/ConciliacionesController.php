@@ -278,6 +278,18 @@ class ConciliacionesController extends Controller
         if (mb_strlen($d) > 4 && str_contains($p, $d)) return true;
         if (mb_strlen($p) > 4 && str_contains($d, $p)) return true;
         if (mb_strlen($p) > 5 && mb_strlen($d) > 5 && mb_substr($p, 0, 5) === mb_substr($d, 0, 5)) return true;
+
+        $tokensP = array_values(array_filter(preg_split('/\s+/', $p), fn($w) => mb_strlen($w) >= 3));
+        $tokensD = array_values(array_filter(preg_split('/\s+/', $d), fn($w) => mb_strlen($w) >= 3));
+
+        if (count($tokensP) && count($tokensD)) {
+            [$cortos, $largos] = mb_strlen($p) <= mb_strlen($d) ? [$tokensP, $tokensD] : [$tokensD, $tokensP];
+            if (count($cortos) > 0) {
+                $encontrados = array_filter($cortos, fn($w) => in_array($w, $largos, true));
+                if (count($encontrados) === count($cortos)) return true;
+            }
+        }
+
         return false;
     }
 

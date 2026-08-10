@@ -1,19 +1,19 @@
 document.getElementById("fFecha").value = new Date().toISOString().slice(0, 10);
 
 $(function () {
-    cargarCentrosCosto();
-    cargarProveedores();
+    cargarCentrosCosto($("#cmbCentroCosto"), null);
+    cargarProveedores($("#cmbProveedor"), null);
     cargarProductos();
 });
 
-function cargarCentrosCosto() {
+function cargarCentrosCosto(selectorCentroCosto, contenedorPadre) {
     $.ajax({
         url: "/administracion/compras/centros-costo/listar",
         type: "GET",
         dataType: "json",
 
         success: function (response) {
-            let combo = $("#cmbCentroCosto");
+            let combo = selectorCentroCosto;
 
             combo.empty();
 
@@ -23,15 +23,16 @@ function cargarCentrosCosto() {
 
             $.each(response, function (i, item) {
                 combo.append(`
-            <option value="${item.id}">
-                ${item.codigo} - ${item.nombre}
-            </option>
-        `);
+                    <option value="${item.id}">
+                        ${item.codigo} - ${item.nombre}
+                    </option>
+                `);
             });
 
             combo.select2({
                 placeholder: "Seleccione un centro de costo...",
                 width: "100%",
+                dropdownParent: contenedorPadre,
             });
         },
 
@@ -45,14 +46,14 @@ function cargarCentrosCosto() {
     });
 }
 
-function cargarProveedores() {
+function cargarProveedores(selectorProveedor, contenedorPadre) {
     $.ajax({
         url: "/administracion/compras/proveedores/listar",
         type: "GET",
         dataType: "json",
 
         success: function (response) {
-            let combo = $("#cmbProveedor");
+            let combo = selectorProveedor;          
 
             combo.empty();
 
@@ -72,6 +73,7 @@ function cargarProveedores() {
                 placeholder: "Seleccione un proveedor...",
                 allowClear: true,
                 width: "100%",
+                dropdownParent: contenedorPadre,
             });
         },
 

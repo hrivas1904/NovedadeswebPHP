@@ -152,7 +152,7 @@ class ImportacionController extends Controller
             $fecha = $this->parseFecha(trim($c[0] ?? ''));
             if (!$fecha) continue;
 
-            $columna2 = trim($c[1] ?? '');
+            $columna2 = trim($c[1] ?? '');  // Nro de comprobante
             $desc = trim($c[3] ?? '');
             $importe = $this->parseImporteAR(trim($c[4] ?? ''));
             if ($importe == 0) continue;
@@ -162,7 +162,7 @@ class ImportacionController extends Controller
             $esQR = str_contains($descLower, 'qr') || str_contains($col2Lower, 'qr');
             $detalleAjustado = $desc . ($esQR && !str_contains($descLower, 'qr') ? ' QR' : '');
 
-            $clasif = $motor->clasificar($detalleAjustado, $desc, fn() => $motor->mapConceptoMacro($desc, ''));
+            $clasif = $motor->clasificar($detalleAjustado, $desc, fn() => $motor->mapConceptoMacro($desc, ''), $importe);
             $cat = $clasif['concepto'];
             $sub = $clasif['subconcepto'];
 
@@ -184,9 +184,7 @@ class ImportacionController extends Controller
                 'sugerido_subconcepto' => $sub,
             ];
 
-            // Contrapartida automatica: si el movimiento es un traspaso a FCI,
-            // se genera un segundo movimiento espejo en la cuenta FCI.
-            if ($motor->esFCI($desc)) {
+            if ($motor->esFCI($desc) && $cat === 'TRANSF. ENTRE CUENTAS') {
                 $catContra = 'TRANSF. ENTRE CUENTAS';
                 $subContra = $motor->resolverSubconcepto($desc, $catContra);
                 $rows[] = [
@@ -239,7 +237,7 @@ class ImportacionController extends Controller
             if ($debRaw !== '' && $debRaw !== '-') $importe = -abs($this->parseImporteAR($debRaw));
             if ($importe == 0) continue;
 
-            $clasif = $motor->clasificar($desc, $desc, fn() => $motor->mapConcepto($desc));
+            $clasif = $motor->clasificar($desc, $desc, fn() => $motor->mapConcepto($desc), $importe);
             $cat = $clasif['concepto'];
             $sub = $clasif['subconcepto'];
 
@@ -312,7 +310,7 @@ class ImportacionController extends Controller
             if ($debRaw !== '' && $debRaw !== '-') $importe = -abs($this->parseImporteAR($debRaw));
             if ($importe == 0) continue;
 
-            $clasif = $motor->clasificar($desc, $desc, fn() => $motor->mapConcepto($desc));
+            $clasif = $motor->clasificar($desc, $desc, fn() => $motor->mapConcepto($desc), $importe);
             $cat = $clasif['concepto'];
             $sub = $clasif['subconcepto'];
 
@@ -370,7 +368,7 @@ class ImportacionController extends Controller
 
             // OJO: la regla de concepto se busca por la columna CONCEPTO, no por detalle
             // (a diferencia de los otros parsers, que usan un solo texto para todo)
-            $override = $motor->aplicarOverrideFijo($concepto . ' ' . $detalle);
+            $override = $motor->aplicarOverrideFijo($concepto . ' ' . $detalle, $importe);
 
             if ($override) {
                 $cat = $override['concepto'];

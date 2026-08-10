@@ -47,8 +47,8 @@ function cargarPosicion(fecha) {
         $('#cardBodyFciF3c').text(fmtPesosCompacto(c['FCI FARMACIA']?.saldo));
         $('#cardBodyEfectivoCaja').text(fmtPesosCompacto(c['CAJA']?.saldo));
  
-        const usd = Number(c['EFECTIVO USD']?.saldo || 0) + Number(c['FCI USD']?.saldo || 0);
-        $('#cardBodyTotalUsdFci').text(fmtUsdCompacto(usd));
+        $('#cardBodyFciUsd').text(fmtUsdCompacto(c['FCI USD']?.saldo));
+        $('#cardBodyEfectivoUsd').text(fmtUsdCompacto(c['EFECTIVO USD']?.saldo));
         $('#cardBodyTotalUsd').text(fmtUsdCompacto(data.total_usd));
         $('#cardBodyTotalPesos').text(fmtPesosCompacto(data.total_pesos));
  
