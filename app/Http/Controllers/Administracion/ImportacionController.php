@@ -170,6 +170,10 @@ class ImportacionController extends Controller
                 : ($cat === 'TARJETAS D/C' ? '4 TARJETAS D/C' : ($importe >= 0 ? '2 INGRESOS' : '3 EGRESOS'));
             $operacion = $motor->clasificarOperacionBancaria($desc, $columna2, $importe);
 
+            if (in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
+                $operacion = 'TRANSFERENCIAS';
+            }
+
             $rows[] = [
                 'fecha' => $fecha,
                 'banco' => 'MACRO',
@@ -244,6 +248,10 @@ class ImportacionController extends Controller
             $seccion = $cat === 'TRANSF. ENTRE CUENTAS' ? '5 TRANSFERENCIAS'
                 : ($cat === 'TARJETAS D/C' ? '4 TARJETAS D/C' : ($importe >= 0 ? '2 INGRESOS' : '3 EGRESOS'));
             $operacion = $motor->clasificarOperacionBancaria($desc, '', $importe);
+            
+            if (in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
+                $operacion = 'TRANSFERENCIAS';
+            }
 
             $rows[] = [
                 'fecha' => $fecha,
@@ -318,6 +326,10 @@ class ImportacionController extends Controller
                 : ($cat === 'TARJETAS D/C' ? '4 TARJETAS D/C' : ($importe >= 0 ? '2 INGRESOS' : '3 EGRESOS'));
             $operacion = $motor->clasificarOperacionBancaria($desc, '', $importe);
 
+            if (in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
+                $operacion = 'TRANSFERENCIAS';
+            }
+
             $rows[] = [
                 'fecha' => $fecha,
                 'banco' => $banco,
@@ -391,6 +403,10 @@ class ImportacionController extends Controller
 
             // clasificarOperacion original solo mira la columna CONCEPTO para "reintegro"
             $operacion = $motor->clasificarOperacionBancaria($concepto, $columna2, $importe);
+
+            if (in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
+                $operacion = 'TRANSFERENCIAS';
+            }
 
             $rows[] = [
                 'fecha' => $fecha,

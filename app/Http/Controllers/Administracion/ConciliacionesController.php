@@ -194,20 +194,16 @@ class ConciliacionesController extends Controller
 
         foreach ($request->input('resultados') as $r) {
             $hayMatch = !empty($r['matches']) && count($r['matches']) > 0;
-            $incluir = !empty($r['confirmado']); // si esta tildada o no
+            $incluir = !empty($r['confirmado']);
 
-            if (!$incluir) continue; // destildada = se omite, sea con match o sin match
+            if (!$incluir) continue;
 
             if ($hayMatch) {
                 $idMatch = $r['matches'][0]['id'];
 
-                // 1) El movimiento original pasa a CUMPLIDO
                 DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$idMatch, 'CUMPLIDO']);
                 $actualizados++;
 
-                // 2) Se duplica como EJECUTADO -- la transaccion real que ya paso
-                // por el banco. Se relee de la base (no se confia en lo que
-                // mando el navegador), por seguridad con datos financieros.
                 $original = DB::selectOne("
                 SELECT c.nombre AS banco, k.nombre AS concepto, m.subconcepto,
                        m.detalle, m.importe, m.seccion, m.operacion, m.fecha
@@ -218,7 +214,7 @@ class ConciliacionesController extends Controller
             ", [$idMatch]);
 
                 if ($original) {
-                    DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+                    $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
                         $original->fecha,
                         $original->banco,
                         $original->concepto,
@@ -232,18 +228,20 @@ class ConciliacionesController extends Controller
                         auth()->id(),
                     ]);
                     $duplicados++;
+
+                    if (!empty($resultado[0]->id)) {
+                        DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
+                    }
                 }
 
                 continue;
             }
 
-            // Sin match: SIEMPRE se crea como EJECUTADO (nunca CUMPLIDO -- no hay
-            // forma manual de revertir eso). La aux despues busca el presupuesto
-            // a mano si corresponde y lo marca CUMPLIDO ella misma.
+            // Sin match: siempre se crea nuevo (tildada=CUMPLIDO, sin tildar=EJECUTADO)
             $importe = -abs((float) $r['pago']['importe']);
             $operacion = \App\Support\ClasificadorOperacion::resolver('MACRO', $r['concepto'], '3 EGRESOS', $importe);
 
-            DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+            $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
                 $r['pago']['fechaPago'] ?: $r['pago']['fechaEmision'],
                 'MACRO',
                 $r['concepto'],
@@ -257,6 +255,10 @@ class ConciliacionesController extends Controller
                 auth()->id(),
             ]);
             $insertados++;
+
+            if (!empty($resultado[0]->id)) {
+                DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
+            }
         }
 
         return response()->json([

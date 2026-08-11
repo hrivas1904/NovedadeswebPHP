@@ -108,7 +108,7 @@ function renderTablaConciliacion() {
                 data: 'nro_comprobante', orderable: false,
                 render: function (val, type, row) {
                     if (type !== 'display') return val || '';
-                    return '<input readonly type="text" class="form-control form-control-sm input-comprobante" data-id="' + row.id + '" value="' + (val || '') + '" data-original="' + (val || '') + '">';
+                    return '<input type="text" class="form-control form-control-sm input-comprobante" data-id="' + row.id + '" value="' + (val || '') + '" data-original="' + (val || '') + '">';
                 }
             },
             { data: 'operacion', render: (v) => v || '' },

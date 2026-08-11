@@ -77,7 +77,7 @@ function tablaMovimientos(rows) {
             '<td class="text-end fw-bold ' +
             color +
             '">' +
-            fmtPesosCompacto(r.importe) +
+            fmtPesos(r.importe) +
             "</td></tr>";
     });
 

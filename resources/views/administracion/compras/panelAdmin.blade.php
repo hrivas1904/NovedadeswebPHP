@@ -102,7 +102,7 @@
                             <input type="text" id="buscarPedido" class="form-control w-100" placeholder="Buscar..." oninput="filtrarPedidos()">
                         </div>
 
-                        @if (in_array(Auth::id(), [1,2,5,6]))
+                        @if (in_array(Auth::id(), [1,2,5,6,15]))
                         <div class="col-6 col-sm-12 col-md-6 col-lg-2">
                             <button type="button" class="btn btn-primary w-100" onclick="exportarExcel()">
                                 Exportar a Excel
@@ -298,7 +298,7 @@
             </div>
 
             <div class="modal-footer">
-                @if (in_array(Auth::id(), [1,2,5,6]))                
+                @if (in_array(Auth::id(), [1,2,5,6,15]))                
                 <button class="btn btn-primary d-none" id="btnRegenerarExcelFinnegans">
                     Regenerar Excel
                 </button>

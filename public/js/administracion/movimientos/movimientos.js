@@ -480,11 +480,7 @@ $(document).on("change", ".select-cuenta-movimiento", function () {
 $(document).on("change", ".select-concepto-movimiento", function () {
     const id = $(this).data("id");
     const nuevoConcepto = $(this).val();
-
-    $.post(MOVIMIENTOS_ROUTES.concepto.replace(":id", id), {
-        concepto: nuevoConcepto,
-    });
-
+ 
     // El subconcepto ya no es valido para el concepto nuevo -- se repuebla
     // el select de esa misma fila con la lista correcta, sin arrastrar el anterior.
     const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
@@ -496,14 +492,21 @@ $(document).on("change", ".select-concepto-movimiento", function () {
         '.select-subconcepto-movimiento[data-id="' + id + '"]',
     );
     $selectSub.html(opts);
-
-    if (lista.length) {
-        $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), {
-            campo: "subconcepto",
-            valor: lista[0],
-        });
-        tablaMovimientos.ajax.reload(null, false);
-    }
+ 
+    $.post(MOVIMIENTOS_ROUTES.concepto.replace(":id", id), {
+        concepto: nuevoConcepto,
+    }).done(function () {
+        if (lista.length) {
+            $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), {
+                campo: "subconcepto",
+                valor: lista[0],
+            }).done(function () {
+                tablaMovimientos.ajax.reload(null, false); // reload SOLO cuando los 2 POST ya terminaron
+            });
+        } else {
+            tablaMovimientos.ajax.reload(null, false);
+        }
+    });
 });
 
 $(document).on("change", ".select-subconcepto-movimiento", function () {
@@ -511,8 +514,9 @@ $(document).on("change", ".select-subconcepto-movimiento", function () {
     $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), {
         campo: "subconcepto",
         valor: $(this).val(),
+    }).done(function () {
+        tablaMovimientos.ajax.reload(null, false);
     });
-    tablaMovimientos.ajax.reload(null, false);
 });
 
 $(document).on("blur", ".input-detalle-movimiento", function () {
@@ -520,8 +524,9 @@ $(document).on("blur", ".input-detalle-movimiento", function () {
     $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), {
         campo: "detalle",
         valor: $(this).val(),
+    }).done(function () {
+        tablaMovimientos.ajax.reload(null, false);
     });
-    tablaMovimientos.ajax.reload(null, false);
 });
 
 $(document).on("blur", ".input-importe-movimiento", function () {
