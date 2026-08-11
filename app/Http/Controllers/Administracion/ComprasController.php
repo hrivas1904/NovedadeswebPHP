@@ -473,4 +473,105 @@ class ComprasController extends Controller
             'created_at' => now()->toDateTimeString(),
         ]);
     }
+
+    public function subirPresupuesto(Request $request, $id)
+    {
+        $request->validate([
+            'archivo' => [
+                'required',
+                'file',
+                'max:3072',
+                'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'
+            ],
+        ]);
+
+        $pedido = DB::table('pedidos_compras')
+            ->where('id', $id)
+            ->first();
+
+        if (!$pedido) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Pedido no encontrado.'
+            ], 404);
+        }
+
+        try {
+
+            $archivo = $request->file('archivo');
+
+            $path = $archivo->store(
+                'pedidos_compras/' . $id,
+                'public'
+            );
+
+            DB::statement(
+                "CALL SP_GUARDAR_ADJUNTO_PEDIDO_COMPRA(?,?,?,?)",
+                [
+                    $id,
+                    $path,
+                    $archivo->getClientOriginalName(),
+                    'PRESUPUESTO'
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Presupuesto cargado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function eliminarPresupuesto($id)
+    {
+        $adjunto = DB::table('pedidos_compras_adjuntos')
+            ->where('id', $id)
+            ->where('tipo', 'PRESUPUESTO')
+            ->first();
+
+        if (!$adjunto) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Presupuesto no encontrado.'
+            ], 404);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            if (
+                $adjunto->archivo &&
+                Storage::disk('public')->exists($adjunto->archivo)
+            ) {
+                Storage::disk('public')->delete($adjunto->archivo);
+            }
+
+            DB::statement(
+                "CALL SP_ELIMINAR_ADJUNTO_PEDIDO_COMPRA(?)",
+                [$id]
+            );
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Presupuesto eliminado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -36,6 +36,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('pedidos/{pedido}/listarObservaciones', [ComprasController::class, 'listarObservaciones'])->name('pedidos.observaciones.index');
     Route::post('pedidos/{pedido}/agregarObservaciones', [ComprasController::class, 'crearObservacion'])->name('pedidos.observaciones.store');
 
+    Route::post(
+        '/compras/pedidos/{id}/presupuestos',
+        [ComprasController::class, 'subirPresupuesto']
+    );
+
+    Route::delete(
+        '/compras/presupuestos/{id}',
+        [ComprasController::class, 'eliminarPresupuesto']
+    );
+
     //DASHBOARD
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');
     Route::get('/operacionDiaView', [DashboardController::class, 'operacionDiaView'])->name('operacionDiaView');

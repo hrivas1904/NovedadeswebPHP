@@ -448,30 +448,64 @@ function cargarAdjuntosPedido(pedidoId) {
     $("#sinAdjuntosMsg").addClass("d-none");
 
     $.get(`/administracion/compras/${pedidoId}/adjuntos`, function (resp) {
+
         if (!resp.data.length) {
             $("#sinAdjuntosMsg").removeClass("d-none");
             return;
         }
 
         resp.data.forEach((adj) => {
-            const icono = adj.esImagen ? "fa-file-image" : "fa-file-pdf";
+
+            const icono = adj.esImagen
+                ? "fa-file-image"
+                : "fa-file-pdf";
 
             const col = `
                 <div class="col-md-3 col-6">
-                    <div class="border rounded p-2 text-center h-100" style="cursor:pointer;" onclick="verAdjunto('${adj.url}', '${adj.nombre}', ${adj.esImagen})">
-                        <i class="fa-solid ${icono} fa-2x mb-1 text-secondary"></i>
-                        <div class="small text-truncate" title="${adj.nombre}">${adj.nombre}</div>
+
+                    <div class="border rounded p-2 text-center h-100 position-relative">
+
+                        <button type="button"
+                            class="btn btn-sm btn-outline-danger btnEliminarPresupuesto position-absolute top-0 end-0 m-1"
+                            data-id="${adj.id}"
+                            title="Eliminar presupuesto">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                        <div style="cursor:pointer;"
+                            onclick="verAdjunto(
+                                '${adj.url}',
+                                '${adj.nombre}',
+                                ${adj.esImagen}
+                            )">
+
+                            <i class="fa-solid ${icono} fa-2x mb-1 text-secondary"></i>
+
+                            <div class="small text-truncate"
+                                title="${adj.nombre}">
+                                ${adj.nombre}
+                            </div>
+
+                        </div>
+
                     </div>
+
                 </div>
             `;
+
             $("#detalleAdjuntosBody").append(col);
         });
-    }).fail(function () {
+    })
+    .fail(function () {
+
         Swal.fire(
             "Error",
             "No se pudieron cargar los adjuntos del pedido.",
             "error",
         );
+
     });
 }
 

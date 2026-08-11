@@ -249,6 +249,19 @@
                     Presupuestos / cotizaciones adjuntas
                 </h6>
 
+                <div class="row g-2 align-items-end mb-3">
+                    <div class="col-12 col-md-9">
+                        <input type="file" class="form-control" id="inputPresupuesto" accept=".pdf,.jpg,.jpeg,.png,.webp,.xlsx,.xls,.doc,.docx">
+                    </div>
+
+                    <div class="col-12 col-md-3 d-grid">
+                        <button type="button" class="btn btn-primary" id="btnSubirPresupuesto">
+                            <i class="fa-solid fa-upload me-2"></i>
+                            Subir archivo
+                        </button>
+                    </div>
+                </div>
+
                 <div id="detalleAdjuntosBody" class="row g-2">
                 </div>
 
@@ -302,7 +315,7 @@
                 <button class="btn btn-primary d-none" id="btnRegenerarExcelFinnegans">
                     Regenerar Excel
                 </button>
-                <button class="btn btn-secondary" id="btnHabilitarEdicionPedido">
+                <button class="btn btn-secondary d-none" id="btnHabilitarEdicionPedido">
                     Editar
                 </button>
                 <button class="btn btn-primary d-none" id="btnGuardarCambiosPedidos">
