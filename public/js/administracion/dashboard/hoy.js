@@ -88,8 +88,46 @@ function cargarHoy(mes) {
     $.get(HOY_ROUTES.data, { mes: mes }, function (data) {
         const r = data.resumen;
 
-        $("#cardBodyMacro").text(fmtPesosCompacto(r.ingresos_presupuestados));
-        $("#cardBodyNacion").text(fmtPesosCompacto(r.egresos_presupuestados));
+        if (r.ingresos_presupuestados > 0) {
+            $("#cardBodyMacro").css("color", "#1DAC8A");
+        } else if (r.ingresos_presupuestados < 0) {
+            $("#cardBodyMacro").css("color", "#d64545");
+        } else {
+            $("#cardBodyMacro").css("color", "#00558C");
+        }
+
+        if (r.neto_presupuestado > 0) {
+            $("#cardBodyFrances9").css("color", "#1DAC8A");
+        } else if (r.neto_presupuestado < 0) {
+            $("#cardBodyFrances9").css("color", "#d64545");
+        } else {
+            $("#cardBodyFrances9").css("color", "#00558C");
+        }
+
+        if (r.saldo_bancos > 0) {
+            $("#cardBodyFrances1").css("color", "#1DAC8A");
+        } else if (r.saldo_bancos < 0) {
+            $("#cardBodyFrances1").css("color", "#d64545");
+        } else {
+            $("#cardBodyFrances1").css("color", "#00558C");
+        }
+
+        if (r.necesidad_rescate > 0) {
+            $("#lblNecesidadMonto").css("color", "#1DAC8A");
+        } else if (r.necesidad_rescate < 0) {
+            $("#lblNecesidadMonto").css("color", "#d64545");
+        } else {
+            $("#lblNecesidadMonto").css("color", "#00558C");
+        }
+
+        if (r.egresos_presupuestados===0){
+            $("#cardBodyNacion").text(fmtPesosCompacto(r.egresos_presupuestados));
+        } else {
+            $("#cardBodyNacion").text("-"+fmtPesosCompacto(r.egresos_presupuestados));
+            $("#cardBodyNacion").css("color", "#d64545");
+        }
+
+        $("#cardBodyMacro").text(fmtPesosCompacto(r.ingresos_presupuestados));        
         $("#cardBodyFrances9").text(fmtPesosCompacto(r.neto_presupuestado));
         $("#cardBodyFrances1").text(fmtPesosCompacto(r.saldo_bancos));
 
