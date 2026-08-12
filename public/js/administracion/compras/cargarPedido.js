@@ -5,7 +5,7 @@ $(function () {
     cargarProveedores($("#cmbProveedor"), null);
     cargarProductos(function () {
         agregarLinea();
-    });
+    });     
 });
 
 function cargarCentrosCosto(
@@ -144,22 +144,14 @@ function cargarProductos(callback = null) {
 
 cargarProductos.productos = [];
 
-function inicializarSelectProducto(
-    selectorProducto,
-    contenedorPadre = null,
-    valorSeleccionado = null
-) {
-
+function inicializarSelectProducto(selectorProducto, contenedorPadre = null, valorSeleccionado = null) {
     cargarProductos(function (productos) {
-
         const select = $(selectorProducto);
-
         if (select.hasClass("select2-hidden-accessible")) {
             select.select2("destroy");
         }
 
         select.empty();
-
         select.append('<option value=""></option>');
 
         productos.forEach(function (item) {
@@ -252,9 +244,11 @@ function agregarLinea(prefill = null) {
 
     const select = $("#producto_" + id);
 
+    const modalPadre = select.closest(".modal");
+
     inicializarSelectProducto(
         select,
-        null,
+        modalPadre.length ? modalPadre : null,
         prefill?.producto_id ?? null
     );
 
@@ -378,30 +372,55 @@ function renderAdjuntosList() {
     });
 }
 
-function enviarPedido() {
+function enviarPedido(desdeModal = false) {
+
     const lineas = leerLineas();
 
     if (lineas.length === 0) {
-        Swal.fire("Atención", "Debe agregar al menos un producto.", "warning");
+        Swal.fire(
+            "Atención",
+            "Debe agregar al menos un producto.",
+            "warning"
+        );
         return;
     }
+
+    const centroCosto = desdeModal
+        ? $("#cmbCentroCostoModal").val()
+        : $("#cmbCentroCosto").val();
+
+    const proveedor = desdeModal
+        ? $("#cmbProveedorModal").val()
+        : $("#cmbProveedor").val();
 
     const formData = new FormData();
 
     formData.append("fecha", $("#fFecha").val());
     formData.append("prioridad", $("#fPrioridad").val());
     formData.append("solicitante_id", $("#fUserId").val());
-    formData.append("centro_costo_id", $("#cmbCentroCosto").val());
-    formData.append("proveedor_id", $("#cmbProveedor").val());
+    formData.append("centro_costo_id", centroCosto);
+    formData.append("proveedor_id", proveedor);
     formData.append("descripcion", $("#fDescripcion").val());
 
     lineas.forEach((item, i) => {
-        formData.append(`detalle[${i}][producto_id]`, item.producto_id);
-        formData.append(`detalle[${i}][cantidad]`, item.cantidad);
-        formData.append(`detalle[${i}][precio]`, item.precio);
+        formData.append(
+            `detalle[${i}][producto_id]`,
+            item.producto_id
+        );
+
+        formData.append(
+            `detalle[${i}][cantidad]`,
+            item.cantidad
+        );
+
+        formData.append(
+            `detalle[${i}][precio]`,
+            item.precio
+        );
+
         formData.append(
             `detalle[${i}][descripcion_item]`,
-            item.descripcion_item || "",
+            item.descripcion_item || ""
         );
     });
 
@@ -412,27 +431,49 @@ function enviarPedido() {
     $.ajax({
         url: "/administracion/compras/guardar",
         type: "POST",
+
         headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            "X-CSRF-TOKEN":
+                $('meta[name="csrf-token"]').attr("content"),
         },
+
         data: formData,
         processData: false,
         contentType: false,
 
-        success: function () {
+        success: function (response) {
+
             Swal.fire({
                 icon: "success",
-                title: "Pedido registrado correctamente",
+                title: "¡Operación exitosa!",
+                text: "Pedido registrado correctamente.",
+                timer: 1500,
+                showConfirmButton: false,
             }).then(() => {
-                location.reload();
+
+                if (desdeModal) {
+                    $("#modalCargaPedido").modal("hide");
+                    $("#tablaPedidosCompras")
+                        .DataTable()
+                        .ajax
+                        .reload(null, false);
+
+                } else {
+                    window.location.href = "/administracion/panelAdminView";
+                }
             });
         },
 
         error: function (xhr) {
-            console.log(xhr.responseText);
+
+            console.error(xhr.responseText);
+
             Swal.fire({
                 icon: "error",
                 title: "Ocurrió un error",
+                text:
+                    xhr.responseJSON?.mensaje ??
+                    "No fue posible registrar el pedido.",
             });
         },
     });

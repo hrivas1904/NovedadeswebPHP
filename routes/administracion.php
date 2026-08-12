@@ -35,26 +35,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/compras/aprobar-gerente', [ComprasController::class, 'aprobarPedidoGerente']);
     Route::get('pedidos/{pedido}/listarObservaciones', [ComprasController::class, 'listarObservaciones'])->name('pedidos.observaciones.index');
     Route::post('pedidos/{pedido}/agregarObservaciones', [ComprasController::class, 'crearObservacion'])->name('pedidos.observaciones.store');
-
-    Route::post(
-        '/compras/pedidos/{id}/presupuestos',
-        [ComprasController::class, 'subirPresupuesto']
-    );
-
-    Route::delete(
-        '/compras/presupuestos/{id}',
-        [ComprasController::class, 'eliminarPresupuesto']
-    );
-
-    Route::put(
-        '/compras/pedidos/{id}/actualizar',
-        [ComprasController::class, 'actualizarPedido']
-    );
-
-    Route::delete(
-        '/compras/orden-compra/{id}',
-        [ComprasController::class, 'eliminarOrdenCompra']
-    )->name('compras.eliminarOrdenCompra');
+    Route::post('/compras/pedidos/{id}/presupuestos',[ComprasController::class, 'subirPresupuesto']);
+    Route::delete('/compras/presupuestos/{id}',[ComprasController::class, 'eliminarPresupuesto']);
+    Route::put('/compras/pedidos/{id}/actualizar',[ComprasController::class, 'actualizarPedido']);
+    Route::delete('/compras/orden-compra/{id}',[ComprasController::class, 'eliminarOrdenCompra'])->name('compras.eliminarOrdenCompra');
 
     //DASHBOARD
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');

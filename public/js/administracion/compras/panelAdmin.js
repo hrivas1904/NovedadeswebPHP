@@ -873,3 +873,9 @@ $(document).on('click', '#btnEnviarObservacion', function () {
         }
     });
 });
+
+$("#btnAbrirModalNuevoPedido").on("click", function(){
+    cargarCentrosCosto($("#cmbCentroCostoModal"), $("#modalCargaPedido"));
+    cargarProveedores($("#cmbProveedorModal"), $("#modalCargaPedido"));      
+    $("#modalCargaPedido").modal("show");
+})
