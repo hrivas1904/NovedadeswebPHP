@@ -122,6 +122,88 @@ class ComprasController extends Controller
         }
     }
 
+    public function actualizarPedido(Request $request, $id)
+    {
+        $request->validate([
+            'prioridad'                   => ['required', 'in:BAJA,MEDIA,URGENTE'],
+            'centro_costo_id'             => ['nullable', 'integer', 'exists:centros_costo,id'],
+            'proveedor_id'                => ['nullable', 'integer', 'exists:proveedores,id'],
+            'descripcion'                 => ['nullable', 'string'],
+
+            'detalle'                     => ['required', 'array', 'min:1'],
+            'detalle.*.id'                => ['nullable', 'integer'],
+            'detalle.*.producto_id'       => ['required', 'integer', 'exists:productos,id'],
+            'detalle.*.cantidad'          => ['required', 'numeric', 'min:0.01'],
+            'detalle.*.precio'            => ['nullable', 'numeric', 'min:0'],
+            'detalle.*.descripcion_item'  => ['nullable', 'string'],
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            // CABECERA
+            DB::statement(
+                "CALL SP_ACTUALIZAR_PEDIDO_COMPRA(?,?,?,?,?,?)",
+                [
+                    $id,
+                    strtoupper($request->prioridad),
+                    $request->centro_costo_id ?: null,
+                    $request->proveedor_id ?: null,
+                    $request->descripcion,
+                    Auth::id(),
+                ]
+            );
+
+            // DETALLE
+            foreach ($request->detalle as $item) {
+
+                if (!empty($item['id'])) {
+
+                    // Línea existente
+                    DB::statement(
+                        "CALL SP_ACTUALIZAR_DETALLE_PEDIDO_COMPRA(?,?,?,?,?)",
+                        [
+                            $item['id'],
+                            $item['producto_id'],
+                            $item['cantidad'],
+                            $item['precio'] !== '' ? $item['precio'] : null,
+                            $item['descripcion_item'] ?? null,
+                        ]
+                    );
+                } else {
+
+                    // Línea nueva
+                    DB::statement(
+                        "CALL SP_GUARDAR_DETALLE_PEDIDO_COMPRA(?,?,?,?,?)",
+                        [
+                            $id,
+                            $item['producto_id'],
+                            $item['cantidad'],
+                            $item['precio'] !== '' ? $item['precio'] : null,
+                            $item['descripcion_item'] ?? null,
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Pedido actualizado correctamente.',
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function listarPedidosCompras(Request $request)
     {
         $data = DB::select(

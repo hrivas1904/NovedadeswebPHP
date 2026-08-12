@@ -46,6 +46,11 @@ Route::middleware(['auth'])->group(function () {
         [ComprasController::class, 'eliminarPresupuesto']
     );
 
+    Route::put(
+        '/compras/pedidos/{id}/actualizar',
+        [ComprasController::class, 'actualizarPedido']
+    );
+
     //DASHBOARD
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');
     Route::get('/operacionDiaView', [DashboardController::class, 'operacionDiaView'])->name('operacionDiaView');

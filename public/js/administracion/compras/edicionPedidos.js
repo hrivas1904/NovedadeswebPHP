@@ -1,16 +1,86 @@
 $("#btnHabilitarEdicionPedido").on("click", function(){
     $(this).addClass("d-none");
-    $("#btnGuardarCambiosPedidos").removeClass("d-none");
-    $("#verPrioridad,#verCentroCosto, #verProveedor").prop("disabled",false);
-    cargarCentrosCosto($("#verCentroCosto"), $("#modalDetallePedido"));
-    cargarProveedores($("#verProveedor"), $("#modalDetallePedido"));
+    $("#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla").removeClass("d-none");
+    $("#verPrioridad, #verCentroCosto, #verProveedor").prop("disabled",false).trigger("change.select2");
+    $("#verDescripcion").prop("readonly",false);
+
+    $(".selector-producto").prop("disabled",false).trigger("change.select2");
+    $(".input-descripcion, .input-cantidad, .input-cantidad").prop("readonly",false);
 })
 
-$("#btnGuardarCambiosPedidos").on("click", function(){
-    $(this).addClass("d-none");
-    $("#btnHabilitarEdicionPedido").removeClass("d-none");
-    $("#verPrioridad, #verCentroCosto, #verProveedor").prop("disabled",true);
-})
+$("#btnGuardarCambiosPedidos").on("click", function () {
+
+    const pedidoId = $("#modalDetallePedido").data("pedido-id");
+
+    console.log("PEDIDO A ACTUALIZAR:", pedidoId);
+
+    if (!pedidoId) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo identificar el pedido.",
+        });
+
+        return;
+    }
+
+    const detalle = leerDetallePedido();
+
+    $.ajax({
+        url: `/administracion/compras/pedidos/${pedidoId}/actualizar`,
+        type: "PUT",
+
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        data: {
+            prioridad: $("#verPrioridad").val(),
+            centro_costo_id: $("#verCentroCosto").val(),
+            proveedor_id: $("#verProveedor").val(),
+            descripcion: $("#verDescripcion").val(),
+            detalle: detalle,
+            eliminados: DETALLES_ELIMINADOS,
+        },
+
+        success: function (response) {
+
+            Swal.fire({
+                icon: "success",
+                title: "¡Operación exitosa!",
+                text: "Pedido actualizado correctamente.",
+                timer: 1200,
+                showConfirmButton: false,
+            });
+
+            $("#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla").addClass("d-none");
+            $("#verPrioridad, #verCentroCosto, #verProveedor").prop("disabled",true)
+            $("#verDescripcion").prop("readonly",true);
+
+            $(".selector-producto").prop("disabled",true);
+            $(".input-descripcion, .input-cantidad, .input-cantidad").prop("readonly",true);
+
+
+            $("#tablaPedidosCompras")
+                .DataTable()
+                .ajax
+                .reload(null, false);
+        },
+
+        error: function (xhr) {
+
+            console.error(xhr.responseText);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    xhr.responseJSON?.mensaje ??
+                    "No fue posible actualizar el pedido.",
+            });
+        },
+    });
+});
 
 $("#btnSubirPresupuesto").on("click", function () {
 
@@ -161,3 +231,24 @@ $(document).on("click", ".btnEliminarPresupuesto", function (e) {
         });
     });
 });
+
+function leerDetallePedido() {
+
+    const detalle = [];
+
+    $("#detalleProductosBody tr").each(function () {
+
+        const fila = $(this);
+
+        detalle.push({
+            id: fila.data("detalle-id") || null,
+            producto_id: fila.find(".selector-producto").val(),
+            descripcion_item: fila.find(".input-descripcion").val().trim(),
+            cantidad: fila.find(".input-cantidad").val(),
+            precio: fila.find(".input-precio").val(),
+        });
+
+    });
+
+    return detalle;
+}

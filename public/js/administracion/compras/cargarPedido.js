@@ -1,12 +1,18 @@
 document.getElementById("fFecha").value = new Date().toISOString().slice(0, 10);
 
-$(function () {
+$(function () {    
     cargarCentrosCosto($("#cmbCentroCosto"), null);
     cargarProveedores($("#cmbProveedor"), null);
-    cargarProductos();
+    cargarProductos(function () {
+        agregarLinea();
+    });
 });
 
-function cargarCentrosCosto(selectorCentroCosto, contenedorPadre) {
+function cargarCentrosCosto(
+    selectorCentroCosto,
+    contenedorPadre,
+    valorSeleccionado = null,
+) {
     $.ajax({
         url: "/administracion/compras/centros-costo/listar",
         type: "GET",
@@ -34,6 +40,10 @@ function cargarCentrosCosto(selectorCentroCosto, contenedorPadre) {
                 width: "100%",
                 dropdownParent: contenedorPadre,
             });
+
+            if (valorSeleccionado) {
+                combo.val(valorSeleccionado).trigger("change");
+            }
         },
 
         error: function () {
@@ -46,14 +56,18 @@ function cargarCentrosCosto(selectorCentroCosto, contenedorPadre) {
     });
 }
 
-function cargarProveedores(selectorProveedor, contenedorPadre) {
+function cargarProveedores(
+    selectorProveedor,
+    contenedorPadre,
+    valorSeleccionado = null,
+) {
     $.ajax({
         url: "/administracion/compras/proveedores/listar",
         type: "GET",
         dataType: "json",
 
         success: function (response) {
-            let combo = selectorProveedor;          
+            let combo = selectorProveedor;
 
             combo.empty();
 
@@ -75,6 +89,10 @@ function cargarProveedores(selectorProveedor, contenedorPadre) {
                 width: "100%",
                 dropdownParent: contenedorPadre,
             });
+
+            if (valorSeleccionado) {
+                combo.val(valorSeleccionado).trigger("change");
+            }
         },
 
         error: function () {
@@ -89,19 +107,27 @@ function cargarProveedores(selectorProveedor, contenedorPadre) {
 
 let PRODUCTOS = [];
 
-function cargarProductos() {
+function cargarProductos(callback = null) {
+
+    if (cargarProductos.productos?.length > 0) {
+        if (typeof callback === "function") {
+            callback(cargarProductos.productos);
+        }
+        return;
+    }
+
     $.ajax({
         url: "/administracion/compras/productos/listar",
         type: "GET",
         dataType: "json",
 
         success: function (response) {
-            PRODUCTOS = response;
 
-            console.log("Productos cargados:", PRODUCTOS);
+            cargarProductos.productos = response;
 
-            // Agrega la primera línea recién ahora
-            agregarLinea();
+            if (typeof callback === "function") {
+                callback(response);
+            }
         },
 
         error: function (xhr) {
@@ -113,6 +139,54 @@ function cargarProductos() {
                 text: "No se pudieron cargar los productos.",
             });
         },
+    });
+}
+
+cargarProductos.productos = [];
+
+function inicializarSelectProducto(
+    selectorProducto,
+    contenedorPadre = null,
+    valorSeleccionado = null
+) {
+
+    cargarProductos(function (productos) {
+
+        const select = $(selectorProducto);
+
+        if (select.hasClass("select2-hidden-accessible")) {
+            select.select2("destroy");
+        }
+
+        select.empty();
+
+        select.append('<option value=""></option>');
+
+        productos.forEach(function (item) {
+            select.append(`
+                <option value="${item.id}">
+                    ${item.nombre}
+                </option>
+            `);
+        });
+
+        const config = {
+            placeholder: "Seleccione un producto...",
+            allowClear: true,
+            width: "100%",
+        };
+
+        if (contenedorPadre) {
+            config.dropdownParent = $(contenedorPadre);
+        }
+
+        select.select2(config);
+
+        if (valorSeleccionado !== null && valorSeleccionado !== undefined) {
+            select
+                .val(String(valorSeleccionado))
+                .trigger("change.select2");
+        }
     });
 }
 
@@ -130,6 +204,7 @@ let lineaSeq = 0;
 
 function agregarLinea(prefill = null) {
     lineaSeq++;
+
     const id = "ln" + lineaSeq;
 
     const tr = document.createElement("tr");
@@ -137,12 +212,10 @@ function agregarLinea(prefill = null) {
 
     tr.innerHTML = `
         <td class="ps-4">
-
             <select
                 id="producto_${id}"
                 class="form-select form-select-sm">
             </select>
-
         </td>
 
         <td>
@@ -166,8 +239,10 @@ function agregarLinea(prefill = null) {
 
         <td class="text-center">
             <button
+                type="button"
                 class="btn btn-sm btn-outline-danger"
                 onclick="quitarLinea('${id}')">
+
                 <i class="fa-solid fa-trash"></i>
             </button>
         </td>
@@ -175,41 +250,31 @@ function agregarLinea(prefill = null) {
 
     document.getElementById("lineasBody").appendChild(tr);
 
-    // Cargar productos en el Select2
-    let select = $("#producto_" + id);
+    const select = $("#producto_" + id);
 
-    select.append('<option value="">Seleccione un producto...</option>');
+    inicializarSelectProducto(
+        select,
+        null,
+        prefill?.producto_id ?? null
+    );
 
-    PRODUCTOS.forEach(function (item) {
-        select.append(`
-            <option value="${item.id}">
-                ${item.nombre}
-            </option>
-        `);
-    });
-
-    select.select2({
-        placeholder: "Seleccione un producto...",
-        width: "100%",
-    });
-
-    // Completar automáticamente la descripción
     select.on("change", function () {
-        let descripcion = $("#desc_" + id);
 
-        if (descripcion.val() === "") {
-            descripcion.val($(this).find("option:selected").text());
+        const descripcion = $("#desc_" + id);
+
+        if (descripcion.val().trim() === "") {
+            descripcion.val(
+                $(this)
+                    .find("option:selected")
+                    .text()
+                    .trim()
+            );
         }
     });
 
-    // Si viene una línea para editar
     if (prefill) {
-        select.val(prefill.producto_id).trigger("change");
-
         $("#desc_" + id).val(prefill.desc || "");
-
         $("#cant_" + id).val(prefill.cant ?? 1);
-
         $("#precio_" + id).val(prefill.precio ?? "");
     }
 }

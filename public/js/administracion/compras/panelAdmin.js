@@ -5,7 +5,9 @@ $(function () {
 function formatearFechaArgentina(fecha) {
     if (!fecha) return "";
 
-    const partes = fecha.split("-"); // yyyy-mm-dd
+    const soloFecha = fecha.split(" ")[0]; // 2026-07-16
+    const partes = soloFecha.split("-");
+
     if (partes.length !== 3) return fecha;
 
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
@@ -39,7 +41,7 @@ $("#tablaPedidosCompras").DataTable({
     language: {
         url: "/js/es-ES.json",
     },
-    scrollX: true,
+    scrollX: false,
     paging: false,
     searching: true,
     autoWidth: false,
@@ -63,11 +65,11 @@ $("#tablaPedidosCompras").DataTable({
                 return formatearFechaArgentina(data);
             },
         },
-        { data: "prioridad", width: "4%" },
+        { data: "prioridad",},
         { data: "solicitante" },
         { data: "sector", },
-        { data: "proveedor" },
-        { data: "descripcion" },
+        { data: "proveedor", },
+        { data: "descripcion", className: "align-middle" },
         { data: "lineas", visible: false },
         { data: "adjuntos", visible: false },
         { data: "autorizacion" },
@@ -88,11 +90,11 @@ $("#tablaPedidosCompras").DataTable({
 
                 if (data.autorizacion == "PENDIENTE") {
                     return `
-                        <button class="btn btn-primary btn-sm btnAutorizar" data-id="${data.id}">
-                            <i class="fa fa-check"></i>
+                        <button class="btn btn-sm btnAutorizar" data-id="${data.id}" style="color:var(--color-accent-green)" title="Aprobar pedido">
+                            <i class="fs-5 fa-regular fa-square-check"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm btnRechazar" data-id="${data.id}">
-                            <i class="fa fa-times"></i>
+                        <button class="btn btn-sm btnRechazar" data-id="${data.id}" style="color:var(--color-accent-red)" title="Rechazar pedido">
+                            <i class="fs-5 fa-regular fa-circle-xmark"></i>
                         </button>
                     `;
                 }
@@ -103,11 +105,11 @@ $("#tablaPedidosCompras").DataTable({
                     PUEDE_APROBAR_GERENTE
                 ) {
                     return `
-                        <button class="btn btn-primary btn-sm btnAutorizarGerente" data-id="${data.id}">
-                            <i class="fa fa-check"></i>
+                        <button class="btn btn-sm btnAutorizarGerente" data-id="${data.id}" style="color:var(--color-accent-green)" title="Aprobar pedido">
+                            <i class="fs-5 fa-regular fa-square-check"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm btnRechazar" data-id="${data.id}">
-                            <i class="fa fa-times"></i>
+                        <button class="btn btn-sm btnRechazar" data-id="${data.id}" style="color:var(--color-accent-red)" title="Rechazar pedido">
+                            <i class="fs-5 fa-regular fa-circle-xmark"></i>
                         </button>
                     `;
                 }
@@ -119,8 +121,8 @@ $("#tablaPedidosCompras").DataTable({
                 }
 
                 return `
-                    <button class="btn btn-secondary btn-sm btnVerDetalle" data-id="${data.id}">
-                        <i class="fa fa-eye"></i>
+                    <button class="btn btn-sm btnVerDetalle" data-id="${data.id}" style="color:var(--color-default)" title="Ver pedido">
+                        <i class="fs-5 fa fa-eye"></i>
                     </button>
                 `;
             },
@@ -158,8 +160,12 @@ $("#tablaPedidosCompras tbody").on("click", "tr", function (e) {
 });
 
 $(document).on("click", ".btnVerDetalle", function (e) {
-    e.stopPropagation(); // opcional, ver nota abajo
-    let id = $(this).data("id");
+    e.stopPropagation();
+
+    const id = $(this).data("id");
+
+    $("#modalDetallePedido").data("pedido-id", id);
+
     verPedido(id);
 });
 
@@ -390,8 +396,8 @@ function verPedido(id) {
             $("#verSolicitante").val(c.solicitante);
             $("#verFecha").val(formatearFechaArgentina(c.fecha));
             $("#verPrioridad").val(c.prioridad);
-            $("#verCentroCosto").val(c.centroCosto);
-            $("#verProveedor").val(c.proveedor);
+            cargarCentrosCosto($("#verCentroCosto"), $("#modalDetallePedido"), c.centroCosto);
+            cargarProveedores($("#verProveedor"), $("#modalDetallePedido"), c.proveedor);
             $("#verEstado").val(c.estado);
             $("#verAutorizacion").val(c.autorizacion);
             $("#verDescripcion").val(c.descripcion);
@@ -401,30 +407,67 @@ function verPedido(id) {
 
             let tbody = $("#detalleProductosBody");
             tbody.empty();
-            response.detalle.forEach(function (item) {
+
+            response.detalle.forEach(function (item, index) {
+
                 const precioTexto =
                     item.precio === null || item.precio === undefined
-                        ? "Sin especificar"
-                        : "$ " +
-                          parseFloat(item.precio).toLocaleString("es-AR", {
-                              minimumFractionDigits: 2,
-                          });
+                        ? ""
+                        : parseFloat(item.precio).toLocaleString("es-AR", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        });
 
                 tbody.append(`
-                    <tr>
-                        <td>${item.producto}</td>
-                        <td>${item.descripcion_item ?? ""}</td>
-                        <td class="text-center">
-                            ${item.cantidad}
+                    <tr data-detalle-id="${item.id}">
+                        <td>
+                            <select
+                                id="productoDetalle_${index}"
+                                class="form-control selector-producto"
+                                disabled>
+                            </select>
                         </td>
+
+                        <td>
+                            <input
+                                class="form-control input-descripcion"
+                                value="${item.descripcion_item ?? ""}"
+                                readonly>
+                        </td>
+
+                        <td class="text-center">
+                            <input
+                                class="form-control input-cantidad"
+                                value="${item.cantidad}"
+                                readonly>
+                        </td>
+
                         <td class="text-end">
-                            ${precioTexto}
+                            <input
+                                class="form-control input-precio"
+                                value="${precioTexto}"
+                                readonly>
+                        </td>
+
+                        <td class="text-center campoDeleteTabla d-none">
+                            <button
+                                type="button"
+                                class="btn btn-sm btnEliminarProducto"
+                                style="color:var(--color-accent-red);">
+
+                                <i class="fs-5 fa-regular fa-trash-can"></i>
+                            </button>
                         </td>
                     </tr>
                 `);
-            });
 
-            // guardamos el id actual en el propio modal, para que btnSubirOrdenCompra lo pueda leer
+                inicializarSelectProducto(
+                    $("#productoDetalle_" + index),
+                    $("#modalDetallePedido"),
+                    item.producto_id
+                );
+            });
+            
             $("#modalDetallePedido").data("pedido-id", id);
 
             cargarAdjuntosPedido(id);
@@ -435,13 +478,34 @@ function verPedido(id) {
             if ($("#verEstado").val()==='GENERADO'){
                 $("#btnRegenerarExcelFinnegans").removeClass("d-none");
             }
-
             else {
                 $("#btnRegenerarExcelFinnegans").addClass("d-none");
+            }
+
+            if ($("#verAutorizacion").val()==='APROBADA'){
+                $("#divPresupuestosAdjuntos, #btnHabilitarEdicionPedido").addClass("d-none");
+            } else {
+                $("#divPresupuestosAdjuntos, #btnHabilitarEdicionPedido").removeClass("d-none");
             }
         },
     });
 }
+
+let DETALLES_ELIMINADOS = [];
+$(document).on("click", ".btnEliminarProducto", function () {
+
+    const fila = $(this).closest("tr");
+    const detalleId = fila.data("detalle-id");
+
+    // Si ya existe en BD, guardamos el ID para eliminarlo al confirmar
+    if (detalleId) {
+        DETALLES_ELIMINADOS.push(detalleId);
+    }
+
+    fila.remove();
+});
+
+
 
 function cargarAdjuntosPedido(pedidoId) {
     $("#detalleAdjuntosBody").html("");
@@ -462,41 +526,47 @@ function cargarAdjuntosPedido(pedidoId) {
 
             const col = `
                 <div class="col-md-3 col-6">
+                    <div class="d-flex align-items-center border rounded p-2 gap-2">
 
-                    <div class="border rounded p-2 text-center h-100 position-relative">
+                        <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden"
+                            style="cursor:pointer;"
+                            onclick="verAdjunto('${adj.url}', '${adj.nombre}', ${adj.esImagen})">
 
-                        <button type="button"
-                            class="btn btn-sm btn-outline-danger btnEliminarPresupuesto position-absolute top-0 end-0 m-1"
-                            data-id="${adj.id}"
-                            title="Eliminar presupuesto">
+                            <div class="d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width:38px; height:38px;">
+                                <i class="fa-solid ${icono} fs-4 text-secondary"></i>
+                            </div>
 
-                            <i class="fa-solid fa-trash"></i>
+                            <div class="overflow-hidden">
+                                <div class="small fw-semibold text-truncate"
+                                    title="${adj.nombre}">
+                                    ${adj.nombre}
+                                </div>
 
-                        </button>
-
-                        <div style="cursor:pointer;"
-                            onclick="verAdjunto(
-                                '${adj.url}',
-                                '${adj.nombre}',
-                                ${adj.esImagen}
-                            )">
-
-                            <i class="fa-solid ${icono} fa-2x mb-1 text-secondary"></i>
-
-                            <div class="small text-truncate"
-                                title="${adj.nombre}">
-                                ${adj.nombre}
+                                <div class="text-muted" style="font-size: 0.72rem;">
+                                    Ver archivo
+                                </div>
                             </div>
 
                         </div>
 
-                    </div>
+                        <button type="button"
+                            class="btn btn-sm btn-outline-danger btnEliminarPresupuesto flex-shrink-0"
+                            data-id="${adj.id}"
+                            title="Eliminar presupuesto">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
 
+                    </div>
                 </div>
             `;
 
             $("#detalleAdjuntosBody").append(col);
         });
+
+        if ($("#verAutorizacion").val()==='APROBADA'){
+            $(".btnEliminarPresupuesto").addClass('d-none');
+        }
     })
     .fail(function () {
 
@@ -612,13 +682,45 @@ function cargarOrdenesCompra(pedidoId) {
             resp.data.forEach((adj) => {
                 const icono = adj.esImagen ? "fa-file-image" : "fa-file-pdf";
                 const col = `
-                <div class="col-md-3 col-6">
-                    <div class="border rounded p-2 text-center h-100" style="cursor:pointer;" onclick="verAdjunto('${adj.url}', '${adj.nombre}', ${adj.esImagen})">
-                        <i class="fa-solid ${icono} fa-2x mb-1 text-secondary"></i>
-                        <div class="small text-truncate" title="${adj.nombre}">${adj.nombre}</div>
+                    <div class="col-md-3 col-6">
+                        <div class="d-flex align-items-center border rounded p-2 gap-2 adjunto-item">
+
+                            <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden"
+                                style="cursor:pointer;"
+                                onclick="verAdjunto('${adj.url}', '${adj.nombre}', ${adj.esImagen})">
+
+                                <div class="d-flex align-items-center justify-content-center flex-shrink-0"
+                                    style="width:38px; height:38px;">
+
+                                    <i class="fa-solid ${icono} fs-4 text-secondary"></i>
+
+                                </div>
+
+                                <div class="overflow-hidden">
+                                    <div class="small fw-semibold text-truncate"
+                                        title="${adj.nombre}">
+                                        ${adj.nombre}
+                                    </div>
+
+                                    <div class="text-muted" style="font-size: 0.72rem;">
+                                        Ver archivo
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <button type="button"
+                                class="btn btn-sm btn-outline-danger btnEliminarOrdenCompra flex-shrink-0"
+                                data-id="${adj.id}"
+                                title="Eliminar orden de compra">
+
+                                <i class="fa-regular fa-trash-can"></i>
+
+                            </button>
+
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
                 $("#detalleOCBody").append(col);
             });
         },

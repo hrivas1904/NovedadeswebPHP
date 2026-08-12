@@ -225,9 +225,13 @@
                     </div>
                 </div>
 
-                <h6 class="fw-bold mb-3">
+                <h6 class="fw-bold">
                     Productos solicitados
                 </h6>
+
+                <div class="d-flex justify-content-start my-2 d-none" id="divBotonAgregarProductoDetalle">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregarProductoDetalle">Agregar producto</button>
+                </div>
 
                 <div class="table-responsive">
                     <table
@@ -238,6 +242,7 @@
                                 <th>Descripción</th>
                                 <th class="text-center">Cantidad</th>
                                 <th class="text-end">Precio Unitario sin Impuestos</th>
+                                <th class="text-center d-none" id="campoDeleteTabla"></th>
                             </tr>
                         </thead>
                         <tbody id="detalleProductosBody">
@@ -249,7 +254,7 @@
                     Presupuestos / cotizaciones adjuntas
                 </h6>
 
-                <div class="row g-2 align-items-end mb-3">
+                <div class="row g-2 align-items-end mb-3" id="divPresupuestosAdjuntos">
                     <div class="col-12 col-md-9">
                         <input type="file" class="form-control" id="inputPresupuesto" accept=".pdf,.jpg,.jpeg,.png,.webp,.xlsx,.xls,.doc,.docx">
                     </div>
@@ -315,7 +320,7 @@
                 <button class="btn btn-primary d-none" id="btnRegenerarExcelFinnegans">
                     Regenerar Excel
                 </button>
-                <button class="btn btn-secondary d-none" id="btnHabilitarEdicionPedido">
+                <button class="btn btn-secondary" id="btnHabilitarEdicionPedido">
                     Editar
                 </button>
                 <button class="btn btn-primary d-none" id="btnGuardarCambiosPedidos">
