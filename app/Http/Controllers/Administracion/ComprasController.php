@@ -656,4 +656,45 @@ class ComprasController extends Controller
             ], 500);
         }
     }
+
+    public function eliminarOrdenCompra($id)
+    {
+        try {
+
+            $adjunto = DB::table('pedidos_compras_adjuntos')
+                ->where('id', $id)
+                ->where('tipo', 'ORDEN_COMPRA')
+                ->first();
+
+            if (!$adjunto) {
+                return response()->json([
+                    'success' => false,
+                    'mensaje' => 'La orden de compra no existe.'
+                ], 404);
+            }
+
+            // Eliminar archivo físico
+            if ($adjunto->archivo && Storage::disk('public')->exists($adjunto->archivo)) {
+                Storage::disk('public')->delete($adjunto->archivo);
+            }
+
+            // Eliminar registro
+            DB::statement(
+                'CALL SP_ELIMINAR_ADJUNTO_PEDIDO_COMPRA(?)',
+                [$id]
+            );
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Orden de compra eliminada correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No fue posible eliminar la orden de compra.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

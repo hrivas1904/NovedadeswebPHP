@@ -505,8 +505,6 @@ $(document).on("click", ".btnEliminarProducto", function () {
     fila.remove();
 });
 
-
-
 function cargarAdjuntosPedido(pedidoId) {
     $("#detalleAdjuntosBody").html("");
     $("#sinAdjuntosMsg").addClass("d-none");
@@ -726,6 +724,66 @@ function cargarOrdenesCompra(pedidoId) {
         },
     );
 }
+
+$(document).on("click", ".btnEliminarOrdenCompra", function (e) {
+    e.stopPropagation();
+
+    const adjuntoId = $(this).data("id");
+    const pedidoId = $("#modalDetallePedido").data("pedido-id");
+
+    Swal.fire({
+        title: "¿Eliminar orden de compra?",
+        text: "El archivo será eliminado definitivamente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        customClass: {
+            confirmButton: "btn btn-danger me-2",
+            cancelButton: "btn btn-secondary",
+        },
+        buttonsStyling: false,
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        $.ajax({
+            url: `/administracion/compras/orden-compra/${adjuntoId}`,
+            type: "DELETE",
+
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+
+            success: function (response) {
+
+                // Recargamos las OC del pedido
+                cargarOrdenesCompra(pedidoId);
+
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Operación exitosa!",
+                    text: "Orden de compra eliminada correctamente.",
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            },
+
+            error: function (xhr) {
+
+                console.error(xhr.responseText);
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text:
+                        xhr.responseJSON?.mensaje ??
+                        "No fue posible eliminar la orden de compra.",
+                });
+            },
+        });
+    });
+});
 
 $(document).on("click", "#btnSubirOrdenCompra", function () {
     const input = document.getElementById("inputOrdenCompra");

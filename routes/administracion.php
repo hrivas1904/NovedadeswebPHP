@@ -51,6 +51,11 @@ Route::middleware(['auth'])->group(function () {
         [ComprasController::class, 'actualizarPedido']
     );
 
+    Route::delete(
+        '/compras/orden-compra/{id}',
+        [ComprasController::class, 'eliminarOrdenCompra']
+    )->name('compras.eliminarOrdenCompra');
+
     //DASHBOARD
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');
     Route::get('/operacionDiaView', [DashboardController::class, 'operacionDiaView'])->name('operacionDiaView');
