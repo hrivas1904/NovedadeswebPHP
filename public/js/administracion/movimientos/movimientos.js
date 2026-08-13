@@ -1,7 +1,7 @@
 let tablaMovimientos;
 
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "56vh";
+    return window.innerWidth < 768 ? "28vh" : "65vh";
 }
 
 function getEstadosSeleccionados() {
@@ -296,6 +296,7 @@ $(document).ready(function () {
         language: { url: "/js/es-ES.json" },
         order: [[1, "desc"]],
         pageLength: 25,
+        lengthMenu: [10, 25, 50, 100, { label: 'Todos', value: -1 }],
         searching: false,
         scrollY: getScrollY(),
     });
