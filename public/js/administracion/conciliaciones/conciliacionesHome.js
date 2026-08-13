@@ -1,5 +1,5 @@
 function getScrollY() {
-    return window.innerWidth < 768 ? "28vh" : "56vh";
+    return window.innerWidth < 768 ? "28vh" : "65vh";
 }
 
 $(document).ready(function() {

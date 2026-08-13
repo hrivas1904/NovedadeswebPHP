@@ -45,287 +45,271 @@
 <body>
     <div class="wrapper">
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar" id="sidebar">
+        <header class="topbar">
+            <button type="button" class="btn-mobile-toggle" id="mobileSidebarToggle" aria-label="Abrir menú" title="Abrir menú">
+                <i class="fa-solid fa-bars fw-bold fs-3"></i>
+            </button>
 
-            <div class="sidebar-header">
-                <a class="sidebar-brand" href="{{ route('index') }}">
-                    <img src="{{ asset('img/logo-hp3c-white.png') }}" class="logo-full" alt="HP3C">
-                    <img src="{{ asset('img/logo-hp3c-icon.png') }}" class="logo-icon" alt="HP3C">
-                </a>
-
-                <button
-                    type="button"
-                    class="sidebar-close-btn"
-                    id="sidebarClose"
-                    aria-label="Cerrar menú"
-                    title="Cerrar menú">
-                    <i class="bx bx-x"></i>
-                </button>
+            <div id="divBtnHome" class="mx-2 d-none d-lg-block text-white" style="cursor: pointer;">
+                <div class="d-flex align-items-center gap-2">
+                    <div>
+                       <img src="{{ asset('img/logo-hp3c-icon.png') }}" class="logo-icon" alt="HP3C" style="height: 36px; width: auto;">     
+                    </div>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-0 fw-bold">GESTIÓN HP3C</h4>
+                        <h6 class="mb-0 fw-normal">Plataforma de Gestión</h6>
+                    </div>                    
+                </div>
             </div>
 
-            <div class="sidebar-body">
-                <ul class="sidebar-nav">
+            <div class="topbar-right">
 
-                    <li class="nav-section-title section-rrhh"><span class="section-dot"></span>Recursos Humanos</li>
-
-                    @if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('rrhh.dashboard') }}">
-                            <i class="fa-solid fa-chart-column"></i>
-                            <span class="link-text">Dashboard</span>
-                        </a>
-                    </li>
-                    @endif
-
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-users"></i>
-                            <span class="link-text">Colaboradores</span>
-                        </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('rrhh.miLegajo') }}">Mi legajo</a></li>
-                            @if (Auth::user()->rol === 'Coordinador/a L2' ||
-                            Auth::user()->rol === 'Administrador/a' ||
-                            Auth::user()->rol === 'Coordinador/a')
-                            <li><a class="submenu-link" href="{{ route('rrhh.nominaPersonal') }}">Colaboradores</a></li>
-                            @endif
-                            @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
-                            <li><a class="submenu-link" href="{{ route('rrhh.calendarioServicios') }}">Calendario recepción</a></li>
-                            @endif
-                        </ul>
-                    </li>
-
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-folder-closed"></i>
-                            <span class="link-text">Novedades</span>
-                        </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('rrhh.novedades.misNovedades') }}">Mis novedades</a></li>
-                            @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
-                            <li><a class="submenu-link" href="{{ route('rrhh.controlNovedades') }}">Registro de novedades</a></li>
-                            <li><a class="submenu-link" href="{{ route('rrhh.novedades.historico') }}">Histórico novedades</a></li>
-                            @endif
-                            <li><a class="submenu-link" href="{{ route('rrhh.personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
-                        </ul>
-                    </li>
-
-                    @if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-gear"></i>
-                            <span class="link-text">Ajustes módulo RRHH</span>
-                        </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('rrhh.configNovedades') }}">Conceptos novedades</a></li>
-                            <li><a class="submenu-link" href="{{ route('rrhh.obraSocial.administrarObraSociales') }}">Obras sociales</a></li>
-                            <li><a class="submenu-link" href="{{ route('rrhh.parametrizacionesGenerales') }}">Parámetros generales</a></li>
-                        </ul>
-                    </li>
-                    @endif
-
-                    <!-- ===== SECCIÓN: CALIDAD ===== -->
-                    @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
-                    <li class="nav-section-title section-calidad"><span class="section-dot"></span>Calidad</li>
-                    <!--
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('rrhh.ayuda') }}">
-                            <i class="fa-solid fa-user-tie"></i>
-                            <span class="link-text">Alta dirección</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-certificate"></i>
-                            <span class="link-text">Procesos principales</span>
-                        </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('calidad.encuestasCalidad') }}">Auditoría interna</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Auxiliar servicios</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Coordinación servicios</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Documentos</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Preparación habitaciones</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Jefa de enfermería</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Quirófano</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Reuniones</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">RSE</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Supervisora calidad</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Última auditoría</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-handshake-angle"></i>
-                            <span class="link-text">Procesos de apoyo</span>
-                        </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Proveedores</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - RRHH</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Mantenimiento</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Sistemas</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Limpieza</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Seguridad</a></li>
-                        </ul>
-                    </li>
-                    -->
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-medal"></i>
-                            <span class="link-text">Encuestas</span>
-                        </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('calidad.encuestasCalidad') }}">Importar encuestas</a></li>
-                            <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Dashboard</a></li>
-                        </ul>
-                    </li>
-                    @endif
-
-                    <!-- ===== SECCIÓN: ADMINISTRACIÓN ===== -->
-                    @if (Auth::user()->rol != 'Colaborador/a')
-                    <li class="nav-section-title section-administracion"><span class="section-dot"></span>Administración</li>
-
-                    @if (in_array(Auth::id(), [1,2,5,6]))
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span class="link-text">Gestión financiera</span>
-                        </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('administracion.homeViewFinance') }}">Posición</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.operacionDiaView') }}">Hoy</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.presupuestarView') }}">Presupuestar</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.homeAnalisisView') }}">Análisis</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.movimientosView') }}">Movimientos</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.saldosCuenta.index') }}">Saldos por cuenta</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.importacionView') }}">Importar</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.conciliacionesHomeView') }}">Conciliaciones</a></li>
-                        </ul>
-                    </li>
-                    @endif
-
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#" role="button" aria-expanded="false">
-                            <i class="fa-solid fa-cart-plus"></i>
-                            <span class="link-text">Gestión de compras</span>
-                        </a>
-                        <ul class="submenu">
-                            <li><a class="submenu-link" href="{{ route('administracion.pedidosComprasView') }}">Cargar pedido de compras</a></li>
-                            <li><a class="submenu-link" href="{{ route('administracion.panelAdminView') }}">Pedidos de compras</a></li>
-                            @if (in_array(Auth::id(), [1,2,5,6]))
-                            <li><a class="submenu-link" href="{{ route('administracion.productosProveedoresView') }}">Productos y Proveedores</a></li>
-                            @endif
-                        </ul>
-                    </li>
-                    @endif
-
-                    <!-- ===== SECCIÓN: AJUSTES ===== -->
-                    @if (Auth::user()->rol === 'Administrador/a')
-                    <li class="nav-section-title section-ajustes"><span class="section-dot"></span>USUARIOS Y PERMISOS</li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('rrhh.administrarUsuarios') }}">
-                            <i class="fa-solid fa-users-gear"></i>
-                            <span class="link-text">Administrar usuarios</span>
-                        </a>
-                    </li>
-                    @endif
-
-                    <li class="nav-section-title section-general"><span class="section-dot"></span>General</li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
-                            <i class="fa-solid fa-book-atlas"></i>
-                            <span class="link-text">Capacitaciones</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('rrhh.ayuda') }}">
-                            <i class="fa-regular fa-circle-question"></i>
-                            <span class="link-text">Ayuda</span>
-                        </a>
-                    </li>
-
-                </ul>
-            </div>
-
-            <div class="sidebar-footer p-2">
-                <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="nav-link btn-logout w-100 d-flex align-content-center">
-                        <i class="bx bx-log-out fs-5 me-2"></i>
-                        <span class="link-text fs-6">Cerrar sesión</span>
-                    </button>
-                </form>
-            </div>
-
-        </aside>
-
-        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
-        <!-- CONTENT -->
-        <div class="main-wrapper" id="mainWrapper">
-
-            <header class="topbar">
-                <button type="button" class="btn-mobile-toggle" id="mobileSidebarToggle" aria-label="Abrir menú" title="Abrir menú">
-                    <i class="fa-solid fa-bars fw-bold fs-3"></i>
-                </button>
-
-                <div class="mx-3 d-none d-lg-block text-white">
-                    <h4 class="mb-0 fw-bold">GESTIÓN HP3C</h4>
-                    <h6 class="mb-0 fw-normal">Plataforma de Gestión Integral</h6>
+                <div class="user-chip text-white">
+                    <div class="user-info text-end small">
+                        <div><strong>{{ Auth::user()->name }}</strong></div>
+                        <div class="user-role">{{ Auth::user()->rol }}</div>
+                    </div>
                 </div>
 
-                <div class="topbar-right">
+                <button class="btn btn-light position-relative" id="btnAlertas">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="contadorAlertas" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                </button>
 
-                    <div class="user-chip text-white">
-                        <div class="user-info text-end small">
-                            <div><strong>{{ Auth::user()->name }}</strong></div>
-                            <div class="user-role">{{ Auth::user()->rol }}</div>
+                <div id="dropdownAlertas" class="dropdown-alertas">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Notificaciones</span>
+                                <button id="btnLimpiarAlertas" class="btn btn-sm text-danger p-0">Limpiar</button>
+                            </div>
                         </div>
-                    </div>
-
-                    <button class="btn btn-light position-relative" id="btnAlertas">
-                        <i class="fa-solid fa-bell"></i>
-                        <span id="contadorAlertas" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-                    </button>
-
-                    <div id="dropdownAlertas" class="dropdown-alertas">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fw-semibold">Notificaciones</span>
-                                    <button id="btnLimpiarAlertas" class="btn btn-sm text-danger p-0">Limpiar</button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
-                            </div>
-                            <div class="card-footer d-flex justify-content-center">
-                                <a type="button" href="{{route('notificaciones.panel')}}" class="btn btn-sm btn-primary w-100">Panel de Notificaciones</a>
-                            </div>
-                        </div>                      
-                    </div>
-
-                    @if (Auth::user()->rol == 'Administrador/a')
-                    <a class="btn btn-light position-relative" id="btnVerLog" title="ver Log" href="{{ route('logTransactView') }}">
-                        <i class="fa-solid fa-table-list"></i>
-                    </a>
-                    @endif
-
+                        <div class="card-body">
+                            <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
+                        </div>
+                        <div class="card-footer d-flex justify-content-center">
+                            <a type="button" href="{{route('notificaciones.panel')}}" class="btn btn-sm btn-primary w-100">Panel de Notificaciones</a>
+                        </div>
+                    </div>                      
                 </div>
-            </header>
 
+                @if (Auth::user()->rol == 'Administrador/a')
+                <a class="btn btn-light position-relative" id="btnVerLog" title="ver Log" href="{{ route('logTransactView') }}">
+                    <i class="fa-solid fa-table-list"></i>
+                </a>
+                @endif
+
+            </div>
+        </header>
+
+        <div class="app-body">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-body">
+                    <ul class="sidebar-nav">
+
+                        <li class="nav-section-title section-rrhh"><span class="section-dot"></span>Recursos Humanos</li>
+
+                        @if (Auth::user()->rol === 'Administrador/a')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('rrhh.dashboard') }}">
+                                <i class="fa-solid fa-chart-column"></i>
+                                <span class="link-text">Dashboard</span>
+                            </a>
+                        </li>
+                        @endif
+
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-users"></i>
+                                <span class="link-text">Colaboradores</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('rrhh.miLegajo') }}">Mi legajo</a></li>
+                                @if (Auth::user()->rol === 'Coordinador/a L2' ||
+                                Auth::user()->rol === 'Administrador/a' ||
+                                Auth::user()->rol === 'Coordinador/a')
+                                <li><a class="submenu-link" href="{{ route('rrhh.nominaPersonal') }}">Colaboradores</a></li>
+                                @endif
+                                @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
+                                <li><a class="submenu-link" href="{{ route('rrhh.calendarioServicios') }}">Calendario recepción</a></li>
+                                @endif
+                            </ul>
+                        </li>
+
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-folder-closed"></i>
+                                <span class="link-text">Novedades</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('rrhh.novedades.misNovedades') }}">Mis novedades</a></li>
+                                @if (in_array(Auth::user()->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2']))
+                                <li><a class="submenu-link" href="{{ route('rrhh.controlNovedades') }}">Registro de novedades</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.novedades.historico') }}">Histórico novedades</a></li>
+                                @endif
+                                <li><a class="submenu-link" href="{{ route('rrhh.personal.solicitudes') }}">Solicitud adelanto sueldo</a></li>
+                            </ul>
+                        </li>
+
+                        @if (Auth::user()->rol === 'Administrador/a')
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-gear"></i>
+                                <span class="link-text">Ajustes módulo RRHH</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('rrhh.configNovedades') }}">Conceptos novedades</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.obraSocial.administrarObraSociales') }}">Obras sociales</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.parametrizacionesGenerales') }}">Parámetros generales</a></li>
+                            </ul>
+                        </li>
+                        @endif
+
+                        <!-- ===== SECCIÓN: CALIDAD ===== -->
+                        @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
+                        <li class="nav-section-title section-calidad"><span class="section-dot"></span>Calidad</li>
+                        <!--
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('rrhh.ayuda') }}">
+                                <i class="fa-solid fa-user-tie"></i>
+                                <span class="link-text">Alta dirección</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-certificate"></i>
+                                <span class="link-text">Procesos principales</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('calidad.encuestasCalidad') }}">Auditoría interna</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Auxiliar servicios</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Coordinación servicios</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Documentos</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Preparación habitaciones</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Jefa de enfermería</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Quirófano</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Reuniones</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">RSE</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Supervisora calidad</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Última auditoría</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-handshake-angle"></i>
+                                <span class="link-text">Procesos de apoyo</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Proveedores</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - RRHH</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Mantenimiento</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Sistemas</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Limpieza</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Apoyo - Seguridad</a></li>
+                            </ul>
+                        </li>
+                        -->
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-medal"></i>
+                                <span class="link-text">Encuestas</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('calidad.encuestasCalidad') }}">Importar encuestas</a></li>
+                                <li><a class="submenu-link" href="{{ route('calidad.dashboardCalidad') }}">Dashboard</a></li>
+                            </ul>
+                        </li>
+                        @endif
+
+                        <!-- ===== SECCIÓN: ADMINISTRACIÓN ===== -->
+                        @if (Auth::user()->rol != 'Colaborador/a')
+                        <li class="nav-section-title section-administracion"><span class="section-dot"></span>Administración</li>
+
+                        @if (in_array(Auth::id(), [1,2,5,6]))
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-chart-pie"></i>
+                                <span class="link-text">Gestión financiera</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('administracion.homeViewFinance') }}">Posición</a></li>
+                                <li><a class="submenu-link" href="{{ route('administracion.operacionDiaView') }}">Hoy</a></li>
+                                <li><a class="submenu-link" href="{{ route('administracion.presupuestarView') }}">Presupuestar</a></li>
+                                <li><a class="submenu-link" href="{{ route('administracion.homeAnalisisView') }}">Análisis</a></li>
+                                <li><a class="submenu-link" href="{{ route('administracion.movimientosView') }}">Movimientos</a></li>
+                                <li><a class="submenu-link" href="{{ route('administracion.saldosCuenta.index') }}">Saldos por cuenta</a></li>
+                                <li><a class="submenu-link" href="{{ route('administracion.importacionView') }}">Importar</a></li>
+                                <li><a class="submenu-link" href="{{ route('administracion.conciliacionesHomeView') }}">Conciliaciones</a></li>
+                            </ul>
+                        </li>
+                        @endif
+
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <span class="link-text">Gestión de compras</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('administracion.pedidosComprasView') }}">Cargar pedido de compras</a></li>
+                                <li><a class="submenu-link" href="{{ route('administracion.panelAdminView') }}">Pedidos de compras</a></li>
+                                @if (in_array(Auth::id(), [1,2,5,6]))
+                                <li><a class="submenu-link" href="{{ route('administracion.productosProveedoresView') }}">Productos y Proveedores</a></li>
+                                @endif
+                            </ul>
+                        </li>
+                        @endif
+
+                        <!-- ===== SECCIÓN: AJUSTES ===== -->
+                        @if (Auth::user()->rol === 'Administrador/a')
+                        <li class="nav-section-title section-ajustes"><span class="section-dot"></span>USUARIOS Y PERMISOS</li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('rrhh.administrarUsuarios') }}">
+                                <i class="fa-solid fa-users-gear"></i>
+                                <span class="link-text">Administrar usuarios</span>
+                            </a>
+                        </li>
+                        @endif
+
+                        <li class="nav-section-title section-general"><span class="section-dot"></span>General</li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
+                                <i class="fa-solid fa-book-atlas"></i>
+                                <span class="link-text">Capacitaciones</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('rrhh.ayuda') }}">
+                                <i class="fa-regular fa-circle-question"></i>
+                                <span class="link-text">Ayuda</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div class="sidebar-footer p-2">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="nav-link btn-logout w-100 d-flex align-content-center">
+                            <i class="bx bx-log-out fs-5 me-2"></i>
+                            <span class="link-text fs-6">Cerrar sesión</span>
+                        </button>
+                    </form>
+                </div>
+
+            </aside>
+            
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+                      
             <main class="container-fluid content-area">
                 @yield('content')
             </main>
-
         </div>
-
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -75,7 +75,7 @@ function renderTablaConciliacion() {
         data: filas,
         language: { url: '/js/es-ES.json' },
         lengthMenu: [10, 15, 25, 50, 75, 100, { label: 'Todos', value: -1 }],
-        pageLength: 10,
+        pageLength: 25,
         scrollY: getScrollY(),
         scrollCollapse:true,
         order: [[1, 'desc']],

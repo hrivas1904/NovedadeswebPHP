@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const DESKTOP_BREAKPOINT = 992;
+    const HOVER_CLOSE_DELAY = 150;
 
     const sidebar = document.getElementById("sidebar");
     const mobileToggle = document.getElementById("mobileSidebarToggle");
@@ -12,6 +13,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const submenuItems = [...sidebar.querySelectorAll(".has-submenu")];
 
+    let hoverCloseTimer = null;
+
+    function cancelHoverClose() {
+        clearTimeout(hoverCloseTimer);
+    }
+
+    function scheduleHoverClose() {
+        if (!isDesktop()) return;
+
+        clearTimeout(hoverCloseTimer);
+
+        hoverCloseTimer = setTimeout(() => {
+            closeSidebar();
+        }, HOVER_CLOSE_DELAY);
+    }
+
     function setExpanded(expanded) {
         sidebar.classList.toggle("expanded", expanded);
 
@@ -20,6 +37,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 "aria-expanded",
                 expanded ? "true" : "false",
             );
+
+            const icon = mobileToggle.querySelector("i");
+
+            if (icon) {
+                icon.classList.toggle("fa-bars", !expanded);
+                icon.classList.toggle("fa-xmark", expanded);
+            }
         }
     }
 
@@ -51,9 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function openSidebarMobile() {
-        if (isDesktop()) return;
-
+    function openSidebar() {
         setExpanded(true);
 
         backdrop.classList.add("show");
@@ -61,9 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.classList.add("sidebar-mobile-open");
     }
 
-    function closeSidebarMobile() {
-        if (isDesktop()) return;
-
+    function closeSidebar() {
         setExpanded(false);
 
         backdrop.classList.remove("show");
@@ -74,44 +94,44 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /* ============================
-       DESKTOP
-       ============================ */
-
-    sidebar.addEventListener("mouseenter", () => {
-        if (!isDesktop()) return;
-
-        setExpanded(true);
-    });
-
-    sidebar.addEventListener("mouseleave", () => {
-        if (!isDesktop()) return;
-
-        setExpanded(false);
-
-        closeAllSubmenus();
-    });
-
-    /* ============================
-       MOBILE
+       TOGGLE (click)
        ============================ */
 
     if (mobileToggle) {
         mobileToggle.addEventListener("click", () => {
             if (sidebar.classList.contains("expanded")) {
-                closeSidebarMobile();
+                closeSidebar();
             } else {
-                openSidebarMobile();
+                openSidebar();
             }
         });
     }
 
     if (closeButton) {
-        closeButton.addEventListener("click", closeSidebarMobile);
+        closeButton.addEventListener("click", closeSidebar);
     }
 
     if (backdrop) {
-        backdrop.addEventListener("click", closeSidebarMobile);
+        backdrop.addEventListener("click", closeSidebar);
     }
+
+    /* ============================
+       HOVER (solo desktop)
+       ============================ */
+
+    if (mobileToggle) {
+        mobileToggle.addEventListener("mouseenter", () => {
+            if (!isDesktop()) return;
+
+            cancelHoverClose();
+            openSidebar();
+        });
+
+        mobileToggle.addEventListener("mouseleave", scheduleHoverClose);
+    }
+
+    sidebar.addEventListener("mouseenter", cancelHoverClose);
+    sidebar.addEventListener("mouseleave", scheduleHoverClose);
 
     /* ============================
        SUBMENUS
@@ -137,9 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
         )
         .forEach((link) => {
             link.addEventListener("click", () => {
-                if (!isDesktop()) {
-                    closeSidebarMobile();
-                }
+                closeSidebar();
             });
         });
 
@@ -150,41 +168,17 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("keydown", function (e) {
         if (e.key !== "Escape") return;
 
-        if (!isDesktop()) {
-            if (sidebar.classList.contains("expanded")) {
-                closeSidebarMobile();
+        if (sidebar.classList.contains("expanded")) {
+            closeSidebar();
 
-                if (mobileToggle) {
-                    mobileToggle.focus();
-                }
-
-                return;
+            if (mobileToggle) {
+                mobileToggle.focus();
             }
+
+            return;
         }
 
         closeAllSubmenus();
-    });
-
-    /* ============================
-       RESIZE
-       ============================ */
-
-    let desktopState = isDesktop();
-
-    window.addEventListener("resize", function () {
-        const current = isDesktop();
-
-        if (current === desktopState) return;
-
-        desktopState = current;
-
-        closeAllSubmenus();
-
-        backdrop.classList.remove("show");
-
-        document.body.classList.remove("sidebar-mobile-open");
-
-        setExpanded(false);
     });
 
     /* ============================
@@ -213,3 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     closeAllSubmenus();
 });
+
+$("#divBtnHome").on("click",function(){
+    window.location.href = "/index";
+})
