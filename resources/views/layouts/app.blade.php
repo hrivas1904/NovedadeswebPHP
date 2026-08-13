@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="{{ asset('css/componentes/cssDivAvisos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssCards.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssDashboardCalidad.css') }}">
 </head>
 
 <body>
@@ -132,6 +133,9 @@
                                 @endif
                                 @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
                                 <li><a class="submenu-link" href="{{ route('rrhh.calendarioServicios') }}">Calendario recepción</a></li>
+                                @endif
+                                @if (Auth::user()->rol === 'Administrador/a')
+                                <li><a class="submenu-link" href="{{ route('rrhh.cronogramaTrabajo') }}">Cronograma de trabajo</a></li>
                                 @endif
                             </ul>
                         </li>

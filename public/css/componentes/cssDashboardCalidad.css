@@ -40,6 +40,29 @@ html {
         inset 0 1px 0 rgba(255,255,255,.9);
 }
 
+.icon-mini-kpi{
+    width: 50px;
+    height:50px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:10px;
+
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #eef5ff
+    );
+
+    border: 1px solid #d9e7ff;
+
+    box-shadow:
+        0 8px 20px rgba(13,110,253,.08),
+        inset 0 1px 0 rgba(255,255,255,.9);
+}
+
 .icon-kpi i {
     font-size: 2rem;
     color: var(--color-default);

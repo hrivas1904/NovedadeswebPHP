@@ -8,6 +8,7 @@ use App\Http\Controllers\RRHH\DashboardController;
 use App\Http\Controllers\RRHH\GeoController;
 use App\Http\Controllers\Core\TicketController;
 use App\Http\Controllers\RRHH\ParametrosController;
+use App\Http\Controllers\RRHH\CronogramaController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -343,5 +344,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/parametrizacion/verServicio', [ParametrosController::class, 'verDetalleServicio']);
     Route::post('/parametrizacion/editarServicio', [ParametrosController::class, 'editarServicio']);
     Route::delete('/servicio/{id}', [ParametrosController::class, 'eliminarServicio']);
+
+    //CRONOGRAMAS DE TRABAJO
+    Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
     
 });

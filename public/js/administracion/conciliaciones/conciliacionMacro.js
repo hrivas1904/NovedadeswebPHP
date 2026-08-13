@@ -65,83 +65,195 @@ $(document).on('click', SCOPE + '#btnExcel', function () {
 function renderTablaConciliacion() {
     const filas = filasFiltradas();
 
+    // Estado actual de la tabla
     let paginaActual = 0;
+    let pageLengthActual = 50;
+    let scrollTopActual = 0;
+
+    // Si la tabla ya existe, guardamos su estado antes de destruirla
     if ($.fn.DataTable.isDataTable('#tbMovimientos')) {
-        paginaActual = $('#tbMovimientos').DataTable().page();
-        $('#tbMovimientos').DataTable().destroy();
+        const tablaVieja = $('#tbMovimientos').DataTable();
+
+        paginaActual = tablaVieja.page();
+        pageLengthActual = tablaVieja.page.len();
+
+        // Guardamos la posición actual del scroll interno
+        scrollTopActual = $('#tbMovimientos')
+            .closest('.dt-scroll-body')
+            .scrollTop();
+
+        tablaVieja.destroy();
     }
 
+    // Creamos nuevamente el DataTable
     tablaConciliacion = $('#tbMovimientos').DataTable({
         data: filas,
-        language: { url: '/js/es-ES.json' },
-        lengthMenu: [10, 15, 25, 50, 75, 100, { label: 'Todos', value: -1 }],
-        pageLength: 25,
+        language: {
+            url: '/js/es-ES.json'
+        },
+
+        lengthMenu: [
+            10,
+            15,
+            25,
+            50,
+            75,
+            100,
+            { label: 'Todos', value: -1 }
+        ],
+
+        pageLength: pageLengthActual,
+
         scrollY: getScrollY(),
-        scrollCollapse:true,
+        scrollCollapse: true,
+
         order: [[1, 'desc']],
+
         dom: "<'d-flex justify-content-start mb-2'l>t<'d-flex justify-content-between mt-2'ip>",
+
         buttons: [
             {
                 extend: 'excelHtml5',
                 text: 'Exportar',
-                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] },
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                },
             },
         ],
+
         columns: [
             {
-                data: null, orderable: false, className: 'text-center', width: '110px',
+                data: null,
+                orderable: false,
+                className: 'text-center',
+                width: '110px',
+
                 render: function (row) {
+
                     const badgeNuevo = row.nuevo_en_conciliacion == 1
                         ? '<span class="badge" style="background:#1A5CA8; font-size:0.65rem;">NUEVO</span> '
                         : '';
+
                     const estado = row.estado_conciliacion;
+
                     const badgeEstado = estado === 'FINN'
                         ? '<span class="badge" style="background:#F9A825; font-size:0.65rem;">F</span> '
                         : estado === 'QR'
-                        ? '<span class="badge" style="background:#E55A3A; font-size:0.65rem;">QR</span> '
-                        : '';
-                    return badgeNuevo + badgeEstado + '<input type="checkbox" class="chk-conc" data-id="' + row.id + '">';
+                            ? '<span class="badge" style="background:#E55A3A; font-size:0.65rem;">QR</span> '
+                            : '';
+
+                    return badgeNuevo
+                        + badgeEstado
+                        + '<input type="checkbox" class="chk-conc" data-id="' + row.id + '">';
                 }
             },
-            { data: 'fecha' },
+
             {
-                data: 'nro_comprobante', orderable: false,
+                data: 'fecha'
+            },
+
+            {
+                data: 'nro_comprobante',
+                orderable: false,
+
                 render: function (val, type, row) {
-                    if (type !== 'display') return val || '';
-                    return '<input type="text" class="form-control form-control-sm input-comprobante" data-id="' + row.id + '" value="' + (val || '') + '" data-original="' + (val || '') + '">';
+
+                    if (type !== 'display') {
+                        return val || '';
+                    }
+
+                    return `
+                        <input
+                            type="text"
+                            class="form-control form-control-sm input-comprobante"
+                            data-id="${row.id}"
+                            value="${val || ''}"
+                            data-original="${val || ''}"
+                        >
+                    `;
                 }
             },
-            { data: 'operacion', render: (v) => v || '' },
-            { data: 'concepto' },
-            { data: 'subconcepto', render: (v) => v || '' },
-            { data: 'detalle' },
+
             {
-                data: 'importe', className: 'text-end',
+                data: 'operacion',
+                render: (v) => v || ''
+            },
+
+            {
+                data: 'concepto'
+            },
+
+            {
+                data: 'subconcepto',
+                render: (v) => v || ''
+            },
+
+            {
+                data: 'detalle'
+            },
+
+            {
+                data: 'importe',
+                className: 'text-end',
+
                 render: function (v) {
-                    return '<span class="fw-bold ' + (v >= 0 ? 'text-success' : 'text-danger') + '">' + fmtPesos(v) + '</span>';
+
+                    return `
+                        <span class="fw-bold ${v >= 0 ? 'text-success' : 'text-danger'}">
+                            ${fmtPesos(v)}
+                        </span>
+                    `;
                 }
             },
+
             {
-                data: 'saldo_acum', className: 'text-end',
+                data: 'saldo_acum',
+                className: 'text-end',
+
                 render: function (v) {
-                    return '<span class="fw-bold">' + fmtPesos(v) + '</span>';
+
+                    return `
+                        <span class="fw-bold">
+                            ${fmtPesos(v)}
+                        </span>
+                    `;
                 }
             },
         ],
+
         rowCallback: function (row, data) {
+
             const estado = data.estado_conciliacion || '';
             const esNuevo = data.nuevo_en_conciliacion == 1;
-            const bg = esNuevo ? 'rgba(26, 92, 168, 0.12)'
-                : estado === 'FINN' ? 'rgba(249, 168, 37, 0.18)'
-                : estado === 'QR' ? 'rgba(229, 90, 58, 0.18)'
-                : '';
-            $(row).find('td').css('background-color', bg);
+
+            const bg = esNuevo
+                ? 'rgba(26, 92, 168, 0.12)'
+                : estado === 'FINN'
+                    ? 'rgba(249, 168, 37, 0.18)'
+                    : estado === 'QR'
+                        ? 'rgba(229, 90, 58, 0.18)'
+                        : '';
+
+            $(row)
+                .find('td')
+                .css('background-color', bg);
         },
     });
 
-    if (paginaActual > 0) {
-        tablaConciliacion.page(paginaActual).draw(false);
+    // Restauramos la página
+    const paginasDisponibles = tablaConciliacion.page.info().pages;
+
+    if (paginaActual > 0 && paginaActual < paginasDisponibles) {
+        tablaConciliacion
+            .page(paginaActual)
+            .draw(false);
     }
+
+    // Restauramos la posición exacta del scroll
+    const $scrollBody = $('#tbMovimientos')
+        .closest('.dt-scroll-body');
+
+    $scrollBody.scrollTop(scrollTopActual);
 }
 
 // ── Carga de datos ────────────────────────────────────────────────────
