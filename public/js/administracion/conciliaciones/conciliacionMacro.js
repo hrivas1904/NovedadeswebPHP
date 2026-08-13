@@ -11,6 +11,7 @@ const SCOPE = '[data-conciliacion-banco="' + CONCILIACION_BANCO + '"] ';
 let filasConciliacion = [];
 let resumenConciliacion = { saldo_inicio: 0, primer_mes: null };
 let tablaConciliacion = null;
+let restaurandoScroll = false;
 
 function fmtPesos(v) {
     const n = Number(v || 0);
@@ -165,6 +166,7 @@ function renderTablaConciliacion() {
                     return `
                         <input
                             type="text"
+                            readonly
                             class="form-control form-control-sm input-comprobante"
                             data-id="${row.id}"
                             value="${val || ''}"
@@ -238,22 +240,27 @@ function renderTablaConciliacion() {
                 .find('td')
                 .css('background-color', bg);
         },
+
+        initComplete: function () {
+            const api = this.api();
+            const paginasDisponibles = api.page.info().pages;
+        
+            if (paginaActual > 0 && paginaActual < paginasDisponibles) {
+                restaurandoScroll = true;
+                api.page(paginaActual).draw(false);
+            }
+        
+            $('#tbMovimientos').closest('.dt-scroll-body').scrollTop(scrollTopActual);
+        
+            api.off('draw.dt.scrollreset').on('draw.dt.scrollreset', function () {
+                if (restaurandoScroll) {
+                    restaurandoScroll = false;
+                    return;
+                }
+                $('#tbMovimientos').closest('.dt-scroll-body').scrollTop(0);
+            });
+        },
     });
-
-    // Restauramos la página
-    const paginasDisponibles = tablaConciliacion.page.info().pages;
-
-    if (paginaActual > 0 && paginaActual < paginasDisponibles) {
-        tablaConciliacion
-            .page(paginaActual)
-            .draw(false);
-    }
-
-    // Restauramos la posición exacta del scroll
-    const $scrollBody = $('#tbMovimientos')
-        .closest('.dt-scroll-body');
-
-    $scrollBody.scrollTop(scrollTopActual);
 }
 
 // ── Carga de datos ────────────────────────────────────────────────────
@@ -607,7 +614,7 @@ function renderPreviewPagos() {
             '<td>' + (res.pago.fechaPago || '') + '</td>' +
             '<td class="text-end text-danger fw-bold">' + fmtPesos(-res.pago.importe) + '</td>' +
             '<td>' + columnaClasificacion + '</td>' +
-            '<td>' + (hayMatch ? match.ejecucion : (res.confirmado ? 'Nuevo · CUMPLIDO' : 'Nuevo · EJECUTADO')) + '</td>' +
+            '<td>' + (hayMatch ? match.ejecucion : (res.confirmado ? 'Nuevo · EJECUTADO' : 'Se omite')) + '</td>' +
             '</tr>';
     });
 
