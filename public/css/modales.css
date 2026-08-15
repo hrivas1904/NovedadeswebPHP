@@ -8,7 +8,7 @@
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
 }
 
-/* Header */
+/* Header 
 .modal-header {
     background: linear-gradient(
         135deg,
@@ -27,6 +27,27 @@
 .modal-header .btn-close {
     filter: invert(1);
     opacity: 0.9;
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}}*/
+
+.modal-header {
+    background-color: #f1f5f9;
+    border-bottom: 1px solid #dbe3ea;
+    padding: 1rem 1.25rem;
+    color: var(--color-default);
+}
+
+.modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--color-default);
+}
+
+.modal-header .btn-close {
+    filter: none;
+    opacity: 0.65;
 }
 
 .modal-header .btn-close:hover {

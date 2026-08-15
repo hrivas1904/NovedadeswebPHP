@@ -347,5 +347,6 @@ Route::middleware(['auth'])->group(function () {
 
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
+    Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');
     
 });

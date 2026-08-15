@@ -19,4 +19,9 @@ class CronogramaController extends Controller
     {
         return view('calendarios.cronogramaTrabajo');
     }
+
+    public function viewCronogramaAreas()
+    {
+        return view('calendarios.cronogAreasView');
+    }
 }

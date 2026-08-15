@@ -159,7 +159,7 @@
                         <li class="nav-item has-submenu">
                             <a class="nav-link" href="#" role="button" aria-expanded="false">
                                 <i class="fa-solid fa-gear"></i>
-                                <span class="link-text">Ajustes módulo RRHH</span>
+                                <span class="link-text">Configuraciones</span>
                             </a>
                             <ul class="submenu">
                                 <li><a class="submenu-link" href="{{ route('rrhh.configNovedades') }}">Conceptos novedades</a></li>
