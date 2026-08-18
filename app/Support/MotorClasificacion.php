@@ -154,6 +154,7 @@ class MotorClasificacion
         // Antes solo miraba columna2 -- ahora tambien el detalle, a pedido
         // de la aux de administracion (algunos extractos ponen "CHEQUE" ahi).
         if (str_contains($c2, 'cheque') || str_contains($d, 'cheque')) return 'CHEQUES';
+        if (str_contains($d, 'credin')) return 'INGRESOS';
         if ($importe > 0) return 'INGRESOS';
         if (str_contains($d, 'reintegro')) return 'INGRESOS';
         return 'TRANSFERENCIAS';
