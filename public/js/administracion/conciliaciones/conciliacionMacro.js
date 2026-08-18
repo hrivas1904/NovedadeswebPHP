@@ -573,6 +573,8 @@ $(document).on('click', SCOPE + '#btnConfirmarExtracto', function () {
 // =====================================================================
 let resultadosPagos = [];
 
+// Reemplazo de renderPreviewPagos() en conciliacionMacro.js
+
 function renderPreviewPagos() {
     if (!resultadosPagos.length) {
         $('#previewPagosWrapper').hide();
@@ -599,8 +601,6 @@ function renderPreviewPagos() {
         const match = res.matches[0];
         const optsFila = optsConcepto.replace('value="' + res.concepto + '"', 'value="' + res.concepto + '" selected');
 
-        // Con match: se ve el destino del match (no editable, es un update).
-        // Sin match: concepto/subconcepto EDITABLE (va a ser un insert nuevo).
         const columnaClasificacion = hayMatch
             ? '<span class="text-success">✓ ' + match.detalle + ' (' + match.fecha + ')</span>'
             : '<div class="d-flex gap-1">' +
@@ -608,19 +608,26 @@ function renderPreviewPagos() {
                 '<select class="form-select form-select-sm select-subconcepto-pago" data-idx="' + i + '">' + optsSubconcepto(res.concepto, res.subconcepto) + '</select>' +
               '</div>';
 
+        // Con match: el checkbox decide si se aplica ese match o no.
+        // Sin match: no hay nada que decidir -- siempre se importa como
+        // EJECUTADO, asi que no se muestra checkbox.
+        const columnaTilde = hayMatch
+            ? '<input type="checkbox" class="chk-pago" data-idx="' + i + '" ' + (res.confirmado ? 'checked' : '') + '>'
+            : '<span class="text-muted" title="Siempre se importa, no requiere tilde">—</span>';
+
         html += '<tr>' +
-            '<td class="text-center"><input type="checkbox" class="chk-pago" data-idx="' + i + '" ' + (res.confirmado ? 'checked' : '') + '></td>' +
+            '<td class="text-center">' + columnaTilde + '</td>' +
             '<td>' + res.pago.nombre + '</td>' +
             '<td>' + (res.pago.fechaPago || '') + '</td>' +
             '<td class="text-end text-danger fw-bold">' + fmtPesos(-res.pago.importe) + '</td>' +
             '<td>' + columnaClasificacion + '</td>' +
-            '<td>' + (hayMatch ? match.ejecucion : (res.confirmado ? 'Nuevo · EJECUTADO' : 'Se omite')) + '</td>' +
+            '<td>' + (hayMatch ? match.ejecucion : 'Nuevo · EJECUTADO') + '</td>' +
             '</tr>';
     });
 
     $('#previewPagosBody').html(html);
-    const nConfirmados = resultadosPagos.filter(r => r.confirmado).length;
-    $('#resumenPagos').text(resultadosPagos.length + ' pagos · ' + nConfirmados + ' a confirmar');
+    const nAProcesar = resultadosPagos.filter(r => (r.matches.length > 0 && r.confirmado) || r.matches.length === 0).length;
+    $('#resumenPagos').text(resultadosPagos.length + ' pagos · ' + nAProcesar + ' a procesar');
     $('#previewPagosWrapper').show();
 }
 

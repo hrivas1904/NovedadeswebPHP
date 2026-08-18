@@ -194,11 +194,11 @@ class ConciliacionesController extends Controller
 
         foreach ($request->input('resultados') as $r) {
             $hayMatch = !empty($r['matches']) && count($r['matches']) > 0;
-            $incluir = !empty($r['confirmado']);
-
-            if (!$incluir) continue;
 
             if ($hayMatch) {
+                $incluir = !empty($r['confirmado']);
+                if (!$incluir) continue; // el tilde SOLO decide algo en el caso con match
+
                 $idMatch = $r['matches'][0]['id'];
 
                 DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$idMatch, 'CUMPLIDO']);
@@ -237,7 +237,8 @@ class ConciliacionesController extends Controller
                 continue;
             }
 
-            // Sin match: siempre se crea nuevo (tildada=CUMPLIDO, sin tildar=EJECUTADO)
+            // Sin match: SIEMPRE se crea como EJECUTADO, sin importar el tilde
+            // (ya no aplica el concepto de "incluir/omitir" aca).
             $importe = -abs((float) $r['pago']['importe']);
             $operacion = \App\Support\ClasificadorOperacion::resolver('MACRO', $r['concepto'], '3 EGRESOS', $importe);
 
