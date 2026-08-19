@@ -40,7 +40,7 @@
                 </button>
             </div>
             <button type="button" class="btn btn-outline-secondary" id="btnFiltrarDía" data-bs-toggle="modal" data-bs-target="#modalDia">Día</button>
-            <button type="button" class="btn btn-outline-secondary" id="btnFiltrarEquidad">Equidad</button>
+            <button type="button" class="btn btn-outline-secondary" id="btnFiltrarEquidad" data-bs-toggle="modal" data-bs-target="#modalEquidad">Equidad</button>
             <button type="button" class="btn btn-outline-secondary" id="btnCierreMes">Cierre del mes</button>
             <button type="button" class="btn btn-outline-secondary" id="btnExportar" data-bs-toggle="modal" data-bs-target="#">Exportar</button>
         </div>
@@ -343,24 +343,81 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="input-group w-auto">
-                    <button class="btn btn-secondary" type="button" id="button-addon1">
-                        <i class="fs-5 fa-regular fa-square-caret-left"></i>
-                    </button>
-                    <input class="form-control" id="inputDia" type="number">
-                    <button class="btn btn-secondary" type="button" id="button-addon1">
-                        <i class="fs-5 fa-regular fa-square-caret-right"></i>
-                    </button>
+                <div class="d-flex flex-column gap-3">
+                    <div class="input-group w-auto">
+                        <button class="btn btn-secondary" type="button" id="button-addon1">
+                            <i class="fs-5 fa-regular fa-square-caret-left"></i>
+                        </button>
+                        <input class="form-control" id="inputDia" type="number">
+                        <button class="btn btn-secondary" type="button" id="button-addon1">
+                            <i class="fs-5 fa-regular fa-square-caret-right"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="card p-2 h-100">
+                            <label class="form-label text-muted">TURNOS ACTIVOS</label>
+                            <h1 id="lblTurnosActivos" class="fw-bold">-</h1>
+                        </div>
+                        <div class="card p-2 h-100">
+                            <label class="form-label text-muted">CUMPLEN LA DOTACIÓN</label>
+                            <h1 id="lblDotacion" class="fw-bold">-</h1>
+                        </div>
+                    </div>
+                    <div id="divRenderDotacionDiaria" class="">
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalEquidad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 mb-0" id="exampleModalLabel">
+                    EQUIDAD EN EL REPARTO - <span id="detalleMesFecha">...</span>
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column gap-3">
+                    <div class="input-group w-auto">
+                        <button class="btn btn-secondary" type="button" id="button-addon1">
+                            <i class="fs-5 fa-regular fa-square-caret-left"></i>
+                        </button>
+                        <input class="form-control" id="inputDia" type="number">
+                        <button class="btn btn-secondary" type="button" id="button-addon1">
+                            <i class="fs-5 fa-regular fa-square-caret-right"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="card p-2 h-100">
+                            <label class="form-label text-muted">TURNOS ACTIVOS</label>
+                            <h1 id="lblTurnosActivos" class="fw-bold">-</h1>
+                        </div>
+                        <div class="card p-2 h-100">
+                            <label class="form-label text-muted">CUMPLEN LA DOTACIÓN</label>
+                            <h1 id="lblDotacion" class="fw-bold">-</h1>
+                        </div>
+                    </div>
+                    <div id="divRenderDotacionDiaria" class="">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endpush
 
 @push('scripts')
 <script src="{{ asset('js/calendario/configuracionPeriodos.js') }}"></script>
 <script src="{{ asset('js/calendario/configuracionFeriados.js') }}"></script>
+<script src="{{ asset('js/calendario/cronogramaDiario.js') }}"></script>
+<script src="{{ asset('js/calendario/cronogramaEquidad.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaTrabajo.js') }}"></script>
 
 <script>

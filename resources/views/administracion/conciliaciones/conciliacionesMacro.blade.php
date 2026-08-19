@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div class="card" id="divPagosProveedores">
+    <div class="card mb-3" id="divPagosProveedores">
         <div class="card-header collapsible-header" style="cursor: pointer; color:var(--color-default)">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="fe-bold">Pagos a Proveedores - MACRO</h5>
@@ -73,6 +73,45 @@
                     <table class="table table-sm">
                         <thead><tr><th><input type="checkbox" id="chkSeleccionarTodosPagos"></th><th>Proveedor (pago)</th><th>Fecha pago</th><th class="text-end">Importe</th><th>Match en presupuesto</th><th>Estado</th></tr></thead>
                         <tbody id="previewPagosBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="divPagosHonorarios">
+        <div class="card-header collapsible-header" style="cursor: pointer; color:var(--color-default)">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="fe-bold">Pagos de Honorarios - MACRO</h5>
+                <i class="fs-5 fa-solid fa-circle-chevron-down"></i>
+            </div>
+        </div>
+        <div class="card-body d-none">
+            <div class="d-flex align-items-center gap-3">
+                <label class="form-label">Pegá el archivo de pagos efectivizados del homebanking. Se va a matchear contra los presupuestos cargados para marcarlos como CUMPLIDO.</label>
+            </div>
+
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    <label class="form-label mb-0">Fecha del pago:</label>
+                    <input type="date" class="form-control form-control-sm w-auto" id="inputFechaManualHono">
+                    <button type="button" id="btnAplicarFechaTodosHono" class="btn btn-sm btn-outline-secondary">
+                        Aplicar a todos los renglones
+                    </button>
+                </div>
+                <textarea id="textAreaArchivoHono" rows="2" class="form-control" placeholder="O pegá el contenido acá..."></textarea>
+            </div>
+
+            <label class="mt-2" id="msgPagosHono"></label>
+            <div id="previewPagosWrapperHono" style="display:none;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small" id="resumenPagosHono"></span>
+                    <button type="button" id="btnConfirmarPagosHono" class="btn btn-primary btn-sm">✓ Confirmar seleccionados</button>
+                </div>
+                <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
+                    <table class="table table-sm">
+                        <thead><tr><th><input type="checkbox" id="chkSeleccionarTodosPagosHono"></th><th>Proveedor (pago)</th><th>Fecha pago</th><th class="text-end">Importe</th><th>Match en presupuesto</th><th>Estado</th></tr></thead>
+                        <tbody id="previewPagosHonoBody"></tbody>
                     </table>
                 </div>
             </div>

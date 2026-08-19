@@ -166,12 +166,26 @@ class ImportacionController extends Controller
             $cat = $clasif['concepto'];
             $sub = $clasif['subconcepto'];
 
+            if ($importe > 0 && $cat === 'GTOS, COMIS, IMP.') {
+                $cat = 'OBRAS SOCIALES';
+            }
+
+            if ($cat === 'OBRAS SOCIALES') {
+                $sub = '2 OS-TRANSFERENCIAS';
+            }
+
             $seccion = $cat === 'TRANSF. ENTRE CUENTAS' ? '5 TRANSFERENCIAS'
                 : ($cat === 'TARJETAS D/C' ? '4 TARJETAS D/C' : ($importe >= 0 ? '2 INGRESOS' : '3 EGRESOS'));
             $operacion = $motor->clasificarOperacionBancaria($desc, $columna2, $importe);
 
-            if (in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
-                $operacion = 'TRANSFERENCIAS';
+            if ($operacion !== 'CHEQUES') {
+                if ($cat === 'TRANSF. ENTRE CUENTAS') {
+                    $operacion = 'TRANSFERENCIAS';
+                } elseif ($importe > 0) {
+                    $operacion = 'INGRESOS';
+                } elseif ($cat === 'GTOS, COMIS, IMP.') {
+                    $operacion = 'TRANSFERENCIAS';
+                }
             }
 
             $rows[] = [
@@ -249,7 +263,7 @@ class ImportacionController extends Controller
                 : ($cat === 'TARJETAS D/C' ? '4 TARJETAS D/C' : ($importe >= 0 ? '2 INGRESOS' : '3 EGRESOS'));
             $operacion = $motor->clasificarOperacionBancaria($desc, '', $importe);
             
-            if (in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
+            if ($operacion !== 'CHEQUES' && in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
                 $operacion = 'TRANSFERENCIAS';
             }
 
@@ -326,7 +340,7 @@ class ImportacionController extends Controller
                 : ($cat === 'TARJETAS D/C' ? '4 TARJETAS D/C' : ($importe >= 0 ? '2 INGRESOS' : '3 EGRESOS'));
             $operacion = $motor->clasificarOperacionBancaria($desc, '', $importe);
 
-            if (in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
+            if ($operacion !== 'CHEQUES' && in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
                 $operacion = 'TRANSFERENCIAS';
             }
 
@@ -404,7 +418,7 @@ class ImportacionController extends Controller
             // clasificarOperacion original solo mira la columna CONCEPTO para "reintegro"
             $operacion = $motor->clasificarOperacionBancaria($concepto, $columna2, $importe);
 
-            if (in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
+            if ($operacion !== 'CHEQUES' && in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
                 $operacion = 'TRANSFERENCIAS';
             }
 

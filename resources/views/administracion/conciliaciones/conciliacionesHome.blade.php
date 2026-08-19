@@ -54,6 +54,8 @@
         extractoConfirmar: @json(route('administracion.importacion.bancos.confirmar')),
         pagosPreview: @json(route('administracion.conciliacion.pagos.preview')),
         pagosConfirmar: @json(route('administracion.conciliacion.pagos.confirmar')),
+        pagosHonorariosPreview: @json(route('administracion.conciliacion.pagosHonorarios.preview')),
+        pagosHonorariosConfirmar: @json(route('administracion.conciliacion.pagosHonorarios.confirmar')),
     };
     const CONCEPTOS_CATALOGO = @json($conceptos);
     const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);

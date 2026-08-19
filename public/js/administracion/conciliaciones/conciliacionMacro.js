@@ -704,4 +704,179 @@ $(document).on('click', SCOPE + '#btnConfirmarPagos', function () {
         cargarConciliacion();
     });
 });
+
+// =====================================================================
+// PAGOS DE HONORARIOS (solo MACRO) -- copia independiente de la logica
+// de Pagos a Proveedores, con la diferencia de la fecha manual.
+// =====================================================================
+let resultadosPagosHono = [];
+
+// Reemplazo de renderPreviewPagosHono() completa
+
+function renderPreviewPagosHono() {
+    if (!resultadosPagosHono.length) {
+        $('#previewPagosWrapperHono').hide();
+        return;
+    }
+
+    let optsConcepto = '';
+    CONCEPTOS_CATALOGO.forEach(function (c) {
+        optsConcepto += '<option value="' + c + '">' + c + '</option>';
+    });
+
+    function optsSubconcepto(concepto, actual) {
+        const lista = SUBCONCEPTOS_POR_CONCEPTO[concepto] || [];
+        let out = '';
+        lista.forEach(function (s) {
+            out += '<option value="' + s + '"' + (s === actual ? ' selected' : '') + '>' + s + '</option>';
+        });
+        return out;
+    }
+
+    let html = '';
+    resultadosPagosHono.forEach(function (res, i) {
+        const hayMatch = res.matches.length > 0;
+        const match = res.matches[0];
+        const optsFila = optsConcepto.replace('value="' + res.concepto + '"', 'value="' + res.concepto + '" selected');
+
+        const columnaClasificacion = hayMatch
+            ? '<span class="text-success">✓ ' + match.detalle + ' (' + match.fecha + ')</span>'
+            : '<div class="d-flex gap-1">' +
+                '<select class="form-select form-select-sm select-concepto-hono" data-idx="' + i + '">' + optsFila + '</select>' +
+                '<select class="form-select form-select-sm select-subconcepto-hono" data-idx="' + i + '">' + optsSubconcepto(res.concepto, res.subconcepto) + '</select>' +
+              '</div>';
+
+        const columnaTilde = hayMatch
+            ? '<input type="checkbox" class="chk-pago-hono" data-idx="' + i + '" ' + (res.confirmado ? 'checked' : '') + '>'
+            : '<span class="text-muted" title="Siempre se importa">—</span>';
+
+        // Fecha editable por fila -- se puede ajustar una puntual sin
+        // afectar al resto, ademas del boton de "aplicar a todos".
+        const columnaFecha = '<input type="date" class="form-control form-control-sm input-fecha-pago-hono" data-idx="' + i + '" value="' + (res.pago.fechaPago || '') + '">';
+
+        html += '<tr>' +
+            '<td class="text-center">' + columnaTilde + '</td>' +
+            '<td>' + res.pago.nombre + '</td>' +
+            '<td>' + columnaFecha + '</td>' +
+            '<td class="text-end text-danger fw-bold">' + fmtPesos(-res.pago.importe) + '</td>' +
+            '<td>' + columnaClasificacion + '</td>' +
+            '<td>' + (hayMatch ? match.ejecucion : 'Nuevo · EJECUTADO') + '</td>' +
+            '</tr>';
+    });
+
+    $('#previewPagosHonoBody').html(html);
+    const nAProcesar = resultadosPagosHono.filter(r => (r.matches.length > 0 && r.confirmado) || r.matches.length === 0).length;
+    $('#resumenPagosHono').text(resultadosPagosHono.length + ' pagos · ' + nAProcesar + ' a procesar');
+    $('#previewPagosWrapperHono').show();
+}
+
+// Nuevo handler: editar la fecha de UNA fila puntual
+$(document).on('change', SCOPE + '.input-fecha-pago-hono', function () {
+    const idx = $(this).data('idx');
+    resultadosPagosHono[idx].pago.fechaPago = $(this).val();
+});
+
+function procesarPagosHono() {
+    const contenido = $('#textAreaArchivoHono').val();
+    if (!contenido.trim()) {
+        resultadosPagosHono = [];
+        renderPreviewPagosHono();
+        $('#msgPagosHono').text('');
+        return;
+    }
+
+    $.post(CONCILIACION_ROUTES.pagosHonorariosPreview, { contenido: contenido }, function (data) {
+        resultadosPagosHono = data.resultados;
+        $('#msgPagosHono').text(data.mensaje).css('color', 'inherit');
+        renderPreviewPagosHono();
+    });
+}
+
+$(document).on('input', SCOPE + '#textAreaArchivoHono', debounce(procesarPagosHono, 400));
+
+$(document).on('change', SCOPE + '#inputArchivoPagoHono', function () {
+    if (!this.files || !this.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+        $('#textAreaArchivoHono').val(ev.target.result);
+        procesarPagosHono();
+    };
+    reader.readAsText(this.files[0], 'UTF-8');
+});
+
+// Aplica la fecha elegida a TODAS las filas del preview (solo visual/
+// interno hasta confirmar -- la fecha real se manda en el confirmar).
+$(document).on('click', SCOPE + '#btnAplicarFechaTodosHono', function () {
+    const fecha = $('#inputFechaManualHono').val();
+    if (!fecha) {
+        alert('Elegí una fecha primero.');
+        return;
+    }
+    resultadosPagosHono.forEach(function (r) {
+        r.pago.fechaPago = fecha;
+    });
+    renderPreviewPagosHono();
+});
+
+$(document).on('change', SCOPE + '.chk-pago-hono', function () {
+    resultadosPagosHono[$(this).data('idx')].confirmado = $(this).is(':checked');
+    renderPreviewPagosHono();
+});
+
+$(document).on('change', SCOPE + '#chkSeleccionarTodosPagosHono', function () {
+    const checked = $(this).is(':checked');
+    $('.chk-pago-hono').each(function () {
+        $(this).prop('checked', checked);
+        resultadosPagosHono[$(this).data('idx')].confirmado = checked;
+    });
+    renderPreviewPagosHono();
+});
+
+$(document).on('change', SCOPE + '.select-concepto-hono', function () {
+    const idx = $(this).data('idx');
+    const nuevoConcepto = $(this).val();
+    resultadosPagosHono[idx].concepto = nuevoConcepto;
+
+    const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
+    let opts = '';
+    lista.forEach(function (s) { opts += '<option value="' + s + '">' + s + '</option>'; });
+    $('.select-subconcepto-hono[data-idx="' + idx + '"]').html(opts);
+    resultadosPagosHono[idx].subconcepto = lista[0] || '';
+});
+
+$(document).on('change', SCOPE + '.select-subconcepto-hono', function () {
+    resultadosPagosHono[$(this).data('idx')].subconcepto = $(this).val();
+});
+
+$(document).on('click', SCOPE + '#btnConfirmarPagosHono', function () {
+    if (!resultadosPagosHono.length) return;
+
+    const fechaManual = $('#inputFechaManualHono').val();
+    if (!fechaManual) {
+        alert('Elegí la fecha del pago antes de confirmar.');
+        return;
+    }
+
+    // Por si alguna fila quedo sin fecha individual (no se aplico "a todos"),
+    // se completa con la fecha manual general antes de mandar.
+    resultadosPagosHono.forEach(function (r) {
+        if (!r.pago.fechaPago) r.pago.fechaPago = fechaManual;
+    });
+
+    $.post(CONCILIACION_ROUTES.pagosHonorariosConfirmar, {
+        resultados: resultadosPagosHono,
+        fechaManual: fechaManual,
+    }, function (data) {
+        $('#msgPagosHono').text(
+            '✓ ' + data.actualizados + ' marcado(s) CUMPLIDO · ' +
+            data.duplicados + ' duplicado(s) como EJECUTADO · ' +
+            data.insertados + ' nuevo(s) creado(s).'
+        ).css('color', 'green');
+        $('#textAreaArchivoHono').val('');
+        resultadosPagosHono = [];
+        renderPreviewPagosHono();
+        cargarConciliacion();
+    });
+});
+
 })();

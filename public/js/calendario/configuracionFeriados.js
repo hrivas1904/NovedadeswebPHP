@@ -69,7 +69,6 @@ $(document).ready(function () {
 
                     const valorActual = data || "";
                     
-                    // Se añade 'select-caracter' y 'data-id' para poder capturar los cambios con jQuery
                     return `
                         <select class="form-select form-select-sm select-caracter" data-id="${row.id || row.idEvento}">
                             <option value="Inamovible" ${valorActual === "Inamovible" ? "selected" : ""}>Inamovible</option>

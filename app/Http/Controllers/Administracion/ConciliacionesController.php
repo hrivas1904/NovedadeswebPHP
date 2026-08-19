@@ -139,11 +139,11 @@ class ConciliacionesController extends Controller
         }
 
         $candidatos = collect(DB::select("
-        SELECT m.id, m.detalle, m.importe, m.fecha, m.ejecucion, k.nombre AS concepto
-        FROM ff_movimientos m
-        JOIN ff_conceptos k ON k.id = m.id_concepto
-        WHERE m.ejecucion IN ('PRESUPUESTO','PENDIENTE') AND m.deleted_at IS NULL
-    "));
+            SELECT m.id, m.detalle, m.importe, m.fecha, m.ejecucion, k.nombre AS concepto
+            FROM ff_movimientos m
+            JOIN ff_conceptos k ON k.id = m.id_concepto
+            WHERE m.ejecucion IN ('PRESUPUESTO','PENDIENTE') AND m.deleted_at IS NULL
+        "));
 
         $motor = new MotorClasificacion();
 
@@ -152,17 +152,15 @@ class ConciliacionesController extends Controller
             $matches = $candidatos->filter(function ($c) use ($pago) {
                 $nombreOk = $this->matchNombrePago($pago['nombre'], $c->detalle ?? '');
 
-                // Tolerancia de retencion: el pago real puede ser hasta un 10%
-                // menor al presupuestado (empresas agentes de retencion). Se
-                // acepta entre el 90% y el 100% del monto presupuestado.
-                // (+$1 de margen extra solo para redondeos de centavos)
                 $presupuestado = abs((float) $c->importe);
                 $pagado = $pago['importe'];
                 $importeOk = $presupuestado > 0
                     && $pagado <= ($presupuestado + 1)
                     && $pagado >= ($presupuestado * 0.90);
 
-                return $nombreOk && $importeOk;
+                $fechaOk = !empty($pago['fechaPago']) && $c->fecha === $pago['fechaPago'];
+
+                return $nombreOk && $importeOk && $fechaOk;
             })->values();
 
             $hayMatch = $matches->count() > 0;
@@ -172,7 +170,7 @@ class ConciliacionesController extends Controller
             $resultados[] = [
                 'pago'        => $pago,
                 'matches'     => $matches,
-                'confirmado'  => $hayMatch, // por defecto todo tildado (con match: aplica; sin match: se crea EJECUTADO)
+                'confirmado'  => $hayMatch,
                 'concepto'    => $clasif['concepto'],
                 'subconcepto' => $clasif['subconcepto'],
             ];
@@ -195,55 +193,47 @@ class ConciliacionesController extends Controller
         foreach ($request->input('resultados') as $r) {
             $hayMatch = !empty($r['matches']) && count($r['matches']) > 0;
 
+            $importe = -abs((float) $r['pago']['importe']);
+            $operacion = \App\Support\ClasificadorOperacion::resolver('MACRO', $r['concepto'], '3 EGRESOS', $importe);
+            $fecha = $r['pago']['fechaPago'] ?: $r['pago']['fechaEmision'];
+
             if ($hayMatch) {
                 $incluir = !empty($r['confirmado']);
-                if (!$incluir) continue; // el tilde SOLO decide algo en el caso con match
+                if (!$incluir) continue;
 
                 $idMatch = $r['matches'][0]['id'];
 
+                // El original pasa a CUMPLIDO
                 DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$idMatch, 'CUMPLIDO']);
                 $actualizados++;
 
-                $original = DB::selectOne("
-                SELECT c.nombre AS banco, k.nombre AS concepto, m.subconcepto,
-                       m.detalle, m.importe, m.seccion, m.operacion, m.fecha
-                FROM ff_movimientos m
-                JOIN ff_cuentas c ON c.id = m.id_cuenta
-                JOIN ff_conceptos k ON k.id = m.id_concepto
-                WHERE m.id = ? AND m.deleted_at IS NULL
-            ", [$idMatch]);
+                // El EJECUTADO se arma con los datos REALES del pago pegado,
+                // no con los del candidato matcheado.
+                $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+                    $fecha,
+                    'MACRO',
+                    $r['concepto'],
+                    $r['subconcepto'] ?? null,
+                    $r['pago']['nombre'],
+                    $importe,
+                    'EJECUTADO',
+                    $operacion,
+                    '3 EGRESOS',
+                    'CONCILIACION_PAGOS',
+                    auth()->id(),
+                ]);
+                $duplicados++;
 
-                if ($original) {
-                    $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
-                        $original->fecha,
-                        $original->banco,
-                        $original->concepto,
-                        $original->subconcepto,
-                        $original->detalle,
-                        $original->importe,
-                        'EJECUTADO',
-                        $original->operacion,
-                        $original->seccion,
-                        'CONCILIACION_PAGOS',
-                        auth()->id(),
-                    ]);
-                    $duplicados++;
-
-                    if (!empty($resultado[0]->id)) {
-                        DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
-                    }
+                if (!empty($resultado[0]->id)) {
+                    DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
                 }
 
                 continue;
             }
 
-            // Sin match: SIEMPRE se crea como EJECUTADO, sin importar el tilde
-            // (ya no aplica el concepto de "incluir/omitir" aca).
-            $importe = -abs((float) $r['pago']['importe']);
-            $operacion = \App\Support\ClasificadorOperacion::resolver('MACRO', $r['concepto'], '3 EGRESOS', $importe);
-
+            // Sin match: SIEMPRE se crea como EJECUTADO
             $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
-                $r['pago']['fechaPago'] ?: $r['pago']['fechaEmision'],
+                $fecha,
                 'MACRO',
                 $r['concepto'],
                 $r['subconcepto'] ?? null,
@@ -365,5 +355,164 @@ class ConciliacionesController extends Controller
         $p = explode('/', $s);
         if (count($p) !== 3) return null;
         return sprintf('%04d-%02d-%02d', $p[2], $p[1], $p[0]);
+    }
+
+    public function previewPagosHonorarios(Request $request)
+    {
+        $request->validate(['contenido' => 'required|string']);
+        $pagos = $this->parsePagosHonorarios($request->input('contenido'));
+
+        if (!count($pagos)) {
+            return response()->json(['resultados' => [], 'mensaje' => 'No se detectaron pagos.']);
+        }
+
+        $candidatos = collect(DB::select("
+        SELECT m.id, m.detalle, m.importe, m.fecha, m.ejecucion, k.nombre AS concepto
+        FROM ff_movimientos m
+        JOIN ff_conceptos k ON k.id = m.id_concepto
+        WHERE m.ejecucion IN ('PRESUPUESTO','PENDIENTE') AND m.deleted_at IS NULL
+    "));
+
+        $resultados = [];
+        foreach ($pagos as $pago) {
+            // Ojo: este archivo NO trae fecha, asi que el match es SOLO por
+            // nombre + importe (con la misma tolerancia del 90%-100% por
+            // retenciones) -- no se puede exigir fecha exacta como en Proveedores.
+            $matches = $candidatos->filter(function ($c) use ($pago) {
+                $nombreOk = $this->matchNombrePago($pago['nombre'], $c->detalle ?? '');
+                $presupuestado = abs((float) $c->importe);
+                $pagado = $pago['importe'];
+                $importeOk = $presupuestado > 0
+                    && $pagado <= ($presupuestado + 1)
+                    && $pagado >= ($presupuestado * 0.90);
+                return $nombreOk && $importeOk;
+            })->values();
+
+            $hayMatch = $matches->count() > 0;
+
+            $resultados[] = [
+                'pago'        => $pago,
+                'matches'     => $matches,
+                'confirmado'  => $hayMatch,
+                'concepto'    => 'HONORARIOS PROFESIONALES', // default fijo -- editable en el preview
+                'subconcepto' => '',
+            ];
+        }
+
+        $nM = collect($resultados)->filter(fn($r) => count($r['matches']) > 0)->count();
+        $mensaje = count($pagos) . ' pagos · ' . $nM . ' con match · ' . (count($pagos) - $nM) . ' sin match. Recordá poner la fecha manual antes de confirmar.';
+
+        return response()->json(['resultados' => $resultados, 'mensaje' => $mensaje]);
+    }
+
+    public function confirmarPagosHonorarios(Request $request)
+    {
+        $request->validate([
+            'resultados'  => 'required|array|min:1',
+            'fechaManual' => 'required|date',
+        ]);
+
+        $fecha = $request->input('fechaManual');
+        $actualizados = 0;
+        $duplicados = 0;
+        $insertados = 0;
+
+        foreach ($request->input('resultados') as $r) {
+            $hayMatch = !empty($r['matches']) && count($r['matches']) > 0;
+
+            $importe = -abs((float) $r['pago']['importe']);
+            $operacion = \App\Support\ClasificadorOperacion::resolver('MACRO', $r['concepto'], '3 EGRESOS', $importe);
+
+            if ($hayMatch) {
+                $incluir = !empty($r['confirmado']);
+                if (!$incluir) continue;
+
+                $idMatch = $r['matches'][0]['id'];
+
+                DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$idMatch, 'CUMPLIDO']);
+                $actualizados++;
+
+                $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+                    $fecha,
+                    'MACRO',
+                    $r['concepto'],
+                    $r['subconcepto'] ?? null,
+                    $r['pago']['nombre'],
+                    $importe,
+                    'EJECUTADO',
+                    $operacion,
+                    '3 EGRESOS',
+                    'CONCILIACION_PAGOS_HONORARIOS',
+                    auth()->id(),
+                ]);
+                $duplicados++;
+
+                if (!empty($resultado[0]->id)) {
+                    DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
+                }
+
+                continue;
+            }
+
+            $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+                $fecha,
+                'MACRO',
+                $r['concepto'],
+                $r['subconcepto'] ?? null,
+                $r['pago']['nombre'],
+                $importe,
+                'EJECUTADO',
+                $operacion,
+                '3 EGRESOS',
+                'CONCILIACION_PAGOS_HONORARIOS',
+                auth()->id(),
+            ]);
+            $insertados++;
+
+            if (!empty($resultado[0]->id)) {
+                DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
+            }
+        }
+
+        return response()->json([
+            'ok' => true,
+            'actualizados' => $actualizados,
+            'duplicados' => $duplicados,
+            'insertados' => $insertados,
+        ]);
+    }
+
+    private function parsePagosHonorarios(string $text): array
+    {
+        $lines = preg_split('/\r?\n/', trim($text));
+        $pagos = [];
+    
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '') continue;
+    
+            $c = explode("\t", $line);
+            if (count($c) < 5) continue;
+    
+            $nombre = trim($c[0]);
+            $cuentaCbu = trim($c[1]);
+            $cuit = trim($c[2]);
+            $estado = trim($c[3]);
+            $impRaw = preg_replace('/\$|\s/', '', trim($c[4]));
+            $importe = abs((float) str_replace(['.', ','], ['', '.'], $impRaw));
+    
+            if (!$nombre || $importe == 0) continue;
+    
+            $pagos[] = [
+                'estado'    => $estado,
+                'nombre'    => $nombre,
+                'cuentaCbu' => $cuentaCbu,
+                'cuit'      => $cuit,
+                'importe'   => $importe,
+                'fechaPago' => null, // no viene en el archivo -- se completa manual antes de confirmar
+            ];
+        }
+    
+        return $pagos;
     }
 }
