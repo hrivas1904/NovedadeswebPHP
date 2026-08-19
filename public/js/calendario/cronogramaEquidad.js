@@ -1,6 +1,37 @@
-const hoy = new Date();
+const fechaActual = new Date();
 
-const opciones = { month: 'long' };
-const mesFormateada = hoy.toLocaleDateString('es-ES', opciones).toUpperCase();
+const mesesFormatoLargo = { month: 'long' };
+const mesFormateada = fechaActual.toLocaleDateString('es-ES', opciones).toUpperCase();
 
 document.getElementById('detalleMesFecha').textContent = mesFormateada;
+
+let tablaRepartoTurnos=$("#tbRepartosTurnos");
+
+$(document).ready(function(){
+    tablaRepartoTurnos.DataTable({
+        ajax:{
+            url:"/rrhh/personal/listarColaboradoresDatatable",
+            type:"GET",
+            dataSrc:"data",
+        },
+        scrollX:false,
+        scrollY:getScrollY(),
+        autoWidth:false,
+        paging:false,
+        language:{
+            url:"/js/es-ES.json"
+        },
+        searching:false,
+        columns:[
+            {data:"COLABORADOR"},
+            {data:"AREA"},
+            {data:"DNI"},
+            {data:"DNI"},
+            {data:"DNI"},
+            {data:"DNI"},
+            {data:"DNI"},
+            {data:"DNI"},
+            {data:"DNI"},
+        ],
+    });
+})

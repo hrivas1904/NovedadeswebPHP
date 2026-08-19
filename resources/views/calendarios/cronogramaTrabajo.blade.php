@@ -326,6 +326,7 @@
                                 <th></th>
                             </tr>
                         </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -382,30 +383,22 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="d-flex flex-column gap-3">
-                    <div class="input-group w-auto">
-                        <button class="btn btn-secondary" type="button" id="button-addon1">
-                            <i class="fs-5 fa-regular fa-square-caret-left"></i>
-                        </button>
-                        <input class="form-control" id="inputDia" type="number">
-                        <button class="btn btn-secondary" type="button" id="button-addon1">
-                            <i class="fs-5 fa-regular fa-square-caret-right"></i>
-                        </button>
-                    </div>
-                    <div class="d-flex gap-3 align-items-center">
-                        <div class="card p-2 h-100">
-                            <label class="form-label text-muted">TURNOS ACTIVOS</label>
-                            <h1 id="lblTurnosActivos" class="fw-bold">-</h1>
-                        </div>
-                        <div class="card p-2 h-100">
-                            <label class="form-label text-muted">CUMPLEN LA DOTACIÓN</label>
-                            <h1 id="lblDotacion" class="fw-bold">-</h1>
-                        </div>
-                    </div>
-                    <div id="divRenderDotacionDiaria" class="">
-
-                    </div>
-                </div>
+                <table id="tbRepartosTurnos" class="table table-striped table-hover align-middle table-header-hp3c">
+                        <thead>
+                            <tr>
+                                <th>COLABORADOR</th>
+                                <th>ÁREAS</th>
+                                <th>TURNOS</th>
+                                <th>HORAS</th>
+                                <th>HS NOCT</th>
+                                <th>TURNOS NOCHE</th>
+                                <th>FINES DE SEM</th>
+                                <th>FERIADOS</th>
+                                <th>DESCANSOS</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
             </div>
         </div>
     </div>
@@ -414,12 +407,11 @@
 @endpush
 
 @push('scripts')
+<script src="{{ asset('js/calendario/cronogramaTrabajo.js') }}"></script>
 <script src="{{ asset('js/calendario/configuracionPeriodos.js') }}"></script>
 <script src="{{ asset('js/calendario/configuracionFeriados.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaDiario.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaEquidad.js') }}"></script>
-<script src="{{ asset('js/calendario/cronogramaTrabajo.js') }}"></script>
-
 <script>
     const USER_ROLE = "{{ Auth::user()->rol }}";
 </script>

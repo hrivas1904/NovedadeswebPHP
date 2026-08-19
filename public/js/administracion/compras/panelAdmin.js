@@ -410,13 +410,10 @@ function verPedido(id) {
 
             response.detalle.forEach(function (item, index) {
 
-                const precioTexto =
+                const precioValor =
                     item.precio === null || item.precio === undefined
                         ? ""
-                        : parseFloat(item.precio).toLocaleString("es-AR", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        });
+                        : parseFloat(item.precio);
 
                 tbody.append(`
                     <tr data-detalle-id="${item.id}">
@@ -444,8 +441,11 @@ function verPedido(id) {
 
                         <td class="text-end">
                             <input
+                                type="number"
+                                step="0.01"
+                                min="0"
                                 class="form-control input-precio"
-                                value="${precioTexto}"
+                                value="${precioValor}"
                                 readonly>
                         </td>
 

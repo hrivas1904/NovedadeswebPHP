@@ -323,17 +323,17 @@
 
             <div class="modal-footer">
                 @if (in_array(Auth::id(), [1,2,5,6,15]))                
-                <button class="btn btn-primary d-none" id="btnRegenerarExcelFinnegans">
+                <button type="button" class="btn btn-primary d-none" id="btnRegenerarExcelFinnegans">
                     Regenerar Excel
                 </button>
-                <button class="btn btn-secondary" id="btnHabilitarEdicionPedido">
+                <button type="button" class="btn btn-secondary" id="btnHabilitarEdicionPedido">
                     Editar
                 </button>
-                <button class="btn btn-primary d-none" id="btnGuardarCambiosPedidos">
+                <button type="button" class="btn btn-primary d-none" id="btnGuardarCambiosPedidos">
                     Guardar cambios
                 </button>                
                 @endif
-                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Cerrar
                 </button>
             </div>

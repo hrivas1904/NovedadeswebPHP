@@ -49,13 +49,14 @@ $("#btnGuardarCambiosPedidos").on("click", function () {
                 icon: "success",
                 title: "¡Operación exitosa!",
                 text: "Pedido actualizado correctamente.",
-                timer: 1200,
+                timer: 1500,
                 showConfirmButton: false,
             });
 
             $("#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla").addClass("d-none");
             $("#verPrioridad, #verCentroCosto, #verProveedor").prop("disabled",true)
             $("#verDescripcion").prop("readonly",true);
+            $("#btnHabilitarEdicionPedido").removeClass("d-none");
 
             $(".selector-producto").prop("disabled",true);
             $(".input-descripcion, .input-cantidad, .input-cantidad").prop("readonly",true);
@@ -233,21 +234,30 @@ $(document).on("click", ".btnEliminarPresupuesto", function (e) {
 });
 
 function leerDetallePedido() {
-
     const detalle = [];
 
     $("#detalleProductosBody tr").each(function () {
 
         const fila = $(this);
 
+        const cantidad = fila.find(".input-cantidad").val();
+        const precio = fila.find(".input-precio").val();
+
         detalle.push({
             id: fila.data("detalle-id") || null,
-            producto_id: fila.find(".selector-producto").val(),
-            descripcion_item: fila.find(".input-descripcion").val().trim(),
-            cantidad: fila.find(".input-cantidad").val(),
-            precio: fila.find(".input-precio").val(),
-        });
 
+            producto_id:
+                fila.find(".selector-producto").val(),
+
+            descripcion_item:
+                fila.find(".input-descripcion").val().trim(),
+
+            cantidad:
+                cantidad === "" ? null : parseFloat(cantidad),
+
+            precio:
+                precio === "" ? null : parseFloat(precio),
+        });
     });
 
     return detalle;
