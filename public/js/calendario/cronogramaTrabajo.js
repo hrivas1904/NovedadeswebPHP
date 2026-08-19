@@ -15,6 +15,24 @@ const meses = [
     "Diciembre"
 ];
 
+function getScrollY() {
+    return window.innerWidth < 768 ? "40vh" : "65vh";
+}
+
+function obtenerNombreDia(fechaString) {
+    if (!fechaString) return "Sin fecha";
+    const soloFecha = fechaString.split(' ')[0]; 
+    const partes = soloFecha.split('-');
+
+    const anio = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10) - 1;
+    const dia = parseInt(partes[2], 10);
+
+    const fechaObj = new Date(anio, mes, dia);
+    const nombreDia = fechaObj.toLocaleDateString('es-ES', { weekday: 'long' });
+    return nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
+}
+
 $("#btnOcultarAcciones").on("click", function () {
     $("#divAcciones").toggleClass("d-none");
     const oculto = $("#divAcciones").hasClass("d-none");

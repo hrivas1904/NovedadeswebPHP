@@ -209,7 +209,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5 mb-0" id="exampleModalLabel">CONFIGURACIONES</h1>
+                <h1 class="modal-title fs-5 mb-0" id="exampleModalLabel">PERÍODOS</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -248,48 +248,49 @@
                             </div>
                         </div>
                     </div>
-                    <table id="tbPeriodos" class="table">
-                        <thead>
-                            <tr>
-                                <th>PERÍODO</th>
-                                <th>DÍAS</th>
-                                <th>EMPIEZA</th>
-                                <th>ASIGNACIONES</th>
-                                <th>ESTADO</th>
-                                <th>VISIBLE</th>
-                                <th>OBSERVACIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <div class="d-flex align-items-center gap-3">
-                        <label class="form-label text-muted">Abrir un mes: </label>
-                        <select class="form-select w-100" id="selectorMesPeriodo">
+                    <div class="card p-1">
+                        <table id="tbPeriodos" class="table table-striped table-hover align-middle table-header-hp3c">
+                            <thead>
+                                <tr>
+                                    <th>PERÍODO</th>
+                                    <th>DÍAS</th>
+                                    <th>EMPIEZA</th>
+                                    <th>ASIGNACIONES</th>
+                                    <th>ESTADO</th>
+                                    <th>VISIBLE</th>
+                                    <th>OBSERVACIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 flex-nowrap justify-content-around mt-3">
+                        <label class="form-label text-muted text-nowrap">Abrir un mes: </label>
+                        <select class="form-select w-auto" id="selectorMesPeriodo">
                             <option value="">Seleccionar mes</option>
                         </select>
-                        <select class="form-select w-100" id="selectorAnnioPeriodo">
+                        <select class="form-select w-auto" id="selectorAnnioPeriodo">
                             <option value="">Seleccionar año</option>
                         </select>
-                        <div class="form-check">
+                        <div class="form-check flex-nowrap">
                             <input class="form-check-input" type="checkbox" value="" id="checkDefault">
                             <label class="form-check-label" for="checkDefault">Copiar personas y puestos del mes anterior</label>
                         </div>
-                        <button type="button" id="btnAbrirPeriodoSelec" class="btn btn-primary">Abrir periodo</button>
-                        <button type="button" id="btnAbrirTodosMeses" class="btn btn-outline-secondary">Abrir los 12 meses del año elegido</button>
+                        <button type="button" id="btnAbrirPeriodoSelec" class="btn btn-primary text-nowrap">Abrir periodo</button>
+                        <button type="button" id="btnAbrirTodosMeses" class="btn btn-outline-secondary text-nowrap">Abrir los 12 meses del año elegido</button>
                     </div>
                     <div class="border-top">
                         <p>
-                            Abrir un período crea el mes vacío en todas las áreas y servicios, con la cantidad de días y el día de la semana en que empieza. Si tildás la copia, arrastra las personas y los puestos del mes anterior —no los francos, que se rearman con el generador de ciclos o con el pincel—. Es el arranque más rápido y el que menos errores mete: el 90% de la dotación no cambia de un mes al otro.
-                            Criterio sugerido para el hospital: tener siempre visibles el mes en curso y los dos siguientes. El mes en curso para resolver excepciones, el siguiente porque es el que se está armando, y el subsiguiente para cargar vacaciones con anticipación. Los cerrados se ocultan después de la liquidación.
+                            <span class="fw-bold">Abrir un período</span> crea el mes vacío en todas las áreas y servicios, con la cantidad de días y el día de la semana en que empieza. Si tildás la copia, arrastra las personas y los puestos del mes anterior —no los francos, que se rearman con el generador de ciclos o con el pincel—. Es el arranque más rápido y el que menos errores mete: el 90% de la dotación no cambia de un mes al otro.
                         </p>
                         <p>
-                            Visible controla qué ve el coordinador en el selector de la pantalla principal. Sirve para dos cosas concretas: que nadie cargue por error un mes que todavía no se habilitó, y sacar de la vista los meses ya cerrados y liquidados sin borrarlos. Ocultar no borra nada: el período sigue existiendo, se sigue viendo en los reportes y en la trazabilidad, y se vuelve a mostrar tildando la casilla.
+                            <span class="fw-bold">Visible</span> controla qué ve el coordinador en el selector de la pantalla principal. Sirve para dos cosas concretas: que nadie cargue por error un mes que todavía no se habilitó, y sacar de la vista los meses ya cerrados y liquidados sin borrarlos. <span class="fw-bold">Ocultar no borra nada:</span> el período sigue existiendo, se sigue viendo en los reportes y en la trazabilidad, y se vuelve a mostrar tildando la casilla.
                         </p>
                         <p>
                             Un período con cronograma cargado o publicado no se puede eliminar. Es a propósito: un cronograma publicado es un hecho histórico, se usó para cubrir turnos reales y para liquidar, y borrarlo deja sin respaldo lo que se pagó. Si un mes se abrió por error y todavía está vacío, el botón de eliminar está disponible.
                         </p>
                         <p>
-                            
+                            Criterio sugerido para el hospital: tener siempre visibles <span class="fw-bold">el mes en curso y los dos siguientes.</span> El mes en curso para resolver excepciones, el siguiente porque es el que se está armando, y el subsiguiente para cargar vacaciones con anticipación. Los cerrados se ocultan después de la liquidación.
                         </p>
                     </div>
                 </div>
@@ -306,19 +307,26 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5 mb-0" id="exampleModalLabel">
-                    TABLERO DEL <span id="detalleFechaLarga">...</span>
+                    FERIADOS
                 </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="input-group w-auto">
-                    <button class="btn btn-secondary" type="button" id="button-addon1">
-                        <i class="fs-5 fa-regular fa-square-caret-left"></i>
-                    </button>
-                    <input class="form-control" id="inputDia" type="number">
-                    <button class="btn btn-secondary" type="button" id="button-addon1">
-                        <i class="fs-5 fa-regular fa-square-caret-right"></i>
-                    </button>
+                <div class="card p-1">
+                    <table id="tbFeriados" class="table table-striped table-hover align-middle table-header-hp3c">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>FECHA</th>
+                                <th>DÍA</th>
+                                <th>DENOMINACIÓN</th>
+                                <th>ALCANCE</th>
+                                <th>CARÁCTER</th>
+                                <th>VERIFICADO</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -351,6 +359,8 @@
 @endpush
 
 @push('scripts')
+<script src="{{ asset('js/calendario/configuracionPeriodos.js') }}"></script>
+<script src="{{ asset('js/calendario/configuracionFeriados.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaTrabajo.js') }}"></script>
 
 <script>
