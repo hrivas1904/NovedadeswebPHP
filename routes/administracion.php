@@ -92,6 +92,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/comparativaView', [AnalisisController::class, 'comparativaView'])->name('comparativaView');
     Route::get('/presupuestadoView', [AnalisisController::class, 'presupuestadoView'])->name('presupuestadoView');
     Route::get('/resumenAnualView', [AnalisisController::class, 'resumenAnualView'])->name('resumenAnualView');
+    Route::get('/comparativaPresupuestoView', [AnalisisController::class, 'comparativaPresupuestoView'])->name('comparativaPresupuestoView');
 
     //IMPORTACION
     Route::get('/importacionView', [ImportacionController::class, 'importacionView'])->name('importacionView');

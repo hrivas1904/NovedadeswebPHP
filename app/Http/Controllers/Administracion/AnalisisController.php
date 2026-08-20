@@ -137,4 +137,49 @@ class AnalisisController extends Controller
             'totales' => $totales,
         ]);
     }
+
+    public function comparativaPresupuestoView()
+    {
+        $pdo  = DB::connection()->getPdo();
+        $stmt = $pdo->prepare('CALL SP_FF_ANALISIS_COMPARATIVO_PRESUPUESTO()');
+        $stmt->execute();
+
+        $resumenRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->nextRowset();
+        $detalleRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $periodos = collect($resumenRows)->pluck('periodo')->values();
+
+        $periodoLabels = $periodos->map(function ($p) {
+            return mb_strtoupper(Carbon::parse($p . '-01')->locale('es')->isoFormat('MMMM'));
+        });
+
+        $resumenPorPeriodo = collect($resumenRows)->keyBy('periodo');
+
+        $detalle = collect($detalleRows)
+            ->groupBy('grupo_ff')
+            ->map(function ($filas) use ($periodos) {
+                return $filas->groupBy('concepto')
+                    ->map(function ($porConcepto) use ($periodos) {
+                        $primero = $porConcepto->first();
+                        $porPeriodo = $porConcepto->keyBy('periodo');
+                        return [
+                            'label'   => $primero['label'],
+                            'orden'   => $primero['orden'],
+                            'valores' => $periodos->map(
+                                fn($p) => (float) ($porPeriodo->get($p)['importe_neto'] ?? 0)
+                            )->values(),
+                        ];
+                    })
+                    ->sortBy('orden')
+                    ->values();
+            });
+
+        return view('administracion.analisis.comparativoSeisPresupuesto', [
+            'periodos'      => $periodos,
+            'periodoLabels' => $periodoLabels,
+            'resumen'       => $periodos->map(fn($p) => $resumenPorPeriodo->get($p))->values(),
+        ])->with('detalle', $detalle);
+    }
 }

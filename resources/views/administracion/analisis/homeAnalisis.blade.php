@@ -18,6 +18,12 @@
             Comparativo 6 meses
         </button>
 
+        <button type="button" id="btnIrComparativoPresupuesto" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
+            data-url="{{ route('administracion.comparativaPresupuestoView') }}">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+            Comparativo Presupuesto
+        </button>
+
         <button type="button" id="btnIrPresupuestoEjecutado" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
             data-url="{{ route('administracion.presupuestadoView') }}">
             <i class="fa-solid fa-scale-balanced"></i>
