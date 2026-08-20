@@ -136,28 +136,27 @@ function renderTablaConciliacion() {
 
         columns: [
             {
-                data: null,
-                orderable: false,
-                className: 'text-center',
-                width: '110px',
-
+                data: null, orderable: false, className: 'text-center', width: '130px',
                 render: function (row) {
-
                     const badgeNuevo = row.nuevo_en_conciliacion == 1
                         ? '<span class="badge" style="background:#1A5CA8; font-size:0.65rem;">NUEVO</span> '
                         : '';
-
                     const estado = row.estado_conciliacion;
-
                     const badgeEstado = estado === 'FINN'
                         ? '<span class="badge" style="background:#F9A825; font-size:0.65rem;">F</span> '
                         : estado === 'QR'
-                            ? '<span class="badge" style="background:#E55A3A; font-size:0.65rem;">QR</span> '
-                            : '';
-
-                    return badgeNuevo
-                        + badgeEstado
-                        + '<input type="checkbox" class="chk-conc" data-id="' + row.id + '">';
+                        ? '<span class="badge" style="background:#E55A3A; font-size:0.65rem;">QR</span> '
+                        : '';
+            
+                    const tieneComentario = row.comentario && row.comentario.trim() !== '';
+                    const comentarioEscapado = (row.comentario || '').replace(/"/g, '&quot;');
+                    const btnComentario = '<button type="button" class="btn btn-sm btn-comentario ' +
+                        (tieneComentario ? 'text-warning' : 'text-muted') + '" data-id="' + row.id +
+                        '" data-comentario="' + comentarioEscapado + '" title="' +
+                        (tieneComentario ? 'Ver/editar comentario' : 'Agregar comentario') +
+                        '"><i class="fa-solid fa-comment-dots"></i></button>';
+            
+                    return badgeNuevo + badgeEstado + btnComentario + '<input type="checkbox" class="chk-conc ms-1" data-id="' + row.id + '">';
                 }
             },
 
@@ -424,6 +423,45 @@ $(document).on('change', SCOPE + '#chkSeleccionarTodos', function () {
     const checked = $(this).is(':checked');
     tablaConciliacion.rows({ search: 'applied' }).nodes().to$().find('.chk-conc').prop('checked', checked);
     actualizarSumaSeleccionados();
+});
+
+// Agregar junto a los demas handlers de Conciliacion (por ejemplo, cerca
+// del de .input-comprobante)
+
+$(document).on('click', SCOPE + '.btn-comentario', function () {
+    const $btn = $(this);
+    const id = $btn.data('id');
+    const comentarioActual = $btn.data('comentario') || '';
+
+    Swal.fire({
+        title: 'Comentario',
+        input: 'textarea',
+        inputValue: comentarioActual,
+        inputPlaceholder: 'Escribí un comentario para este movimiento...',
+        inputAttributes: { maxlength: 500 },
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: 'btn btn-primary me-2',
+            cancelButton: 'btn btn-secondary',
+        },
+    }).then(function (result) {
+        if (!result.isConfirmed) return;
+
+        const nuevoComentario = (result.value || '').trim();
+
+        $.post(CONCILIACION_ROUTES.comentario.replace(':id', id), { comentario: nuevoComentario }, function () {
+            const fila = filasConciliacion.find(r => r.id === id);
+            if (fila) fila.comentario = nuevoComentario;
+
+            $btn.data('comentario', nuevoComentario);
+            const tieneComentario = nuevoComentario !== '';
+            $btn.toggleClass('text-warning', tieneComentario).toggleClass('text-muted', !tieneComentario);
+            $btn.attr('title', tieneComentario ? 'Ver/editar comentario' : 'Agregar comentario');
+        });
+    });
 });
 
 // ── Acciones masivas ──────────────────────────────────────────────────

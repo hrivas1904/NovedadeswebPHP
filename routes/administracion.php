@@ -131,4 +131,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/conciliacion/pagos-honorarios/preview', [ConciliacionesController::class, 'previewPagosHonorarios'])->name('conciliacion.pagosHonorarios.preview');
     Route::post('/conciliacion/pagos-honorarios/confirmar', [ConciliacionesController::class, 'confirmarPagosHonorarios'])->name('conciliacion.pagosHonorarios.confirmar');
+
+    Route::post('/conciliacion/movimiento/{id}/comentario', [ConciliacionesController::class, 'actualizarComentario'])->name('conciliacion.comentario');
 });

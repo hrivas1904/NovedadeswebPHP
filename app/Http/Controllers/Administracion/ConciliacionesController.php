@@ -514,4 +514,16 @@ class ConciliacionesController extends Controller
     
         return $pagos;
     }
+
+    public function actualizarComentario(Request $request, $id)
+    {
+        $request->validate(['comentario' => 'nullable|string|max:500']);
+    
+        DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_COMENTARIO(?,?)', [
+            $id,
+            $request->input('comentario'),
+        ]);
+    
+        return response()->json(['ok' => true]);
+    }
 }
