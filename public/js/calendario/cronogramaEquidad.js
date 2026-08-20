@@ -35,3 +35,7 @@ $(document).ready(function(){
         ],
     });
 })
+
+$('#modalEquidad').on('shown.bs.modal', function () {
+    tablaPeriodos.DataTable().columns.adjust().draw();
+});
