@@ -54,6 +54,15 @@ $("#tablaPedidosCompras").DataTable({
             className: "text-wrap",
         },
     ],
+    createdRow: function (row, data) {
+
+        if (
+            data.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE" &&
+            data.estado === "PENDIENTE"
+        ) {
+            $(row).addClass("pedido-requiere-gerencia");
+        }
+    },
     columns: [
         {
             data: "fecha",
@@ -80,52 +89,95 @@ $("#tablaPedidosCompras").DataTable({
             searchable: false,
             className: "text-center",
             render: function (data) {
+
                 if (!PUEDE_AUTORIZAR_PEDIDOS) {
                     return "";
                 }
 
-                if (data.estado == "GENERADO") {
+                if (data.estado === "GENERADO") {
                     return "";
                 }
 
-                if (data.autorizacion == "PENDIENTE") {
+                const ES_GERENTE = USER_ID === 5;
+
+                // ==========================================
+                // AUTORIZACIÓN NORMAL
+                // ==========================================
+
+                if (data.autorizacion === "PENDIENTE") {
+
+                    // El gerente no interviene en esta instancia
+                    if (ES_GERENTE) {
+                        return "";
+                    }
+
                     return `
-                        <button class="btn btn-sm btnAutorizar" data-id="${data.id}" style="color:var(--color-accent-green)" title="Aprobar pedido">
+                        <button
+                            class="btn btn-sm btnAutorizar"
+                            data-id="${data.id}"
+                            style="color:var(--color-accent-green)"
+                            title="Aprobar pedido">
+
                             <i class="fs-5 fa-regular fa-square-check"></i>
                         </button>
-                        <button class="btn btn-sm btnRechazar" data-id="${data.id}" style="color:var(--color-accent-red)" title="Rechazar pedido">
+
+                        <button
+                            class="btn btn-sm btnRechazar"
+                            data-id="${data.id}"
+                            style="color:var(--color-accent-red)"
+                            title="Rechazar pedido">
+
                             <i class="fs-5 fa-regular fa-circle-xmark"></i>
                         </button>
                     `;
                 }
 
-                const PUEDE_APROBAR_GERENTE = [1, 5].includes(USER_ID);
+
+                // ==========================================
+                // AUTORIZACIÓN GERENTE
+                // ==========================================
+
                 if (
                     data.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE" &&
-                    PUEDE_APROBAR_GERENTE
+                    ES_GERENTE
                 ) {
                     return `
-                        <button class="btn btn-sm btnAutorizarGerente" data-id="${data.id}" style="color:var(--color-accent-green)" title="Aprobar pedido">
+                        <button
+                            class="btn btn-sm btnAutorizarGerente"
+                            data-id="${data.id}"
+                            style="color:var(--color-accent-green)"
+                            title="Autorizar como gerente">
+
                             <i class="fs-5 fa-regular fa-square-check"></i>
                         </button>
-                        <button class="btn btn-sm btnRechazar" data-id="${data.id}" style="color:var(--color-accent-red)" title="Rechazar pedido">
+
+                        <button
+                            class="btn btn-sm btnRechazar"
+                            data-id="${data.id}"
+                            style="color:var(--color-accent-red)"
+                            title="Rechazar pedido">
+
                             <i class="fs-5 fa-regular fa-circle-xmark"></i>
                         </button>
                     `;
                 }
 
-                if (data.autorizacion == "APROBADA") {
+
+                // ==========================================
+                // PEDIDO APROBADO
+                // ==========================================
+
+                if (data.autorizacion === "APROBADA") {
                     return `
-                        <input type="checkbox" class="form-check-input chkPedido" value="${data.id}">
+                        <input
+                            type="checkbox"
+                            class="form-check-input chkPedido"
+                            value="${data.id}">
                     `;
                 }
 
-                return `
-                    <button class="btn btn-sm btnVerDetalle" data-id="${data.id}" style="color:var(--color-default)" title="Ver pedido">
-                        <i class="fs-5 fa fa-eye"></i>
-                    </button>
-                `;
-            },
+                return "";
+            }
         },
     ],
 });

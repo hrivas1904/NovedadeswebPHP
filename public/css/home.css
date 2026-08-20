@@ -297,3 +297,28 @@ body[data-theme="dark"] {
     font-weight: 600;
     border-color: lightgrey;
 }
+
+#tablaPedidosCompras tbody tr.pedido-requiere-gerencia {
+    position: relative;
+}
+
+#tablaPedidosCompras tbody tr.pedido-requiere-gerencia > td:first-child {
+    position: relative;
+    padding-left: 14px !important;
+}
+
+#tablaPedidosCompras tbody tr.pedido-requiere-gerencia > td:first-child::before {
+    content: "";
+    position: absolute;
+
+    left: 3px;
+    top: 15%;
+    bottom: 15%;
+
+    width: 5px;
+
+    background: var(--color-default);
+    border-radius: 10px;
+
+    box-shadow: 0 0 6px var(--color-second)
+}
