@@ -33,12 +33,21 @@ function renderPreviewCaja() {
         '<thead><tr><th>Fecha</th><th>Concepto</th><th>Sub-concepto</th><th>Detalle</th><th class="text-end">Importe</th></tr></thead>' +
         '<tbody>';
 
+    function optsSubconcepto(concepto, actual) {
+        const lista = SUBCONCEPTOS_POR_CONCEPTO[concepto] || [];
+        let out = '';
+        lista.forEach(function (s) {
+            out += '<option value="' + s + '"' + (s === actual ? ' selected' : '') + '>' + s + '</option>';
+        });
+        return out;
+    }
+
     filasCaja.forEach(function (r, i) {
         let optsFila = opts.replace('value="' + r.concepto + '"', 'value="' + r.concepto + '" selected');
         html += '<tr>' +
             '<td>' + r.fecha + '</td>' +
             '<td><select class="form-select form-select-sm select-concepto-caja" data-idx="' + i + '">' + optsFila + '</select></td>' +
-            '<td><input type="text" class="form-control form-control-sm input-subconcepto-caja" data-idx="' + i + '" value="' + (r.subconcepto || '') + '"></td>' +
+            '<td><select class="form-select form-select-sm select-subconcepto-caja" data-idx="' + i + '">' + optsSubconcepto(r.concepto, r.subconcepto) + '</select></td>' +
             '<td>' + r.detalle + '</td>' +
             '<td class="text-end fw-bold ' + (r.importe >= 0 ? 'text-success' : 'text-danger') + '">' + fmtPesos(r.importe) + '</td>' +
             '</tr>';
@@ -103,10 +112,18 @@ $(document).on('change', '#inputArchivoCaja', function () {
 });
 
 $(document).on('change', '.select-concepto-caja', function () {
-    filasCaja[$(this).data('idx')].concepto = $(this).val();
+    const idx = $(this).data('idx');
+    const nuevoConcepto = $(this).val();
+    filasCaja[idx].concepto = nuevoConcepto;
+
+    const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
+    let opts = '';
+    lista.forEach(function (s) { opts += '<option value="' + s + '">' + s + '</option>'; });
+    $('.select-subconcepto-caja[data-idx="' + idx + '"]').html(opts);
+    filasCaja[idx].subconcepto = lista[0] || '';
 });
 
-$(document).on('input', '.input-subconcepto-caja', function () {
+$(document).on('change', '.select-subconcepto-caja', function () {
     filasCaja[$(this).data('idx')].subconcepto = $(this).val();
 });
 

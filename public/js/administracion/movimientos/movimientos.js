@@ -756,3 +756,10 @@ $(document).on(
     "#manualCuenta, #manualConcepto",
     evaluarContrapartidaManual,
 );
+
+function limpiarSeleccionMovimientos() {
+    seleccionadosMovimientos = {};
+    $("#chkSeleccionarTodos").prop("checked", false);
+    $(".chk-movimiento").prop("checked", false); // NUEVO: destilda los que estan visibles ahora mismo
+    actualizarResumenSeleccionMovimientos();
+}

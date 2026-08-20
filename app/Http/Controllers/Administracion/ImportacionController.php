@@ -12,8 +12,9 @@ class ImportacionController extends Controller
     public function importacionView()
     {
         $conceptos = collect(DB::select('SELECT nombre FROM ff_conceptos WHERE activo = 1 ORDER BY orden'))->pluck('nombre');
-
-        return view('administracion.importacion.importacion', compact('conceptos'));
+        $subconceptosPorConcepto = $this->obtenerSubconceptosPorConcepto();
+    
+        return view('administracion.importacion.importacion', compact('conceptos', 'subconceptosPorConcepto'));
     }
 
     public function importMovBancariosView()
@@ -29,6 +30,17 @@ class ImportacionController extends Controller
     public function importTsvView()
     {
         return view('administracion.importacion.importacionTsv');
+    }
+
+    private function obtenerSubconceptosPorConcepto()
+    {
+        $rows = DB::select('CALL SP_FF_SUBCONCEPTOS_LISTAR_TODOS()');
+    
+        $out = [];
+        foreach ($rows as $r) {
+            $out[$r->concepto][] = $r->subconcepto;
+        }
+        return $out;
     }
 
     // -------------------------------------------------------------

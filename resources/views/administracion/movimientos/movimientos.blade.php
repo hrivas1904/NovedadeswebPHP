@@ -105,6 +105,10 @@
     <button type="button" class="btn btn-primary" id="btnCambiarFechaMasiva">Cambiar fecha</button>
 
     <label class="fw-bold fs-6" id="labelSeleccionadosMovimientos">0 SELECCIONADOS</label>
+
+    <button type="button" id="btnLimpiarSeleccion" class="btn btn-sm btn-outline-secondary" onclick="limpiarSeleccionMovimientos()">
+        Limpiar selección
+    </button>
 </div>
 
 <div class="card p-1">

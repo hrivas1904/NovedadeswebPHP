@@ -42,6 +42,7 @@
         tsvConfirmar: @json(route('administracion.importacion.tsv.confirmar')),
     };
     const CONCEPTOS_CATALOGO = @json($conceptos);
+    const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
 </script>
 <script src="{{ asset('js/administracion/importacion/importacion.js') }}"></script>
 <script src="{{ asset('js/administracion/importacion/importacionBancos.js') }}"></script>
