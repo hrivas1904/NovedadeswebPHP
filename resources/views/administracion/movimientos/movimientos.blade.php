@@ -119,6 +119,7 @@
                     <input type="checkbox" id="checkSeleccionarTodo">
                 </th>
                 <th>FECHA</th>
+                <th>N°COMP</th>
                 <th>ESTADO</th>
                 <th>OPERACIÓN</th>
                 <th>CUENTA</th>
