@@ -225,10 +225,15 @@
                         <input class="form-control" id="auditorPedido" readonly>
                     </div>
 
+                    <div class="col-6">
+                        <label class="form-label fw-bold">Motivo de rechazo</label>
+                        <input id="verMotivoRechazo" class="form-control" readonly>
+                    </div>
+
                     <div class="col-12">
                         <label class="form-label fw-bold">Descripción</label>
                         <textarea id="verDescripcion" class="form-control" rows="2" readonly></textarea>
-                    </div>
+                    </div>                    
                 </div>
 
                 <h6 class="fw-bold">
@@ -575,6 +580,34 @@
                         <i class="fa-solid fa-paper-plane me-1"></i>
                         Enviar pedido
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalObservacionRechazo" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    RECHAZAR PEDIDO DE COMPRA
+                </h5>
+                <button
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column g-3">
+                    <label class="form-label">Observaciones</label>
+                    <input class="form-control" type="text" id="inputObservRechazo">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex gap-1 justify-content-end">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarRechazo">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmarRechazo">Confirmar</button>
                 </div>
             </div>
         </div>

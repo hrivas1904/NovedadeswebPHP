@@ -331,11 +331,17 @@ class ComprasController extends Controller
 
     public function rechazarPedido(Request $request)
     {
+        $request->validate([
+            'id' => ['required', 'integer'],
+            'motivoRechazo' => ['nullable', 'string', 'max:1000'],
+        ]);
+
         DB::statement(
-            "CALL SP_RECHAZAR_PEDIDO_COMPRA(?,?)",
+            "CALL SP_RECHAZAR_PEDIDO_COMPRA(?,?,?)",
             [
                 Auth::id(),
-                $request->id
+                $request->id,
+                $request->motivoRechazo ?: null
             ]
         );
 

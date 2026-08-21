@@ -182,6 +182,77 @@ $("#tablaPedidosCompras").DataTable({
     ],
 });
 
+let PEDIDO_RECHAZO_ID = null;
+
+$(document).on("click", ".btnRechazar", function () {
+
+    PEDIDO_RECHAZO_ID = $(this).data("id");
+
+    $("#inputObservRechazo").val("");
+    $("#modalObservacionRechazo").modal("show");
+});
+
+
+$("#btnConfirmarRechazo").on("click", function () {
+
+    const motivo = $("#inputObservRechazo").val().trim();
+
+    $.ajax({
+        url: "/administracion/compras/rechazar",
+        type: "POST",
+
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        data: {
+            id: PEDIDO_RECHAZO_ID,
+            motivoRechazo: motivo,
+        },
+
+        success: function () {
+
+            $("#modalObservacionRechazo").modal("hide");
+
+            PEDIDO_RECHAZO_ID = null;
+            $("#inputObservRechazo").val("");
+
+            Swal.fire({
+                icon: "success",
+                title: "¡Operación exitosa!",
+                text: "Pedido rechazado correctamente.",
+                timer: 1800,
+                showConfirmButton: false,
+            });
+
+            $("#tablaPedidosCompras")
+                .DataTable()
+                .ajax
+                .reload(null, false);
+        },
+
+        error: function (xhr) {
+
+            console.error(xhr.responseText);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    xhr.responseJSON?.mensaje ??
+                    "No fue posible rechazar el pedido.",
+            });
+        },
+    });
+});
+
+
+$("#btnCancelarRechazo").on("click", function () {
+    PEDIDO_RECHAZO_ID = null;
+    $("#inputObservRechazo").val("");
+    $("#modalObservacionRechazo").modal("hide");
+});
+
 $(document).on(
     "change",
     ".check-Prioridades, .check-Autorizacion, .check-Estados",
@@ -328,42 +399,6 @@ $(document).on("click", ".btnAutorizarGerente", function () {
     });
 });
 
-$(document).on("click", ".btnRechazar", function () {
-    let id = $(this).data("id");
-    Swal.fire({
-        title: "¿Rechazar pedido?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Rechazar",
-        cancelButtonText: "Cancelar",
-        customClass: {
-            confirmButton: "btn btn-primary me-2",
-            cancelButton: "btn btn-secondary",
-        },
-        buttonsStyling: false,
-    }).then((r) => {
-        if (!r.isConfirmed) return;
-
-        $.post(
-            "/administracion/compras/rechazar",
-            {
-                _token: $('meta[name="csrf-token"]').attr("content"),
-                id: id,
-            },
-            function () {
-                Swal.fire({
-                    icon: "success",
-                    title: "Operación exitosa!",
-                    text: "Pedido rechazado correctamente.",
-                    timer: 1800,
-                    showConfirmButton: false,
-                });
-                $("#tablaPedidosCompras").DataTable().ajax.reload(null, false);
-            },
-        );
-    });
-});
-
 function exportarExcel() {
     let ids = [];
 
@@ -456,6 +491,7 @@ function verPedido(id) {
             $("#reqAutGerente").val(c.autGerente);
             $("#estadoAutGerente").val(c.autorizacion_gerente);
             $("#auditorPedido").val(c.auditor);
+            $("#verMotivoRechazo").val(c.motivoRechazo ?? "");
 
             let tbody = $("#detalleProductosBody");
             tbody.empty();
