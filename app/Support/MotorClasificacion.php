@@ -74,6 +74,10 @@ class MotorClasificacion
         if ($importe !== null && $importe > 0 && str_contains($t, 'transf') && !$this->esFCI($t)) {
             return ['concepto' => 'INGRESOS PARTICULARES', 'sub' => 'INGRESOS PARTICULARES'];
         }
+
+        if (str_contains($t, 'acreditacion cheque remisas')) {
+            return ['concepto' => 'OBRAS SOCIALES', 'sub' => '1 OS-DEPOSITO CHEQUES'];
+        }
         return null;
     }
 

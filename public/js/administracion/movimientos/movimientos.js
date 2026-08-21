@@ -117,6 +117,14 @@ $(document).ready(function () {
                 },
             },
             {
+                data: "nro_comprobante",
+                className: "text-start",
+                render: function (val, type, row) {
+                    if (type !== "display") return val;
+                    return '<input type="text" class="form-control form-control-sm input-comprobante-movimiento" data-id="' + row.id + '" value="' + (val || "").replace(/"/g, "&quot;") + '">';
+                },
+            },
+            {
                 data: "ejecucion",
                 render: function (valor) {
                     if (valor === "PRESUPUESTO") {
@@ -336,6 +344,17 @@ function poblarSubconceptosManual(concepto) {
 $(document).on("change", "#manualConcepto", function () {
     poblarSubconceptosManual($(this).val());
 });
+
+$(document).on("blur", ".input-comprobante-movimiento", function () {
+    const id = $(this).data("id");
+    $.post(MOVIMIENTOS_ROUTES.texto.replace(":id", id), {
+        campo: "nro_comprobante",
+        valor: $(this).val(),
+    }).done(function () {
+        tablaMovimientos.ajax.reload(null, false);
+    });
+});
+ 
 
 function limpiarFormManual() {
     $("#manualFecha").val(new Date().toISOString().slice(0, 10));

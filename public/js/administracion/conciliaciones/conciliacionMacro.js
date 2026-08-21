@@ -495,6 +495,10 @@ $(document).on('subvista:cargada', function () {
 // =====================================================================
 let filasExtracto = [];
 
+// Reemplazo de renderPreviewExtracto() -- SOLO en conciliacionMacro.js
+
+// Reemplazo de renderPreviewExtracto() -- SOLO en conciliacionMacro.js
+
 function renderPreviewExtracto() {
     if (!filasExtracto.length) {
         $('#previewExtractoWrapper').hide();
@@ -518,7 +522,15 @@ function renderPreviewExtracto() {
 
     filasExtracto.forEach(function (r, i) {
         let optsFila = opts.replace('value="' + r.concepto + '"', 'value="' + r.concepto + '" selected');
+
+        // Match de cheque: checkbox + info de a que cheque presupuestado
+        // corresponde. Sin match: celda vacia, no aplica nada especial.
+        const columnaCheque = r.matchCheque
+            ? '<input type="checkbox" class="chk-match-cheque" data-idx="' + i + '" ' + (r.confirmarMatchCheque ? 'checked' : '') + ' title="Cheque N° ' + (r.nro_comprobante || '') + ' matchea con presupuesto (' + r.matchCheque.fecha + ')">'
+            : '';
+
         html += '<tr>' +
+            '<td class="text-center">' + columnaCheque + '</td>' +
             '<td>' + r.fecha + '</td>' +
             '<td>' + (r.nro_comprobante || '') + '</td>' +
             '<td><select class="form-select form-select-sm select-concepto-extracto" data-idx="' + i + '">' + optsFila + '</select></td>' +
@@ -532,6 +544,16 @@ function renderPreviewExtracto() {
     $('#cantidadExtracto, #cantidadExtracto2').text(filasExtracto.length);
     $('#previewExtractoWrapper').show();
 }
+
+// Nuevo handler: tildar/destildar el match de cheque de una fila puntual
+$(document).on('change', SCOPE + '.chk-match-cheque', function () {
+    filasExtracto[$(this).data('idx')].confirmarMatchCheque = $(this).is(':checked');
+});
+
+// Nuevo handler: tildar/destildar el match de cheque de una fila puntual
+$(document).on('change', SCOPE + '.chk-match-cheque', function () {
+    filasExtracto[$(this).data('idx')].confirmarMatchCheque = $(this).is(':checked');
+});
 
 function procesarExtracto() {
     const contenido = $('#textAreaArchivo').val();

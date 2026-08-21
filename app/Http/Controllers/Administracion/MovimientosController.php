@@ -226,13 +226,11 @@ class MovimientosController extends Controller
     public function actualizarTexto(Request $request, $id)
     {
         $request->validate([
-            'campo' => 'required|in:detalle,subconcepto',
+            'campo' => 'required|in:detalle,subconcepto,nro_comprobante',
             'valor' => 'nullable|string|max:255',
         ]);
         DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_TEXTO(?,?,?)', [
-            $id,
-            $request->input('campo'),
-            $request->input('valor'),
+            $id, $request->input('campo'), $request->input('valor'),
         ]);
         return response()->json(['ok' => true]);
     }

@@ -13,7 +13,7 @@ class ImportacionController extends Controller
     {
         $conceptos = collect(DB::select('SELECT nombre FROM ff_conceptos WHERE activo = 1 ORDER BY orden'))->pluck('nombre');
         $subconceptosPorConcepto = $this->obtenerSubconceptosPorConcepto();
-    
+
         return view('administracion.importacion.importacion', compact('conceptos', 'subconceptosPorConcepto'));
     }
 
@@ -35,7 +35,7 @@ class ImportacionController extends Controller
     private function obtenerSubconceptosPorConcepto()
     {
         $rows = DB::select('CALL SP_FF_SUBCONCEPTOS_LISTAR_TODOS()');
-    
+
         $out = [];
         foreach ($rows as $r) {
             $out[$r->concepto][] = $r->subconcepto;
@@ -101,13 +101,25 @@ class ImportacionController extends Controller
             'origenConciliacion' => 'nullable|boolean',
         ]);
 
-        // Si el import viene desde "Extracto" en Conciliaciones (no desde
-        // Importacion), los movimientos nuevos se marcan para que la vista
-        // de conciliacion los resalte hasta que se revisen.
         $origenConciliacion = (bool) $request->input('origenConciliacion', false);
+        $origen = $origenConciliacion ? 'CONCILIACION_EXTRACTO' : 'IMPORTACION_BANCO';
 
         $insertados = 0;
+        $chequesMatcheados = 0;
+
         foreach ($request->input('rows') as $r) {
+            $matchCheque = $r['matchCheque'] ?? null;
+            $confirmarMatch = !empty($r['confirmarMatchCheque']);
+
+            // Match de cheque confirmado: el candidato pasa a CUMPLIDO, y se
+            // genera el EJECUTADO con los datos REALES de esta fila del
+            // extracto (no los del candidato -- mismo criterio que en Pagos
+            // a Proveedores).
+            if ($matchCheque && $confirmarMatch) {
+                DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_ESTADO(?,?)', [$matchCheque['id'], 'CUMPLIDO']);
+                $chequesMatcheados++;
+            }
+
             $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
                 $r['fecha'],
                 $r['banco'],
@@ -118,7 +130,7 @@ class ImportacionController extends Controller
                 'EJECUTADO',
                 $r['operacion'],
                 $r['seccion'],
-                $origenConciliacion ? 'CONCILIACION_EXTRACTO' : 'IMPORTACION_BANCO',
+                $origen,
                 auth()->id(),
             ]);
             $insertados++;
@@ -134,7 +146,6 @@ class ImportacionController extends Controller
                 DB::statement('UPDATE ff_movimientos SET nuevo_en_conciliacion = 1 WHERE id = ?', [$resultado[0]->id]);
             }
 
-            // Aprendizaje: si el usuario corrigio lo sugerido, el sistema lo recuerda
             $conceptoFinal = $r['concepto'];
             $subFinal = $r['subconcepto'] ?? '';
             $sugConcepto = $r['sugerido_concepto'] ?? null;
@@ -145,17 +156,27 @@ class ImportacionController extends Controller
             }
         }
 
-        return response()->json(['insertados' => $insertados]);
+        return response()->json(['insertados' => $insertados, 'chequesMatcheados' => $chequesMatcheados]);
     }
-
     // -------------------------------------------------------------
     // Parser: MACRO, pegado directo del homebanking
     // Columnas esperadas (tab-separadas): Fecha | Columna2 | CodOp | Descripcion | Importe
     // -------------------------------------------------------------
+
     private function parseMacroWeb(string $text, MotorClasificacion $motor): array
     {
         $lines = preg_split('/\r?\n/', trim($text));
         $rows = [];
+
+        // Candidatos de cheque: PRESUPUESTO/PENDIENTE con operacion CHEQUES,
+        // indexados por nro_comprobante (unico) para matcheo directo O(1).
+        $candidatosCheque = collect(DB::select("
+        SELECT id, nro_comprobante, detalle, importe, fecha
+        FROM ff_movimientos
+        WHERE operacion = 'CHEQUES' AND ejecucion IN ('PRESUPUESTO','PENDIENTE')
+          AND nro_comprobante IS NOT NULL AND nro_comprobante <> ''
+          AND deleted_at IS NULL
+    "))->keyBy('nro_comprobante');
 
         foreach ($lines as $line) {
             $c = explode("\t", $line);
@@ -181,7 +202,6 @@ class ImportacionController extends Controller
             if ($importe > 0 && $cat === 'GTOS, COMIS, IMP.') {
                 $cat = 'OBRAS SOCIALES';
             }
-
             if ($cat === 'OBRAS SOCIALES') {
                 $sub = '2 OS-TRANSFERENCIAS';
             }
@@ -200,6 +220,19 @@ class ImportacionController extends Controller
                 }
             }
 
+            // Match de cheque: si el numero de comprobante de esta linea
+            // coincide con un cheque PRESUPUESTO/PENDIENTE existente.
+            $matchCheque = null;
+            if ($columna2 !== '' && $candidatosCheque->has($columna2)) {
+                $cand = $candidatosCheque->get($columna2);
+                $matchCheque = [
+                    'id'      => $cand->id,
+                    'detalle' => $cand->detalle,
+                    'fecha'   => $cand->fecha,
+                    'importe' => (float) $cand->importe,
+                ];
+            }
+
             $rows[] = [
                 'fecha' => $fecha,
                 'banco' => 'MACRO',
@@ -212,6 +245,8 @@ class ImportacionController extends Controller
                 'nro_comprobante' => $columna2 !== '' ? $columna2 : null,
                 'sugerido_concepto' => $cat,
                 'sugerido_subconcepto' => $sub,
+                'matchCheque' => $matchCheque,
+                'confirmarMatchCheque' => $matchCheque !== null, // auto-tildado si hay match
             ];
 
             if ($motor->esFCI($desc) && $cat === 'TRANSF. ENTRE CUENTAS') {
@@ -228,6 +263,8 @@ class ImportacionController extends Controller
                     'operacion' => 'TRANSFERENCIAS',
                     'sugerido_concepto' => $catContra,
                     'sugerido_subconcepto' => $subContra,
+                    'matchCheque' => null,
+                    'confirmarMatchCheque' => false,
                 ];
             }
         }
@@ -274,7 +311,7 @@ class ImportacionController extends Controller
             $seccion = $cat === 'TRANSF. ENTRE CUENTAS' ? '5 TRANSFERENCIAS'
                 : ($cat === 'TARJETAS D/C' ? '4 TARJETAS D/C' : ($importe >= 0 ? '2 INGRESOS' : '3 EGRESOS'));
             $operacion = $motor->clasificarOperacionBancaria($desc, '', $importe);
-            
+
             if ($operacion !== 'CHEQUES' && in_array($cat, ['TRANSF. ENTRE CUENTAS', 'GTOS, COMIS, IMP.'])) {
                 $operacion = 'TRANSFERENCIAS';
             }
