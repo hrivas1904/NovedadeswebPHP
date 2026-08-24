@@ -259,6 +259,7 @@
                                     <th>ESTADO</th>
                                     <th>VISIBLE</th>
                                     <th>OBSERVACIONES</th>
+                                    <th>ACCIONES</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -407,6 +408,22 @@
 @endpush
 
 @push('scripts')
+<script>
+    const RUTAS_CRONO_PERIODOS = {
+        listar: "{{ route('rrhh.listarCronoPeriodo') }}",
+        abrir: "{{ route('rrhh.abrirCronoPeriodo') }}",
+        abrirAnio: "{{ route('rrhh.abrirAnnioCronoPeriodo') }}",
+        toggleVisible: "{{ route('rrhh.toggleVisible', ':periodo') }}",
+        eliminar: "{{ route('rrhh.eliminar', ':periodo') }}"
+    };
+
+    const RUTAS_CRONO_FERIADOS = {
+        listar: "{{ url('/eventosProgramados/lista') }}",
+        eliminar: "{{ url('/eventosProgramados/eliminar') }}",
+        actualizarCaracter: "{{ route('actualizarCaracterCronoFeriado') }}",
+        actualizarVerificado: "{{ route('actualizarVerificadoCronoFeriado') }}"
+    };
+</script>
 <script src="{{ asset('js/calendario/cronogramaTrabajo.js') }}"></script>
 <script src="{{ asset('js/calendario/configuracionPeriodos.js') }}"></script>
 <script src="{{ asset('js/calendario/configuracionFeriados.js') }}"></script>

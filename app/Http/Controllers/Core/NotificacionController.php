@@ -13,7 +13,8 @@ use App\Http\Controllers\Controller;
 class NotificacionController extends Controller
 {
 
-    public function verPanelNotificaciones(){
+    public function verPanelNotificaciones()
+    {
         return view('core.panelNotificaciones');
     }
 
@@ -314,6 +315,52 @@ class NotificacionController extends Controller
                 'success' => false,
                 'message' => 'No se pudo eliminar el evento.'
             ], 500);
+        }
+    }
+
+    // ===== CT FERIADOS =====
+
+    public function actualizarCaracterCronoFeriado(Request $request)
+    {
+        if (Auth::user()->rol !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'No autorizado.'], 403);
+        }
+
+        $data = $request->validate([
+            'idEvento' => 'required|integer',
+            'caracter' => 'nullable|string|max:45',
+        ]);
+
+        try {
+            DB::statement('CALL SP_ACTUALIZAR_CARACTER_EVENTO_PROGRAMADO(?,?)', [
+                $data['idEvento'],
+                $data['caracter'],
+            ]);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error al actualizar el carácter.'], 500);
+        }
+    }
+
+    public function actualizarVerificadoCronoFeriado(Request $request)
+    {
+        if (Auth::user()->rol !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'No autorizado.'], 403);
+        }
+
+        $data = $request->validate([
+            'idEvento' => 'required|integer',
+            'verificado' => 'required|boolean',
+        ]);
+
+        try {
+            DB::statement('CALL SP_ACTUALIZAR_VERIFICADO_EVENTO_PROGRAMADO(?,?)', [
+                $data['idEvento'],
+                $data['verificado'],
+            ]);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error al actualizar la verificación.'], 500);
         }
     }
 }

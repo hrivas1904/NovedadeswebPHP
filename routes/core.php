@@ -43,7 +43,9 @@ Route::get('/eventosProgramados/lista', [NotificacionController::class, 'obtener
 Route::post('/calendario/agendarEvento', [NotificacionController::class, 'agendarEvento']);
 Route::get('/eventosProgramados/verDetalle/{idEvento}', [NotificacionController::class, 'verDetalleEventoProgramado']);
 Route::post('/eventosProgramados/editar', [NotificacionController::class, 'editarEventoProgramado']);
-Route::post('/eventosProgramados/eliminar', [NotificacionController::class, 'eliminarEventoProgramado']);
+Route::post('/eventosProgramados/eliminar', [NotificacionController::class, 'eliminarEventoProgramado']);// CT FERIADOS
+Route::patch('/actualizarCaracterCronoFeriado', [NotificacionController::class, 'actualizarCaracterCronoFeriado'])->name('actualizarCaracterCronoFeriado');
+Route::patch('/actualizarVerificadoCronoFeriado', [NotificacionController::class, 'actualizarVerificadoCronoFeriado'])->name('actualizarVerificadoCronoFeriado');
 
 //log transacciones
 Route::get('/log/vista', [LogController::class, 'logTransactView'])->name('logTransactView');

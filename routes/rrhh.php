@@ -348,5 +348,11 @@ Route::middleware(['auth'])->group(function () {
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
     Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');
-    
+
+    //CT PERIODOS
+    Route::get('/listarCronoPeriodo', [CronogramaController::class, 'listarCronoPeriodo'])->name('listarCronoPeriodo');
+    Route::post('/abrirCronoPeriodo', [CronogramaController::class, 'abrirCronoPeriodo'])->name('abrirCronoPeriodo');
+    Route::post('/abrirAnnioCronoPeriodo', [CronogramaController::class, 'abrirAnnioPeriodo'])->name('abrirAnnioCronoPeriodo');
+    Route::patch('/cronoPeriodo/{periodo}/visible', [CronogramaController::class, 'toggleVisible'])->name('toggleVisible');
+    Route::delete('/cronoPeriodo/{periodo}', [CronogramaController::class, 'eliminar'])->name('eliminar');    
 });
