@@ -89,44 +89,44 @@
     <div class="col-12 col-xl-10 col-xxl-10">
         <div class="card">
             <div class="card-header">
-                <div class="row align-items-end">
-                    <div class="col-6 col-sm-6 col-lg-4 col-xl-2">
+                <div class="row d-flex align-items-end">
+                    <div class="col-6 col-sm-6 col-lg-4 col-xl-2 mb-1">
                         <button type="button" id="btnAbrirModalSolicitud" class="btn btn-primary w-100">
                             Nueva solicitud
                         </button>
                     </div>
 
-                    <div class="col-6 col-sm-6 col-lg-4 col-xl-1 d-none d-md-block">
+                    <div class="col-6 col-sm-6 col-lg-4 col-xl-1 d-none d-md-block mb-1">
                         <input type="text" id="fechaDesde" class="form-control w-100" placeholder="Desde">
                     </div>
 
-                    <div class="col-6 col-sm-6 col-lg-4 col-xl-1 d-none d-md-block">
+                    <div class="col-6 col-sm-6 col-lg-4 col-xl-1 d-none d-md-block mb-1">
                         <input type="text" id="fechaHasta" class="form-control w-100" placeholder="Hasta">
                     </div>
 
                     @if (Auth::user()->rol === 'Administrador/a')
-                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
+                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 mb-1">
                         <button type="button" id="btnDepositarAdelantos" class="btn btn-primary w-100">
                             Depositar
                         </button>
                     </div>
-                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
+                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 mb-1">
                         <button type="button" id="btnAprobarSolicitudes" class="btn btn-primary w-100">
                             Aprobar
                         </button>
                     </div>
-                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
+                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 mb-1">
                         <button type="button" id="btnRechazarAdelantos" class="btn btn-danger w-100">
                             Rechazar
                         </button>
                     </div>
-                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 d-none d-md-block">
+                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 mb-1">
                         <button type="button" id="btnExportarExcel" class="btn btn-primary w-100" data-url="{{ route('rrhh.solicitudes.exportarExcel') }}">
                             Exportar
                         </button>
                     </div>                    
                     @endif
-                    <div class="col-3 col-sm-6 col-lg-2 col-xl-4">
+                    <div class="col-6 col-sm-6 col-lg-2 col-xl-4 mb-1">
                         <input type="text" class="form-control" placeholder="Buscar..." id="inputSearchSolicitudes">
                     </div>
                 </div>
