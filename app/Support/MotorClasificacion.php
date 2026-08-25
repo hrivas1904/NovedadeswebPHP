@@ -155,8 +155,15 @@ class MotorClasificacion
     {
         $c2 = mb_strtolower($columna2);
         $d  = mb_strtolower($detalle);
-        // Antes solo miraba columna2 -- ahora tambien el detalle, a pedido
-        // de la aux de administracion (algunos extractos ponen "CHEQUE" ahi).
+    
+        // Excepcion: "ACREDITACION CHEQUE REMISAS/REMESAS" con importe
+        // positivo es un ingreso real (deposito de cheques de terceros),
+        // no la emision de un cheque propio -- aunque el texto contenga
+        // la palabra "cheque".
+        if (str_contains($d, 'acreditacion cheque rem') && $importe > 0) {
+            return 'INGRESOS';
+        }
+    
         if (str_contains($c2, 'cheque') || str_contains($d, 'cheque')) return 'CHEQUES';
         if (str_contains($d, 'credin')) return 'INGRESOS';
         if ($importe > 0) return 'INGRESOS';

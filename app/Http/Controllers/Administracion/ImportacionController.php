@@ -202,7 +202,8 @@ class ImportacionController extends Controller
             if ($importe > 0 && $cat === 'GTOS, COMIS, IMP.') {
                 $cat = 'OBRAS SOCIALES';
             }
-            if ($cat === 'OBRAS SOCIALES') {
+            
+            if ($cat === 'OBRAS SOCIALES' && !str_contains(mb_strtolower($desc), 'acreditacion cheque rem')) {
                 $sub = '2 OS-TRANSFERENCIAS';
             }
 
