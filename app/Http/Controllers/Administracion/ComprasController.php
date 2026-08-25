@@ -63,6 +63,7 @@ class ComprasController extends Controller
             'detalle.*.precio'           => ['nullable', 'numeric', 'min:0'],
             'adjuntos'                   => ['nullable', 'array'],
             'adjuntos.*'                 => ['file', 'max:3072', 'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'],
+            'moneda'                     => ['required', 'in:ARS,USD,EUR'],
         ]);
 
         DB::beginTransaction();
@@ -70,14 +71,15 @@ class ComprasController extends Controller
         try {
 
             $pedido = DB::select(
-                "CALL SP_GUARDAR_PEDIDO_COMPRA(?,?,?,?,?,?)",
+                "CALL SP_GUARDAR_PEDIDO_COMPRA(?,?,?,?,?,?,?)",
                 [
                     $request->fecha,
                     strtoupper($request->prioridad),
                     Auth::id(),
                     $request->centro_costo_id ?: null,
                     $request->proveedor_id ?: null,
-                    $request->descripcion
+                    $request->moneda,
+                    $request->descripcion,
                 ]
             );
 
@@ -144,12 +146,13 @@ class ComprasController extends Controller
 
             // CABECERA
             DB::statement(
-                "CALL SP_ACTUALIZAR_PEDIDO_COMPRA(?,?,?,?,?,?)",
+                "CALL SP_ACTUALIZAR_PEDIDO_COMPRA(?,?,?,?,?,?,?)",
                 [
                     $id,
                     strtoupper($request->prioridad),
                     $request->centro_costo_id ?: null,
                     $request->proveedor_id ?: null,
+                    $request->moneda,
                     $request->descripcion,
                     Auth::id(),
                 ]

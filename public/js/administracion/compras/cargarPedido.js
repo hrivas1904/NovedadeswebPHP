@@ -393,6 +393,10 @@ function enviarPedido(desdeModal = false) {
         ? $("#cmbProveedorModal").val()
         : $("#cmbProveedor").val();
 
+    const moneda = desdeModal
+        ? $("#fMonedaModal").val()
+        : $("#fMoneda").val();
+
     const formData = new FormData();
 
     formData.append("fecha", $("#fFecha").val());
@@ -400,6 +404,7 @@ function enviarPedido(desdeModal = false) {
     formData.append("solicitante_id", $("#fUserId").val());
     formData.append("centro_costo_id", centroCosto);
     formData.append("proveedor_id", proveedor);
+    formData.append("moneda", moneda);
     formData.append("descripcion", $("#fDescripcion").val());
 
     lineas.forEach((item, i) => {
@@ -504,6 +509,9 @@ function cancelarEdicion() {
 
         // Prioridad (Media por defecto)
         setPrioridad("");
+
+        // Moneda ARS por defecto
+        $("#fMoneda, #fMonedaModal").val("ARS");
 
         // Descripción
         $("#fDescripcion").val("");

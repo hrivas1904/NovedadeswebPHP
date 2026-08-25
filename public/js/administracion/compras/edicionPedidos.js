@@ -1,7 +1,7 @@
 $("#btnHabilitarEdicionPedido").on("click", function(){
     $(this).addClass("d-none");
     $("#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla").removeClass("d-none");
-    $("#verPrioridad, #verCentroCosto, #verProveedor").prop("disabled",false).trigger("change.select2");
+    $("#verPrioridad, #verCentroCosto, #verProveedor, #verMoneda").prop("disabled",false).trigger("change.select2");
     $("#verDescripcion").prop("readonly",false);
 
     $(".selector-producto").prop("disabled",false).trigger("change.select2");
@@ -38,6 +38,7 @@ $("#btnGuardarCambiosPedidos").on("click", function () {
             prioridad: $("#verPrioridad").val(),
             centro_costo_id: $("#verCentroCosto").val(),
             proveedor_id: $("#verProveedor").val(),
+            moneda: $("#verMoneda").val(),
             descripcion: $("#verDescripcion").val(),
             detalle: detalle,
             eliminados: DETALLES_ELIMINADOS,
@@ -54,7 +55,7 @@ $("#btnGuardarCambiosPedidos").on("click", function () {
             });
 
             $("#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla").addClass("d-none");
-            $("#verPrioridad, #verCentroCosto, #verProveedor").prop("disabled",true)
+            $("#verPrioridad, #verCentroCosto, #verProveedor, #verMoneda").prop("disabled",true)
             $("#verDescripcion").prop("readonly",true);
             $("#btnHabilitarEdicionPedido").removeClass("d-none");
 

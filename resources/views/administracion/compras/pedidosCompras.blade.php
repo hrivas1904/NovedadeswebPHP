@@ -26,7 +26,7 @@
 
             <div class="card-body">
 
-                <div class="row g-3 mb-3">
+                <div class="row mb-3">
                     <div class="col-12 col-md-6 col-lg-2">
                         <label for="fUsuario" class="form-label fw-semibold">
                             Solicitante
@@ -36,33 +36,39 @@
                     </div>
 
                     <div class="col-12 col-md-6 col-lg-2">
-                        <label for="fFecha" class="form-label fw-semibold">
-                            Fecha del pedido
-                        </label>
+                        <label for="fFecha" class="form-label fw-semibold">Fecha del pedido</label>
                         <input type="date" id="fFecha" class="form-control">
                     </div>
 
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-3">
                         <div id="comboSector" class="position-relative">
-                            <label class="form-label fw-semibold">
-                                Centro de costo
-                            </label>
+                            <label class="form-label fw-semibold">Centro de costo</label>
                             <select id="cmbCentroCosto" class="form-select">
                             </select>
                             <input type="hidden" id="fSectorCodigo">
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-3">
                         <div id="comboProveedor" class="position-relative">
-                            <label class="form-label fw-semibold">
-                                Proveedor
-                            </label>
+                            <label class="form-label fw-semibold">Proveedor</label>
                             <select id="cmbProveedor" class="form-select">
                             </select>
                             <input type="hidden" id="fProveedorCodigo">
                         </div>
                     </div>
+
+                    <div class="col-12 col-md-6 col-lg-2">
+                        <label for="fMoneda" class="form-label fw-semibold">
+                            Moneda
+                        </label>
+                        <select id="fMoneda" class="form-select">
+                            <option value="ARS" selected>ARS - Peso argentino</option>
+                            <option value="USD">USD - Dólar estadounidense</option>
+                            <option value="EUR">EUR - Euro</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <div class="mb-3">

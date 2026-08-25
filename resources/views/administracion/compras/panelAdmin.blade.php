@@ -166,22 +166,22 @@
             </div>
             <div class="modal-body">
                 <div class="row g-3 mb-4">
-                    <div class="col-md-1">
+                    <div class="col-md-1 col-6">
                         <label class="form-label fw-bold">Pedido N°</label>
                         <input class="form-control" id="idPedido" readonly>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-6">
                         <label class="form-label fw-bold">Fecha</label>
                         <input class="form-control" id="verFecha" readonly>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-6">
                         <label class="form-label fw-bold">Solicitante</label>
                         <input class="form-control" id="verSolicitante" readonly>
                     </div>                    
 
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-6">
                         <label class="form-label fw-bold">Prioridad</label>
                         <select class="form-control" id="verPrioridad" disabled>
                             <option value="BAJA">BAJA</option>
@@ -190,42 +190,51 @@
                         </select>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-12">
                         <label class="form-label fw-bold">Centro de costo</label>
                         <select class="form-control" id="verCentroCosto" disabled></select>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4 col-12">
                         <label class="form-label fw-bold">Proveedor</label>
                         <select class="form-control" id="verProveedor" disabled></select>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-6">
                         <label class="form-label fw-bold">Estado</label>
                         <input class="form-control" id="verEstado" readonly>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-2">
+                        <label class="form-label fw-bold">Moneda</label>
+                        <select class="form-control" id="verMoneda" disabled>
+                            <option value="ARS">ARS</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 col-4">
                         <label class="form-label fw-bold">Autorización</label>
                         <input class="form-control" id="verAutorizacion" readonly>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <label class="form-label fw-bold">Requiere Autorización Gerencia</label>
                         <input class="form-control" id="reqAutGerente" readonly>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <label class="form-label fw-bold">Estado Autorización Gerencia</label>
                         <input class="form-control" id="estadoAutGerente" readonly>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <label class="form-label fw-bold">Autorizado / Rechazado / Derivado por</label>
                         <input class="form-control" id="auditorPedido" readonly>
                     </div>
 
-                    <div class="col-6">
+                    <div class="col-12">
                         <label class="form-label fw-bold">Motivo de rechazo</label>
                         <input id="verMotivoRechazo" class="form-control" readonly>
                     </div>
@@ -363,7 +372,7 @@
 </div>
 
 <div class="modal fade" id="modalCargaPedido" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -425,6 +434,18 @@
                                     </select>
                                     <input type="hidden" id="fProveedorCodigo">
                                 </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-2">
+                                <label class="form-label fw-semibold">
+                                    Moneda
+                                </label>
+
+                                <select id="fMonedaModal" class="form-select">
+                                    <option value="ARS" selected>ARS - Peso argentino</option>
+                                    <option value="USD">USD - Dólar estadounidense</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                </select>
                             </div>
                         </div>
 

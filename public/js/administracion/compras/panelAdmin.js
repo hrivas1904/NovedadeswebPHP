@@ -492,6 +492,7 @@ function verPedido(id) {
             $("#estadoAutGerente").val(c.autorizacion_gerente);
             $("#auditorPedido").val(c.auditor);
             $("#verMotivoRechazo").val(c.motivoRechazo ?? "");
+            $("#verMoneda").val(c.moneda);
 
             let tbody = $("#detalleProductosBody");
             tbody.empty();
