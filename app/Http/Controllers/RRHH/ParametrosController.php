@@ -293,4 +293,102 @@ class ParametrosController extends Controller
             ], 500);
         }
     }
+
+    public function listarRegimenesColab()
+    {
+        try {
+            $servicios = DB::select('CALL SP_LISTAR_REGIMENES()');
+
+            return response()->json($servicios);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener regimenes de colaboradores',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function crearRegimen(Request $request)
+    {
+        $request->validate([
+            'regimen' => ['required', 'numeric', 'min:0'],
+            'horasDiarias' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        DB::statement(
+            "CALL SP_CREAR_REGIMEN(?,?,?)",
+            [
+                $request->regimen,
+                $request->horasDiarias,
+                Auth::id()
+            ]
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function activarRegimen(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'integer'],
+            'activo' => ['required', 'boolean'],
+        ]);
+
+        DB::statement(
+            "CALL SP_ACTIVACION_REGIMEN(?,?,?)",
+            [
+                $request->id,
+                $request->activo,
+                Auth::id()
+            ]
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function editarRegimen(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'integer'],
+            'regimen' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        DB::statement(
+            "CALL SP_EDICION_REGIMEN_REGIMEN(?,?,?)",
+            [
+                $request->id,
+                $request->regimen,
+                Auth::id()
+            ]
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function editarHorasRegimen(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'integer'],
+            'horasDiarias' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        DB::statement(
+            "CALL SP_EDICION_REGIMEN_HORAS(?,?,?)",
+            [
+                $request->id,
+                $request->horasDiarias,
+                Auth::id()
+            ]
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }

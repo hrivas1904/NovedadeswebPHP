@@ -326,7 +326,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/asistencia/ingreso', [PersonalController::class, 'enviarIngresoAsistencia']);
     Route::post('/asistencia/egreso', [PersonalController::class, 'enviarEgresoAsistencia']);
 
-    //parametrizaciones generales
+    //PARÁMETROS GENERALES
     Route::get('/ajustes/parametrización', [ParametrosController::class, 'configParametrosGenerales'])->name('parametrizacionesGenerales');
     Route::get('/servicios/listar', [ParametrosController::class, 'listarServiciosColab']);
 
@@ -345,14 +345,22 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/parametrizacion/editarServicio', [ParametrosController::class, 'editarServicio']);
     Route::delete('/servicio/{id}', [ParametrosController::class, 'eliminarServicio']);
 
+    Route::get('/parametros/listarRegimenesColab', [ParametrosController::class, 'listarRegimenesColab']);
+    Route::post('/parametros/crearRegimen',[ParametrosController::class, 'crearRegimen']);
+    Route::put('/parametros/editarRegimen', [ParametrosController::class, 'editarRegimen']);
+    Route::put('/parametros/editarHorasRegimen', [ParametrosController::class, 'editarHorasRegimen']);
+    Route::post('/parametros/activarRegimen', [ParametrosController::class, 'activarRegimen']);
+
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
-    Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');
+    Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');    
 
     //CT PERIODOS
     Route::get('/listarCronoPeriodo', [CronogramaController::class, 'listarCronoPeriodo'])->name('listarCronoPeriodo');
     Route::post('/abrirCronoPeriodo', [CronogramaController::class, 'abrirCronoPeriodo'])->name('abrirCronoPeriodo');
     Route::post('/abrirAnnioCronoPeriodo', [CronogramaController::class, 'abrirAnnioPeriodo'])->name('abrirAnnioCronoPeriodo');
     Route::patch('/cronoPeriodo/{periodo}/visible', [CronogramaController::class, 'toggleVisible'])->name('toggleVisible');
-    Route::delete('/cronoPeriodo/{periodo}', [CronogramaController::class, 'eliminar'])->name('eliminar');    
+    Route::delete('/cronoPeriodo/{periodo}', [CronogramaController::class, 'eliminar'])->name('eliminar');
+    
+    //
 });

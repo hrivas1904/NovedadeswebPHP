@@ -732,45 +732,93 @@ $("#obraSocial").on("select2:clear", function () {
     $("#codigoOS").val("");
 });
 
+let REGIMENES = [];
+
 //MAPEO DE REGIMEN CON HORAS DIARIAS
-document.addEventListener("DOMContentLoaded", () => {
-    const selectRegimen = document.getElementById("selectRegimen");
-    const inputHoras = document.getElementById("horasDiarias");
-
-    const selectRegimenEdit = document.getElementById("inputRegimen");
-    const inputHorasEdit = document.getElementById("inputHorasDiarias");
-
-    const equivalencias = {
-        44: 8,
-        40: 7.28,
-        32: 6.24,
-        24: 4.8,
-        35: 7,
-        30: 6,
-        22: 4.4,
-        20: 4,
-    };
-
-    selectRegimen.addEventListener("change", function () {
-        const valor = this.value;
-
-        if (equivalencias[valor]) {
-            inputHoras.value = equivalencias[valor];
-        } else {
-            inputHoras.value = "";
-        }
-    });
-
-    selectRegimenEdit.addEventListener("change", function () {
-        const valor = this.value;
-
-        if (equivalencias[valor]) {
-            inputHorasEdit.value = equivalencias[valor];
-        } else {
-            inputHorasEdit.value = "";
-        }
-    });
+document.addEventListener("DOMContentLoaded", function () {
+    cargarRegimenesColaboradores();
 });
+
+
+function cargarRegimenesColaboradores() {
+    $.ajax({
+        url: "/rrhh/parametros/listarRegimenesColab",
+        type: "GET",
+        dataType: "json",
+
+        success: function (regimenes) {
+
+            cargarSelectorRegimen(
+                $("#selectRegimen"),
+                regimenes,
+                true
+            );
+
+            cargarSelectorRegimen(
+                $("#inputRegimen"),
+                regimenes,
+                false
+            );
+        },
+
+        error: function (xhr) {
+            console.error(
+                "Error al cargar regímenes:",
+                xhr.responseText
+            );
+        }
+    });
+}
+
+
+function cargarSelectorRegimen(selector, regimenes, soloActivos = true) {
+    selector.empty();
+    selector.append(`
+        <option value="">
+            Seleccione régimen
+        </option>
+    `);
+
+    regimenes.forEach(function (item) {
+
+        if (soloActivos && Number(item.activo) !== 1) {
+            return;
+        }
+
+        const regimen = parseFloat(item.regimen);
+        const horasDiarias = parseFloat(item.horasDiarias);
+
+        const estado =
+            Number(item.activo) === 1
+                ? ""
+                : " - Inactivo";
+
+        selector.append(`
+            <option
+                value="${regimen}"
+                data-horas="${horasDiarias}">
+                ${regimen}
+            </option>
+        `);
+    });
+}
+
+$(document).on(
+    "change",
+    "#selectRegimen, #inputRegimen",
+    function () {
+
+        const horas = $(this)
+            .find("option:selected")
+            .data("horas");
+
+        if (this.id === "selectRegimen") {
+            $("#horasDiarias").val(horas ?? "");
+        } else {
+            $("#inputHorasDiarias").val(horas ?? "");
+        }
+    }
+);
 
 //API GEOREST
 $(function () {
