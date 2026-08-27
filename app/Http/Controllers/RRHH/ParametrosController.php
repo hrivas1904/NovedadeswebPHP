@@ -403,4 +403,23 @@ class ParametrosController extends Controller
             'success' => true
         ]);
     }
+
+    public function listarTurnosxArea($id)
+    {
+        try {
+            $areas = DB::select(
+                'CALL SP_LISTAR_TURNOS_AREAS(?)',
+                [$id]
+            );
+
+            return response()->json($areas);
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error al cargar areas',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

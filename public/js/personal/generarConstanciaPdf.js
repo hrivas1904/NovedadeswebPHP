@@ -77,7 +77,7 @@ $(document).on("click", "#btnGenerarConstancia", function () {
         nombre: $("#inputNombre").val(),
         cuil: $("#inputCuil").val(),
         fechaIngreso: $("#inputFechaIngreso").val(),
-        servicio: $("#inputServicio option:selected").text(),
+        servicio: $("#inputCategoria option:selected").text(),
     });
 
     $("#contenedorConstancia").removeClass("d-none").html(html);

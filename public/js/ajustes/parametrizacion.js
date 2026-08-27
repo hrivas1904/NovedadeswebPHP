@@ -1,11 +1,12 @@
-let tablaRegimen=$("#tbRegimenes");
+let tablaRegimen = $("#tbRegimenes");
 
 $(document).ready(function () {
     cargarAreasServicios();
 });
 
-//AREAS
-
+function getScrollY() {
+    return window.innerWidth < 768 ? "40vh" : "50vh";
+}
 
 //CATEGORÍAS
 $(document).ready(function () {
@@ -359,7 +360,6 @@ $("#formNuevoServicio").on("submit", function (e) {
                 $("#formNuevoServicio")[0].reset();
                 $("#selectAreaServicios").val(null).trigger("change");
                 $("#tb_servicios").DataTable().ajax.reload();
-
             } else if (response.codigo === 0) {
                 Swal.fire({
                     icon: "warning",
@@ -499,11 +499,11 @@ $(document).ready(function () {
         ajax: {
             url: "/rrhh/parametros/listarRegimenesColab",
             type: "GET",
-            dataSrc: ""
+            dataSrc: "",
         },
 
         language: {
-            url: "/js/es-ES.json"
+            url: "/js/es-ES.json",
         },
 
         paging: false,
@@ -520,7 +520,7 @@ $(document).ready(function () {
             // ID
             {
                 data: "id",
-                className: "text-start"
+                className: "text-start",
             },
 
             // RÉGIMEN
@@ -529,7 +529,6 @@ $(document).ready(function () {
                 className: "text-start",
 
                 render: function (data, type, row) {
-
                     if (type !== "display") {
                         return data;
                     }
@@ -543,7 +542,7 @@ $(document).ready(function () {
                             data-id="${row.id}"
                             value="${data}">
                     `;
-                }
+                },
             },
 
             // HORAS DIARIAS
@@ -552,7 +551,6 @@ $(document).ready(function () {
                 className: "text-start",
 
                 render: function (data, type, row) {
-
                     if (type !== "display") {
                         return data;
                     }
@@ -566,7 +564,7 @@ $(document).ready(function () {
                             data-id="${row.id}"
                             value="${data}">
                     `;
-                }
+                },
             },
 
             // ACTIVO
@@ -576,15 +574,11 @@ $(document).ready(function () {
                 orderable: false,
 
                 render: function (data, type, row) {
-
                     if (type !== "display") {
                         return data;
                     }
 
-                    const checked =
-                        Number(data) === 1
-                            ? "checked"
-                            : "";
+                    const checked = Number(data) === 1 ? "checked" : "";
 
                     return `
                         <div class="form-check form-switch d-flex justify-content-center m-0">
@@ -596,15 +590,13 @@ $(document).ready(function () {
                                 ${checked}>
                         </div>
                     `;
-                }
-            }
-        ]
+                },
+            },
+        ],
     });
-
 });
 
 $("#btnCrearRegimen").on("click", function () {
-
     const regimen = $("#inputRegimen").val();
     const horasDiarias = $("#inputHorasDiarias").val();
 
@@ -612,7 +604,7 @@ $("#btnCrearRegimen").on("click", function () {
         Swal.fire({
             icon: "warning",
             title: "Datos incompletos",
-            text: "Debe ingresar el régimen y las horas diarias."
+            text: "Debe ingresar el régimen y las horas diarias.",
         });
 
         return;
@@ -623,30 +615,25 @@ $("#btnCrearRegimen").on("click", function () {
         type: "POST",
 
         headers: {
-            "X-CSRF-TOKEN":
-                $('meta[name="csrf-token"]').attr("content")
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
 
         data: {
             regimen: regimen,
-            horasDiarias: horasDiarias
+            horasDiarias: horasDiarias,
         },
 
         success: function () {
-
             $("#inputRegimen").val("");
             $("#inputHorasDiarias").val("");
 
-            tablaRegimen
-                .DataTable()
-                .ajax
-                .reload(null, false);
+            tablaRegimen.DataTable().ajax.reload(null, false);
 
             Swal.fire({
                 icon: "success",
                 title: "Régimen creado",
                 timer: 1200,
-                showConfirmButton: false
+                showConfirmButton: false,
             });
         },
 
@@ -657,15 +644,13 @@ $("#btnCrearRegimen").on("click", function () {
                 icon: "error",
                 title: "Error",
                 text:
-                    xhr.responseJSON?.message ??
-                    "No se pudo crear el régimen."
+                    xhr.responseJSON?.message ?? "No se pudo crear el régimen.",
             });
-        }
+        },
     });
 });
 
 $(document).on("change", ".switchActivoRegimen", function () {
-
     const switchInput = $(this);
 
     const id = switchInput.data("id");
@@ -676,31 +661,28 @@ $(document).on("change", ".switchActivoRegimen", function () {
         type: "POST",
 
         headers: {
-            "X-CSRF-TOKEN":
-                $('meta[name="csrf-token"]').attr("content")
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
 
         data: {
             id: id,
-            activo: activo
+            activo: activo,
         },
 
         error: function (xhr) {
-
             console.error(xhr.responseText);
             switchInput.prop("checked", !activo);
 
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "No se pudo modificar el estado del régimen."
+                text: "No se pudo modificar el estado del régimen.",
             });
-        }
+        },
     });
 });
 
 $(document).on("change", ".inputEditarRegimen", function () {
-
     const id = $(this).data("id");
     const regimen = $(this).val();
 
@@ -709,17 +691,15 @@ $(document).on("change", ".inputEditarRegimen", function () {
         type: "PUT",
 
         headers: {
-            "X-CSRF-TOKEN":
-                $('meta[name="csrf-token"]').attr("content")
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
 
         data: {
             id: id,
-            regimen: regimen
+            regimen: regimen,
         },
 
         success: function () {
-
             Swal.fire({
                 icon: "success",
                 title: "¡Operación exitosa!",
@@ -728,10 +708,7 @@ $(document).on("change", ".inputEditarRegimen", function () {
                 showConfirmButton: false,
             });
 
-            tablaRegimen
-                .DataTable()
-                .ajax
-                .reload(null, false);
+            tablaRegimen.DataTable().ajax.reload(null, false);
         },
 
         error: function (xhr) {
@@ -740,14 +717,13 @@ $(document).on("change", ".inputEditarRegimen", function () {
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "No se pudo modificar el régimen."
+                text: "No se pudo modificar el régimen.",
             });
-        }
+        },
     });
 });
 
 $(document).on("change", ".inputEditarHorasRegimen", function () {
-
     const id = $(this).data("id");
     const horasDiarias = $(this).val();
 
@@ -756,17 +732,15 @@ $(document).on("change", ".inputEditarHorasRegimen", function () {
         type: "PUT",
 
         headers: {
-            "X-CSRF-TOKEN":
-                $('meta[name="csrf-token"]').attr("content")
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
 
         data: {
             id: id,
-            horasDiarias: horasDiarias
+            horasDiarias: horasDiarias,
         },
 
         success: function () {
-
             Swal.fire({
                 icon: "success",
                 title: "¡Operación exitosa!",
@@ -775,10 +749,7 @@ $(document).on("change", ".inputEditarHorasRegimen", function () {
                 showConfirmButton: false,
             });
 
-            tablaRegimen
-                .DataTable()
-                .ajax
-                .reload(null, false);
+            tablaRegimen.DataTable().ajax.reload(null, false);
         },
 
         error: function (xhr) {
@@ -787,8 +758,8 @@ $(document).on("change", ".inputEditarHorasRegimen", function () {
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "No se pudieron modificar las horas diarias."
+                text: "No se pudieron modificar las horas diarias.",
             });
-        }
+        },
     });
 });

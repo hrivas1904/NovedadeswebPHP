@@ -1,4 +1,7 @@
 let tablaArea = null;
+let tablaTurnosAreas = null;
+let tablaServiciosAreas = null;
+let tablaFuncionesAdic = null;
 
 function cargarTablaAreas() {
     tablaArea = $("#tb_areas").DataTable({
@@ -10,7 +13,13 @@ function cargarTablaAreas() {
 
         columns: [
             { data: "id_area", className: "text-start" }, 
-            { data: "nombre", className: "text-start" }
+            { data: "nombre", className: "text-start",
+                render: function(data){
+                    return `
+                        <input type="text" class="form-control inputNombreTabla" value="${data}">
+                    `
+                }
+            }
         ],
 
         paging: false,
@@ -19,14 +28,15 @@ function cargarTablaAreas() {
         },
         autoWidth: false,
         scrollX: false,
-        scrollY: "230px",
+        scrollY: "50vh",
         info: false,
         searching: false,
     });
 
-    $("#tb_areas tbody").on("click", "tr", function () {
+    $("#tb_areas tbody").off("click", "tr").on("click", "tr", function () {
         const rowData = tablaArea.row(this).data();
-        verDetalleArea(rowData.id_area);
+        if (!rowData) return;
+        cargarAreaSeleccionada(rowData.id_area, rowData.nombre);
     });
 };
 
@@ -64,6 +74,62 @@ function cerrarModalAreaEdit() {
     const form = $("#formEditArea");
     form[0].reset();
     modal.modal("hide");
+}
+
+function cargarAreaSeleccionada(idArea, nombreArea){
+
+    $("#nombreAreaTurnos").text(nombreArea);
+
+    if ($.fn.DataTable.isDataTable("#tb_servicios_areas")) {
+        tablaServiciosAreas.ajax.url(`/rrhh/servicios-empleados/por-area/${idArea}`).load();
+        return;
+    }
+
+    tablaServiciosAreas = $("#tb_servicios_areas").DataTable({
+        ajax: {
+            url: `/rrhh/servicios-empleados/por-area/${idArea}`,
+            type: "GET",
+            dataSrc: ""
+        },
+
+        columns: [
+            { data: "id_servicios", className:"text-start" },
+            { data: "servicio", className:"text-start",
+                render:function(data){
+                    return `
+                        <input type="text" class="form-control" value="${data}">
+                    `
+                }
+             },
+            { data: "estado", className: "text-center", orderable: false,
+                render: function (data, type, row) {
+                    if (type !== "display") {
+                        return data;
+                    }
+                    const checked = Number(data) === 1 ? "checked" : "";
+                    return `
+                        <div class="form-check form-switch d-flex justify-content-center m-0">
+                            <input
+                                class="form-check-input switchActivoServicio"
+                                type="checkbox"
+                                role="switch"
+                                data-id="${row.id}"
+                                ${checked}>
+                        </div>
+                    `;
+                },
+            },
+        ],
+
+        language: {
+            url: "/js/es-ES.json"
+        },
+
+        paging: false,
+        searching: false,
+        info: false,
+        autoWidth: false
+    });
 }
 
 $("#formNuevaArea").on("submit", function (e) {
