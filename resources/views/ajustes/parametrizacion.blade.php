@@ -1,209 +1,19 @@
 @extends('layouts.app')
 
-@section('title', 'Parametrización')
+@section('title', 'Configuraciones Recursos Humanos')
 
 @section('content')
     <div class="container-fluid">
-        <h3 class="tituloVista mb-3">PARAMETRIZACIÓN</h3>
+        <h3 class="tituloVista mb-3">CONFIGURACIONES RECURSOS HUMANOS</h3>
 
-        <div class="row d-flex g-3">
-            <div class="col-lg-6 col-12">
-                <div class="card p-2" style="height: 350px";>
-                    <div class="row d-flex">
-                        <div class="col-xl-7 col-12 mb-3">
-                            <div class="card" style="border-radius:15px;">
-                                <div class="card-body">
-                                    <table id="tb_areas" class="table table-striped table-hover align-middle table-header-hp3c">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>ÁREA</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+        <div class="d-flex justify-content-start align-items-center gap-3">
+            <button type="button" class="btn btn-sm btn-analisis btnParametro active" style="color: var(--color-default);" data-url="{{ route('rrhh.configAreasView') }}" data-vista="areasServicios">Áreas y Servicios</button>
+            <button type="button" class="btn btn-sm btn-analisis btnParametro" style="color: var(--color-default);" data-url="{{ route('rrhh.configCategoriasView') }}" data-vista="categorias">Categorías</button>
+            <button type="button" class="btn btn-sm btn-analisis btnParametro" style="color: var(--color-default);" data-url="{{ route('rrhh.configRegimenesView') }}" data-vista="regimenes">Regimenes</button>
+        </div>
+        <hr style="color: var(--color-default); border: 1px solid;" />
+        <div class="renderDivParametros">
 
-                        <div class="col-xl-5 col-12">
-                            <div class="card" style="border-radius:15px;">
-                                <div class="card-body">
-
-                                    <div class="col-12 mb-4">
-                                        <div class="section-divider">
-                                            <span>Crear nueva área</span>
-                                        </div>
-                                    </div>
-                                    <form id="formNuevaArea">
-                                        @csrf
-
-                                        <div class="row g-3 mb-3">
-
-                                            <div class="col-12">
-                                                <label class="form-label">ÁREA</label>
-                                                <input type="text" class="form-control" name="nombreArea" required />
-                                            </div>
-
-                                            <div class="col-12 text-end">
-                                                <button type="submit" class="btn btn-primary" id="btnCrearArea">
-                                                    Crear nueva área
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-12">
-                <div class="card p-2" style="height: 350px";>
-                    <div class="row d-flex">
-                        <div class="col-xl-7 col-12 mb-3">
-                            <div class="card" style="border-radius:15px;">
-                                <div class="card-body">
-                                    <table id="tb_categ" class="table table-striped table-hover align-middle table-header-hp3c">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>CATEGORÍA</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-5 col-12">
-                            <div class="card" style="border-radius:15px;">
-                                <div class="card-body">
-
-                                    <div class="col-12 mb-4">
-                                        <div class="section-divider">
-                                            <span>Crear nueva categoría</span>
-                                        </div>
-                                    </div>
-                                    <form id="formNuevaCategoria">
-                                        @csrf
-
-                                        <div class="row g-3 mb-3">
-                                            <div class="col-12">
-                                                <label class="form-label">CATEGORÍA</label>
-                                                <input type="text" class="form-control" name="nombreCateg" required />
-                                            </div>
-
-                                            <div class="col-12 text-end">
-                                                <button type="submit" class="btn btn-primary" id="btnCrearCateg">
-                                                    Crear nueva categoría
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12">
-                <div class="card p-2 mb-3" style="height: 350px";>
-                    <div class="row d-flex">
-                        <div class="col-xl-6 col-12 mb-3">
-                            <div class="card" style="border-radius:15px;">
-                                <div class="card-body">
-                                    <table id="tb_servicios" class="table table-striped table-hover align-middle table-header-hp3c">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>SERVICIO</th>
-                                                <th>ID ÁREA</th>
-                                                <th>ÁREA VINCULADA</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-6 col-12">
-                            <div class="card" style="border-radius:15px;">
-                                <div class="card-body">
-
-                                    <div class="col-12 mb-4">
-                                        <div class="section-divider">
-                                            <span>Crear nuevo servicio</span>
-                                        </div>
-                                    </div>
-                                    <form id="formNuevoServicio">
-                                        @csrf
-
-                                        <div class="row g-3 mb-3">
-
-                                            <div class="col-12 col-md-5 col-xl-5">
-                                                <label class="form-label">ÁREA</label>
-                                                <select id="selectAreaServicios" name="area" class="form-select w-100" required></select>
-                                            </div>
-
-                                            <div class="col-12 col-md-7 col-xl-7">
-                                                <label class="form-label">SERVICIO</label>
-                                                <input type="text" class="form-control" name="servicio" required />
-                                            </div>
-
-                                            <div class="col-12 text-end">
-                                                <button type="submit" class="btn btn-primary" id="btnCrearServicio">
-                                                    Crear nuevo servicio
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-12">
-                <div class="card p-2" style="height: 380px";>
-                    <div class="d-flex flex-column gap-3">
-                        <form id="formNuevoRegimen">
-                            <div class="row d-flex align-items-end">
-                                <div class="col-6 col-md-4">
-                                    <label for="inputRegimen" class="form-label">RÉGIMEN</label>
-                                    <input type="number" id="inputRegimen" class="form-control w-100">
-                                </div>
-                                <div class="col-6 col-md-4">
-                                    <label for="inputHorasDiarias" class="form-label">HORAS DIARIAS</label>
-                                    <input type="number" id="inputHorasDiarias" class="form-control w-100">
-                                </div>
-                                <div class="col-6 col-md-4">
-                                    <button type="button" id="btnCrearRegimen" class="btn btn-primary w-100">Crear nuevo régimen</button>
-                                </div>
-                            </div>
-                        </form>
-                        <table id="tbRegimenes" class="table table-hover align-middle table-header-hp3c">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>REGIMEN</th>
-                                    <th>HORAS DIARIAS</th>
-                                    <th>ACTIVO</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 @endsection
@@ -364,5 +174,6 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/ajustes/parametrizacion.js') }}"></script>
+    <script src="{{ asset('js/ajustes/parametrizacionAreasServ.js') }}"></script>
+    <script src="{{ asset('js/ajustes/parametrizacionHome.js') }}"></script>
 @endpush

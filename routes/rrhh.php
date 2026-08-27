@@ -328,6 +328,10 @@ Route::middleware(['auth'])->group(function () {
 
     //PARÁMETROS GENERALES
     Route::get('/ajustes/parametrización', [ParametrosController::class, 'configParametrosGenerales'])->name('parametrizacionesGenerales');
+    Route::get('/configAreasView', [ParametrosController::class, 'configAreasView'])->name('configAreasView');
+    Route::get('/configCategoriasView', [ParametrosController::class, 'configCategoriasView'])->name('configCategoriasView');
+    Route::get('/configRegimenesView', [ParametrosController::class, 'configRegimenesView'])->name('configRegimenesView');
+
     Route::get('/servicios/listar', [ParametrosController::class, 'listarServiciosColab']);
 
     Route::post('/areas/crear', [ParametrosController::class, 'crearArea']);

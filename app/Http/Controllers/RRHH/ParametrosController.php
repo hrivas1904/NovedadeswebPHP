@@ -14,6 +14,18 @@ class ParametrosController extends Controller
         return view('ajustes.parametrizacion');
     }
 
+    public function configAreasView(){
+        return view('ajustes.configAreas');
+    }
+
+    public function configCategoriasView(){
+        return view('ajustes.configCategorias');
+    }
+
+    public function configRegimenesView(){
+        return view('ajustes.configRegimines');
+    }
+
     public function listarServiciosColab()
     {
         try {
