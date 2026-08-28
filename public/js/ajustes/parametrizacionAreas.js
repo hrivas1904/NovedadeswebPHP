@@ -28,6 +28,7 @@ function cargarTablaAreas() {
         scrollY: "50vh",
         info: false,
         searching: false,
+        scrollCollapse: true,
     });
 
     $("#tb_areas tbody").off("click", "tr").on("click", "tr", function () {
@@ -35,6 +36,7 @@ function cargarTablaAreas() {
         if (!rowData) return;
         cargarServiciosAreaSeleccionada(rowData.id_area, rowData.nombre);
         cargarTurnosAreaSeleccionada(rowData.id_area, rowData.nombre);
+        cargarFuncionesAreaSeleccionada(rowData.id_area, rowData.nombre);
     });
 };
 

@@ -357,6 +357,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/turnos/por-area/{id}', [ParametrosController::class, 'listarTurnosxArea']);
 
+    Route::get('/funcionesAdicionales/por-area/{id}', [ParametrosController::class, 'listarFuncionesAdicxArea']);
+
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
     Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');    

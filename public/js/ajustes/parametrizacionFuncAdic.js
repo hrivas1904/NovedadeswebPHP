@@ -1,64 +1,43 @@
-let tablaTurnosAreas = null;
+let tablaFuncionesAdicAreas = null;
 
-function cargarTurnosAreaSeleccionada(idArea, nombreArea){
+function cargarFuncionesAreaSeleccionada(idArea, nombreArea){
 
-    if ($.fn.DataTable.isDataTable("#tb_turnos_areas")) {
-        tablaTurnosAreas.ajax.url(`/rrhh/turnos/por-area/${idArea}`).load();
+    if ($.fn.DataTable.isDataTable("#tb_funciones_adic")) {
+        tablaTurnosAreas.ajax.url(`/rrhh/funcionesAdicionales/por-area/${idArea}`).load();
         return;
     }
 
-    tablaTurnosAreas = $("#tb_turnos_areas").DataTable({
+    tablaTurnosAreas = $("#tb_funciones_adic").DataTable({
         ajax: {
-            url: `/rrhh/turnos/por-area/${idArea}`,
+            url: `/rrhh/funcionesAdicionales/por-area/${idArea}`,
             type: "GET",
             dataSrc: ""
         },
 
         columns: [
             { data: "id", className:"text-start" },
-            { data: "nombre", className:"text-start",
+            { data: "funcion", className:"text-start",
                 render:function(data){
                     return `
                         <input type="text" class="form-control" value="${data}">
                     `
                 }
             },
-            { data: "hora_inicio", className:"text-start",
+            { data: "marca", className:"text-start",
                 render:function(data){
                     return `
                         <input type="text" class="form-control" value="${data}">
                     `
                 }
             },
-            { data: "hora_fin", className:"text-start",
+            { data: "cod_liq", className:"text-start",
                 render:function(data){
                     return `
                         <input type="text" class="form-control" value="${data}">
                     `
                 }
             },
-            { data: "tolerancia_ingreso", className:"text-start",
-                render:function(data){
-                    return `
-                        <input type="text" class="form-control" value="${data}">
-                    `
-                }
-            },
-            { data: "cruza", className:"text-start",
-                render:function(data){
-                    return `
-                        <input type="text" class="form-control" value="${data}">
-                    `
-                }
-            },
-            { data: "horas_reales", className:"text-start",
-                render:function(data){
-                    return `
-                        <input type="text" class="form-control" value="${data}">
-                    `
-                }
-            },
-            { data: "horas_computadas", className:"text-start",
+            { data: "unidad", className:"text-start",
                 render:function(data){
                     return `
                         <input type="text" class="form-control" value="${data}">
@@ -88,7 +67,6 @@ function cargarTurnosAreaSeleccionada(idArea, nombreArea){
         language: {
             url: "/js/es-ES.json"
         },
-
         paging: false,
         searching: false,
         info: false,

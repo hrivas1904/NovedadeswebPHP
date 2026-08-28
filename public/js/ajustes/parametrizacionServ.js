@@ -52,6 +52,9 @@ function cargarServiciosAreaSeleccionada(idArea, nombreArea){
         paging: false,
         searching: false,
         info: false,
-        autoWidth: false
+        autoWidth: false,
+        scrollX:false,
+        scrollY:"55vh",
+        scrollCollapse: true,
     });
 }

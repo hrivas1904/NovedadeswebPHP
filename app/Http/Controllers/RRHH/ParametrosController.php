@@ -422,4 +422,23 @@ class ParametrosController extends Controller
             ], 500);
         }
     }
+
+    public function listarFuncionesAdicxArea($id)
+    {
+        try {
+            $funciones = DB::select(
+                'CALL SP_LISTAR_FUNCIONES_AREA(?)',
+                [$id]
+            );
+
+            return response()->json($funciones);
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'error' => true,
+                'mensaje' => 'Error al cargar areas',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
