@@ -52,15 +52,12 @@ function inicializarSubvistaParametros(vista) {
 
         case "areasServicios":
             cargarTablaAreas();
-            cargarTablaServicios();
             break;
 
         case "categorias":
-            cargarTablaCategorias();
             break;
 
         case "regimenes":
-            cargarTablaRegimenes();
             break;
 
     }

@@ -1,7 +1,4 @@
 let tablaArea = null;
-let tablaTurnosAreas = null;
-let tablaServiciosAreas = null;
-let tablaFuncionesAdic = null;
 
 function cargarTablaAreas() {
     tablaArea = $("#tb_areas").DataTable({
@@ -36,101 +33,11 @@ function cargarTablaAreas() {
     $("#tb_areas tbody").off("click", "tr").on("click", "tr", function () {
         const rowData = tablaArea.row(this).data();
         if (!rowData) return;
-        cargarAreaSeleccionada(rowData.id_area, rowData.nombre);
+        cargarServiciosAreaSeleccionada(rowData.id_area, rowData.nombre);
+        cargarTurnosAreaSeleccionada(rowData.id_area, rowData.nombre);
     });
 };
 
-function verDetalleArea(idArea) {
-    const modal = $("#modalEdicionArea");
-
-    $.ajax({
-        url: "/rrhh/parametrizacion/verArea",
-        type: "GET",
-        data: {
-            idArea: idArea,
-        },
-        success: function (res) {
-            $("#idAreaEdit").val(res.data[0].id_area);
-            $("#nombreAreaEdit").val(res.data[0].nombre);
-        },
-        error: function () {
-            Swal.fire({
-                title: "Error",
-                text: "No se pudo cargar la información del área.",
-                icon: "error",
-                customClass: {
-                    confirmColorButton: "btn-primary",
-                },
-                buttonsStyling: false,
-            });
-        },
-    });
-
-    modal.modal("show");
-}
-
-function cerrarModalAreaEdit() {
-    const modal = $("#modalEdicionArea");
-    const form = $("#formEditArea");
-    form[0].reset();
-    modal.modal("hide");
-}
-
-function cargarAreaSeleccionada(idArea, nombreArea){
-
-    $("#nombreAreaTurnos").text(nombreArea);
-
-    if ($.fn.DataTable.isDataTable("#tb_servicios_areas")) {
-        tablaServiciosAreas.ajax.url(`/rrhh/servicios-empleados/por-area/${idArea}`).load();
-        return;
-    }
-
-    tablaServiciosAreas = $("#tb_servicios_areas").DataTable({
-        ajax: {
-            url: `/rrhh/servicios-empleados/por-area/${idArea}`,
-            type: "GET",
-            dataSrc: ""
-        },
-
-        columns: [
-            { data: "id_servicios", className:"text-start" },
-            { data: "servicio", className:"text-start",
-                render:function(data){
-                    return `
-                        <input type="text" class="form-control" value="${data}">
-                    `
-                }
-             },
-            { data: "estado", className: "text-center", orderable: false,
-                render: function (data, type, row) {
-                    if (type !== "display") {
-                        return data;
-                    }
-                    const checked = Number(data) === 1 ? "checked" : "";
-                    return `
-                        <div class="form-check form-switch d-flex justify-content-center m-0">
-                            <input
-                                class="form-check-input switchActivoServicio"
-                                type="checkbox"
-                                role="switch"
-                                data-id="${row.id}"
-                                ${checked}>
-                        </div>
-                    `;
-                },
-            },
-        ],
-
-        language: {
-            url: "/js/es-ES.json"
-        },
-
-        paging: false,
-        searching: false,
-        info: false,
-        autoWidth: false
-    });
-}
 
 $("#formNuevaArea").on("submit", function (e) {
     e.preventDefault();

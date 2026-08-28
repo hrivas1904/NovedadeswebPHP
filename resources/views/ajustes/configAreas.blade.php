@@ -39,7 +39,7 @@
                     <span class="fw-bold" id="nombreAreaTurnos"></span>
                 </label>
 
-                <div class="col-12 my-3">
+                <div class="col-12 mt-3 mb-1">
                     <div class="section-divider">
                         <span>TURNOS</span>
                     </div>
@@ -49,21 +49,20 @@
                     <thead>
                         <tr>
                             <th class="text-start">ID</th>
-                            <th class="text-center">NOMBRE</th>
-                            <th class="text-center">DESDE</th>
-                            <th class="text-center">HASTA</th>
-                            <th class="text-center">TOLERANCIA</th>
-                            <th class="text-center">CRUZA</th>
-                            <th class="text-center">HS REALES</th>
-                            <th class="text-center">HS QUE COMPUTA</th>
-                            <th class="text-center">DÍAS QUE OPERA</th>
+                            <th class="text-start">NOMBRE</th>
+                            <th class="text-start">DESDE</th>
+                            <th class="text-start">HASTA</th>
+                            <th class="text-start">TOLERANCIA</th>
+                            <th class="text-start">CRUZA</th>
+                            <th class="text-start">HS REALES</th>
+                            <th class="text-start">HS QUE COMPUTA</th>
                             <th class="text-center"></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
 
-                <div class="col-12 my-3">
+                <div class="col-12 mt-3 mb-1">
                     <div class="section-divider">
                         <span>SERVICIOS</span>
                     </div>
@@ -73,14 +72,14 @@
                     <thead>
                         <tr>
                             <th class="text-start">ID</th>
-                            <th class="text-center">NOMBRE</th>
-                            <th class="text-center">ACTIVO</th>
+                            <th class="text-start">NOMBRE</th>
+                            <th class="text-start">ACTIVO</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
 
-                <div class="col-12 my-3">
+                <div class="col-12 mt-3 mb-1">
                     <div class="section-divider">
                         <span>FUNCIONES ADICIONALES</span>
                     </div>
@@ -90,10 +89,10 @@
                     <thead>
                         <tr>
                             <th class="text-start">ID</th>
-                            <th class="text-center">FUNCIÓN</th>
-                            <th class="text-center">CÓD LIQUIDACIÓN</th>
-                            <th class="text-center">UNIDAD</th>
-                            <th class="text-center"></th>
+                            <th class="text-start">FUNCIÓN</th>
+                            <th class="text-start">CÓD LIQUIDACIÓN</th>
+                            <th class="text-start">UNIDAD</th>
+                            <th class="text-start"></th>
                         </tr>
                     </thead>
                     <tbody></tbody>

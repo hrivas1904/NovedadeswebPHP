@@ -355,6 +355,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/parametros/editarHorasRegimen', [ParametrosController::class, 'editarHorasRegimen']);
     Route::post('/parametros/activarRegimen', [ParametrosController::class, 'activarRegimen']);
 
+    Route::get('/turnos/por-area/{id}', [ParametrosController::class, 'listarTurnosxArea']);
+
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
     Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');    
