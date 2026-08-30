@@ -13,7 +13,7 @@ function cargarTablaCategorias() {
             { data: "nombre", className:"text-start",
                 render:function(data){
                     return `
-                        <input class="form-control inputNombreCateg"
+                        <input class="form-control inputNombreCateg" value="${data}">
                     `
                 }
              }

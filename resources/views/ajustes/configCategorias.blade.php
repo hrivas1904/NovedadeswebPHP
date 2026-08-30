@@ -8,7 +8,7 @@
             </div>
             <form id="formNuevaCategoria">
                 @csrf
-                <div class="row d-flex aling-items-end">
+                <div class="row d-flex justify-content-start align-items-end">
                     <div class="col-3">
                         <div class="form-floating">
                             <input type="text" class="form-control" name="nombreCateg" required placeholder="Nombre categoría" />
