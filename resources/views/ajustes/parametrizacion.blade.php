@@ -171,5 +171,6 @@
 <script src="{{ asset('js/ajustes/parametrizacionServ.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionTurnos.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionFuncAdic.js') }}"></script>
+<script src="{{ asset('js/ajustes/parametrizacionCateg.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionHome.js') }}"></script>
 @endpush

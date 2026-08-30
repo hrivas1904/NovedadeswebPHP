@@ -12,7 +12,7 @@
                     <div class="col-3">
                         <div class="form-floating">
                             <input type="text" class="form-control" name="nombreCateg" required placeholder="Nombre categoría" />
-                            <label class="form-label">Nombre categoría</label>
+                            <label for="">Nombre categoría</label>
                         </div>
                     </div>
                     <div class="col-3">
@@ -26,8 +26,8 @@
         <table id="tb_categ" class="table table-striped table-hover align-middle table-header-hp3c mt-2">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>CATEGORÍA</th>
+                    <th class="text-start">ID</th>
+                    <th class="text-start">CATEGORÍA</th>
                 </tr>
             </thead>
             <tbody>
