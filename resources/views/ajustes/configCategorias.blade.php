@@ -28,6 +28,7 @@
                 <tr>
                     <th class="text-start">ID</th>
                     <th class="text-start">CATEGORÍA</th>
+                    <th class="text-start">ACTIVO</th>
                 </tr>
             </thead>
             <tbody>

@@ -369,6 +369,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/abrirAnnioCronoPeriodo', [CronogramaController::class, 'abrirAnnioPeriodo'])->name('abrirAnnioCronoPeriodo');
     Route::patch('/cronoPeriodo/{periodo}/visible', [CronogramaController::class, 'toggleVisible'])->name('toggleVisible');
     Route::delete('/cronoPeriodo/{periodo}', [CronogramaController::class, 'eliminar'])->name('eliminar');
-    
-    //
+});
+
+Route::middleware(['dashboard.publico'])->group(function () {
+    Route::get('/guiaInterna/{token}',[PersonalController::class, 'flyerPublico'])->name('flyerPublico');
 });

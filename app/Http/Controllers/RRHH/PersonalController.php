@@ -69,6 +69,11 @@ class PersonalController extends Controller
         return view('personal.tarjas');
     }
 
+    public function flyerPublico()
+    {
+        return view('flyers.flyer');
+    }
+
     public function listarAreas()
     {
         try {

@@ -16,7 +16,25 @@ function cargarTablaCategorias() {
                         <input class="form-control inputNombreCateg" value="${data}">
                     `
                 }
-             }
+             },
+             { data: "estado", className: "text-center", orderable: false,
+                render: function (data, type, row) {
+                    if (type !== "display") {
+                        return data;
+                    }
+                    const checked = Number(data) === 1 ? "checked" : "";
+                    return `
+                        <div class="form-check form-switch d-flex justify-content-center m-0">
+                            <input
+                                class="form-check-input switchActivoServicio"
+                                type="checkbox"
+                                role="switch"
+                                data-id="${row.id}"
+                                ${checked}>
+                        </div>
+                    `;
+                },
+            },
         ],
 
         paging: false,
