@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ParametrosController extends Controller
 {
@@ -14,16 +15,19 @@ class ParametrosController extends Controller
         return view('ajustes.parametrizacion');
     }
 
-    public function configAreasView(){
+    public function configAreasView()
+    {
         return view('ajustes.configAreas');
     }
 
-    public function configCategoriasView(){
+    public function configCategoriasView()
+    {
         return view('ajustes.configCategorias');
     }
 
-    public function configRegimenesView(){
-        return view('ajustes.configRegimines');
+    public function configRegimenesView()
+    {
+        return view('ajustes.configRegimenes');
     }
 
     public function listarServiciosColab()
@@ -421,6 +425,192 @@ class ParametrosController extends Controller
                 'detalle' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function crearTurno(Request $request)
+    {
+        $datos = $request->validate([
+
+            'nombre' => [
+                'required',
+                'string',
+                'max:50'
+            ],
+
+            'codigo' => [
+                'required',
+                'string',
+                'max:10'
+            ],
+
+            'horaInicio' => [
+                'required',
+                'date_format:H:i'
+            ],
+
+            'horaFin' => [
+                'required',
+                'date_format:H:i'
+            ],
+
+            'toleranciaIngreso' => [
+                'required',
+                'integer',
+                'min:0'
+            ],
+
+            'idArea' => [
+                'required',
+                'integer'
+            ]
+
+        ]);
+
+
+        DB::statement(
+            'CALL SP_CREAR_TURNO(?,?,?,?,?,?,?)',
+            [
+                $datos['nombre'],
+                $datos['codigo'],
+                $datos['horaInicio'],
+                $datos['horaFin'],
+                $datos['toleranciaIngreso'],
+                $datos['idArea'],
+                Auth::id()
+            ]
+        );
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Turno creado correctamente.'
+        ]);
+    }
+
+    public function actualizarCampoTurno(Request $request, $id)
+    {
+        $request->validate([
+
+            'campo' => [
+                'required',
+                'in:nombre,hora_inicio,hora_fin,tolerancia_ingreso,horas_reales,horas_computadas,activo'
+            ]
+
+        ]);
+
+
+        $campo = $request->campo;
+
+
+        $configuracion = [
+
+            'nombre' => [
+                'sp' => 'SP_EDITAR_TURNO_NOMBRE',
+                'rules' => [
+                    'required',
+                    'string',
+                    'max:50'
+                ]
+            ],
+
+            'hora_inicio' => [
+                'sp' => 'SP_EDITAR_TURNO_DESDE',
+                'rules' => [
+                    'required',
+                    'date_format:H:i'
+                ]
+            ],
+
+            'hora_fin' => [
+                'sp' => 'SP_EDITAR_TURNO_HASTA',
+                'rules' => [
+                    'required',
+                    'date_format:H:i'
+                ]
+            ],
+
+            'tolerancia_ingreso' => [
+                'sp' => 'SP_EDITAR_TURNO_TOLERANCIA',
+                'rules' => [
+                    'required',
+                    'integer',
+                    'min:0'
+                ]
+            ],
+
+            'horas_reales' => [
+                'sp' => 'SP_EDITAR_TURNO_HORAS_REALES',
+                'rules' => [
+                    'required',
+                    'integer',
+                    'min:0'
+                ]
+            ],
+
+            'horas_computadas' => [
+                'sp' => 'SP_EDITAR_TURNO_HORAS_COMPUTADAS',
+                'rules' => [
+                    'required',
+                    'integer',
+                    'min:0'
+                ]
+            ],
+
+            'activo' => [
+                'sp' => 'SP_EDITAR_TURNO_ESTADO',
+                'rules' => [
+                    'required',
+                    'integer',
+                    'in:0,1'
+                ]
+            ]
+
+        ];
+
+
+        $config = $configuracion[$campo];
+
+
+        $validacion = Validator::make(
+
+            [
+                'valor' => $request->valor
+            ],
+
+            [
+                'valor' => $config['rules']
+            ]
+
+        )->validate();
+
+
+        $existe = DB::table('turnos_areas')
+            ->where('id', $id)
+            ->exists();
+
+
+        if (!$existe) {
+
+            return response()->json([
+                'message' => 'El turno seleccionado no existe.'
+            ], 404);
+        }
+
+
+        DB::statement(
+            "CALL {$config['sp']}(?,?,?)",
+            [
+                $id,
+                $validacion['valor'],
+                Auth::id()
+            ]
+        );
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Turno actualizado correctamente.'
+        ]);
     }
 
     public function listarFuncionesAdicxArea($id)

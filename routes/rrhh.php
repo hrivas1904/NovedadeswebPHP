@@ -356,6 +356,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/parametros/activarRegimen', [ParametrosController::class, 'activarRegimen']);
 
     Route::get('/turnos/por-area/{id}', [ParametrosController::class, 'listarTurnosxArea']);
+    Route::post('/turnos/crear',[ParametrosController::class, 'crearTurno']);
+    Route::put('/turnos/{id}/campo',[ParametrosController::class, 'actualizarCampoTurno']
+);  
 
     Route::get('/funcionesAdicionales/por-area/{id}', [ParametrosController::class, 'listarFuncionesAdicxArea']);
 

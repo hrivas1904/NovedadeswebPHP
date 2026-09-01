@@ -23,7 +23,7 @@
                 </div>
             </form>
         </div>
-        <table id="tb_categ" class="table table-striped table-hover align-middle table-header-hp3c mt-2">
+        <table id="tb_categ" class="table table-striped table-hover align-middle table-header-hp3c">
             <thead>
                 <tr>
                     <th class="text-start">ID</th>

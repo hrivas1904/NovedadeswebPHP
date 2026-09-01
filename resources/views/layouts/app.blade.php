@@ -47,7 +47,7 @@
     <div class="wrapper">
 
         <header class="topbar">
-            <button type="button" class="btn-mobile-toggle" id="mobileSidebarToggle" aria-label="Abrir menú" title="Abrir menú">
+            <button type="button" class="topbar-action btn-mobile-toggle" id="mobileSidebarToggle" aria-label="Abrir menú" title="Abrir menú">
                 <i class="fa-solid fa-bars fw-bold fs-3"></i>
             </button>
 
@@ -64,43 +64,95 @@
             </div>
 
             <div class="topbar-right">
+                {{-- ACCIONES --}}
+                <div class="topbar-actions-group">
 
-                <div class="user-chip text-white">
-                    <div class="user-info text-end small">
-                        <div><strong>{{ Auth::user()->name }}</strong></div>
-                        <div class="user-role">{{ Auth::user()->rol }}</div>
-                    </div>
-                </div>
+                    {{-- ALERTAS --}}
+                    <div class="alertas-wrapper">
+                        <button class="topbar-action position-relative"
+                                id="btnAlertas"
+                                title="Alertas">
 
-                <button class="btn btn-light position-relative" id="btnAlertas">
-                    <i class="fa-solid fa-bell"></i>
-                    <span id="contadorAlertas" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-                </button>
+                            <i class="fa-regular fa-bell"></i>
 
-                <div id="dropdownAlertas" class="dropdown-alertas">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-semibold">Notificaciones</span>
-                                <button id="btnLimpiarAlertas" class="btn btn-sm text-danger p-0">Limpiar</button>
+                            <span id="contadorAlertas" class="topbar-badge">
+                                0
+                            </span>
+                        </button>
+
+                        <div id="dropdownAlertas" class="dropdown-alertas">
+                            <div class="card">
+
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-semibold">
+                                            Notificaciones
+                                        </span>
+
+                                        <button id="btnLimpiarAlertas"
+                                                class="btn btn-sm text-danger p-0">
+                                            Limpiar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <ul id="listaAlertas"
+                                        class="list-unstyled mb-0">
+                                    </ul>
+                                </div>
+
+                                <div class="card-footer d-flex justify-content-center">
+                                    <a href="{{ route('notificaciones.panel') }}"
+                                    class="btn btn-sm btn-primary w-100">
+                                        Panel de Notificaciones
+                                    </a>
+                                </div>
+
                             </div>
                         </div>
-                        <div class="card-body">
-                            <ul id="listaAlertas" class="list-unstyled mb-0"></ul>
-                        </div>
-                        <div class="card-footer d-flex justify-content-center">
-                            <a type="button" href="{{route('notificaciones.panel')}}" class="btn btn-sm btn-primary w-100">Panel de Notificaciones</a>
-                        </div>
-                    </div>                      
+                    </div>
+
+
+                    {{-- LOG --}}
+                    @if (Auth::user()->rol == 'Administrador/a')
+                        <a class="topbar-action"
+                        id="btnVerLog"
+                        title="Ver Log"
+                        href="{{ route('logTransactView') }}">
+
+                            <i class="fa-solid fa-table-list"></i>
+                        </a>
+                    @endif
+
                 </div>
 
-                @if (Auth::user()->rol == 'Administrador/a')
-                <a class="btn btn-light position-relative" id="btnVerLog" title="ver Log" href="{{ route('logTransactView') }}">
-                    <i class="fa-solid fa-table-list"></i>
-                </a>
-                @endif
+
+                {{-- SEPARADOR --}}
+                <div class="topbar-divider"></div>
+
+
+                {{-- USUARIO --}}
+                <div class="user-chip">
+
+                    <div class="user-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div class="user-info">
+                        <div class="user-name">
+                            {{ Auth::user()->name }}
+                        </div>
+
+                        <div class="user-role">
+                            {{ Auth::user()->rol }}
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
+
         </header>
 
         <div class="app-body">

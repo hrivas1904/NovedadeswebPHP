@@ -30,6 +30,7 @@
                         <tr>
                             <th class="text-start">ID</th>
                             <th class="text-start">ÁREA</th>
+                            <th class="text-center">ESTADO</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -48,46 +49,47 @@
                     </div>
                 </div>
 
-                <div class="card p-1 mb-1">
-                    <form id="formNuevaTurno">
-                        @csrf
-                        <div class="row d-flex align-items-end">
-                            <div class="col-6 col-md-4 col-xl-2">
-                                <div class="form-floating">                                
-                                    <input type="text" class="form-control" name="nombreTurno" id="inputNombreTurno" placeholder="Nombre turno">
-                                    <label for="inputNombreTurno">Nombre turno</label>                                
-                                </div> 
-                            </div>
-                            <div class="col-6 col-md-2 col-xl-2">
-                                <div class="form-floating">                                
-                                    <input type="text" class="form-control" name="codigoTurno" id="inputCodigoTurno" placeholder="Código turno">
-                                    <label for="inputCodigoTurno">Código turno</label>
-                                </div> 
-                            </div>
-                            <div class="col-6 col-md-3 col-xl-2">
-                                <div class="form-floating">
-                                    <input type="time" class="form-control" name="incioTurno" id="inputInicioTurno" placeholder="Hora inicio">
-                                    <label for="inputInicioTurno">Hora inicio</label>
+                    <div class="card p-1 mb-1">
+                        <form id="formNuevaTurno">
+                            @csrf
+                            <input type="hidden" name="idArea" id="inputIdAreaTurno">
+                            <div class="row d-flex align-items-end">
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <div class="form-floating">                                
+                                        <input type="text" class="form-control" name="nombre" id="inputNombreTurno" placeholder="Nombre turno">
+                                        <label for="inputNombreTurno">Nombre turno</label>                                
+                                    </div> 
+                                </div>
+                                <div class="col-6 col-md-2 col-xl-2">
+                                    <div class="form-floating">                                
+                                        <input type="text" class="form-control" name="codigo" id="inputCodigoTurno" placeholder="Código turno">
+                                        <label for="inputCodigoTurno">Código turno</label>
+                                    </div> 
+                                </div>
+                                <div class="col-6 col-md-3 col-xl-2">
+                                    <div class="form-floating">
+                                        <input type="time" class="form-control" name="horaInicio" id="inputInicioTurno" placeholder="Hora inicio">
+                                        <label for="inputInicioTurno">Hora inicio</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 col-xl-2">
+                                    <div class="form-floating">
+                                        <input type="time" class="form-control" name="horaFin" id="inputFinTurno" placeholder="Hora fin">
+                                        <label for="inputFinTurno">Hora fin</label>
+                                    </div> 
+                                </div>
+                                <div class="col-6 col-md-3 col-xl-2">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" name="toleranciaIngreso" id="inputToleranciaTurno" placeholder="Tolerancia ingreso">
+                                        <label for="inputToleranciaTurno">Tolerancia ingreso</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 col-xl-2">
+                                    <button type="submit" class="btn btn-primary w-100" id="btnCrearTurno">Crear turno</button>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-3 col-xl-2">
-                                <div class="form-floating">
-                                    <input type="time" class="form-control" name="finTurno" id="inputFinTurno" placeholder="Hora fin">
-                                    <label for="inputFinTurno">Hora fin</label>
-                                </div> 
-                            </div>
-                            <div class="col-6 col-md-3 col-xl-2">
-                                <div class="form-floating">
-                                    <input type="number" class="form-control" name="toleranciaTurno" id="inputToleranciaTurno" placeholder="Tolerancia ingreso">
-                                    <label for="inputToleranciaTurno">Tolerancia ingreso</label>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3 col-xl-2">
-                                <button type="button" class="btn btn-primary w-100" id="btnCrearTurno">Crear turno</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                        </form>
+                    </div>
 
                 <table id="tb_turnos_areas" class="table table-striped table-hover align-middle table-header-hp3c">
                     <thead>
@@ -97,10 +99,9 @@
                             <th class="text-start">DESDE</th>
                             <th class="text-start">HASTA</th>
                             <th class="text-start">TOLERANCIA</th>
-                            <th class="text-start">CRUZA</th>
                             <th class="text-start">HS REALES</th>
                             <th class="text-start">HS QUE COMPUTA</th>
-                            <th class="text-center"></th>
+                            <th class="text-center">ESTADO</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -144,7 +145,7 @@
                         <tr>
                             <th class="text-start">ID</th>
                             <th class="text-start">NOMBRE</th>
-                            <th class="text-start">ACTIVO</th>
+                            <th class="text-center">ESTADO</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -194,7 +195,7 @@
                             <th class="text-start">MARCA</th>
                             <th class="text-start">CÓD LIQUIDACIÓN</th>
                             <th class="text-start">UNIDAD</th>
-                            <th class="text-start"></th>
+                            <th class="text-center">ESTADO</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
