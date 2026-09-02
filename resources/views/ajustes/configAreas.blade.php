@@ -116,25 +116,18 @@
                 <div class="card p-1 mb-1">
                     <form id="formNuevoServicio">
                         @csrf
+                        <input type="hidden" id="inputIdAreaServ" name="area">
                         <div class="row d-flex align-items-end">
-                            <div class="col-6 col-md-4">
-                                <div class="form-floating">                                
-                                    <input id="selectAreaServicios" name="area" class="form-control w-100" placeholder="Área vinculada" required readonly>
-                                    <label>Área vinculada</label>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
+                            <div class="col-6 col-md-6">
                                 <div class="form-floating">                                
                                     <input type="text" class="form-control" name="servicio" placeholder="Nombre servicio" required>
                                     <label>Servicio</label>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <div class="form-floating">                                
-                                    <button type="submit" class="btn btn-primary w-100" id="btnCrearServicio">
-                                        Crear nuevo servicio
-                                    </button>
-                                </div>
+                            <div class="col-12 col-md-4">                               
+                                <button type="submit" class="btn btn-primary w-100" id="btnCrearServicio">
+                                    Crear nuevo servicio
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -160,6 +153,8 @@
                 <div class="card p-1 mb-1">
                     <form id="formNuevaFuncionAdicional">
                         @csrf
+                        <input type="hidden" id="inputIdAreaFuncAdic" name="area">
+                        <input type="hidden" id="inputIdNovedadFuncAdic" name="idNovedad">
                         <div class="row d-flex align-items-end">
                             <div class="col-6 col-md-4 col-xl-3">
                                 <div class="form-floating">
@@ -174,14 +169,17 @@
                                 </div>
                             </div>
                             <div class="col-6 col-md-4 col-xl-3">
-                                <div class="form-floating">
-                                    <select class="form-select" id="selectNovedadFuncion" name="novedadFuncion" placeholder="Novedad función"></select>
-                                    <label for="selectNovedadFuncion">Novedad vinculada</label>
-                                    <input type="hidden" id="inputIdNovedad">
+                                <div class="select2-floating">
+                                    <label for="selectNovedadFuncion">
+                                        Novedad vinculada
+                                    </label>
+                                    <select class="form-select" id="selectNovedadFuncion">
+                                        <option></option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-6 col-md-4 col-xl-3">
-                                <button type="button" class="btn btn-primary w-100" id="btnCrearFuncionAdicional">Crear función adicional</button>
+                                <button type="submit" class="btn btn-primary w-100" id="btnCrearFuncionAdicional">Crear función adicional</button>
                             </div>
                         </div>
                     </form>
@@ -193,6 +191,7 @@
                             <th class="text-start">ID</th>
                             <th class="text-start">FUNCIÓN</th>
                             <th class="text-start">MARCA</th>
+                            <th class="text-start">NOVEDAD</th>
                             <th class="text-start">CÓD LIQUIDACIÓN</th>
                             <th class="text-start">UNIDAD</th>
                             <th class="text-center">ESTADO</th>

@@ -52,6 +52,7 @@ function inicializarSubvistaParametros(vista) {
 
         case "areasServicios":
             cargarTablaAreas();
+            cargarSelectorNovedadesFuncion();
             break;
 
         case "categorias":

@@ -117,7 +117,8 @@ function renderTablaConciliacion() {
                 extend: 'excelHtml5',
                 text: 'Exportar',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8],
+                    orthogonal: 'export', // fuerza a que llame render(v, 'export', ...) en vez de usar el HTML de pantalla
                 },
             },
         ],
@@ -194,30 +195,18 @@ function renderTablaConciliacion() {
             },
 
             {
-                data: 'importe',
-                className: 'text-end',
-
-                render: function (v) {
-
-                    return `
-                        <span class="fw-bold ${v >= 0 ? 'text-success' : 'text-danger'}">
-                            ${fmtPesos(v)}
-                        </span>
-                    `;
+                data: 'importe', className: 'text-end',
+                render: function (v, type) {
+                    if (type !== 'display') return v; // exportar/ordenar/filtrar: numero crudo, con signo
+                    return '<span class="fw-bold ' + (v >= 0 ? 'text-success' : 'text-danger') + '">' + fmtPesos(v) + '</span>';
                 }
             },
 
             {
-                data: 'saldo_acum',
-                className: 'text-end',
-
-                render: function (v) {
-
-                    return `
-                        <span class="fw-bold">
-                            ${fmtPesos(v)}
-                        </span>
-                    `;
+                data: 'saldo_acum', className: 'text-end',
+                render: function (v, type) {
+                    if (type !== 'display') return v;
+                    return '<span class="fw-bold">' + fmtPesos(v) + '</span>';
                 }
             },
         ],

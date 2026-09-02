@@ -25,11 +25,6 @@ class ParametrosController extends Controller
         return view('ajustes.configCategorias');
     }
 
-    public function configRegimenesView()
-    {
-        return view('ajustes.configRegimenes');
-    }
-
     public function listarServiciosColab()
     {
         try {
@@ -164,61 +159,63 @@ class ParametrosController extends Controller
         }
     }
 
-    public function verDetalleCateg(Request $request)
+    public function actualizarCampoCategoria(Request $request, $id)
     {
+        $request->validate([
+            'campo' => 'required|string'
+        ]);
 
-        try {
-            $idCateg = $request->idCateg;
 
-            $data = DB::select('CALL SP_VER_CATEGORIA(?)', [$idCateg]);
+        $campo = $request->campo;
+        $valor = $request->valor;
 
-            return response()->json([
-                'success' => true,
-                'data' => $data,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
+
+        switch ($campo) {
+
+            case 'nombre':
+
+                $request->validate([
+                    'valor' => 'required|string|max:200'
+                ]);
+
+                $sp = 'SP_EDITAR_CATEGORIA_NOMBRE';
+
+                break;
+
+
+            case 'estado':
+
+                $request->validate([
+                    'valor' => 'required|integer|in:0,1'
+                ]);
+
+                $sp = 'SP_EDITAR_CATEGORIA_ESTADO';
+
+                break;
+
+
+            default:
+
+                return response()->json([
+                    'message' => 'Campo no válido.'
+                ], 422);
         }
-    }
 
-    public function editarCateg(Request $request)
-    {
-        try {
-            DB::statement('CALL SP_MODIFICAR_CATEG(?, ?)', [
-                $request->idCateg,
-                $request->nombre
-            ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Categoría actualizada correctamente.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
+        DB::statement(
+            "CALL {$sp}(?,?,?)",
+            [
+                $id,
+                $valor,
+                Auth::id()
+            ]
+        );
 
-    public function eliminarCateg($id)
-    {
-        try {
-            DB::statement("CALL SP_ELIMINAR_CATEGORIA(?,?)", [$id, Auth::user()->id]);
 
-            return response()->json([
-                'success' => true,
-                'mensaje' => 'Categoría eliminada correctamente'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'mensaje' => 'Error al eliminar la categoría'
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Categoría actualizada correctamente.'
+        ]);
     }
 
     public function verDetalleServicio(Request $request)
@@ -241,25 +238,77 @@ class ParametrosController extends Controller
         }
     }
 
-    public function editarServicio(Request $request)
+    public function actualizarCampoServicio(Request $request, $id)
     {
-        try {
-            DB::statement('CALL SP_MODIFICAR_SERVICIO(?, ?, ?)', [
-                $request->idServ,
-                $request->nombre,
-                $request->idArea,
-            ]);
+        $request->validate([
+            'campo' => 'required|string',
+            'valor' => 'nullable'
+        ]);
+
+
+        $campo = $request->campo;
+        $valor = $request->valor;
+
+
+        switch ($campo) {
+
+            case 'nombre':
+
+                $request->validate([
+                    'valor' => 'required|string|max:250'
+                ]);
+
+                $sp = 'SP_EDITAR_SERVICIO_NOMBRE';
+
+                break;
+
+
+            case 'estado':
+
+                $request->validate([
+                    'valor' => 'required|integer|in:0,1'
+                ]);
+
+                $sp = 'SP_EDITAR_SERVICIO_ESTADO';
+
+                break;
+
+
+            default:
+
+                return response()->json([
+                    'message' => 'Campo no válido.'
+                ], 422);
+        }
+
+
+        $existe = DB::table('servicios')
+            ->where('id_servicios', $id)
+            ->exists();
+
+
+        if (!$existe) {
 
             return response()->json([
-                'success' => true,
-                'message' => 'Servicio actualizado correctamente.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
+                'message' => 'El servicio seleccionado no existe.'
+            ], 404);
         }
+
+
+        DB::statement(
+            "CALL {$sp}(?,?,?)",
+            [
+                $id,
+                $valor,
+                Auth::id()
+            ]
+        );
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Servicio actualizado correctamente.'
+        ]);
     }
 
     public function eliminarServicio($id)
@@ -489,128 +538,127 @@ class ParametrosController extends Controller
 
     public function actualizarCampoTurno(Request $request, $id)
     {
-        $request->validate([
+        try {
 
-            'campo' => [
-                'required',
-                'in:nombre,hora_inicio,hora_fin,tolerancia_ingreso,horas_reales,horas_computadas,activo'
-            ]
-
-        ]);
+            $request->validate([
+                'campo' => 'required|string',
+                'valor' => 'nullable'
+            ]);
 
 
-        $campo = $request->campo;
+            $campo = $request->campo;
+            $valor = $request->valor;
 
 
-        $configuracion = [
+            switch ($campo) {
 
-            'nombre' => [
-                'sp' => 'SP_EDITAR_TURNO_NOMBRE',
-                'rules' => [
-                    'required',
-                    'string',
-                    'max:50'
+                case 'nombre':
+
+                    $request->validate([
+                        'valor' => 'required|string|max:50'
+                    ]);
+
+                    $sp = 'SP_EDITAR_TURNO_NOMBRE';
+
+                    break;
+
+
+                case 'hora_inicio':
+
+                    $request->validate([
+                        'valor' => 'required|date_format:H:i'
+                    ]);
+
+                    $sp = 'SP_EDITAR_TURNO_DESDE';
+
+                    break;
+
+
+                case 'hora_fin':
+
+                    $request->validate([
+                        'valor' => 'required|date_format:H:i'
+                    ]);
+
+                    $sp = 'SP_EDITAR_TURNO_HASTA';
+
+                    break;
+
+
+                case 'tolerancia_ingreso':
+
+                    $request->validate([
+                        'valor' => 'required|integer|min:0'
+                    ]);
+
+                    $sp = 'SP_EDITAR_TURNO_TOLERANCIA';
+
+                    break;
+
+
+                case 'horas_reales':
+
+                    $request->validate([
+                        'valor' => 'required|integer|min:0'
+                    ]);
+
+                    $sp = 'SP_EDITAR_TURNO_HORAS_REALES';
+
+                    break;
+
+
+                case 'horas_computadas':
+
+                    $request->validate([
+                        'valor' => 'required|integer|min:0'
+                    ]);
+
+                    $sp = 'SP_EDITAR_TURNO_HORAS_COMPUTADAS';
+
+                    break;
+
+
+                case 'activo':
+
+                    $request->validate([
+                        'valor' => 'required|integer|in:0,1'
+                    ]);
+
+                    $sp = 'SP_EDITAR_TURNO_ESTADO';
+
+                    break;
+
+
+                default:
+
+                    return response()->json([
+                        'message' => 'Campo no válido.'
+                    ], 422);
+            }
+
+
+            DB::statement(
+                "CALL {$sp}(?,?,?)",
+                [
+                    $id,
+                    $valor,
+                    Auth::id()
                 ]
-            ],
+            );
 
-            'hora_inicio' => [
-                'sp' => 'SP_EDITAR_TURNO_DESDE',
-                'rules' => [
-                    'required',
-                    'date_format:H:i'
-                ]
-            ],
-
-            'hora_fin' => [
-                'sp' => 'SP_EDITAR_TURNO_HASTA',
-                'rules' => [
-                    'required',
-                    'date_format:H:i'
-                ]
-            ],
-
-            'tolerancia_ingreso' => [
-                'sp' => 'SP_EDITAR_TURNO_TOLERANCIA',
-                'rules' => [
-                    'required',
-                    'integer',
-                    'min:0'
-                ]
-            ],
-
-            'horas_reales' => [
-                'sp' => 'SP_EDITAR_TURNO_HORAS_REALES',
-                'rules' => [
-                    'required',
-                    'integer',
-                    'min:0'
-                ]
-            ],
-
-            'horas_computadas' => [
-                'sp' => 'SP_EDITAR_TURNO_HORAS_COMPUTADAS',
-                'rules' => [
-                    'required',
-                    'integer',
-                    'min:0'
-                ]
-            ],
-
-            'activo' => [
-                'sp' => 'SP_EDITAR_TURNO_ESTADO',
-                'rules' => [
-                    'required',
-                    'integer',
-                    'in:0,1'
-                ]
-            ]
-
-        ];
-
-
-        $config = $configuracion[$campo];
-
-
-        $validacion = Validator::make(
-
-            [
-                'valor' => $request->valor
-            ],
-
-            [
-                'valor' => $config['rules']
-            ]
-
-        )->validate();
-
-
-        $existe = DB::table('turnos_areas')
-            ->where('id', $id)
-            ->exists();
-
-
-        if (!$existe) {
 
             return response()->json([
-                'message' => 'El turno seleccionado no existe.'
-            ], 404);
+                'success' => true,
+                'message' => 'Turno actualizado correctamente.'
+            ]);
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo actualizar el turno.',
+                'detalle' => $e->getMessage()
+            ], 500);
         }
-
-
-        DB::statement(
-            "CALL {$config['sp']}(?,?,?)",
-            [
-                $id,
-                $validacion['valor'],
-                Auth::id()
-            ]
-        );
-
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Turno actualizado correctamente.'
-        ]);
     }
 
     public function listarFuncionesAdicxArea($id)
@@ -630,5 +678,140 @@ class ParametrosController extends Controller
                 'detalle' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function crearFuncionAdicional(Request $request)
+    {
+        $datos = $request->validate([
+
+            'nombreFuncion' => [
+                'required',
+                'string',
+                'max:250'
+            ],
+
+            'codigoFuncion' => [
+                'max:50'
+            ],
+
+            'idNovedad' => [],
+
+            'area' => [
+                'required',
+                'integer'
+            ]
+
+        ]);
+
+
+        DB::statement(
+            'CALL SP_FUNCION_ADICIONAL_CREAR(?,?,?,?,?)',
+            [
+                $datos['nombreFuncion'],
+                $datos['codigoFuncion'],
+                $datos['idNovedad'],
+                $datos['area'],
+                Auth::id()
+            ]
+        );
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Función adicional creada correctamente.'
+        ]);
+    }
+
+    public function actualizarCampoFuncionAdicional(Request $request, $id)
+    {
+        $request->validate([
+            'campo' => 'required|string',
+            'idArea' => 'required|integer'
+        ]);
+
+
+        $campo = $request->campo;
+        $valor = $request->valor;
+        $idArea = $request->idArea;
+
+
+        switch ($campo) {
+
+            case 'nombre':
+
+                $request->validate([
+                    'valor' => 'required|string|max:250'
+                ]);
+
+                $sp = 'SP_FUNCION_ADICIONAL_EDITAR_NOMBRE';
+
+                break;
+
+
+            case 'marca':
+
+                $request->validate([
+                    'valor' => 'nullable|string|max:250'
+                ]);
+
+                $sp = 'SP_FUNCION_ADICIONAL_EDITAR_MARCA';
+
+                break;
+
+
+            case 'id_novedad':
+
+                $request->validate([
+                    'valor' => 'nullable|integer'
+                ]);
+
+                $sp = 'SP_FUNCION_ADICIONAL_EDITAR_NOVEDAD';
+
+                break;
+
+
+            case 'estado':
+
+                $request->validate([
+                    'valor' => 'required|integer|in:0,1'
+                ]);
+
+                $sp = 'SP_FUNCION_ADICIONAL_EDITAR_ESTADO';
+
+                break;
+
+
+            default:
+
+                return response()->json([
+                    'message' => 'Campo no válido.'
+                ], 422);
+        }
+
+
+        /*
+     * El option value="" llega como string vacío.
+     * Para MySQL queremos NULL.
+     */
+        if ($campo === 'id_novedad' && $valor === '') {
+            $valor = null;
+        }
+
+
+        DB::statement(
+            "CALL {$sp}(?,?,?,?)",
+            [
+                $id,
+                $valor,
+                $idArea,
+                Auth::id()
+            ]
+        );
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Función adicional actualizada correctamente.'
+        ]);
     }
 }

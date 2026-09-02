@@ -43,7 +43,7 @@ function cargarTablaAreas() {
         },
         autoWidth: false,
         scrollX: false,
-        scrollY: "55vh",
+        scrollY: "58vh",
         info: false,
         searching: false,
         scrollCollapse: true,

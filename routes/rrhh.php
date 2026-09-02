@@ -340,13 +340,11 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/areas/{id}', [ParametrosController::class, 'eliminarArea']);
 
     Route::post('/categorias/crear', [ParametrosController::class, 'crearCategoria']);
-    Route::get('/parametrizacion/verCategoria', [ParametrosController::class, 'verDetalleCateg']);
-    Route::post('/parametrizacion/editarCateg', [ParametrosController::class, 'editarCateg']);
-    Route::delete('/categ/{id}', [ParametrosController::class, 'eliminarCateg']);
+    Route::put('/categorias/{id}/campo',[ParametrosController::class, 'actualizarCampoCategoria']);
 
     Route::post('/servicios/crear', [ParametrosController::class, 'crearServicio']);
     Route::get('/parametrizacion/verServicio', [ParametrosController::class, 'verDetalleServicio']);
-    Route::post('/parametrizacion/editarServicio', [ParametrosController::class, 'editarServicio']);
+    Route::put('/servicios/{id}/campo',[ParametrosController::class, 'actualizarCampoServicio']);
     Route::delete('/servicio/{id}', [ParametrosController::class, 'eliminarServicio']);
 
     Route::get('/parametros/listarRegimenesColab', [ParametrosController::class, 'listarRegimenesColab']);
@@ -357,10 +355,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/turnos/por-area/{id}', [ParametrosController::class, 'listarTurnosxArea']);
     Route::post('/turnos/crear',[ParametrosController::class, 'crearTurno']);
-    Route::put('/turnos/{id}/campo',[ParametrosController::class, 'actualizarCampoTurno']
-);  
+    Route::put('/turnos/{id}/campo',[ParametrosController::class, 'actualizarCampoTurno']);  
 
     Route::get('/funcionesAdicionales/por-area/{id}', [ParametrosController::class, 'listarFuncionesAdicxArea']);
+    Route::post('/funciones-adicionales/crear',[ParametrosController::class, 'crearFuncionAdicional']);
+    Route::put('/funcionesAdicionales/{id}/campo',[ParametrosController::class, 'actualizarCampoFuncionAdicional']);
 
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');

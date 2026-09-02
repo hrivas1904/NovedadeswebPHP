@@ -1,4 +1,4 @@
-let tablaCateg=null;
+let tablaCateg = null;
 
 function cargarTablaCategorias() {
     tablaCateg = new DataTable("#tb_categ", {
@@ -9,15 +9,20 @@ function cargarTablaCategorias() {
         },
 
         columns: [
-            { data: "id_categ", className:"text-start" }, 
-            { data: "nombre", className:"text-start",
-                render:function(data){
+            { data: "id_categ", className: "text-start" },
+            {
+                data: "nombre",
+                className: "text-start",
+                render: function (data) {
                     return `
-                        <input class="form-control inputNombreCateg" value="${data}">
-                    `
-                }
-             },
-             { data: "estado", className: "text-center", orderable: false,
+                        <input class="form-control inputCategoria" data-campo="nombre" value="${data}">
+                    `;
+                },
+            },
+            {
+                data: "estado",
+                className: "text-center",
+                orderable: false,
                 render: function (data, type, row) {
                     if (type !== "display") {
                         return data;
@@ -26,10 +31,11 @@ function cargarTablaCategorias() {
                     return `
                         <div class="form-check form-switch d-flex justify-content-center m-0">
                             <input
-                                class="form-check-input switchActivoServicio"
+                                class="form-check-input switchActivoServicio inputCategoria"
                                 type="checkbox"
                                 role="switch"
-                                data-id="${row.id}"
+                                data-campo="estado"
+                                data-id="${row.id_categ}"
                                 ${checked}>
                         </div>
                     `;
@@ -47,198 +53,145 @@ function cargarTablaCategorias() {
         info: false,
         searching: false,
     });
+}
 
-    $("#tb_categ tbody").on("click", "tr", function () {
-        const rowData = tablaCateg.row(this).data();
-        verDetalleCateg(rowData.id_categ);
+$(document)
+    .off("submit", "#formNuevaCategoria")
+    .on("submit", "#formNuevaCategoria", function (e) {
+        e.preventDefault();
+
+        console.log("SUBMIT CATEGORÍA CAPTURADO");
+
+        const formData = $(this).serialize();
+
+        console.log("DATOS:", formData);
+
+        $.ajax({
+            url: "/rrhh/categorias/crear",
+            method: "POST",
+            data: formData,
+
+            success: function (response) {
+                const codigo = Number(response.codigo);
+
+                if (codigo === 1) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Éxito",
+                        text: response.message,
+                        confirmButtonColor: "#1DAC8A",
+                    });
+
+                    $("#formNuevaCategoria")[0].reset();
+
+                    if ($.fn.DataTable.isDataTable("#tb_categ")) {
+                        $("#tb_categ").DataTable().ajax.reload(null, false);
+                    }
+                } else if (codigo === 0) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Atención",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1200,
+                    });
+                }
+            },
+
+            error: function (xhr) {
+                console.error("ERROR AL CREAR CATEGORÍA:", xhr.responseText);
+
+                let mensaje = "Ocurrió un error inesperado.";
+
+                if (xhr.responseJSON?.message) {
+                    mensaje = xhr.responseJSON.message;
+                }
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: mensaje,
+                    showConfirmButton: false,
+                    timer: 1200,
+                });
+            },
+        });
     });
-};
 
-function verDetalleCateg(idCateg) {
-    const modal = $("#modalEdicionCateg");
+$(document).on("change", "#tb_categ .inputCategoria", function () {
+    const input = $(this);
 
+    const tabla = $("#tb_categ").DataTable();
+
+    const fila = input.closest("tr");
+
+    const datos = tabla.row(fila).data();
+
+    if (!datos) return;
+
+    const idCategoria = datos.id_categ;
+
+    const campo = input.attr("data-campo");
+
+    let valor;
+
+    if (input.is(":checkbox")) {
+        valor = input.is(":checked") ? 1 : 0;
+    } else {
+        valor = input.val();
+    }
+
+    console.log({
+        idCategoria,
+        campo,
+        valor,
+    });
+
+    actualizarCampoCategoria(idCategoria, campo, valor);
+});
+
+function actualizarCampoCategoria(idCategoria, campo, valor) {
     $.ajax({
-        url: "/rrhh/parametrizacion/verCategoria",
-        type: "GET",
+        url: `/rrhh/categorias/${idCategoria}/campo`,
+
+        type: "PUT",
+
         data: {
-            idCateg: idCateg,
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            campo: campo,
+            valor: valor,
         },
-        success: function (res) {
-            $("#idCategEdit").val(res.data[0].id_categ);
-            $("#nombreCategEdit").val(res.data[0].nombre);
-        },
-        error: function () {
-            Swal.fire({
-                title: "Error",
-                text: "No se pudo cargar la información de la categoría.",
-                icon: "error",
-                customClass: {
-                    confirmColorButton: "btn btn-primary",
-                },
-                buttonsStyling: false,
-            });
-        },
-    });
-
-    modal.modal("show");
-}
-
-function cerrarModalCategEdit() {
-    const modal = $("#modalEdicionCateg");
-    const form = $("#formEditCateg");
-    form[0].reset();
-    modal.modal("hide");
-}
-
-$("#formNuevaCategoria").on("submit", function (e) {
-    e.preventDefault();
-
-    const formData = $(this).serialize();
-
-    $.ajax({
-        url: "/rrhh/categorias/crear",
-        method: "POST",
-        data: formData,
 
         success: function (response) {
-            if (response.codigo === 1) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Éxito",
-                    text: response.message,
-                    confirmButtonColor: "#1DAC8A",
-                });
-
-                $("#formNuevaCategoria")[0].reset();
-                $("#tb_categ").DataTable().ajax.reload();
-            } else if (response.codigo === 0) {
-                Swal.fire({
-                    icon: "warning",
-                    title: "Atención",
-                    text: response.message,
-                    confirmButtonColor: "#1DAC8A",
-                });
-            }
-        },
-        error: function () {
             Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Ocurrió un error inesperado.",
-                confirmButtonColor: "#1DAC8A",
+                title: "Operación exitosa!",
+                text: "Categoría actualizada correctamente.",
+                timer: 1200,
+                showConfirmButton: false,
             });
-        },
-    });
-});
 
-$("#btnEditarCateg").on("click", function () {
-    const idCateg = $("#idCategEdit").val();
-    const nombre = $("#nombreCategEdit").val();
-
-    $.ajax({
-        url: "/rrhh/parametrizacion/editarCateg",
-        type: "POST",
-        data: {
-            idCateg: idCateg,
-            nombre: nombre,
-            _token: $('meta[name="csrf-token"]').attr("content"),
+            $("#tb_categ").DataTable().ajax.reload(null, false);
         },
-        success: function (res) {
-            if (res.success) {
-                Swal.fire({
-                    title: "Éxito",
-                    text: "Categoría actualizada correctamente.",
-                    icon: "success",
-                    buttonsStyling: false,
-                    customClass: { confirmButton: "btn btn-primary" },
-                }).then(() => {
-                    $("#modalEdicionCateg").modal("hide");
-                    $("#tb_categ").DataTable().ajax.reload();
-                });
+
+        error: function (xhr) {
+            console.error("ERROR ACTUALIZANDO CATEGORÍA:", xhr.responseText);
+
+            let mensaje = "No se pudo actualizar la categoría.";
+
+            if (xhr.responseJSON?.message) {
+                mensaje = xhr.responseJSON.message;
             }
-        },
-        error: function () {
+
             Swal.fire({
                 title: "Error",
-                text: "No se pudo actualizar la categoría.",
+                text: mensaje,
                 icon: "error",
-                buttonsStyling: false,
-                customClass: { confirmButton: "btn btn-primary" },
+                timer: 1200,
+                showConfirmButton: false,
             });
+
+            // Restauramos el dato real desde BD
+            $("#tb_categ").DataTable().ajax.reload(null, false);
         },
     });
-});
-
-$("#btnEliminarCateg").click(function () {
-    let idCateg = $("#idCategEdit").val();
-
-    Swal.fire({
-        title: "¿Eliminar categoría?",
-        text: "Esta acción no se puede deshacer",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Aceptar",
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#1DAC8A",
-        cancelButtonColor: "#00558C",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: "/rrhh/categ/" + idCateg,
-                type: "POST",
-                headers: {
-                    "X-HTTP-Method-Override": "DELETE",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr("content"),
-                    _method: "DELETE",
-                },
-                success: function (data) {
-                    if (data.success) {
-                        Swal.fire({
-                            title: "Operación exitosa",
-                            text: data.mensaje,
-                            icon: "success",
-                            customClass: {
-                                confirmButton: "btn btn-primary",
-                            },
-                            buttonsStyling: false,
-                        });
-                        $("#modalEdicionCateg").modal("hide");
-                        $("#tb_categ").DataTable().ajax.reload();
-                    } else {
-                        Swal.fire({
-                            title: "Error",
-                            text: data.mensaje,
-                            icon: "error",
-                            customClass: {
-                                confirmButton: "btn btn-primary",
-                            },
-                            buttonsStyling: false,
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    if (xhr.status === 401 || xhr.status === 419) {
-                        Swal.fire(
-                            "Sesión expirada",
-                            "Recargá la página",
-                            "warning",
-                        ).then(() => location.reload());
-                    } else {
-                        Swal.fire({
-                            title: "Error",
-                            text: "Error del servidore",
-                            icon: "error",
-                            customClass: {
-                                confirmButtonColor: "btn-primary",
-                            },
-                            buttonsStyling: false,
-                        });
-                    }
-                },
-            });
-        }
-    });
-});
+}

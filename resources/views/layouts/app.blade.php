@@ -41,6 +41,7 @@
     <link rel="stylesheet" href="{{ asset('css/componentes/cssCards.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssDashboardCalidad.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssFormFloating.css') }}">
 </head>
 
 <body>

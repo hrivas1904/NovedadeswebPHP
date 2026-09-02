@@ -1,10 +1,13 @@
 let tablaTurnosAreas = null;
 
 function cargarTurnosAreaSeleccionada(idArea, nombreArea) {
-    $("#inputIdAreaTurno").val(idArea); 
+    $("#inputIdAreaTurno").val(idArea);
 
     if ($.fn.DataTable.isDataTable("#tb_turnos_areas")) {
-        tablaTurnosAreas.ajax.url(`/rrhh/turnos/por-area/${idArea}`).load();
+        $("#tb_turnos_areas")
+            .DataTable()
+            .ajax.url(`/rrhh/turnos/por-area/${idArea}`)
+            .load();
         return;
     }
 
@@ -22,7 +25,7 @@ function cargarTurnosAreaSeleccionada(idArea, nombreArea) {
                 className: "text-start",
                 render: function (data) {
                     return `
-                        <input type="text" class="form-control inputTurno" value="${data}" data-campo="nombre">
+                        <input type="text" class="form-control inputTurno" data-campo="nombre" value="${data}">
                     `;
                 },
             },
@@ -30,9 +33,9 @@ function cargarTurnosAreaSeleccionada(idArea, nombreArea) {
                 data: "hora_inicio",
                 className: "text-start",
                 render: function (data) {
-                    const hora = data? data.substring(0, 5): "";
+                    const hora = data ? data.substring(0, 5) : "";
                     return `                        
-                        <input type="time" class="form-control inputHoraInicio" value="${data}" data-campo="hora_inicio">
+                        <input type="time" class="form-control inputHoraInicio inputTurno" data-campo="hora_inicio" value="${data}">
                     `;
                 },
             },
@@ -40,9 +43,9 @@ function cargarTurnosAreaSeleccionada(idArea, nombreArea) {
                 data: "hora_fin",
                 className: "text-start",
                 render: function (data) {
-                    const hora = data? data.substring(0, 5): "";
+                    const hora = data ? data.substring(0, 5) : "";
                     return `                        
-                        <input type="time" class="form-control inputHoraFin" value="${data}" data-campo="hora_inicio">
+                        <input type="time" class="form-control inputHoraFin inputTurno" data-campo="hora_fin" value="${data}">
                     `;
                 },
             },
@@ -51,7 +54,7 @@ function cargarTurnosAreaSeleccionada(idArea, nombreArea) {
                 className: "text-start",
                 render: function (data) {
                     return `
-                        <input type="text" class="form-control inputTolerancia" value="${data ?? 0}" data-campo="tolerancia_ingreso">
+                        <input type="text" class="form-control inputTolerancia inputTurno" data-campo="tolerancia_ingreso" value="${data ?? 0}">
                     `;
                 },
             },
@@ -60,7 +63,7 @@ function cargarTurnosAreaSeleccionada(idArea, nombreArea) {
                 className: "text-start",
                 render: function (data) {
                     return `
-                        <input type="number" class="form-control inputHorasRaeles" value="${data ?? 0}" data-campo="horas_reales" min=0>
+                        <input type="number" class="form-control inputHorasRaeles inputTurno" data-campo="horas_reales" value="${data ?? 0}" min=0>
                     `;
                 },
             },
@@ -69,7 +72,7 @@ function cargarTurnosAreaSeleccionada(idArea, nombreArea) {
                 className: "text-start",
                 render: function (data) {
                     return `
-                        <input type="number" class="form-control inputHorasComputadas" value="${data ?? 0}" min=0 data-campo="horas_computadas">
+                        <input type="number" class="form-control inputHorasComputadas inputTurno" data-campo="horas_computadas" value="${data ?? 0}" min=0>
                     `;
                 },
             },
@@ -114,8 +117,7 @@ function cargarTurnosAreaSeleccionada(idArea, nombreArea) {
     });
 }
 
-$(document).on("submit", "#formNuevaTurno", function(e){
-
+$(document).on("submit", "#formNuevaTurno", function (e) {
     e.preventDefault();
 
     console.log("Submit turno capturado");
@@ -125,31 +127,26 @@ $(document).on("submit", "#formNuevaTurno", function(e){
     console.log("ID AREA:", idArea);
 
     if (!idArea) {
-
         Swal.fire({
             title: "Atención",
             text: "Primero debe seleccionar un área.",
-            icon: "warning"
+            icon: "warning",
         });
 
         return;
     }
 
-
     $.ajax({
-
         url: "/rrhh/turnos/crear",
         type: "POST",
 
         data: $(this).serialize(),
 
-        success: function(response){
-
+        success: function (response) {
             console.log("RESPUESTA:", response);
 
             $("#formNuevaTurno")[0].reset();
 
-            // El reset borra también el hidden
             $("#inputIdAreaTurno").val(idArea);
 
             $("#tb_turnos_areas").DataTable().ajax.reload(null, false);
@@ -159,20 +156,17 @@ $(document).on("submit", "#formNuevaTurno", function(e){
                 text: "Turno creado correctamente.",
                 icon: "success",
                 timer: 1200,
-                showConfirmButton: false
+                showConfirmButton: false,
             });
-
         },
 
-        error: function(xhr){
-
+        error: function (xhr) {
             console.error("ERROR AL CREAR TURNO:", xhr);
             console.error("RESPUESTA:", xhr.responseText);
 
             let mensaje = "No se pudo crear el turno.";
 
             if (xhr.status === 422 && xhr.responseJSON?.errors) {
-
                 const errores = Object.values(xhr.responseJSON.errors);
 
                 mensaje = errores[0][0];
@@ -185,24 +179,24 @@ $(document).on("submit", "#formNuevaTurno", function(e){
             Swal.fire({
                 title: "Error",
                 text: mensaje,
-                icon: "error"
+                icon: "error",
             });
-
-        }
-
+        },
     });
-
 });
 
-$("#tb_turnos_areas").on("change", ".inputTurno", function () {
+$(document).on("change", "#tb_turnos_areas .inputTurno", function () {
     const input = $(this);
+
+    const tabla = $("#tb_turnos_areas").DataTable();
 
     const fila = input.closest("tr");
 
-    const datosTurno = tablaTurnosAreas.row(fila).data();
+    const datos = tabla.row(fila).data();
 
-    const idTurno = datosTurno.id;
+    if (!datos) return;
 
+    const idTurno = datos.id;
     const campo = input.data("campo");
 
     let valor;
@@ -213,6 +207,16 @@ $("#tb_turnos_areas").on("change", ".inputTurno", function () {
         valor = input.val();
     }
 
+    actualizarCampoTurno(idTurno, campo, valor, input);
+});
+
+function actualizarCampoTurno(idTurno, campo, valor, input) {
+    console.log({
+        idTurno: idTurno,
+        campo: campo,
+        valor: valor,
+    });
+
     $.ajax({
         url: `/rrhh/turnos/${idTurno}/campo`,
 
@@ -220,36 +224,30 @@ $("#tb_turnos_areas").on("change", ".inputTurno", function () {
 
         data: {
             _token: $('meta[name="csrf-token"]').attr("content"),
-
             campo: campo,
-
             valor: valor,
         },
 
         success: function (response) {
-            // Actualizamos también el objeto interno
-            // de DataTables.
-            datosTurno[campo] = valor;
-
             Swal.fire({
                 title: "Operación exitosa!",
                 text: "Turno actualizado correctamente.",
+                icon: "success",
                 timer: 1200,
                 showConfirmButton: false,
             });
+
+            $("#tb_turnos_areas").DataTable().ajax.reload(null, false);
         },
 
         error: function (xhr) {
-            // Volvemos a consultar la fila para
-            // restaurar el valor original.
-            tablaTurnosAreas.ajax.reload(null, false);
+            console.error("ERROR ACTUALIZANDO TURNO:", xhr);
+            console.error(xhr.responseText);
 
             let mensaje = "No se pudo actualizar el turno.";
 
-            if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                const errores = Object.values(xhr.responseJSON.errors);
-
-                mensaje = errores[0][0];
+            if (xhr.responseJSON?.message) {
+                mensaje = xhr.responseJSON.message;
             }
 
             Swal.fire({
@@ -257,6 +255,9 @@ $("#tb_turnos_areas").on("change", ".inputTurno", function () {
                 text: mensaje,
                 icon: "error",
             });
+
+            // Recuperamos el valor real de BD
+            $("#tb_turnos_areas").DataTable().ajax.reload(null, false);
         },
     });
-});
+}
