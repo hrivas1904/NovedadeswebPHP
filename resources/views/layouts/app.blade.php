@@ -48,19 +48,17 @@
     <div class="wrapper">
 
         <header class="topbar">
-            <button type="button" class="topbar-action btn-mobile-toggle" id="mobileSidebarToggle" aria-label="Abrir menú" title="Abrir menú">
-                <i class="fa-solid fa-bars fw-bold fs-3"></i>
-            </button>
+            <div class="topbar-actions-group">
+                <button type="button" class="topbar-action" id="mobileSidebarToggle" aria-label="Abrir menú" title="Abrir menú">
+                    <i class="fa-solid fa-bars fw-bold fs-3"></i>
+                </button>
+            </div>
 
             <div id="divBtnHome" class="mx-2 d-none d-lg-block text-white" style="cursor: pointer;">
                 <div class="d-flex align-items-center gap-2">
                     <div>
-                       <img src="{{ asset('img/logo-hp3c-icon.png') }}" class="logo-icon" alt="HP3C" style="height: 36px; width: auto;">     
-                    </div>
-                    <div class="d-flex flex-column">
-                        <h4 class="mb-0 fw-bold">GESTIÓN HP3C</h4>
-                        <h6 class="mb-0 fw-normal">Plataforma de Gestión</h6>
-                    </div>                    
+                       <img src="{{ asset('img/logo-hp3c-white.png') }}" class="logo-icon" alt="HP3C" style="height: 36px; width: auto;">     
+                    </div>                   
                 </div>
             </div>
 
@@ -136,7 +134,7 @@
                 {{-- USUARIO --}}
                 <div class="user-chip">
 
-                    <div class="user-avatar">
+                    <div class="user-avatar d-none">
                         <i class="fa-solid fa-user"></i>
                     </div>
 

@@ -565,11 +565,13 @@ a {
 
     padding: 0 1.35rem;
 
-    background: linear-gradient(
+    /*background: linear-gradient(
         90deg,
         var(--brand-bg) 0%,
         var(--brand-bg-dark) 100%
-    );
+    );*/
+
+    background: var(--color-default);
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);

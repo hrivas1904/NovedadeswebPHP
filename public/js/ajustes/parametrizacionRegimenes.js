@@ -14,7 +14,7 @@ function cargarTablaRegimenes() {
 
         paging: false,
         scrollX: false,
-        scrollY: "55vh",
+        scrollY: "22vh",
         scrollCollapse: true,
         info: false,
         searching: false,

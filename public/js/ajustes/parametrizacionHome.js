@@ -57,9 +57,6 @@ function inicializarSubvistaParametros(vista) {
 
         case "categorias":
             cargarTablaCategorias();
-            break;
-
-        case "regimenes":
             cargarTablaRegimenes();
             break;
 
