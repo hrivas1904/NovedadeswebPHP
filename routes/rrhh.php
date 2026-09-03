@@ -152,7 +152,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/usuarios/crear', [PersonalController::class, 'crearUsuario']);
 
     Route::get('/usuarios/obtener/{legajo}', [PersonalController::class, 'obtener']);
-    
+
     Route::post('/usuarios/actualizar', [PersonalController::class, 'actualizar']);
 
     Route::post('/usuarios/baja', [PersonalController::class, 'baja']);
@@ -254,7 +254,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('novedades.crearNuevoConceptoNovedad');
 
     Route::post('/novedades/editar', [NovedadesController::class, 'editarConceptoNovedad'])
-        ->name('novedades.editarConceptoNovedad');   
+        ->name('novedades.editarConceptoNovedad');
 
     //cronograma
     Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);
@@ -294,7 +294,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('personal.listarSolicitudes');
 
     Route::get('/solicitudes/exportar-excel', [PersonalController::class, 'exportarSolicitudesExcel'])
-    ->name('solicitudes.exportarExcel');
+        ->name('solicitudes.exportarExcel');
 
     Route::post('/personal/aprobarSolicitud', [PersonalController::class, 'aprobarSolicitud'])
         ->name('personal.aprobarSolicitud');
@@ -340,30 +340,34 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/areas/{id}', [ParametrosController::class, 'eliminarArea']);
 
     Route::post('/categorias/crear', [ParametrosController::class, 'crearCategoria']);
-    Route::put('/categorias/{id}/campo',[ParametrosController::class, 'actualizarCampoCategoria']);
+    Route::put('/categorias/{id}/campo', [ParametrosController::class, 'actualizarCampoCategoria']);
 
     Route::post('/servicios/crear', [ParametrosController::class, 'crearServicio']);
     Route::get('/parametrizacion/verServicio', [ParametrosController::class, 'verDetalleServicio']);
-    Route::put('/servicios/{id}/campo',[ParametrosController::class, 'actualizarCampoServicio']);
+    Route::put('/servicios/{id}/campo', [ParametrosController::class, 'actualizarCampoServicio']);
     Route::delete('/servicio/{id}', [ParametrosController::class, 'eliminarServicio']);
 
     Route::get('/parametros/listarRegimenesColab', [ParametrosController::class, 'listarRegimenesColab']);
-    Route::post('/parametros/crearRegimen',[ParametrosController::class, 'crearRegimen']);
+    Route::post('/parametros/crearRegimen', [ParametrosController::class, 'crearRegimen']);
     Route::put('/parametros/editarRegimen', [ParametrosController::class, 'editarRegimen']);
     Route::put('/parametros/editarHorasRegimen', [ParametrosController::class, 'editarHorasRegimen']);
     Route::post('/parametros/activarRegimen', [ParametrosController::class, 'activarRegimen']);
 
     Route::get('/turnos/por-area/{id}', [ParametrosController::class, 'listarTurnosxArea']);
-    Route::post('/turnos/crear',[ParametrosController::class, 'crearTurno']);
-    Route::put('/turnos/{id}/campo',[ParametrosController::class, 'actualizarCampoTurno']);  
+    Route::post('/turnos/crear', [ParametrosController::class, 'crearTurno']);
+    Route::put('/turnos/{id}/campo', [ParametrosController::class, 'actualizarCampoTurno']);
 
     Route::get('/funcionesAdicionales/por-area/{id}', [ParametrosController::class, 'listarFuncionesAdicxArea']);
-    Route::post('/funciones-adicionales/crear',[ParametrosController::class, 'crearFuncionAdicional']);
-    Route::put('/funcionesAdicionales/{id}/campo',[ParametrosController::class, 'actualizarCampoFuncionAdicional']);
+    Route::post('/funciones-adicionales/crear', [ParametrosController::class, 'crearFuncionAdicional']);
+    Route::put('/funcionesAdicionales/{id}/campo', [ParametrosController::class, 'actualizarCampoFuncionAdicional']);
 
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
-    Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');    
+    Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');
+
+    // CT FERIADOS
+    Route::patch('/actualizarCaracterCronoFeriado', [CronogramaController::class, 'actualizarCaracterCronoFeriado'])->name('actualizarCaracterCronoFeriado');
+    Route::patch('/actualizarVerificadoCronoFeriado', [CronogramaController::class, 'actualizarVerificadoCronoFeriado'])->name('actualizarVerificadoCronoFeriado');
 
     //CT PERIODOS
     Route::get('/listarCronoPeriodo', [CronogramaController::class, 'listarCronoPeriodo'])->name('listarCronoPeriodo');
@@ -371,8 +375,26 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/abrirAnnioCronoPeriodo', [CronogramaController::class, 'abrirAnnioPeriodo'])->name('abrirAnnioCronoPeriodo');
     Route::patch('/cronoPeriodo/{periodo}/visible', [CronogramaController::class, 'toggleVisible'])->name('toggleVisible');
     Route::delete('/cronoPeriodo/{periodo}', [CronogramaController::class, 'eliminar'])->name('eliminar');
+    Route::get('/listarCronoPeriodosVisibles', [CronogramaController::class, 'listarCronoPeriodosVisibles'])->name('listarCronoPeriodosVisibles');
+
+    // CT GRILLA / PUESTOS
+    Route::get('/listarCronoGrilla', [CronogramaController::class, 'listarCronoGrilla'])->name('listarCronoGrilla');
+    Route::post('/crearCronoPuesto', [CronogramaController::class, 'crearCronoPuesto'])->name('crearCronoPuesto');
+    Route::patch('/ajustarCantidadCronoPuesto', [CronogramaController::class, 'ajustarCantidadCronoPuesto'])->name('ajustarCantidadCronoPuesto');
+    Route::patch('/ajustarDotacionCronoPuesto', [CronogramaController::class, 'ajustarDotacionCronoPuesto'])->name('ajustarDotacionCronoPuesto');
+    Route::delete('/eliminarCronoPuesto', [CronogramaController::class, 'eliminarCronoPuesto'])->name('eliminarCronoPuesto');
+
+    // CT AREAS/SERVICIOS/TURNOS (Cronogramas)
+    Route::get('/listarCronoAreasActivas', [CronogramaController::class, 'listarCronoAreasActivas'])->name('listarCronoAreasActivas');
+    Route::get('/listarCronoServiciosActivos/{idArea}', [CronogramaController::class, 'listarCronoServiciosActivos'])->name('listarCronoServiciosActivos');
+    Route::get('/listarCronoTurnosActivos/{idArea}', [CronogramaController::class, 'listarCronoTurnosActivos'])->name('listarCronoTurnosActivos');
+
+    // CT PICKER PERSONAS
+    Route::get('/buscarCronoEmpleados', [CronogramaController::class, 'buscarCronoEmpleados'])->name('buscarCronoEmpleados');
+    Route::post('/asignarCronoSlot', [CronogramaController::class, 'asignarCronoSlot'])->name('asignarCronoSlot');
+    Route::post('/quitarCronoSlot', [CronogramaController::class, 'quitarCronoSlot'])->name('quitarCronoSlot');
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {
-    Route::get('/guiaInterna/{token}',[PersonalController::class, 'flyerPublico'])->name('flyerPublico');
+    Route::get('/guiaInterna/{token}', [PersonalController::class, 'flyerPublico'])->name('flyerPublico');
 });

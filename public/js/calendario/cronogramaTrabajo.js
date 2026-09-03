@@ -52,28 +52,21 @@ $("#btnOcultarIndicadores").on("click", function () {
 });
 
 function cargarMesesCrono() {
-    const fechaActual = new Date();
-    const anioActual = fechaActual.getFullYear();
-    const mesActual = fechaActual.getMonth();
+    $.get(RUTAS_CRONO_GRILLA.periodosVisibles, function (resp) {
+        const periodos = resp.data.sort((a, b) => a.periodo.localeCompare(b.periodo));
+        const $selector = $("#selectorMesCrono");
+        $selector.empty();
 
-    const $selector = $("#selectorMesCrono");
-    $selector.empty();
-
-    for (let anio = anioActual; anio <= anioActual + 1; anio++) {
-        meses.forEach((nombreMes, indiceMes) => {
-            const mes = String(indiceMes + 1).padStart(2, "0");
-            const valor = `${anio}-${mes}`;
-            $selector.append(`
-                <option value="${valor}">
-                    ${nombreMes} ${anio}
-                </option>
-            `);
+        periodos.forEach(p => {
+            const [anio, mes] = p.periodo.split('-');
+            const nombreMes = meses[parseInt(mes, 10) - 1];
+            $selector.append(`<option value="${p.periodo}">${nombreMes} ${anio}</option>`);
         });
-    }
 
-    const valorActual =
-        `${anioActual}-${String(mesActual + 1).padStart(2, "0")}`;
-    $selector.val(valorActual);
+        if (periodos.length) {
+            $selector.val(periodos[periodos.length - 1].periodo);
+        }
+    });
 }
 
 $("#btnMesAnterior").on("click", function () {
@@ -94,25 +87,15 @@ $("#btnMesSiguiente").on("click", function () {
 });
 
 function cargarAreas() {
-    $.ajax({
-        url: "/rrhh/areas/lista",
-        type: "GET",
-        dataType: "json",
-        success: function (res) {
-            const $selector = $("#selectorArea");
-            $selector.empty();
-            $selector.append('<option value="">Seleccione área</option>');
-            res.forEach(area => {
-                $selector.append(`
-                    <option value="${area.id_area}">
-                        ${area.nombre}
-                    </option>
-                `);
-            });
-        },
-        error: function (xhr) {
-            console.error("Error al cargar las áreas:", xhr.responseText);
-        }
+    $.get(RUTAS_CRONO_GRILLA.areas, function (res) {
+        const $selector = $("#selectorArea");
+        $selector.empty();
+        $selector.append('<option value="">Seleccione área</option>');
+        res.data.forEach(area => {
+            $selector.append(`<option value="${area.ID_AREA}">${area.NOMBRE}</option>`);
+        });
+    }).fail(function (xhr) {
+        console.error("Error al cargar las áreas:", xhr.responseText);
     });
 }
 

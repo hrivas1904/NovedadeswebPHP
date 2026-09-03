@@ -28,7 +28,7 @@
     </div>
     <div class="d-flex gap-2 align-items-center justify-content-between">
         <div class="d-flex gap-2 align-items-center">
-            <button type="button" class="btn btn-outline-secondary" id="btnVerConfiguracion" data-bs-toggle="modal" data-bs-target="#modalConfiguraciones">Configuración de periodos</button>
+            <button type="button" class="btn btn-outline-secondary" id="btnVerConfiguracion" data-bs-toggle="modal" data-bs-target="#modalConfiguraciones">Periodos</button>
             <button type="button" class="btn btn-outline-secondary" id="btnVerFeriados" data-bs-toggle="modal" data-bs-target="#modalFeriados">Feriados</button>
             <button type="button" class="btn btn-outline-secondary" id="btnReplicarMesAnt">Copiar mes anterior</button>
             <button type="button" class="btn btn-outline-secondary" id="btnReplicarMesAnt">Pincel</button>
@@ -202,6 +202,17 @@
         </div>
     </div>
 </div>
+
+<div class="d-flex justify-content-end mb-2">
+    <button id="btnAgregarPuesto" class="btn btn-sm btn-primary" type="button" disabled>
+        <i class="fa-solid fa-plus"></i> Agregar puesto
+    </button>
+</div>
+
+<div id="contenedorGrilla" class="border rounded p-3">
+    <p class="text-muted text-center mb-0">Elegí período y área para ver la grilla.</p>
+</div>
+
 @endsection
 
 @push('modals')
@@ -385,21 +396,73 @@
             </div>
             <div class="modal-body">
                 <table id="tbRepartosTurnos" class="table table-striped table-hover align-middle table-header-hp3c">
-                        <thead>
-                            <tr>
-                                <th>COLABORADOR</th>
-                                <th>ÁREAS</th>
-                                <th>TURNOS</th>
-                                <th>HORAS</th>
-                                <th>HS NOCT</th>
-                                <th>TURNOS NOCHE</th>
-                                <th>FINES DE SEM</th>
-                                <th>FERIADOS</th>
-                                <th>DESCANSOS</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <thead>
+                        <tr>
+                            <th>COLABORADOR</th>
+                            <th>ÁREAS</th>
+                            <th>TURNOS</th>
+                            <th>HORAS</th>
+                            <th>HS NOCT</th>
+                            <th>TURNOS NOCHE</th>
+                            <th>FINES DE SEM</th>
+                            <th>FERIADOS</th>
+                            <th>DESCANSOS</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAgregarPuesto" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar puesto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label class="form-label">Turno</label>
+                    <select id="selTurnoNuevoPuesto" class="form-select form-select-sm"></select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Cantidad de puestos</label>
+                    <input type="number" id="inputCantidadNuevoPuesto" class="form-control form-control-sm" min="1" max="50" value="1">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Dotación mínima</label>
+                    <input type="number" id="inputDotacionNuevoPuesto" class="form-control form-control-sm" min="0" value="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnConfirmarNuevoPuesto" class="btn btn-sm btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPickerPersona" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Asignar persona</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="divOcupanteActual" class="mb-3"></div>
+                <div class="mb-2">
+                    <label class="form-label">Rol</label>
+                    <select id="selRolAsignacion" class="form-select form-select-sm">
+                        <option value="titular">Titular</option>
+                        <option value="apoyo">Apoyo</option>
+                    </select>
+                </div>
+                <input type="text" id="inputBuscarPersona" class="form-control form-control-sm mb-2" placeholder="Buscar por nombre o legajo...">
+                <div id="divResultadosBusqueda" style="max-height:300px; overflow-y:auto;"></div>
             </div>
         </div>
     </div>
@@ -420,8 +483,23 @@
     const RUTAS_CRONO_FERIADOS = {
         listar: "{{ url('/eventosProgramados/lista') }}",
         eliminar: "{{ url('/eventosProgramados/eliminar') }}",
-        actualizarCaracter: "{{ route('actualizarCaracterCronoFeriado') }}",
-        actualizarVerificado: "{{ route('actualizarVerificadoCronoFeriado') }}"
+        actualizarCaracter: "{{ route('rrhh.actualizarCaracterCronoFeriado') }}",
+        actualizarVerificado: "{{ route('rrhh.actualizarVerificadoCronoFeriado') }}"
+    };
+
+    const RUTAS_CRONO_GRILLA = {
+        periodosVisibles: "{{ route('rrhh.listarCronoPeriodosVisibles') }}",
+        areas: "{{ route('rrhh.listarCronoAreasActivas') }}",
+        serviciosPorArea: "{{ route('rrhh.listarCronoServiciosActivos', ':idArea') }}",
+        turnosPorArea: "{{ route('rrhh.listarCronoTurnosActivos', ':idArea') }}",
+        grilla: "{{ route('rrhh.listarCronoGrilla') }}",
+        crearPuesto: "{{ route('rrhh.crearCronoPuesto') }}",
+        ajustarCantidad: "{{ route('rrhh.ajustarCantidadCronoPuesto') }}",
+        ajustarDotacion: "{{ route('rrhh.ajustarDotacionCronoPuesto') }}",
+        eliminarPuesto: "{{ route('rrhh.eliminarCronoPuesto') }}",
+        buscarEmpleados: "{{ route('rrhh.buscarCronoEmpleados') }}",
+        asignarSlot: "{{ route('rrhh.asignarCronoSlot') }}",
+        quitarSlot: "{{ route('rrhh.quitarCronoSlot') }}"
     };
 </script>
 <script src="{{ asset('js/calendario/cronogramaTrabajo.js') }}"></script>
@@ -429,6 +507,8 @@
 <script src="{{ asset('js/calendario/configuracionFeriados.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaDiario.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaEquidad.js') }}"></script>
+<script src="{{ asset('js/calendario/cronogramaGrilla.js') }}"></script>
+<script src="{{ asset('js/calendario/cronogramaPicker.js') }}"></script>
 <script>
     const USER_ROLE = "{{ Auth::user()->rol }}";
 </script>
