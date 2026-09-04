@@ -1,4 +1,5 @@
 let fechaCrono = new Date();
+let periodosDisponibles = [];
 
 const meses = [
     "Enero",
@@ -53,18 +54,16 @@ $("#btnOcultarIndicadores").on("click", function () {
 
 function cargarMesesCrono() {
     $.get(RUTAS_CRONO_GRILLA.periodosVisibles, function (resp) {
-        const periodos = resp.data.sort((a, b) => a.periodo.localeCompare(b.periodo));
+        periodosDisponibles = resp.data.sort((a, b) => a.periodo.localeCompare(b.periodo));
         const $selector = $("#selectorMesCrono");
         $selector.empty();
-
-        periodos.forEach(p => {
+        periodosDisponibles.forEach(p => {
             const [anio, mes] = p.periodo.split('-');
             const nombreMes = meses[parseInt(mes, 10) - 1];
             $selector.append(`<option value="${p.periodo}">${nombreMes} ${anio}</option>`);
         });
-
-        if (periodos.length) {
-            $selector.val(periodos[periodos.length - 1].periodo);
+        if (periodosDisponibles.length) {
+            $selector.val(periodosDisponibles[periodosDisponibles.length - 1].periodo);
         }
     });
 }

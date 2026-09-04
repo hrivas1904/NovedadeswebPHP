@@ -1,4 +1,6 @@
 const CSRF_CRONO_GRILLA = $('meta[name="csrf-token"]').attr('content');
+let periodoActualInfo = null;
+let asignacionesPorSlotFecha = {};
 
 function actualizarEstadoBoton() {
     const listo = $('#selectorMesCrono').val() && $('#selectorArea').val();
@@ -16,20 +18,38 @@ function cargarGrilla() {
         return;
     }
 
-    $.get(RUTAS_CRONO_GRILLA.grilla, { periodo, id_area: idArea, id_servicio: idServicio }, function (resp) {
-        renderGrilla(resp.data);
+    periodoActualInfo = periodosDisponibles.find(p => p.periodo === periodo) || null;
+
+    $.when(
+        $.get(RUTAS_CRONO_GRILLA.grilla, { periodo, id_area: idArea, id_servicio: idServicio }),
+        $.get(RUTAS_CRONO_GRILLA.asignacionesDia, { periodo, id_area: idArea, id_servicio: idServicio })
+    ).done(function (respPuestos, respAsignaciones) {
+        asignacionesPorSlotFecha = {};
+        respAsignaciones[0].data.forEach(a => {
+            asignacionesPorSlotFecha[`${a.slot_id}_${a.fecha}`] = a;
+        });
+        renderGrilla(respPuestos[0].data);
     });
 }
 
-function renderGrilla(filas) {
+function renderGrilla(puestosFilas) {
     const $cont = $('#contenedorGrilla');
-    if (!filas.length) {
+    if (!puestosFilas.length) {
         $cont.html('<p class="text-muted text-center mb-0">No hay puestos definidos para este período/área/servicio. Usá "Agregar puesto" para empezar.</p>');
         return;
     }
+    if (!periodoActualInfo) {
+        $cont.html('<p class="text-muted text-center mb-0">No se pudo determinar la cantidad de días del período.</p>');
+        return;
+    }
+
+    const periodo = $('#selectorMesCrono').val();
+    const dias = periodoActualInfo.dias;
+    const primerDia = periodoActualInfo.primer_dia;
+    const DOW_CORTO = ['D','L','M','M','J','V','S'];
 
     const puestos = {};
-    filas.forEach(f => {
+    puestosFilas.forEach(f => {
         if (!puestos[f.puesto_id]) {
             puestos[f.puesto_id] = {
                 id: f.puesto_id, turno_nombre: f.turno_nombre, turno_codigo: f.turno_codigo,
@@ -48,8 +68,51 @@ function renderGrilla(filas) {
     Object.values(puestos).sort((a, b) => (a.turno_codigo || '').localeCompare(b.turno_codigo || '')).forEach(p => {
         const ocupados = p.slots.filter(s => s.legajo).length;
 
+        let headerDias = '';
+        for (let d = 1; d <= dias; d++) {
+            const dow = (primerDia + (d - 1)) % 7;
+            const esFinde = (dow === 0 || dow === 6);
+            headerDias += `<th class="text-center small ${esFinde ? 'table-secondary' : ''}" style="min-width:34px">${d}<br><span class="text-muted" style="font-size:10px">${DOW_CORTO[dow]}</span></th>`;
+        }
+
+        let filasSlots = '';
+        p.slots.forEach(s => {
+            let celdas = '';
+            for (let d = 1; d <= dias; d++) {
+                const fecha = `${periodo}-${String(d).padStart(2, '0')}`;
+                const dow = (primerDia + (d - 1)) % 7;
+                const esFinde = (dow === 0 || dow === 6);
+                const asign = asignacionesPorSlotFecha[`${s.id}_${fecha}`];
+                const vacante = !s.legajo;
+
+                if (vacante) {
+                    celdas += `<td class="text-center ${esFinde ? 'table-secondary' : ''} bg-light"></td>`;
+                } else {
+                    celdas += `<td class="text-center dia-cell ${esFinde ? 'table-secondary' : ''}"
+                        data-slot-id="${s.id}" data-fecha="${fecha}"
+                        data-id-novedad="${asign ? asign.id_novedad : ''}"
+                        data-updated-at="${asign ? asign.updated_at_ts : ''}"
+                        data-empleado="${s.empleado_nombre}"
+                        title="${asign ? asign.novedad_nombre : ''}"
+                        style="cursor:pointer">${asign ? (asign.CODIGO_NOVEDAD || '') : ''}</td>`;
+                }
+            }
+
+            filasSlots += `
+              <tr>
+                <td class="text-nowrap sticky-col bg-white">
+                  ${s.legajo ? s.empleado_nombre : '<span class="text-muted fst-italic">Vacante</span>'}
+                  ${s.rol === 'apoyo' ? ' <small class="text-muted">(apoyo)</small>' : ''}
+                  <span class="badge bg-light text-dark border ms-1 slot-chip" data-slot-id="${s.id}" style="cursor:pointer" title="Cambiar persona">
+                    <i class="fa-solid fa-user-pen"></i>
+                  </span>
+                </td>
+                ${celdas}
+              </tr>`;
+        });
+
         html += `
-        <div class="card mb-2" data-puesto-id="${p.id}">
+        <div class="card mb-3" data-puesto-id="${p.id}">
           <div class="card-header d-flex justify-content-between align-items-center py-2 flex-wrap gap-2">
             <div>
               <strong>${p.turno_nombre}</strong>
@@ -71,12 +134,20 @@ function renderGrilla(filas) {
               </button>
             </div>
           </div>
-          <div class="card-body py-2 d-flex flex-wrap gap-2">
-            ${p.slots.map(s => `
-              <span class="badge ${s.legajo ? 'bg-primary' : 'bg-light text-dark border'} slot-chip" data-slot-id="${s.id}">
-                ${s.legajo ? s.empleado_nombre : 'Vacante'}${s.rol === 'apoyo' ? ' <small>(apoyo)</small>' : ''}
-              </span>
-            `).join('')}
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered mb-0" style="font-size:12px">
+                <thead>
+                  <tr>
+                    <th class="sticky-col bg-white">Persona</th>
+                    ${headerDias}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${filasSlots}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>`;
     });
@@ -84,7 +155,6 @@ function renderGrilla(filas) {
     $cont.html(html);
 }
 
-// Único punto de escucha: reacciona a cambios en los 3 selectores que ya maneja cronogramaTrabajo.js
 $(document).on('change', '#selectorMesCrono, #selectorArea, #selectorServicio', cargarGrilla);
 
 $(document).on('click', '.btn-cantidad', function () {

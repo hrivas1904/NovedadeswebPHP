@@ -393,6 +393,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/buscarCronoEmpleados', [CronogramaController::class, 'buscarCronoEmpleados'])->name('buscarCronoEmpleados');
     Route::post('/asignarCronoSlot', [CronogramaController::class, 'asignarCronoSlot'])->name('asignarCronoSlot');
     Route::post('/quitarCronoSlot', [CronogramaController::class, 'quitarCronoSlot'])->name('quitarCronoSlot');
+
+    // CT CELDA NOVEDAD
+    Route::get('/listarCronoNovedadesActivas', [CronogramaController::class, 'listarCronoNovedadesActivas'])->name('listarCronoNovedadesActivas');
+    Route::get('/listarCronoAsignacionesDia', [CronogramaController::class, 'listarCronoAsignacionesDia'])->name('listarCronoAsignacionesDia');
+    Route::patch('/actualizarCronoCeldaNovedad', [CronogramaController::class, 'actualizarCronoCeldaNovedad'])->name('actualizarCronoCeldaNovedad');
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {

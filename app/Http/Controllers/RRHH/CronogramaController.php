@@ -281,4 +281,45 @@ class CronogramaController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    // ===== CT CELDA NOVEDAD =====
+
+    public function listarCronoNovedadesActivas()
+    {
+        return response()->json(['data' => DB::select('CALL SP_CRONO_NOVEDADES_ACTIVAS_LISTAR()')]);
+    }
+
+    public function listarCronoAsignacionesDia(Request $request)
+    {
+        $data = $request->validate(['periodo' => 'required|date_format:Y-m']);
+        [$idArea, $idServicio] = $this->resolverAreaPermitida($request);
+
+        return response()->json(['data' => DB::select('CALL SP_CRONO_ASIGNACIONES_DIA_LISTAR(?,?,?)', [$data['periodo'], $idArea, $idServicio])]);
+    }
+
+    public function actualizarCronoCeldaNovedad(Request $request)
+    {
+        $data = $request->validate([
+            'slot_id' => 'required|integer',
+            'fecha' => 'required|date_format:Y-m-d',
+            'id_novedad' => 'nullable|integer',
+            'updated_at_esperado' => 'nullable|integer',
+        ]);
+
+        $this->validarSlotPermitido($data['slot_id']);
+
+        $res = DB::select('CALL SP_CRONO_CELDA_NOVEDAD_ACTUALIZAR(?,?,?,?,?)', [
+            $data['slot_id'],
+            $data['fecha'],
+            $data['id_novedad'] ?? null,
+            Auth::id(),
+            $data['updated_at_esperado'] ?? null,
+        ]);
+
+        $r = $res[0];
+        if (!$r->ok) {
+            return response()->json(['success' => false, 'message' => 'Alguien más modificó esta celda. Se refrescó con el valor actual.', 'updated_at' => $r->updated_at_ts], 409);
+        }
+        return response()->json(['success' => true, 'updated_at' => $r->updated_at_ts]);
+    }
 }

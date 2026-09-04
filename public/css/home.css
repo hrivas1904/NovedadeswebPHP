@@ -267,30 +267,30 @@ body[data-theme="dark"] {
     max-height: 600px; /* opcional */
 }
 
-.evento-destacado{
-    border:2px solid rgba(29,172,138,.35);
-    background:#f8fffd;
-    border-radius:12px;
-    transition:.25s;
+.evento-destacado {
+    border: 2px solid rgba(29, 172, 138, 0.35);
+    background: #f8fffd;
+    border-radius: 12px;
+    transition: 0.25s;
 }
 
-.evento-destacado:hover{
-    transform:translateY(-2px);
-    box-shadow:0 .35rem .8rem rgba(29,172,138,.18);
+.evento-destacado:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.35rem 0.8rem rgba(29, 172, 138, 0.18);
 }
 
 .table tbody tr {
     cursor: pointer;
 }
 
-.table-header-hp3c th{
+.table-header-hp3c th {
     background: var(--color-second) !important;
     color: #fff !important;
     border-color: var(--color-default);
     font-weight: 600;
 }
 
-.table tfoot th{
+.table tfoot th {
     background: white !important;
     color: black !important;
     border-color: var(--color-default);
@@ -307,7 +307,10 @@ body[data-theme="dark"] {
     padding-left: 14px !important;
 }
 
-#tablaPedidosCompras tbody tr.pedido-requiere-gerencia > td:first-child::before {
+#tablaPedidosCompras
+    tbody
+    tr.pedido-requiere-gerencia
+    > td:first-child::before {
     content: "";
     position: absolute;
 
@@ -320,14 +323,14 @@ body[data-theme="dark"] {
     background: var(--color-default);
     border-radius: 10px;
 
-    box-shadow: 0 0 6px var(--color-second)
+    box-shadow: 0 0 6px var(--color-second);
 }
 
 /* =====================================================
    GRUPO DE ACCIONES
 ===================================================== */
 
-.topbar-actions-group{
+.topbar-actions-group {
     display: flex;
     align-items: center;
     gap: 2px;
@@ -336,15 +339,14 @@ body[data-theme="dark"] {
 
     border-radius: 10px;
 
-    background: rgba(255, 255, 255, .06);
+    background: rgba(255, 255, 255, 0.06);
 }
-
 
 /* =====================================================
    BOTONES TOPBAR
 ===================================================== */
 
-.topbar-action{
+.topbar-action {
     width: 34px;
     height: 34px;
 
@@ -359,44 +361,39 @@ body[data-theme="dark"] {
 
     background: transparent;
 
-    color: rgba(255, 255, 255, .80);
+    color: rgba(255, 255, 255, 0.8);
 
     text-decoration: none;
     cursor: pointer;
 
     transition:
-        background-color .15s ease,
-        color .15s ease;
+        background-color 0.15s ease,
+        color 0.15s ease;
 }
 
-
-.topbar-action:hover{
-    background: rgba(255, 255, 255, .12);
+.topbar-action:hover {
+    background: rgba(255, 255, 255, 0.12);
     color: #fff;
 }
 
-
-.topbar-action:focus{
+.topbar-action:focus {
     outline: none;
     box-shadow: none;
 }
 
-
-.topbar-action i{
+.topbar-action i {
     font-size: 14px;
 }
-
 
 /* =====================================================
    ALERTAS
 ===================================================== */
 
-.alertas-wrapper{
+.alertas-wrapper {
     position: relative;
 }
 
-
-.topbar-badge{
+.topbar-badge {
     position: absolute;
 
     top: -2px;
@@ -423,24 +420,22 @@ body[data-theme="dark"] {
     border: 2px solid var(--color-primary);
 }
 
-
 /* =====================================================
    SEPARADOR
 ===================================================== */
 
-.topbar-divider{
+.topbar-divider {
     width: 1px;
     height: 26px;
 
-    background: rgba(255, 255, 255, .15);
+    background: rgba(255, 255, 255, 0.15);
 }
-
 
 /* =====================================================
    USUARIO
 ===================================================== */
 
-.user-chip{
+.user-chip {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -451,16 +446,14 @@ body[data-theme="dark"] {
 
     color: #fff;
 
-    transition: background-color .15s ease;
+    transition: background-color 0.15s ease;
 }
 
-
-.user-chip:hover{
-    background: rgba(255, 255, 255, .06);
+.user-chip:hover {
+    background: rgba(255, 255, 255, 0.06);
 }
 
-
-.user-avatar{
+.user-avatar {
     width: 34px;
     height: 34px;
 
@@ -472,34 +465,38 @@ body[data-theme="dark"] {
 
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, .12);
-    border: 1px solid rgba(255, 255, 255, .15);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 
     color: #fff;
 
     font-size: 14px;
 }
 
-
-.user-info{
+.user-info {
     line-height: 1.15;
     white-space: nowrap;
 }
 
-
-.user-name{
+.user-name {
     font-size: 12px;
     font-weight: 600;
 
     color: #fff;
 }
 
-
-.user-role{
+.user-role {
     margin-top: 3px;
 
     font-size: 10px;
     font-weight: 400;
 
-    color: rgba(255, 255, 255, .55);
+    color: rgba(255, 255, 255, 0.55);
+}
+
+#contenedorGrilla .sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    min-width: 160px;
 }

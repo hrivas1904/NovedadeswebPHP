@@ -468,6 +468,26 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalCeldaNovedad" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="tituloCeldaNovedad">Novedad del día</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <select id="selNovedadCelda" class="form-select form-select-sm">
+                    <option value="">— Sin definir —</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnGuardarCeldaNovedad" class="btn btn-sm btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endpush
 
 @push('scripts')
@@ -499,7 +519,10 @@
         eliminarPuesto: "{{ route('rrhh.eliminarCronoPuesto') }}",
         buscarEmpleados: "{{ route('rrhh.buscarCronoEmpleados') }}",
         asignarSlot: "{{ route('rrhh.asignarCronoSlot') }}",
-        quitarSlot: "{{ route('rrhh.quitarCronoSlot') }}"
+        quitarSlot: "{{ route('rrhh.quitarCronoSlot') }}",
+        novedadesActivas: "{{ route('rrhh.listarCronoNovedadesActivas') }}",
+        asignacionesDia: "{{ route('rrhh.listarCronoAsignacionesDia') }}",
+        actualizarCelda: "{{ route('rrhh.actualizarCronoCeldaNovedad') }}"
     };
 </script>
 <script src="{{ asset('js/calendario/cronogramaTrabajo.js') }}"></script>
@@ -509,6 +532,7 @@
 <script src="{{ asset('js/calendario/cronogramaEquidad.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaGrilla.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaPicker.js') }}"></script>
+<script src="{{ asset('js/calendario/cronogramaCelda.js') }}"></script>
 <script>
     const USER_ROLE = "{{ Auth::user()->rol }}";
 </script>
