@@ -27,13 +27,15 @@
         </div>
     </div>
     <div class="d-flex gap-2 align-items-center justify-content-between">
-        <div class="d-flex gap-2 align-items-center">
+        <div class="d-flex gap-2 align-items-center flex-wrap">
             <button type="button" class="btn btn-outline-secondary" id="btnVerConfiguracion" data-bs-toggle="modal" data-bs-target="#modalConfiguraciones">Periodos</button>
             <button type="button" class="btn btn-outline-secondary" id="btnVerFeriados" data-bs-toggle="modal" data-bs-target="#modalFeriados">Feriados</button>
             <button type="button" class="btn btn-outline-secondary" id="btnReplicarMesAnt">Copiar mes anterior</button>
-            <button type="button" class="btn btn-outline-secondary" id="btnReplicarMesAnt">Pincel</button>
-            <button type="button" class="btn btn-outline-secondary" id="btnReplicarMesAnt">Deshacer</button>
-            <div class="input-group w-auto">
+            <button type="button" class="btn btn-outline-secondary" id="btnTogglePincel">
+                <i class="fa-solid fa-paintbrush"></i> Pincel
+            </button>
+            <button type="button" class="btn btn-outline-secondary" id="btnDeshacer">Deshacer</button>
+            <div class="input-group w-auto d-none">
                 <input type="text" class="form-control" placeholder="Buscar colaborador..." id="inputBuscador">
                 <button class="btn btn-secondary" type="button" id="button-addon1">
                     <i class="fs-5 fa-solid fa-square-xmark"></i>
@@ -43,6 +45,18 @@
             <button type="button" class="btn btn-outline-secondary" id="btnFiltrarEquidad" data-bs-toggle="modal" data-bs-target="#modalEquidad">Equidad</button>
             <button type="button" class="btn btn-outline-secondary" id="btnCierreMes">Cierre del mes</button>
             <button type="button" class="btn btn-outline-secondary" id="btnExportar" data-bs-toggle="modal" data-bs-target="#">Exportar</button>
+            <button type="button" class="btn btn-outline-secondary" id="btnVerConflictos" data-bs-toggle="modal" data-bs-target="#modalConflictos">Conflictos</button>
+        </div>
+    </div>
+    <div class="row">
+        <div id="opcionesPincel" class="d-none d-flex align-items-center gap-2 mt-2 flex-wrap">
+            <select id="selNovedadPincel" class="form-select form-select-sm" style="width:auto">
+                <option value="">— Sin definir —</option>
+            </select>
+            <select id="selFuncionPincel" class="form-select form-select-sm" style="width:auto">
+                <option value="">— Ninguna —</option>
+            </select>
+            <span class="badge bg-primary">Pincel activo — arrastrá sobre los días de una fila</span>
         </div>
         <div class="d-flex gap-2 align-items-center">
 
@@ -476,9 +490,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <select id="selNovedadCelda" class="form-select form-select-sm">
-                    <option value="">— Sin definir —</option>
-                </select>
+                <div class="mb-2">
+                    <label class="form-label small mb-1">Novedad</label>
+                    <select id="selNovedadCelda" class="form-select form-select-sm">
+                        <option value="">— Sin definir —</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small mb-1">Función adicional</label>
+                    <select id="selFuncionCelda" class="form-select form-select-sm">
+                        <option value="">— Ninguna —</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -486,6 +509,20 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="modalConflictos" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conflictos detectados</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="contenedorConflictos" style="max-height:60vh; overflow-y:auto;">
+        <p class="text-muted text-center mb-0">Cargando...</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 @endpush
@@ -522,7 +559,13 @@
         quitarSlot: "{{ route('rrhh.quitarCronoSlot') }}",
         novedadesActivas: "{{ route('rrhh.listarCronoNovedadesActivas') }}",
         asignacionesDia: "{{ route('rrhh.listarCronoAsignacionesDia') }}",
-        actualizarCelda: "{{ route('rrhh.actualizarCronoCeldaNovedad') }}"
+        actualizarCelda: "{{ route('rrhh.actualizarCronoCeldaNovedad') }}",
+        funcionesActivas: "{{ route('rrhh.listarCronoFuncionesActivas', ':idArea') }}",
+        slotFuncionesDia: "{{ route('rrhh.listarCronoSlotFuncionesDia') }}",
+        actualizarFuncionDia: "{{ route('rrhh.actualizarCronoSlotFuncionDia') }}",
+        pintarRango: "{{ route('rrhh.pintarCronoSlotRango') }}",
+        copiarMesAnterior: "{{ route('rrhh.copiarCronoMesAnterior') }}",
+        conflictos: "{{ route('rrhh.listarCronoConflictos') }}"
     };
 </script>
 <script src="{{ asset('js/calendario/cronogramaTrabajo.js') }}"></script>
@@ -530,9 +573,11 @@
 <script src="{{ asset('js/calendario/configuracionFeriados.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaDiario.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaEquidad.js') }}"></script>
-<script src="{{ asset('js/calendario/cronogramaGrilla.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaPicker.js') }}"></script>
 <script src="{{ asset('js/calendario/cronogramaCelda.js') }}"></script>
+<script src="{{ asset('js/calendario/cronogramaCopiarMes.js') }}"></script>
+<script src="{{ asset('js/calendario/cronogramaConflictos.js') }}"></script>
+<script src="{{ asset('js/calendario/cronogramaGrilla.js') }}"></script>
 <script>
     const USER_ROLE = "{{ Auth::user()->rol }}";
 </script>

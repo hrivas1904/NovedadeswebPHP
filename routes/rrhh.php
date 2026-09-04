@@ -398,6 +398,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/listarCronoNovedadesActivas', [CronogramaController::class, 'listarCronoNovedadesActivas'])->name('listarCronoNovedadesActivas');
     Route::get('/listarCronoAsignacionesDia', [CronogramaController::class, 'listarCronoAsignacionesDia'])->name('listarCronoAsignacionesDia');
     Route::patch('/actualizarCronoCeldaNovedad', [CronogramaController::class, 'actualizarCronoCeldaNovedad'])->name('actualizarCronoCeldaNovedad');
+
+    // CT FUNCIONES DIA
+    Route::get('/listarCronoFuncionesActivas/{idArea}', [CronogramaController::class, 'listarCronoFuncionesActivas'])->name('listarCronoFuncionesActivas');
+    Route::get('/listarCronoSlotFuncionesDia', [CronogramaController::class, 'listarCronoSlotFuncionesDia'])->name('listarCronoSlotFuncionesDia');
+    Route::patch('/actualizarCronoSlotFuncionDia', [CronogramaController::class, 'actualizarCronoSlotFuncionDia'])->name('actualizarCronoSlotFuncionDia');
+
+    // CT PINCEL
+    Route::post('/pintarCronoSlotRango', [CronogramaController::class, 'pintarCronoSlotRango'])->name('pintarCronoSlotRango');
+
+    // CT COPIAR MES ANTERIOR
+    Route::post('/copiarCronoMesAnterior', [CronogramaController::class, 'copiarCronoMesAnterior'])->name('copiarCronoMesAnterior');
+
+    // CT CONFLICTOS
+    Route::get('/listarCronoConflictos', [CronogramaController::class, 'listarCronoConflictos'])->name('listarCronoConflictos');
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {

@@ -322,4 +322,216 @@ class CronogramaController extends Controller
         }
         return response()->json(['success' => true, 'updated_at' => $r->updated_at_ts]);
     }
+
+    // ===== CT FUNCIONES DIA =====
+
+    public function listarCronoFuncionesActivas(int $idArea)
+    {
+        $this->validarAreaPermitida($idArea);
+        return response()->json(['data' => DB::select('CALL SP_CRONO_FUNCIONES_ACTIVAS_POR_AREA(?)', [$idArea])]);
+    }
+
+    public function listarCronoSlotFuncionesDia(Request $request)
+    {
+        $data = $request->validate(['periodo' => 'required|date_format:Y-m']);
+        [$idArea, $idServicio] = $this->resolverAreaPermitida($request);
+        return response()->json(['data' => DB::select('CALL SP_CRONO_SLOT_FUNCIONES_DIA_LISTAR(?,?,?)', [$data['periodo'], $idArea, $idServicio])]);
+    }
+
+    public function actualizarCronoSlotFuncionDia(Request $request)
+    {
+        $data = $request->validate([
+            'slot_id' => 'required|integer',
+            'fecha' => 'required|date_format:Y-m-d',
+            'id_funcion' => 'nullable|integer',
+        ]);
+        $this->validarSlotPermitido($data['slot_id']);
+
+        $res = DB::select('CALL SP_CRONO_SLOT_FUNCION_DIA_ACTUALIZAR(?,?,?,?)', [
+            $data['slot_id'],
+            $data['fecha'],
+            $data['id_funcion'] ?? null,
+            Auth::id(),
+        ]);
+
+        if (!$res[0]->ok) {
+            return response()->json(['success' => false, 'message' => 'Ese día no es un día de trabajo (DT) para este puesto.'], 422);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    // ===== CT PINCEL =====
+
+    public function pintarCronoSlotRango(Request $request)
+    {
+        $data = $request->validate([
+            'slot_id' => 'required|integer',
+            'fecha_desde' => 'required|date_format:Y-m-d',
+            'fecha_hasta' => 'required|date_format:Y-m-d|after_or_equal:fecha_desde',
+            'id_novedad' => 'nullable|integer',
+            'id_funcion' => 'nullable|integer',
+        ]);
+        $this->validarSlotPermitido($data['slot_id']);
+
+        DB::statement('CALL SP_CRONO_SLOT_PINTAR_RANGO(?,?,?,?,?,?)', [
+            $data['slot_id'],
+            $data['fecha_desde'],
+            $data['fecha_hasta'],
+            $data['id_novedad'] ?? null,
+            $data['id_funcion'] ?? null,
+            Auth::id(),
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    // ===== CT COPIAR MES ANTERIOR =====
+
+    public function copiarCronoMesAnterior(Request $request)
+    {
+        $data = $request->validate([
+            'periodo_destino' => 'required|date_format:Y-m',
+            'forzar' => 'nullable|boolean',
+        ]);
+        [$idArea, $idServicio] = $this->resolverAreaPermitida($request);
+
+        $periodoOrigen = date('Y-m', strtotime($data['periodo_destino'] . '-01 -1 month'));
+
+        $existeOrigen = DB::selectOne('SELECT periodo FROM crono_periodos WHERE periodo = ?', [$periodoOrigen]);
+        if (!$existeOrigen) {
+            return response()->json(['success' => false, 'message' => "No existe el período $periodoOrigen para copiar."], 422);
+        }
+
+        $cantidadOrigen = DB::selectOne(
+            'SELECT COUNT(*) AS total FROM crono_puestos WHERE periodo = ? AND id_area = ? AND id_servicio_norm = IFNULL(?,0)',
+            [$periodoOrigen, $idArea, $idServicio]
+        );
+        if (!$cantidadOrigen || $cantidadOrigen->total == 0) {
+            return response()->json(['success' => false, 'message' => "El período $periodoOrigen no tiene puestos cargados en esta área/servicio."], 422);
+        }
+
+        $cantidadDestino = DB::selectOne(
+            'SELECT COUNT(*) AS total FROM crono_puestos WHERE periodo = ? AND id_area = ? AND id_servicio_norm = IFNULL(?,0)',
+            [$data['periodo_destino'], $idArea, $idServicio]
+        );
+
+        if ($cantidadDestino && $cantidadDestino->total > 0 && !($data['forzar'] ?? false)) {
+            return response()->json([
+                'success' => false,
+                'requiereConfirmacion' => true,
+                'cantidadExistente' => $cantidadDestino->total,
+                'periodoOrigen' => $periodoOrigen,
+            ], 409);
+        }
+
+        DB::statement('CALL SP_CRONO_PERIODO_COPIAR_ESTRUCTURA(?,?,?,?,?)', [
+            $periodoOrigen,
+            $data['periodo_destino'],
+            $idArea,
+            $idServicio,
+            Auth::id(),
+        ]);
+
+        return response()->json(['success' => true, 'periodoOrigen' => $periodoOrigen]);
+    }
+
+    // ===== CT CONFLICTOS =====
+
+    public function listarCronoConflictos(Request $request)
+    {
+        $data = $request->validate(['periodo' => 'required|date_format:Y-m']);
+        [$idArea, $idServicio] = $this->resolverAreaPermitida($request);
+
+        $filas = DB::select('CALL SP_CRONO_CONFLICTOS_DATOS(?,?,?)', [$data['periodo'], $idArea, $idServicio]);
+
+        return response()->json(['data' => $this->calcularConflictosCrono($filas)]);
+    }
+
+    private function calcularConflictosCrono(array $filas): array
+    {
+        $porLegajo = [];
+        foreach ($filas as $f) {
+            $porLegajo[$f->legajo]['colaborador'] = $f->colaborador;
+            $porLegajo[$f->legajo]['dias'][$f->fecha][] = $f;
+        }
+
+        $conflictos = [];
+
+        foreach ($porLegajo as $legajo => $info) {
+            $dias = $info['dias'];
+            ksort($dias);
+
+            // --- Regla 1: doble asignación el mismo día ---
+            foreach ($dias as $fecha => $registros) {
+                $trabajados = array_values(array_filter($registros, fn($r) => $r->codigo_novedad === null || $r->codigo_novedad === 'DT'));
+                if (count($trabajados) > 1) {
+                    $conflictos[] = [
+                        'tipo' => 'doble_asignacion',
+                        'legajo' => $legajo,
+                        'colaborador' => $info['colaborador'],
+                        'fecha' => $fecha,
+                        'detalle' => 'Asignado a ' . count($trabajados) . ' puestos el mismo día: ' . implode(', ', array_map(fn($r) => $r->turno_nombre, $trabajados)),
+                    ];
+                }
+            }
+
+            // Un turno "trabajado" por fecha (si hubiera más de uno, ya quedó marcado en la regla 1)
+            $trabajadosPorFecha = [];
+            foreach ($dias as $fecha => $registros) {
+                $t = array_filter($registros, fn($r) => $r->codigo_novedad === null || $r->codigo_novedad === 'DT');
+                if ($t) $trabajadosPorFecha[$fecha] = reset($t);
+            }
+            $fechasTrabajadas = array_keys($trabajadosPorFecha);
+            sort($fechasTrabajadas);
+
+            // --- Regla 2: menos de 12hs de descanso entre turnos consecutivos ---
+            for ($i = 0; $i < count($fechasTrabajadas) - 1; $i++) {
+                $fechaHoy = $fechasTrabajadas[$i];
+                $fechaManiana = $fechasTrabajadas[$i + 1];
+                if ((strtotime($fechaManiana) - strtotime($fechaHoy)) !== 86400) continue; // no son días consecutivos
+
+                $turnoHoy = $trabajadosPorFecha[$fechaHoy];
+                $turnoManiana = $trabajadosPorFecha[$fechaManiana];
+
+                $finHoy = strtotime("$fechaHoy {$turnoHoy->hora_fin}");
+                if ($turnoHoy->cruza) $finHoy = strtotime('+1 day', $finHoy);
+                $inicioManiana = strtotime("$fechaManiana {$turnoManiana->hora_inicio}");
+
+                $horasDescanso = ($inicioManiana - $finHoy) / 3600;
+                if ($horasDescanso < 12) {
+                    $conflictos[] = [
+                        'tipo' => 'descanso_insuficiente',
+                        'legajo' => $legajo,
+                        'colaborador' => $info['colaborador'],
+                        'fecha' => $fechaManiana,
+                        'detalle' => sprintf('Solo %.1fhs de descanso entre el %s (%s) y el %s (%s)', $horasDescanso, $fechaHoy, $turnoHoy->turno_nombre, $fechaManiana, $turnoManiana->turno_nombre),
+                    ];
+                }
+            }
+
+            // --- Regla 3: 7 días corridos de trabajo sin franco ---
+            $racha = 0;
+            $inicioRacha = null;
+            foreach (array_keys($dias) as $fecha) {
+                if (isset($trabajadosPorFecha[$fecha])) {
+                    if ($racha === 0) $inicioRacha = $fecha;
+                    $racha++;
+                    if ($racha === 7) {
+                        $conflictos[] = [
+                            'tipo' => 'sin_descanso_semanal',
+                            'legajo' => $legajo,
+                            'colaborador' => $info['colaborador'],
+                            'fecha' => $fecha,
+                            'detalle' => "Lleva 7 días corridos de trabajo, desde el $inicioRacha",
+                        ];
+                    }
+                } else {
+                    $racha = 0;
+                    $inicioRacha = null;
+                }
+            }
+        }
+
+        return $conflictos;
+    }
 }

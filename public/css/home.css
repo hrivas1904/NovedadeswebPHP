@@ -500,3 +500,10 @@ body[data-theme="dark"] {
     z-index: 2;
     min-width: 160px;
 }
+
+.celda-pintando {
+    background-color: #cfe2ff !important;
+}
+#contenedorGrilla.pincel-modo {
+    user-select: none;
+}

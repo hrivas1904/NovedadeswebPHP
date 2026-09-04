@@ -1,6 +1,7 @@
 const CSRF_CRONO_GRILLA = $('meta[name="csrf-token"]').attr('content');
 let periodoActualInfo = null;
 let asignacionesPorSlotFecha = {};
+let funcionesPorSlotFecha = {};
 
 function actualizarEstadoBoton() {
     const listo = $('#selectorMesCrono').val() && $('#selectorArea').val();
@@ -22,11 +23,16 @@ function cargarGrilla() {
 
     $.when(
         $.get(RUTAS_CRONO_GRILLA.grilla, { periodo, id_area: idArea, id_servicio: idServicio }),
-        $.get(RUTAS_CRONO_GRILLA.asignacionesDia, { periodo, id_area: idArea, id_servicio: idServicio })
-    ).done(function (respPuestos, respAsignaciones) {
+        $.get(RUTAS_CRONO_GRILLA.asignacionesDia, { periodo, id_area: idArea, id_servicio: idServicio }),
+        $.get(RUTAS_CRONO_GRILLA.slotFuncionesDia, { periodo, id_area: idArea, id_servicio: idServicio })
+    ).done(function (respPuestos, respAsignaciones, respFunciones) {
         asignacionesPorSlotFecha = {};
         respAsignaciones[0].data.forEach(a => {
             asignacionesPorSlotFecha[`${a.slot_id}_${a.fecha}`] = a;
+        });
+        funcionesPorSlotFecha = {};
+        respFunciones[0].data.forEach(f => {
+            funcionesPorSlotFecha[`${f.slot_id}_${f.fecha}`] = f;
         });
         renderGrilla(respPuestos[0].data);
     });
@@ -83,18 +89,21 @@ function renderGrilla(puestosFilas) {
                 const dow = (primerDia + (d - 1)) % 7;
                 const esFinde = (dow === 0 || dow === 6);
                 const asign = asignacionesPorSlotFecha[`${s.id}_${fecha}`];
+                const funcion = funcionesPorSlotFecha[`${s.id}_${fecha}`];
                 const vacante = !s.legajo;
 
                 if (vacante) {
                     celdas += `<td class="text-center ${esFinde ? 'table-secondary' : ''} bg-light"></td>`;
                 } else {
+                    const tituloCelda = `${asign ? asign.novedad_nombre : ''}${funcion ? ' + ' + funcion.nombre : ''}`;
                     celdas += `<td class="text-center dia-cell ${esFinde ? 'table-secondary' : ''}"
                         data-slot-id="${s.id}" data-fecha="${fecha}"
                         data-id-novedad="${asign ? asign.id_novedad : ''}"
                         data-updated-at="${asign ? asign.updated_at_ts : ''}"
+                        data-id-funcion="${funcion ? funcion.id_funcion : ''}"
                         data-empleado="${s.empleado_nombre}"
-                        title="${asign ? asign.novedad_nombre : ''}"
-                        style="cursor:pointer">${asign ? (asign.CODIGO_NOVEDAD || '') : ''}</td>`;
+                        title="${tituloCelda}"
+                        style="cursor:pointer">${asign ? (asign.CODIGO_NOVEDAD || '') : ''}${funcion ? `<br><small class="text-primary">${funcion.codigo}</small>` : ''}</td>`;
                 }
             }
 
@@ -206,4 +215,66 @@ $('#btnConfirmarNuevoPuesto').on('click', function () {
         if (resp.success) { $('#modalAgregarPuesto').modal('hide'); cargarGrilla(); }
         else Swal.fire('Atención', resp.message, 'warning');
     }).fail(xhr => Swal.fire('Atención', xhr.responseJSON?.message || 'No se pudo crear el puesto.', 'warning'));
+});
+
+let pincelActivo = false;
+let pintando = false;
+let celdasPintadas = [];
+
+$('#btnTogglePincel').on('click', function () {
+    pincelActivo = !pincelActivo;
+    $(this).toggleClass('btn-primary btn-outline-primary', pincelActivo);
+    $('#opcionesPincel').toggleClass('d-none', !pincelActivo);
+    $('#contenedorGrilla').toggleClass('pincel-modo', pincelActivo);
+    if (pincelActivo) cargarOpcionesPincel();
+});
+
+function cargarOpcionesPincel() {
+    cargarNovedadesActivas(function (novedades) {
+        const $sel = $('#selNovedadPincel').empty().append('<option value="">— Sin definir —</option>');
+        novedades.forEach(n => $sel.append(`<option value="${n.ID_NOVEDAD}">${n.CODIGO_NOVEDAD} — ${n.NOMBRE}</option>`));
+    });
+    cargarFuncionesActivas($('#selectorArea').val(), function (funciones) {
+        const $sel = $('#selFuncionPincel').empty().append('<option value="">— Ninguna —</option>');
+        funciones.forEach(f => $sel.append(`<option value="${f.id}">${f.codigo} — ${f.nombre}</option>`));
+    });
+}
+
+$(document).on('mousedown', '.dia-cell', function (e) {
+    if (!pincelActivo) return;
+    e.preventDefault();
+    pintando = true;
+    celdasPintadas = [{ slotId: $(this).data('slot-id'), fecha: $(this).data('fecha') }];
+    $(this).addClass('celda-pintando');
+});
+
+$(document).on('mouseenter', '.dia-cell', function () {
+    if (!pincelActivo || !pintando) return;
+    const slotId = $(this).data('slot-id');
+    if (slotId !== celdasPintadas[0].slotId) return; // solo misma fila
+    const fecha = $(this).data('fecha');
+    if (!celdasPintadas.find(c => c.fecha === fecha)) {
+        celdasPintadas.push({ slotId, fecha });
+        $(this).addClass('celda-pintando');
+    }
+});
+
+$(document).on('mouseup', function () {
+    if (!pincelActivo || !pintando) return;
+    pintando = false;
+    $('.celda-pintando').removeClass('celda-pintando');
+    if (!celdasPintadas.length) return;
+
+    const fechas = celdasPintadas.map(c => c.fecha).sort();
+    $.post(RUTAS_CRONO_GRILLA.pintarRango, {
+        _token: CSRF_CRONO_GRILLA,
+        slot_id: celdasPintadas[0].slotId,
+        fecha_desde: fechas[0],
+        fecha_hasta: fechas[fechas.length - 1],
+        id_novedad: $('#selNovedadPincel').val() || null,
+        id_funcion: $('#selFuncionPincel').val() || null
+    }).done(resp => resp.success && cargarGrilla())
+      .fail(xhr => Swal.fire('Error', xhr.responseJSON?.message || 'No se pudo pintar el rango.', 'error'));
+
+    celdasPintadas = [];
 });
