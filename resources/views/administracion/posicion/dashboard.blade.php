@@ -136,7 +136,7 @@
             </div>
         </div>
         <div class="col-12 col-md-4">
-            <div class="card icon-kpi" style="color: var(--color-default)">
+            <div class="card" style="color: var(--color-default)">
                 <div class="card-body flex-column">
                     <div>
                         <label class="h6 text-muted" style="font-size:0.8rem;">EFECTIVO EN PESOS (CAJA)</label>
@@ -154,7 +154,7 @@
 
     <div class="row d-flex mt-5">
         <div class="col-12 col-md-6">
-            <div class="card icon-kpi" style="background-color:var(--color-second); color:white;">
+            <div class="card" style="background-color:var(--color-second); color:white;">
                 <div class="card-body flex-column">
                     <div>
                         <label class="h6" style="font-size:0.8rem;">TOTAL DISPONIBLE EN PESOS</label>
@@ -169,7 +169,7 @@
             </div>
         </div>
         <div class="col-12 col-md-6">
-            <div class="card icon-kpi" style="background-color:var(--color-second); color:white;">
+            <div class="card" style="background-color:var(--color-second); color:white;">
                 <div class="card-body flex-column">
                     <div>
                         <label class="h6" style="font-size:0.8rem;">POSICIÓN EN DOLARES</label>
