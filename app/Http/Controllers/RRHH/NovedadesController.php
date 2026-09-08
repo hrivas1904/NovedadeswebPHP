@@ -608,13 +608,15 @@ class NovedadesController extends Controller
             $tipoValor = $request->tipoValor;
             $limite = $request->limiteNovedad ?: null;
             $paraFinnegans = $request->paraFinnegans;
+            $abreviaturaNovedad = $request->abreviaturaNovedad;
 
-            DB::statement("CALL SP_NUEVA_NOVEDAD(?, ?, ?, ?, ?, @p_mensaje)", [
+            DB::statement("CALL SP_NUEVA_NOVEDAD(?, ?, ?, ?, ?, ?, @p_mensaje)", [
                 $codigo,
                 $nombre,
                 $tipoValor,
                 $limite,
-                $paraFinnegans
+                $paraFinnegans,
+                $abreviaturaNovedad
             ]);
 
             $resultado = DB::selectOne("SELECT @p_mensaje as mensaje");

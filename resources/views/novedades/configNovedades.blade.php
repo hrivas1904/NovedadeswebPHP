@@ -1,43 +1,61 @@
 <div class="card p-1">
     <form id="formNuevaNovedad"> @csrf
-        <div class="row g-3 mb-3">
-            <div class="col-12 col-md-3 col-xl-3">
-                <label class="form-label">CÓDIGO</label>
-                <input type="text" class="form-control" name="codigoNovedad" required />
+        <div class="row d-flex align-items-end mb-1">
+            <div class="col-5 col-md-3 col-xl-2">
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="codigoNovedad" required />
+                    <label>CÓDIGO</label>
+                </div>
             </div>
 
-            <div class="col-12 col-md-7 col-xl-7">
-                <label class="form-label">CONCEPTO</label>
-                <input type="text" class="form-control" name="nombreNovedad" required />
+            <div class="col-7 col-md-4 col-xl-3">
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="nombreNovedad" required />
+                    <label>CONCEPTO</label>
+                </div>
             </div>
 
-            <div class="col-12 col-md-2 col-xl-2">
-                <label class="form-label">TIPO DE VALOR</label>
-                <select class="form-select" name="tipoValor" required>
-                    <option value="Días">DÍAS</option>
-                    <option value="Horas">HORAS</option>
-                    <option value="Pesos">PESOS</option>
-                    <option value="Unidades">UNIDADES</option>
-                </select>
+            <div class="col-3 col-md-3 col-xl-1">
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="abreviaturaNovedad" />
+                    <label>ABREVIATURA</label>
+                </div>
             </div>
 
-            <div class="col-12 col-md-2 col-lg-3 col-xl-2">
-                <label class="form-label">LIMITE</label>
-                <input type="number" class="form-control" name="limiteNovedad" />
+            <div class="col-3 col-md-2 col-xl-1">
+                <div class="form-floating">
+                    <select class="form-select" name="tipoValor" required>
+                        <option value="Días">DÍAS</option>
+                        <option value="Horas">HORAS</option>
+                        <option value="Pesos">PESOS</option>
+                        <option value="Unidades">UNIDADES</option>
+                    </select>
+                    <label>TIPO DE VALOR</label>
+                </div>
             </div>
 
-            <div class="col-12 col-md-3 col-lg-3 col-xl-3">
-                <label class="form-label">PARA FINNEGANS</label>
-                <select class="form-select" name="paraFinnegans" required>
-                    <option value=1>SI</option>
-                    <option value=0>NO</option>
-                </select>
+            <div class="col-3 col-md-2 col-xl-1">
+                <div class="form-floating">
+                    <input type="number" class="form-control" name="limiteNovedad" />
+                    <label>LIMITE</label>
+                </div>
             </div>
-        </div>
-        <div class="col-12 text-end">
-            <button type="submit" class="btn btn-primary" id="btnCrearNovedad">
-                Crear nuevo concepto
-            </button>
+
+            <div class="col-3 col-md-4 col-xl-2">
+                <div class="form-floating">
+                    <select class="form-select" name="paraFinnegans" required>
+                        <option value=1>SI</option>
+                        <option value=0>NO</option>
+                    </select>
+                    <label>PARA FINNEGANS</label>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-xl-2">
+                <button type="submit" class="btn btn-primary w-100" id="btnCrearNovedad">
+                    Crear concepto
+                </button>
+            </div>
         </div>
     </form>
     <table id="tb_configuracion" class="table table-striped table-hover align-middle table-header-hp3c">
@@ -46,7 +64,11 @@
                 <th>ID</th>
                 <th>CÓDIGO</th>
                 <th>NOVEDAD</th>
+                <th>TIPO DE VALOR</th>
                 <th>LÍMITE</th>
+                <th class="text-center">FINNEGANS</th>
+                <th>ABREVIATURA</th>
+                <th class="text-center">ESTADO</th>
             </tr>
         </thead>
         <tbody>

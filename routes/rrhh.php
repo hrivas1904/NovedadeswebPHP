@@ -183,12 +183,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cuentas/crear', [PersonalController::class, 'crearCuentaBancaria']);
 
     Route::post('/cuentas/priorizar', [PersonalController::class, 'priorizarCuentaBancaria']);
+
     //RUTAS DE SP NOVEDADES
 
     Route::get('/novedades/lista', [NovedadesController::class, 'listarNovedades'])
         ->name('novedades.lista');
 
-    Route::get('/novedades/data', [NovedadesController::class, 'cargarTablaNovedades'])
+    Route::get('/novedades/listarConceptos', [NovedadesController::class, 'cargarTablaNovedades'])
         ->name('novedades.data');
 
     Route::post('/novedades/registrar', [NovedadesController::class, 'registrarNovedad'])->name('novedades.store');
@@ -360,6 +361,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/funcionesAdicionales/por-area/{id}', [ParametrosController::class, 'listarFuncionesAdicxArea']);
     Route::post('/funciones-adicionales/crear', [ParametrosController::class, 'crearFuncionAdicional']);
     Route::put('/funcionesAdicionales/{id}/campo', [ParametrosController::class, 'actualizarCampoFuncionAdicional']);
+
+    Route::put('/novedades/{id}/campo', [ParametrosController::class, 'editarCampoConcepto']);
 
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');

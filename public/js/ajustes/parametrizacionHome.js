@@ -60,5 +60,9 @@ function inicializarSubvistaParametros(vista) {
             cargarTablaRegimenes();
             break;
 
+        case "novedades":
+            cargarNovedades();
+            break;
+
     }
 }

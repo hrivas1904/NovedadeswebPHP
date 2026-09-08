@@ -814,4 +814,87 @@ class ParametrosController extends Controller
             'message' => 'Función adicional actualizada correctamente.'
         ]);
     }
+
+    public function editarCampoConcepto(Request $request, $id)
+    {
+        try {
+
+            $request->validate([
+                'campo' => 'required|string',
+            ]);
+
+            $campo = $request->campo;
+            $valor = $request->valor;
+            $idUser = Auth::id();
+
+            switch ($campo) {
+
+                case 'codigoNovedad':
+                    DB::statement(
+                        'CALL SP_EDITAR_CONCEPTO_CODIGO(?, ?, ?)',
+                        [$id, $valor, $idUser]
+                    );
+                    break;
+
+                case 'nombreNovedad':
+                    DB::statement(
+                        'CALL SP_EDITAR_CONCEPTO_NOMBRE(?, ?, ?)',
+                        [$id, $valor, $idUser]
+                    );
+                    break;
+
+                case 'tipoValorNovedad':
+                    DB::statement(
+                        'CALL SP_EDITAR_CONCEPTO_TIPO_VALOR(?, ?, ?)',
+                        [$id, $valor, $idUser]
+                    );
+                    break;
+
+                case 'limiteNovedad':
+                    DB::statement(
+                        'CALL SP_EDITAR_CONCEPTO_LIMITE(?, ?, ?)',
+                        [$id, $valor, $idUser]
+                    );
+                    break;
+
+                case 'finnegansNovedad':
+                    DB::statement(
+                        'CALL SP_EDITAR_CONCEPTO_FINNEGANS(?, ?, ?)',
+                        [$id, $valor, $idUser]
+                    );
+                    break;
+
+                case 'abreviaturaNovedad':
+                    DB::statement(
+                        'CALL SP_EDITAR_CONCEPTO_ABREV(?, ?, ?)',
+                        [$id, $valor, $idUser]
+                    );
+                    break;
+
+                case 'estadoNovedad':
+                    DB::statement(
+                        'CALL SP_EDITAR_CONCEPTO_ESTADO(?, ?, ?)',
+                        [$id, $valor, $idUser]
+                    );
+                    break;
+
+                default:
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Campo no válido.'
+                    ], 422);
+            }
+
+            return response()->json([
+                'success' => true
+            ]);
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo actualizar el concepto.',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
