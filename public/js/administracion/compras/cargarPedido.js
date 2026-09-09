@@ -385,6 +385,19 @@ function enviarPedido(desdeModal = false) {
         return;
     }
 
+    const campoDescripcion=$("#fDescripcion");
+
+    if (campoDescripcion.length === 0 || !campoDescripcion.val().trim()) {
+        Swal.fire({
+            title:"Atención!",
+            text:"Campo descripción obligatorio.",
+            icon:"warning",
+            timer: 1500,
+            showConfirmButton:false,           
+        });
+        return;
+    }
+
     const centroCosto = desdeModal
         ? $("#cmbCentroCostoModal").val()
         : $("#cmbCentroCosto").val();
