@@ -1,62 +1,68 @@
-function verObraSocial(id) {
-    $.ajax({
-        url: `/rrhh/obra-social/${id}`,
-        type: "GET",
-        success: function (data) {
-            $("#idOs").val(data.id);
-            $("#codigoOsEdit").val(data.codigo);
-            $("#nombreOsEdit").val(data.nombre);
-            $("#modalEdicionOs").modal("show");
-        },
-        error: function (err) {
-            console.error("Error cargando obra social", err);
-            alert("No se pudo cargar la obra socual");
-        },
-    });
-}
-
-$(document).ready(function () {
+function cargarTablaOs() {
     if ($("#tb_obraSocial").length > 0) {
         $("#tb_obraSocial").DataTable({
             ajax: {
                 url: "/rrhh/obra-social/lista",
                 type: "GET",
-                dataSrc: "", // 👈 clave
+                dataSrc: "",
+            },
+            createdRow: function(row, data) {
+                $(row).attr("data-id", data.id);
             },
             columns: [
-                { data: "id", visible: false },
-                { data: "text" },
-                { data: "codigo" },
+                { data: "id", className:"text-start" },
+                { data: "text",
+                    render:function(data){
+                        return(
+                            `
+                                <input class="form-control inputObra" data-campo="nombreObra" value="${data}">
+                            `
+                        );
+                    }
+                 },
+                { data: "codigo",
+                    render:function(data){
+                        return(
+                            `
+                                <input class="form-control inputObra" data-campo="codigoObra" value="${data}">
+                            `
+                        );
+                    }
+                 },
+                { data: "estado", className:"text-center",
+                    render: function (data, type, row) {
+                        if (type !== "display") {
+                            return data;
+                        }
+                        const checked = Number(data) === 1 ? "checked" : "";
+                        return `
+                            <div class="form-check form-switch d-flex justify-content-center m-0">
+                                <input
+                                    class="form-check-input switchActivoServicio inputObra"
+                                    type="checkbox"
+                                    role="switch"
+                                    data-campo="estadoObra"
+                                    data-id="${row.id}"
+                                    ${checked}>
+                            </div>
+                        `;
+                    },
+                 },
             ],
             language: {
                 url: "/js/es-ES.json",
-                lengthMenu: "_MENU_",
-                paginate: {
-                    first: "<<",
-                    previous: "<",
-                    next: ">",
-                    last: ">>",
-                },
             },
             info: false,
             order: [[1, "asc"]],
-            responsive: true,
             autoWidth: false,
             scrollX: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: "68vh",
+            scrollY: "58vh",
+            dom:'tir'
         });
     }
-
-    $(document).on("click", "#tb_obraSocial tbody tr", function () {
-        const table = $("#tb_obraSocial").DataTable();
-        const data = table.row(this).data();
-        if (!data) return;
-        console.log("OS seleccionada:", data);
-        verObraSocial(data.id);
-    });
-});
+};
 
 $(document).on("submit", "#formNuevaObraSocial", function (e) {
     e.preventDefault();
@@ -107,54 +113,87 @@ $(document).on("submit", "#formNuevaObraSocial", function (e) {
     });
 });
 
-$(document).on("submit", "#formEditObraSocial", function (e) {
-    e.preventDefault();
+$(document)
+    .off("change", "#tb_obraSocial .inputObra")
+    .on("change", "#tb_obraSocial .inputObra", function () {
 
-    let form = $(this);
+        const input = $(this);
+        const fila = input.closest("tr");
 
-    $("#btnGuardarOsEdit").prop("disabled", true);
+        const idObra = fila.data("id");
+        const campo = input.data("campo");
 
-    $.ajax({
-        url: "/rrhh/obra-social/editar",
-        method: "POST",
-        data: form.serialize(),
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        success: function (resp) {
+        let valor;
+
+        if (input.attr("type") === "checkbox") {
+
+            valor = input.is(":checked") ? 1 : 0;
+
+        } else {
+
+            valor = input.val().trim();
+
+        }
+
+
+        if (campo === "nombreObra" && valor === "") {
+
             Swal.fire({
-                icon: resp.success ? "success" : "warning",
-                title: resp.success ? "Actualizado" : "Atención",
-                text: resp.mensaje,
-            }).then(() => {
-                if (resp.success) {
-                    cerrarModalOsEdit();
+                title: "Atención!",
+                text: "El nombre de la obra social es obligatorio.",
+                icon: "warning",
+                timer: 1500,
+                showConfirmButton: false
+            });
 
-                    $("#tb_obraSocial").DataTable().ajax.reload(null, false);
+            return;
+        }
+
+
+        $.ajax({
+
+            url: `/rrhh/obras-sociales/${idObra}/campo`,
+
+            type: "PUT",
+
+            data: {
+                campo: campo,
+                valor: valor,
+                _token: $('meta[name="csrf-token"]').attr("content")
+            },
+
+            success: function(response) {
+
+                Swal.fire({
+                    title: "Operación exitosa!",
+                    text: "Obra social actualizada correctamente.",
+                    icon: "success",
+                    timer: 1200,
+                    showConfirmButton: false
+                });
+
+            },
+
+            error: function(xhr) {
+
+                console.error(xhr.responseText);
+
+                let mensaje = "No se pudo actualizar la obra social.";
+
+                if (xhr.responseJSON?.message) {
+                    mensaje = xhr.responseJSON.message;
                 }
 
-                $("#btnGuardarOsEdit").prop("disabled", false);
-            });
-        },
-        error: function (xhr) {
-            console.error(xhr.responseJSON);
+                Swal.fire({
+                    title: "Error!",
+                    text: mensaje,
+                    icon: "error",
+                    timer: 1200,
+                    showConfirmButton: false
+                });
 
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: xhr.responseJSON?.error || "Error inesperado",
-            });
+            }
 
-            $("#btnGuardarOsEdit").prop("disabled", false);
-        },
+        });
+
     });
-});
-
-function cerrarModalOsEdit() {
-    $("#formEditObraSocial")[0].reset();
-    const modalElement = document.getElementById("modalEdicionOs");
-    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-    if (modalInstance) {
-        modalInstance.hide();
-    }
-}

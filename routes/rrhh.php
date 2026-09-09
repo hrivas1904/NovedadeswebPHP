@@ -364,6 +364,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/novedades/{id}/campo', [ParametrosController::class, 'editarCampoConcepto']);
 
+    Route::put('/obras-sociales/{id}/campo', [ParametrosController::class, 'editarCamposObrasSociales']);
+
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
     Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');

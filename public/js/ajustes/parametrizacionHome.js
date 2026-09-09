@@ -64,5 +64,9 @@ function inicializarSubvistaParametros(vista) {
             cargarNovedades();
             break;
 
+        case "obrasSociales":
+            cargarTablaOs();
+            break;
+
     }
 }

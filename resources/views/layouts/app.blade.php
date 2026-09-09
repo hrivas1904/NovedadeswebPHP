@@ -213,8 +213,6 @@
                                 <span class="link-text">Configuraciones</span>
                             </a>
                             <ul class="submenu">
-                                <li><a class="submenu-link" href="{{ route('rrhh.configNovedades') }}">Conceptos novedades</a></li>
-                                <li><a class="submenu-link" href="{{ route('rrhh.obraSocial.administrarObraSociales') }}">Obras sociales</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.parametrizacionesGenerales') }}">Parámetros generales</a></li>
                             </ul>
                         </li>

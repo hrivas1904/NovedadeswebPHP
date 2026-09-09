@@ -897,4 +897,98 @@ class ParametrosController extends Controller
             ], 500);
         }
     }
+
+    public function editarCamposObrasSociales(Request $request, $id)
+    {
+        try {
+
+            $request->validate([
+                'campo' => 'required|string',
+            ]);
+
+            $campo = $request->campo;
+            $valor = $request->valor;
+            $idUser = Auth::id();
+
+            switch ($campo) {
+
+                case 'nombreObra':
+
+                    if (empty(trim($valor))) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'El nombre de la obra social es obligatorio.'
+                        ], 422);
+                    }
+
+                    DB::statement(
+                        'CALL SP_OSOCIAL_EDITAR_NOMBRE(?, ?, ?)',
+                        [
+                            $id,
+                            $valor,
+                            $idUser
+                        ]
+                    );
+
+                    break;
+
+
+                case 'codigoObra':
+
+                    DB::statement(
+                        'CALL SP_OSOCIAL_EDITAR_CODIGO(?, ?, ?)',
+                        [
+                            $id,
+                            $valor,
+                            $idUser
+                        ]
+                    );
+
+                    break;
+
+
+                case 'estadoObra':
+
+                    $estado = (int) $valor;
+
+                    if (!in_array($estado, [0, 1], true)) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Estado no válido.'
+                        ], 422);
+                    }
+
+                    DB::statement(
+                        'CALL SP_OSOCIAL_EDITAR_ESTADO(?, ?, ?)',
+                        [
+                            $id,
+                            $estado,
+                            $idUser
+                        ]
+                    );
+
+                    break;
+
+
+                default:
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Campo no válido.'
+                    ], 422);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Obra social actualizada correctamente.'
+            ]);
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo actualizar la obra social.',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

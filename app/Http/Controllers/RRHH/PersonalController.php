@@ -169,7 +169,8 @@ class PersonalController extends Controller
             return [
                 'id' => $o->id,
                 'text' => $o->nombre,
-                'codigo' => $o->codigo
+                'codigo' => $o->codigo,
+                'estado' => $o->estado,
             ];
         });
 
