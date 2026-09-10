@@ -5,57 +5,31 @@
 <div class="container-fluid">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-
         <div>
-            <h5 class="mb-1">
-                Reloj ZKTeco
-            </h5>
-
-            <small class="text-muted">
-                Consulta de marcaciones del dispositivo
-            </small>
+            <h3 class="tituloVista mb-0">MARCACIONES</h3>
         </div>
-
-        <button
-            type="button"
-            class="btn btn-primary"
-            id="btnConsultarZkteco">
-
+        <button type="button" class="btn btn-primary" id="btnConsultarZkteco">
             <i class="fa-solid fa-rotate me-1"></i>
             Consultar reloj
-
         </button>
-
     </div>
 
 
     <div class="card">
-
         <div class="card-body">
-
             <div class="d-flex align-items-center gap-2 mb-3">
-
                 <span class="text-muted">
                     Estado:
                 </span>
 
-                <span
-                    class="badge text-bg-secondary"
-                    id="estadoZkteco">
-
+                <span class="badge text-bg-secondary" id="estadoZkteco">
                     Sin consultar
-
                 </span>
-
             </div>
 
 
             <div class="table-responsive">
-
-                <table
-                    class="table table-hover align-middle w-100"
-                    id="tbMarcacionesZkteco">
-
+                <table class="table table-hover align-middle w-100" id="tbMarcacionesZkteco">
                     <thead>
                         <tr>
                             <th>UID</th>
@@ -66,11 +40,8 @@
                             <th>Tipo</th>
                         </tr>
                     </thead>
-
                     <tbody></tbody>
-
                 </table>
-
             </div>
 
         </div>

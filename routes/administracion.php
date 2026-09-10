@@ -16,6 +16,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pedidosComprasView', [ComprasController::class, 'pedidosComprasView'])->name('pedidosComprasView');
     Route::get('/panelAdminView', [ComprasController::class, 'panelAdminView'])->name('panelAdminView');
     Route::get('/productosProveedoresView', [ComprasController::class, 'productosProveedoresView'])->name('productosProveedoresView');
+    Route::get('/productosView', [ComprasController::class, 'productosView'])->name('productosView');
+    Route::get('/proveedoresView', [ComprasController::class, 'proveedoresView'])->name('proveedoresView');
     Route::get('/compras/centros-costo/listar', [ComprasController::class, 'listarCentrosCosto'])->name('compras.listarCentrosCosto');
     Route::get('/compras/proveedores/listar', [ComprasController::class, 'listarProveedores'])->name('compras.listarProveedores');
     Route::get('/compras/productos/listar', [ComprasController::class, 'listarProductos'])->name('compras.listarProductos');

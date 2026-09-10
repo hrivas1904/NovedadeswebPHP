@@ -71,13 +71,13 @@
         <i id="iconUpAcciones" class="fa-solid fa-angles-up"></i>
         <span id="textoAcciones">Ocultar acciones</span>
     </button>
-    <button type="button" class="btn btn-outline-secondary" id="btnOcultarIndicadores">
+    <!--<button type="button" class="btn btn-outline-secondary" id="btnOcultarIndicadores">
         <i id="iconUpIndicadores" class="fa-solid fa-angles-up"></i>
         <span id="textoIndicadores">Ocultar indicadores</span>
-    </button>
+    </button>-->
 </div>
 
-<div id="divIndicadores" class="row g-2 mb-3">
+<div id="divIndicadores" class="row g-2 mb-3 d-none">
     <div class="col">
         <div class="card p-3 h-100">
             <div class="d-flex align-items-start gap-3">

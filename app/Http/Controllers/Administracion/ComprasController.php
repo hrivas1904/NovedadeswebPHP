@@ -29,6 +29,16 @@ class ComprasController extends Controller
         return view('administracion.compras.productosProveedores');
     }
 
+    public function productosView()
+    {
+        return view('administracion.compras.productos');
+    }
+
+    public function proveedoresView()
+    {
+        return view('administracion.compras.proveedores');
+    }
+
     public function listarCentrosCosto()
     {
         $centros = DB::select("CALL SP_LISTAR_CENTRO_COSTOS()");
