@@ -9,6 +9,7 @@ use App\Http\Controllers\RRHH\GeoController;
 use App\Http\Controllers\Core\TicketController;
 use App\Http\Controllers\RRHH\ParametrosController;
 use App\Http\Controllers\RRHH\CronogramaController;
+use App\Http\Controllers\RRHH\ZktecoController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -417,6 +418,12 @@ Route::middleware(['auth'])->group(function () {
 
     // CT CONFLICTOS
     Route::get('/listarCronoConflictos', [CronogramaController::class, 'listarCronoConflictos'])->name('listarCronoConflictos');
+
+    //ZKTECO RELOJ
+
+    Route::get('/zkteco',[ZktecoController::class, 'index'])->name('zkteco');
+
+    Route::get('/zkteco/marcaciones',[ZktecoController::class, 'marcaciones'])->name('zkteco.marcaciones');
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {
