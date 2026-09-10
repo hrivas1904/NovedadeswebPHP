@@ -56,168 +56,206 @@
 @push('scripts')
 
 <script>
+    let tablaMarcacionesZkteco = null;
 
-let tablaMarcacionesZkteco;
+    $(document).ready(function() {
 
+        tablaMarcacionesZkteco = $('#tbMarcacionesZkteco').DataTable({
 
-$(document).ready(function () {
+            data: [],
 
-    tablaMarcacionesZkteco = $('#tbMarcacionesZkteco').DataTable({
-
-        data: [],
-
-        language: {
-            url: '/js/es-ES.json'
-        },
-
-        paging: true,
-        pageLength: 25,
-        searching: true,
-        info: true,
-
-        order: [[2, 'desc'], [3, 'desc']],
-
-        columns: [
-
-            {
-                data: 'uid',
-                className: 'text-start'
+            language: {
+                url: '/js/es-ES.json'
             },
 
-            {
-                data: 'id',
-                className: 'text-start'
-            },
+            paging: true,
+            pageLength: 25,
+            searching: true,
+            info: true,
 
-            {
-                data: 'timestamp',
-                className: 'text-start',
-                render: function (data) {
+            order: [
+                [2, 'desc'],
+                [3, 'desc']
+            ],
 
-                    if (!data) return '-';
+            columns: [
 
-                    const partes = data.split(' ');
+                {
+                    data: 'uid',
+                    className: 'text-start',
+                    defaultContent: '-'
+                },
 
-                    if (!partes[0]) return '-';
+                {
+                    data: 'user_id',
+                    className: 'text-start',
+                    defaultContent: '-'
+                },
 
-                    const fecha = partes[0].split('-');
+                {
+                    data: 'record_time',
+                    className: 'text-start',
 
-                    return `${fecha[2]}/${fecha[1]}/${fecha[0]}`;
+                    render: function(data, type) {
+
+                        if (!data) return '-';
+
+                        // Para ordenar, usamos el timestamp original
+                        if (type === 'sort' || type === 'type') {
+                            return data;
+                        }
+
+                        const [fecha] = data.split(' ');
+
+                        if (!fecha) return '-';
+
+                        const [anio, mes, dia] = fecha.split('-');
+
+                        return `${dia}/${mes}/${anio}`;
+                    }
+                },
+
+                {
+                    data: 'record_time',
+                    className: 'text-start',
+
+                    render: function(data, type) {
+
+                        if (!data) return '-';
+
+                        // Para ordenar, usamos el timestamp completo
+                        if (type === 'sort' || type === 'type') {
+                            return data;
+                        }
+
+                        const partes = data.split(' ');
+
+                        return partes[1] ?? '-';
+                    }
+                },
+
+                {
+                    data: 'state',
+                    className: 'text-start',
+                    defaultContent: '-'
+                },
+
+                {
+                    data: 'type',
+                    className: 'text-start',
+                    defaultContent: '-'
                 }
-            },
 
-            {
-                data: 'timestamp',
-                className: 'text-start',
-                render: function (data) {
+            ]
+        });
 
-                    if (!data) return '-';
 
-                    const partes = data.split(' ');
+        $('#btnConsultarZkteco').on('click', function() {
+            consultarMarcaciones();
+        });
 
-                    return partes[1] ?? '-';
-                }
-            },
-
-            {
-                data: 'state',
-                className: 'text-start'
-            },
-
-            {
-                data: 'type',
-                className: 'text-start'
-            }
-        ]
     });
 
 
-    $('#btnConsultarZkteco').on('click', function () {
+    function consultarMarcaciones() {
 
-        consultarMarcaciones();
+        const btn = $('#btnConsultarZkteco');
+        const estado = $('#estadoZkteco');
 
-    });
+        btn.prop('disabled', true);
 
-});
-
-
-function consultarMarcaciones() {
-
-    const btn = $('#btnConsultarZkteco');
-    const estado = $('#estadoZkteco');
-
-    btn.prop('disabled', true);
-
-    estado
-        .removeClass()
-        .addClass('badge text-bg-warning')
-        .text('Consultando...');
+        estado
+            .removeClass()
+            .addClass('badge text-bg-warning')
+            .text('Consultando...');
 
 
-    $.ajax({
+        $.ajax({
 
-        url: '/rrhh/zkteco/marcaciones',
+            url: '/rrhh/zkteco/marcaciones',
 
-        type: 'GET',
+            type: 'GET',
 
-        success: function (response) {
+            success: function(response) {
 
-            tablaMarcacionesZkteco.clear();
+                if (!response.success) {
 
-            tablaMarcacionesZkteco.rows.add(
-                response.data ?? []
-            );
+                    tablaMarcacionesZkteco.clear().draw();
 
-            tablaMarcacionesZkteco.draw();
+                    estado
+                        .removeClass()
+                        .addClass('badge text-bg-danger')
+                        .text('Error');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message ?? 'No se pudieron obtener las marcaciones.'
+                    });
+
+                    return;
+                }
 
 
-            if (response.mock) {
+                const marcaciones = response.data ?? [];
+
+
+                tablaMarcacionesZkteco
+                    .clear()
+                    .rows.add(marcaciones)
+                    .draw();
+
+
+                if (response.mock) {
+
+                    estado
+                        .removeClass()
+                        .addClass('badge text-bg-warning')
+                        .text(`Modo simulación (${marcaciones.length})`);
+
+                } else {
+
+                    estado
+                        .removeClass()
+                        .addClass('badge text-bg-success')
+                        .text(`Reloj conectado (${marcaciones.length})`);
+                }
+
+            },
+
+            error: function(xhr) {
+
+                const response = xhr.responseJSON;
+
+                tablaMarcacionesZkteco
+                    .clear()
+                    .draw();
 
                 estado
                     .removeClass()
-                    .addClass('badge text-bg-warning')
-                    .text('Modo simulación');
+                    .addClass('badge text-bg-danger')
+                    .text('Sin conexión');
 
-            } else {
 
-                estado
-                    .removeClass()
-                    .addClass('badge text-bg-success')
-                    .text('Reloj conectado');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: response?.detalle ??
+                        response?.message ??
+                        'No se pudo consultar el reloj ZKTeco.'
+                });
+
+            },
+
+            complete: function() {
+
+                btn.prop('disabled', false);
+
             }
 
-        },
+        });
 
-        error: function (xhr) {
-
-            const response = xhr.responseJSON;
-
-            tablaMarcacionesZkteco.clear().draw();
-
-            estado
-                .removeClass()
-                .addClass('badge text-bg-danger')
-                .text('Sin conexión');
-
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de conexión',
-                text: response?.message ?? 'No se pudo consultar el reloj ZKTeco.'
-            });
-
-        },
-
-        complete: function () {
-
-            btn.prop('disabled', false);
-
-        }
-
-    });
-
-}
-
+    }
 </script>
 
 @endpush

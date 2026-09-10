@@ -421,9 +421,26 @@ Route::middleware(['auth'])->group(function () {
 
     //ZKTECO RELOJ
 
-    Route::get('/zkteco',[ZktecoController::class, 'index'])->name('zkteco');
+    Route::get('/zkteco', [ZktecoController::class, 'index'])->name('zkteco');
+    Route::get('/zkteco/marcaciones', [ZktecoController::class, 'marcaciones'])->name('zkteco.marcaciones');
+    Route::get(
+        '/zkteco/probar-conexion',
+        [ZktecoController::class, 'probarConexion']
+    );
+    Route::get(
+        '/zkteco/probar-lectura',
+        [ZktecoController::class, 'probarLectura']
+    );
 
-    Route::get('/zkteco/marcaciones',[ZktecoController::class, 'marcaciones'])->name('zkteco.marcaciones');
+    Route::get(
+        '/zkteco/diagnostico',
+        [ZktecoController::class, 'diagnostico']
+    );
+
+    Route::get(
+        '/zkteco/probar-usuarios',
+        [ZktecoController::class, 'probarUsuarios']
+    );
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {
