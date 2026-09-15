@@ -10,6 +10,7 @@ use App\Http\Controllers\Core\TicketController;
 use App\Http\Controllers\RRHH\ParametrosController;
 use App\Http\Controllers\RRHH\CronogramaController;
 use App\Http\Controllers\RRHH\ZktecoController;
+use App\Http\Controllers\RRHH\MedicosController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -420,27 +421,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/listarCronoConflictos', [CronogramaController::class, 'listarCronoConflictos'])->name('listarCronoConflictos');
 
     //ZKTECO RELOJ
-
     Route::get('/zkteco', [ZktecoController::class, 'index'])->name('zkteco');
     Route::get('/zkteco/marcaciones', [ZktecoController::class, 'marcaciones'])->name('zkteco.marcaciones');
-    Route::get(
-        '/zkteco/probar-conexion',
-        [ZktecoController::class, 'probarConexion']
-    );
-    Route::get(
-        '/zkteco/probar-lectura',
-        [ZktecoController::class, 'probarLectura']
-    );
+    Route::get('/zkteco/probar-conexion', [ZktecoController::class, 'probarConexion']);
+    Route::get('/zkteco/probar-lectura', [ZktecoController::class, 'probarLectura']);
+    Route::get('/zkteco/diagnostico', [ZktecoController::class, 'diagnostico']);
+    Route::get('/zkteco/probar-usuarios', [ZktecoController::class, 'probarUsuarios']);
 
-    Route::get(
-        '/zkteco/diagnostico',
-        [ZktecoController::class, 'diagnostico']
-    );
-
-    Route::get(
-        '/zkteco/probar-usuarios',
-        [ZktecoController::class, 'probarUsuarios']
-    );
+    //MEDICOS
+    Route::get('/medicos', [MedicosController::class, 'medicosView'])->name('medicos');
+    Route::get('/medicos/obtenerMedicos', [MedicosController::class, 'obtenerListaMedicos']);
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {

@@ -188,6 +188,7 @@
                                 @if (Auth::user()->rol === 'Administrador/a')
                                 <li><a class="submenu-link" href="{{ route('rrhh.cronogramaTrabajo') }}">Cronograma de trabajo</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.zkteco') }}">Marcaciones</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.medicos') }}">Médicos</a></li>
                                 @endif
                             </ul>
                         </li>

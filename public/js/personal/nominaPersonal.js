@@ -739,7 +739,6 @@ document.addEventListener("DOMContentLoaded", function () {
     cargarRegimenesColaboradores();
 });
 
-
 function cargarRegimenesColaboradores() {
     $.ajax({
         url: "/rrhh/parametros/listarRegimenesColab",
@@ -747,29 +746,16 @@ function cargarRegimenesColaboradores() {
         dataType: "json",
 
         success: function (regimenes) {
+            cargarSelectorRegimen($("#selectRegimen"), regimenes, true);
 
-            cargarSelectorRegimen(
-                $("#selectRegimen"),
-                regimenes,
-                true
-            );
-
-            cargarSelectorRegimen(
-                $("#inputRegimen"),
-                regimenes,
-                false
-            );
+            cargarSelectorRegimen($("#inputRegimen"), regimenes, false);
         },
 
         error: function (xhr) {
-            console.error(
-                "Error al cargar regímenes:",
-                xhr.responseText
-            );
-        }
+            console.error("Error al cargar regímenes:", xhr.responseText);
+        },
     });
 }
-
 
 function cargarSelectorRegimen(selector, regimenes, soloActivos = true) {
     selector.empty();
@@ -780,7 +766,6 @@ function cargarSelectorRegimen(selector, regimenes, soloActivos = true) {
     `);
 
     regimenes.forEach(function (item) {
-
         if (soloActivos && Number(item.activo) !== 1) {
             return;
         }
@@ -788,10 +773,7 @@ function cargarSelectorRegimen(selector, regimenes, soloActivos = true) {
         const regimen = parseFloat(item.regimen);
         const horasDiarias = parseFloat(item.horasDiarias);
 
-        const estado =
-            Number(item.activo) === 1
-                ? ""
-                : " - Inactivo";
+        const estado = Number(item.activo) === 1 ? "" : " - Inactivo";
 
         selector.append(`
             <option
@@ -803,22 +785,15 @@ function cargarSelectorRegimen(selector, regimenes, soloActivos = true) {
     });
 }
 
-$(document).on(
-    "change",
-    "#selectRegimen, #inputRegimen",
-    function () {
+$(document).on("change", "#selectRegimen, #inputRegimen", function () {
+    const horas = $(this).find("option:selected").data("horas");
 
-        const horas = $(this)
-            .find("option:selected")
-            .data("horas");
-
-        if (this.id === "selectRegimen") {
-            $("#horasDiarias").val(horas ?? "");
-        } else {
-            $("#inputHorasDiarias").val(horas ?? "");
-        }
+    if (this.id === "selectRegimen") {
+        $("#horasDiarias").val(horas ?? "");
+    } else {
+        $("#inputHorasDiarias").val(horas ?? "");
     }
-);
+});
 
 //API GEOREST
 $(function () {
@@ -948,6 +923,18 @@ function cerrarModal() {
 $("#formAltaColaborador").on("submit", function (e) {
     e.preventDefault();
 
+    const primeraParte = $("#firstPartCuil").val();
+    const parteCentral = $("#middlePartCuil").val();
+    const ultimaParte = $("#lastPartCuil").val();
+
+    // CUIL únicamente con números, sin guiones
+    const cuil = `${primeraParte}${parteCentral}${ultimaParte}`.replace(
+        /\D/g,
+        "",
+    );
+
+    $("#cuil").val(cuil);
+
     let formData = $(this).serialize();
 
     $.ajax({
@@ -957,6 +944,7 @@ $("#formAltaColaborador").on("submit", function (e) {
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
+
         success: function (response) {
             if (response.success) {
                 Swal.fire({
@@ -976,12 +964,14 @@ $("#formAltaColaborador").on("submit", function (e) {
                 });
             }
         },
+
         error: function (xhr) {
             Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: "Ocurrió un error al guardar el colaborador",
             });
+
             console.error(xhr.responseText);
         },
     });
