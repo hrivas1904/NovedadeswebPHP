@@ -152,66 +152,78 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel" id="lblNombreMedico">-</h1>
+                <h1 class="modal-title fs-5" id="lblNombreMedico">-</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formNuevoMedico">
-                    <div class="row g-4">
-                        <div class="col-12 col-md-6 col-lg-4">
+                <form id="formUpdateMedico">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6 col-lg-2">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="nombreMedico">
+                                <input class="form-control" type="text" id="inputIdMedico" readonly>
+                                <label>ID</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <div class="form-floating">
+                                <input class="form-control" type="text" id="inputNombreMedico">
                                 <label>NOMBRE</label>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-3">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="apellidoMedico">
+                                <input class="form-control" type="text" id="inputApellidoMedico">
                                 <label>APELLIDO</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-2">
                             <div class="form-floating">
-                                <input class="form-control" type="number" name="cuitMedico">
+                                <input class="form-control" type="text" id="inputCuitMedico">
                                 <label>C.U.I.T./DNI</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-2">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="matriculaMedico">
+                                <input class="form-control" type="text" id="inputMpMedico">
                                 <label>MP</label>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-5">
-                            <div class="form-floating">
-                                <input class="form-control" type="text" name="domicilioMedico">
-                                <label>DOMICILIO</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="correoMedico">
-                                <label>CORREO</label>
+                                <input class="form-control" type="text" id="inputDomicilioMedico">
+                                <label>DOMICILIO</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="telefonoMedico">
+                                <input class="form-control" type="text" id="inputCorreoMedico">
+                                <label>CORREO</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-2">
+                            <div class="form-floating">
+                                <input class="form-control" type="text" id="inputTelefonoMedico">
                                 <label>TELÉFONO</label>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-3">
                             <div class="form-floating">
-                                <select class="form-control" name="servicioMedico">
+                                <select class="form-control" id="inputServicioMedico">
                                     <option value="">Seleccione servicio</option>
                                 </select>
                                 <label>SERVICIO</label>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-8">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="razonSocialMedico">
+                                <input class="form-control" type="text" id="inputRazonMedico">
                                 <label>RAZÓN SOCIAL</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-2">
+                            <div class="form-floating">
+                                <input class="form-control" type="text" id="inputFechaAlta" readonly>
+                                <label>FECHA ALTA</label>
                             </div>
                         </div>
                     </div>

@@ -38,7 +38,7 @@ class MedicosController extends Controller
     {
         try {
             $medico = DB::select(("CALL SP_VER_LEGAJO_MEDICO(?)"), [$idLegajo]);
-            return response()->json($medico);
+            return response()->json($medico[0]);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => "Error al obtener el legajo del médico ${idLegajo}",
