@@ -431,13 +431,9 @@ Route::middleware(['auth'])->group(function () {
     //MEDICOS
     Route::get('/medicos', [MedicosController::class, 'medicosView'])->name('medicos');
     Route::get('/medicos/obtenerMedicos', [MedicosController::class, 'obtenerListaMedicos']);
-<<<<<<< HEAD
-    Route::get('/medicos/verLegajo/{idMedico}', [MedicosController::class, 'obtenerLegajoMedico']);
-=======
     Route::get('/medicos/obtenerLegajo/{idMedico}', [MedicosController::class, 'obtenerLegajoMedico']);
     Route::get('/medicos/obtenerServicios', [MedicosController::class, 'obtenerServiciosMedicos']);
     Route::put('/medicos/registrarNuevoMedico', [MedicosController::class, 'registrarNuevoMedico']);
->>>>>>> f884a2ed0480ebc85db2f0a15e7fa104e935f0a2
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {
