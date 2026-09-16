@@ -46,4 +46,49 @@ class MedicosController extends Controller
             ], 500);
         }
     }
+
+    public function obtenerServiciosMedicos()
+    {
+        try {
+            $servicios = DB::select(("select distinct(servicio) from medicos;"));
+            return response()->json($servicios);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => "Error al obtener servicios médicos",
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function registrarNuevoMedico(Request $request)
+    {
+        $idUser = Auth::id();
+        $nombreMedico = $request->nombreMedico;
+        $cuitMedico = $request->cuitMedico;
+        $matriculaMedico = $request->matriculaMedico;
+        $domicilioMedico = $request->domicilioMedico;
+        $correoMedico = $request->correoMedico;
+        $telefonoMedico = $request->telefonoMedico;
+        $servicioMedico = $request->servicioMedico;
+        $razonSocialMedico = $request->razonSocialMedico;
+
+        try {
+            DB::statement('CALL SP_NUEVO_MEDICO(?,?,?,?,?,?,?,?,?)', [
+                $nombreMedico,
+                $matriculaMedico,
+                $cuitMedico,
+                $domicilioMedico,
+                $correoMedico,
+                $telefonoMedico,
+                $servicioMedico,
+                $razonSocialMedico,
+                $idUser
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al guardar el médico',
+                'detalle' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
