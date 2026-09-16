@@ -55,43 +55,12 @@ $(document).ready(function () {
 
     $("#tbMedicos").on("click", "tbody tr", function () {
         const id = tablaMedicos.row(this).data().id;
-<<<<<<< HEAD
-=======
-        const medico = tablaMedicos.row(this).data().medico;
-        $("#lblNombreMedico").text(medico.toUpperCase());
->>>>>>> f884a2ed0480ebc85db2f0a15e7fa104e935f0a2
         verDetalleMedico(id);
     });
 });
 
 function verDetalleMedico(idMedico) {
     $.ajax({
-<<<<<<< HEAD
-        url: `/rrhh/medicos/verLegajo/${idMedico}`,
-        type: "GET",
-        dataType: "json",
-        success: function (medico) {
-            $("#inputIdMedico").val(medico.id ?? '');
-            $("#inputNombreMedico").val(medico.nombre ?? '');
-            $("#inputApellidoMedico").val(medico.apellido ?? '');
-            $("#inputCuitMedico").val(medico.dni ?? '');
-            $("#inputMpMedico").val(medico.matricula ?? '');
-            $("#inputDomicilioMedico").val(medico.domicilio ?? '');
-            $("#inputCorreoMedico").val(medico.correo ?? '');
-            $("#inputTelefonoMedico").val(medico.telefono ?? '');
-            $("#inputServicioMedico").val(medico.servicio ?? '');
-            $("#inputRazonMedico").val(medico.razonSocial ?? '');
-            $("#inputFechaAlta").val(formatFechaHora(medico.created_at ?? ''));
-            $("#lblNombreMedico").text((medico.apellido+' '+medico.nombre).toUpperCase());
-            $("#modalDetalleMedico").modal("show");
-        },
-        error: function (xhr, status, error) {
-            console.error("Error al traer datos del legajo");
-        },
-    });
-}
-
-=======
         url: `/rrhh/medicos/obtenerLegajo/${idMedico}`,
         type: "GET",
         dataType: "json",
@@ -147,4 +116,3 @@ $("#formNuevoMedico").on("submit", function (e) {
         },
     });
 });
->>>>>>> f884a2ed0480ebc85db2f0a15e7fa104e935f0a2
