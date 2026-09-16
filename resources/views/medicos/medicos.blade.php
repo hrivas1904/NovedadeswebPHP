@@ -79,28 +79,22 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Alta nuevo médico</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="formNuevoMedico">
+            <form id="formNuevoMedico">
+                <div class="modal-body">
                     <div class="row g-4">
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-floating">
                                 <input class="form-control" type="text" name="nombreMedico">
-                                <label>NOMBRE</label>
+                                <label>MÉDICO</label>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4">
-                            <div class="form-floating">
-                                <input class="form-control" type="text" name="apellidoMedico">
-                                <label>APELLIDO</label>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-2">
+                        <div class="col-12 col-md-6 col-lg-3">
                             <div class="form-floating">
                                 <input class="form-control" type="number" name="cuitMedico">
                                 <label>C.U.I.T./DNI</label>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-2">
+                        <div class="col-12 col-md-6 col-lg-3">
                             <div class="form-floating">
                                 <input class="form-control" type="text" name="matriculaMedico">
                                 <label>MP</label>
@@ -126,7 +120,7 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="form-floating">
-                                <select class="form-control" name="servicioMedico">
+                                <select class="form-control" id="selectServicioAltaMedico" name="servicioMedico">
                                     <option value="">Seleccione servicio</option>
                                 </select>
                                 <label>SERVICIO</label>
@@ -139,11 +133,11 @@
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Guardar cambios</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -152,66 +146,72 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel" id="lblNombreMedico">-</h1>
+                <h1 class="modal-title fs-5" id="lblNombreMedico">-</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="formNuevoMedico">
                     <div class="row g-4">
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-2">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="nombreMedico">
-                                <label>NOMBRE</label>
+                                <input class="form-control" type="text" id="idMedico" readonly>
+                                <label>ID</label>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="apellidoMedico">
-                                <label>APELLIDO</label>
+                                <input class="form-control" type="text" id="nombreMedico">
+                                <label>MEDICO</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-2">
                             <div class="form-floating">
-                                <input class="form-control" type="number" name="cuitMedico">
+                                <input class="form-control" type="number" id="cuitMedico">
                                 <label>C.U.I.T./DNI</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-2">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="matriculaMedico">
+                                <input class="form-control" type="text" id="matriculaMedico">
                                 <label>MP</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-5">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="domicilioMedico">
+                                <input class="form-control" type="text" id="domicilioMedico">
                                 <label>DOMICILIO</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="correoMedico">
+                                <input class="form-control" type="text" id="correoMedico">
                                 <label>CORREO</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="telefonoMedico">
+                                <input class="form-control" type="text" id="telefonoMedico">
                                 <label>TELÉFONO</label>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="form-floating">
-                                <select class="form-control" name="servicioMedico">
+                                <select class="form-control" id="servicioMedico">
                                     <option value="">Seleccione servicio</option>
                                 </select>
                                 <label>SERVICIO</label>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-8">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-floating">
-                                <input class="form-control" type="text" name="razonSocialMedico">
+                                <input class="form-control" type="text" id="razonSocialMedico">
                                 <label>RAZÓN SOCIAL</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-2">
+                            <div class="form-floating">
+                                <input class="form-control" type="text" id="fechaAltaMedico" readonly>
+                                <label>FECHA ALTA</label>
                             </div>
                         </div>
                     </div>

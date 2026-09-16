@@ -1,5 +1,20 @@
 let tablaMedicos = null;
 
+function formatFechaHora(fecha) {
+    if (!fecha) return "";
+    const match = fecha.match(
+        /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/,
+    );
+    if (!match) return fecha;
+    const [, anio, mes, dia, hora, min, seg] = match;
+    return `${dia}/${mes}/${anio} ${hora}:${min}:${seg}`;
+}
+
+$(document).ready(function () {
+    obtenerServiciosMedicos("selectServicioAltaMedico");
+    obtenerServiciosMedicos("servicioMedico");
+});
+
 $(document).ready(function () {
     tablaMedicos = new DataTable("#tbMedicos", {
         ajax: {
@@ -8,12 +23,12 @@ $(document).ready(function () {
             dataSrc: "",
         },
         columns: [
-            { data: "id", className: "text-start", visible: false },
+            { data: "id", className: "text-start" },
             { data: "medico", className: "text-start" },
             { data: "matricula", className: "text-start" },
             { data: "dni", className: "text-start" },
-            { data: "especialidad", className: "text-start" },
-            { data: "telefono", className: "text-start" },
+            { data: "servicio", className: "text-start" },
+            { data: "correo", className: "text-start" },
         ],
         language: {
             url: "/js/es-ES.json",
@@ -26,15 +41,68 @@ $(document).ready(function () {
         dom: "tir",
     });
 
-    $("#tbMedicos tbody").on("click", "tr", function () {
-        alert("Hiciste click");
+    $("#tbMedicos").on("click", "tbody tr", function () {
+        const id = tablaMedicos.row(this).data().id;
+        const medico = tablaMedicos.row(this).data().medico;
+        $("#lblNombreMedico").text(medico.toUpperCase());
+        verDetalleMedico(id);
     });
 });
 
 function verDetalleMedico(idMedico) {
     $.ajax({
-        url: "",
-        dataSrc: "",
-        data: function (d) {},
+        url: `/rrhh/medicos/obtenerLegajo/${idMedico}`,
+        type: "GET",
+        dataType: "json",
+        success: function (medico) {
+            $("#idMedico").val(medico.id);
+            $("#nombreMedico").val(medico.nombre);
+            $("#cuitMedico").val(medico.dni);
+            $("#matriculaMedico").val(medico.matricula);
+            $("#domicilioMedico").val(medico.domicilio);
+            $("#correoMedico").val(medico.correo);
+            $("#telefonoMedico").val(medico.telefono);
+            $("#servicioMedico").val(medico.servicio);
+            $("#razonSocialMedico").val(medico.razonSocial ?? "");
+            $("#fechaAltaMedico").val(formatFechaHora(medico.created_at ?? ""));
+            $("#modalDetalleMedico").modal("show");
+        },
     });
 }
+
+function obtenerServiciosMedicos(idSelectServicios) {
+    $.ajax({
+        url: "/rrhh/medicos/obtenerServicios",
+        type: "GET",
+        dataType: "json",
+        success: function (servicios) {
+            const selector = $(`#${idSelectServicios}`);
+            servicios.forEach(function (servicio) {
+                selector.append(
+                    $("<option>", {
+                        value: servicio.servicio,
+                        text: servicio.servicio,
+                    }),
+                );
+            });
+        },
+    });
+}
+
+$("#formNuevoMedico").on("submit", function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: "/rrhh/medicos/registrarNuevoMedico",
+        type: "PUT",
+        data: $(this).serialize(),
+        success: function (response) {
+            $("#formNuevoMedico")[0].reset();
+            $("#modalNuevoMedico").modal("hide");
+            tablaMedicos.ajax.reload(null, false);
+        },
+        error: function (xhr) {
+            console.error(xhr);
+        },
+    });
+});
