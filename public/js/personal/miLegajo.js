@@ -60,7 +60,6 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     const $select = $("#obraSocial");
-
     $.ajax({
         url: "/rrhh/obra-social/lista",
         type: "GET",

@@ -179,8 +179,6 @@ class PersonalController extends Controller
 
     public function store(Request $request)
     {
-        // Iniciamos la transacción para asegurar que si fallan los hijos, 
-        // no se cree el empleado a medias.
         DB::beginTransaction();
 
         try {

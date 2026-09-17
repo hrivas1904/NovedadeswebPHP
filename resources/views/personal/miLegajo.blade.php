@@ -5,17 +5,11 @@
 @section('content')
 <div class="container-fluid" id="legajoColaborador">
 
-    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div class="icon-box">
-            <img src="{{ asset('img/icons/mi-legajo.png') }}" style="height: 32px;" alt="Logo mi legajo">
-        </div>
-        <div>
-            <h3 class="tituloVista mb-0">MI LEGAJO</h3>
-        </div>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h3 class="tituloVista mb-0">MI LEGAJO</h3>
         <button class="btn btn-primary" type="submit" form="formAltaColaborador">
             <i class="fa-solid fa-floppy-disk me-1"></i> Guardar cambios
         </button>
-
     </div>
 
     <form id="formAltaColaborador">
