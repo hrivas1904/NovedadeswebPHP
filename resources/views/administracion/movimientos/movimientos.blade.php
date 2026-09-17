@@ -4,81 +4,112 @@
 
 @section('content')
 <h3 class="tituloVista">MOVIMIENTOS</h3>
-<div class="d-flex gap-3">
-    <select class="form-select w-auto" id="selectCuentas">
-        <option value="">Cuentas</option>
-        @foreach($cuentas as $c)
-        <option value="{{ $c->id }}">{{ $c->nombre }}</option>
-        @endforeach
-    </select>
-    <select class="form-select w-auto" id="selectOperaciones">
-        <option value="">Operaciones</option>
-        <option value="Ingresos">Ingresos</option>
-        <option value="Transferencias">Transferencias</option>
-        <option value="Cheques">Cheques</option>
-        <option value="Efectivo">Efectivo</option>
-    </select>
-    <select class="form-select w-auto" id="selectConceptos">
-        <option value="">Conceptos</option>
-        @foreach($conceptos as $c)
-        <option value="{{ $c }}">{{ $c }}</option>
-        @endforeach
-    </select>
-    <input type="text" class="form-control" id="inputSubconcepto" placeholder="Sub-concepto...">
-
-    <input class="form-control" id="inputBuscador" placeholder="Buscar...">
-
-    <button type="button" class="btn btn-sm btn-primary" id="btnAbrirManual" data-bs-toggle="modal" data-bs-target="#modalMovimientoManual">
-        Manual
-    </button>
-</div>
-
-<div class="row d-flex mt-2 mb-4">
-    <div class="col-2 d-flex gap-3 align-items-end">
-        <label class="form-label h6 fw-bold" style="color: var(--color-default);">Desde: </label>
-        <input type="date" class="form-control" id="inputFechaDesde">
-    </div>
-    <div class="col-2 d-flex gap-3 align-items-end">
-        <label class="form-label h6 fw-bold" style="color: var(--color-default);">Hasta: </label>
-        <input type="date" class="form-control" id="inputFechaHasta">
-    </div>
-    <div class="col-auto d-flex">
+<div class="d-flex gap-1 mb-2">
+    <div class="col-9 d-flex">
         <div class="form-control">
-            <div class="d-flex align-items-center gap-3 flex-wrap">
-                <span class="fw-semibold">ESTADOS:</span>
+            <div class="d-flex justify-content-around align-items-center gap-1 flex-wrap">
+                <span class="fw-semibold">CUENTAS:</span>
 
+                @foreach($cuentas as $c)
                 <div class="form-check mb-0">
-                    <input class="form-check-input chkEstado" type="checkbox" id="chkEjecutado" value="EJECUTADO">
-                    <label class="form-check-label" for="chkEjecutado">
-                        Ejecutado
+                    <input class="form-check-input chkCuenta" type="checkbox" id="chkCuenta{{ $c->id }}" value="{{ $c->id }}">
+                    <label class="form-check-label" for="chkCuenta{{ $c->id }}">
+                        {{ $c->nombre }}
                     </label>
                 </div>
+                @endforeach
 
                 <div class="form-check mb-0">
-                    <input class="form-check-input chkEstado" type="checkbox" id="chkPresupuesto" value="PRESUPUESTO">
-                    <label class="form-check-label" for="chkPresupuesto">
-                        Presupuesto
-                    </label>
-                </div>
-
-                <div class="form-check mb-0">
-                    <input class="form-check-input chkEstado" type="checkbox" id="chkCumplido" value="CUMPLIDO">
-                    <label class="form-check-label" for="chkCumplido">
-                        Cumplido
-                    </label>
-                </div>
-
-                <div class="form-check mb-0">
-                    <input class="form-check-input chkEstado" type="checkbox" id="chkTodos" value="" checked>
-                    <label class="form-check-label" for="chkTodos">
+                    <input class="form-check-input chkCuenta" type="checkbox" id="chkCuentaTodos" value="" checked>
+                    <label class="form-check-label" for="chkCuentaTodos">
                         Todos
                     </label>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-1 d-flex">
-        <button type="button" class="btn btn-sm btn-secondary w-100" id="btnLimpiarFiltros">
+
+    <div class="col-1">
+        <select class="form-select w-100" id="selectOperaciones">
+            <option value="">Operaciones</option>
+            <option value="Ingresos">Ingresos</option>
+            <option value="Transferencias">Transferencias</option>
+            <option value="Cheques">Cheques</option>
+            <option value="Efectivo">Efectivo</option>
+        </select>
+    </div>
+
+    <div class="col-2">
+        <select class="form-select w-100" id="selectConceptos">
+            <option value="">Conceptos</option>
+            @foreach($conceptos as $c)
+            <option value="{{ $c }}">{{ $c }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+<div class="row g-3 mb-2">
+    <div class="col-2">
+        <input type="text" class="form-control" id="inputSubconcepto" placeholder="Sub-concepto...">
+    </div>
+
+    <div class="col-2">
+        <input class="form-control" id="inputBuscador" placeholder="Buscar...">
+    </div>
+
+    <div class="col-auto d-flex gap-2 align-items-center">
+        <label class="form-label h6 fw-bold mb-0" style="color: var(--color-default);">Desde: </label>
+        <input type="date" class="form-control" id="inputFechaDesde" style="width: 150px;">
+    </div>
+
+    <div class="col-auto d-flex gap-2 align-items-center">
+        <label class="form-label h6 fw-bold mb-0" style="color: var(--color-default);">Hasta: </label>
+        <input type="date" class="form-control" id="inputFechaHasta" style="width: 150px;">
+    </div>    
+
+    <div class="col-auto d-flex align-items-center">
+        <div class="d-flex align-items-center gap-3 flex-wrap border rounded px-3" style="min-height: 38px;">
+            <span class="fw-semibold">ESTADOS:</span>
+
+            <div class="form-check mb-0">
+                <input class="form-check-input chkEstado" type="checkbox" id="chkEjecutado" value="EJECUTADO">
+                <label class="form-check-label" for="chkEjecutado">
+                    Ejecutado
+                </label>
+            </div>
+
+            <div class="form-check mb-0">
+                <input class="form-check-input chkEstado" type="checkbox" id="chkPresupuesto" value="PRESUPUESTO">
+                <label class="form-check-label" for="chkPresupuesto">
+                    Presupuesto
+                </label>
+            </div>
+
+            <div class="form-check mb-0">
+                <input class="form-check-input chkEstado" type="checkbox" id="chkCumplido" value="CUMPLIDO">
+                <label class="form-check-label" for="chkCumplido">
+                    Cumplido
+                </label>
+            </div>
+
+            <div class="form-check mb-0">
+                <input class="form-check-input chkEstado" type="checkbox" id="chkTodos" value="" checked>
+                <label class="form-check-label" for="chkTodos">
+                    Todos
+                </label>
+            </div>
+        </div>
+    </div> 
+    
+    <div class="col-auto">
+        <button type="button" class="btn btn-sm btn-primary" id="btnAbrirManual" data-bs-toggle="modal" data-bs-target="#modalMovimientoManual">
+            Manual
+        </button>
+    </div>
+
+    <div class="col-auto">
+        <button type="button" class="btn btn-sm btn-secondary" id="btnLimpiarFiltros">
             Limpiar
         </button>
     </div>

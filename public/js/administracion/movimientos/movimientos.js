@@ -5,33 +5,57 @@ function getScrollY() {
 }
 
 function getEstadosSeleccionados() {
-    return $('.chkEstado:not(#chkTodos):checked').map(function () {
-        return $(this).val();
-    }).get();
+    return $(".chkEstado:not(#chkTodos):checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
 }
- 
+
 // "Todos" es excluyente con los demas: tildarlo destilda el resto (no
 // tiene sentido filtrar por estados puntuales Y "todos" a la vez).
-$(document).on('change', '#chkTodos', function () {
-    if ($(this).is(':checked')) {
-        $('.chkEstado').not('#chkTodos').prop('checked', false);
-    }
-    tablaMovimientos.ajax.reload();
-});
- 
-$(document).on('change', '.chkEstado:not(#chkTodos)', function () {
-    if ($(this).is(':checked')) {
-        $('#chkTodos').prop('checked', false);
+$(document).on("change", "#chkTodos", function () {
+    if ($(this).is(":checked")) {
+        $(".chkEstado").not("#chkTodos").prop("checked", false);
     }
     tablaMovimientos.ajax.reload();
 });
 
+$(document).on("change", ".chkEstado:not(#chkTodos)", function () {
+    if ($(this).is(":checked")) {
+        $("#chkTodos").prop("checked", false);
+    }
+    tablaMovimientos.ajax.reload();
+});
+
+function getCuentasSeleccionadas() {
+    return $('.chkCuenta:not(#chkCuentaTodos):checked').map(function () {
+        return $(this).val();
+    }).get();
+}
+ 
+$(document).on('change', '#chkCuentaTodos', function () {
+    if ($(this).is(':checked')) {
+        $('.chkCuenta').not('#chkCuentaTodos').prop('checked', false);
+    }
+    tablaMovimientos.ajax.reload();
+});
+ 
+$(document).on('change', '.chkCuenta:not(#chkCuentaTodos)', function () {
+    if ($(this).is(':checked')) {
+        $('#chkCuentaTodos').prop('checked', false);
+    }
+    tablaMovimientos.ajax.reload();
+});
+ 
+
 $("#btnLimpiarFiltros").on("click", function () {
     $("#inputFechaDesde").val("");
     $("#inputFechaHasta").val("");
-    $("#selectCuentas").val("");
-    $('.chkEstado').prop('checked', false);
-    $('#chkEjecutado, #chkPresupuesto').prop('checked', true); // o los que sean el estado inicial por defecto
+    $(".chkCuenta").prop("checked", false);
+    $("#chkCuentaTodos").prop("checked", true);
+    $(".chkEstado").prop("checked", false);
+    $("#chkEjecutado, #chkPresupuesto").prop("checked", true); // o los que sean el estado inicial por defecto
     $("#selectOperaciones").val("");
     $("#selectConceptos").val("");
     $("#inputSubconcepto").val("");
@@ -75,8 +99,12 @@ $(document).ready(function () {
             data: function (d) {
                 d.fecha_desde = $("#inputFechaDesde").val();
                 d.fecha_hasta = $("#inputFechaHasta").val();
-                d.cuenta = $("#selectCuentas").val();
-                d.estado = $('#chkTodos').is(':checked') ? '' : getEstadosSeleccionados().join(',');
+                d.cuenta = $("#chkCuentaTodos").is(":checked")
+                    ? ""
+                    : getCuentasSeleccionadas().join(",");
+                d.estado = $("#chkTodos").is(":checked")
+                    ? ""
+                    : getEstadosSeleccionados().join(",");
                 d.operacion = $("#selectOperaciones").val();
                 d.concepto = $("#selectConceptos").val();
                 d.subconcepto = $("#inputSubconcepto").val();
@@ -121,7 +149,13 @@ $(document).ready(function () {
                 className: "text-start",
                 render: function (val, type, row) {
                     if (type !== "display") return val;
-                    return '<input type="text" class="form-control form-control-sm input-comprobante-movimiento" data-id="' + row.id + '" value="' + (val || "").replace(/"/g, "&quot;") + '">';
+                    return (
+                        '<input type="text" class="form-control form-control-sm input-comprobante-movimiento" data-id="' +
+                        row.id +
+                        '" value="' +
+                        (val || "").replace(/"/g, "&quot;") +
+                        '">'
+                    );
                 },
             },
             {
@@ -304,7 +338,7 @@ $(document).ready(function () {
         language: { url: "/js/es-ES.json" },
         order: [[1, "desc"]],
         pageLength: 25,
-        lengthMenu: [10, 25, 50, 100, { label: 'Todos', value: -1 }],
+        lengthMenu: [10, 25, 50, 100, { label: "Todos", value: -1 }],
         searching: false,
         scrollY: getScrollY(),
     });
@@ -354,7 +388,6 @@ $(document).on("blur", ".input-comprobante-movimiento", function () {
         tablaMovimientos.ajax.reload(null, false);
     });
 });
- 
 
 function limpiarFormManual() {
     $("#manualFecha").val(new Date().toISOString().slice(0, 10));
@@ -500,7 +533,7 @@ $(document).on("change", ".select-cuenta-movimiento", function () {
 $(document).on("change", ".select-concepto-movimiento", function () {
     const id = $(this).data("id");
     const nuevoConcepto = $(this).val();
- 
+
     // El subconcepto ya no es valido para el concepto nuevo -- se repuebla
     // el select de esa misma fila con la lista correcta, sin arrastrar el anterior.
     const lista = SUBCONCEPTOS_POR_CONCEPTO[nuevoConcepto] || [];
@@ -512,7 +545,7 @@ $(document).on("change", ".select-concepto-movimiento", function () {
         '.select-subconcepto-movimiento[data-id="' + id + '"]',
     );
     $selectSub.html(opts);
- 
+
     $.post(MOVIMIENTOS_ROUTES.concepto.replace(":id", id), {
         concepto: nuevoConcepto,
     }).done(function () {

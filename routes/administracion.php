@@ -10,6 +10,7 @@ use App\Http\Controllers\Administracion\MovimientosController;
 use App\Http\Controllers\Administracion\PresupuestarController;
 use App\Http\Controllers\Administracion\SaldosCuentaController;
 use App\Http\Controllers\Administracion\ConciliacionesController;
+use App\Http\Controllers\Administracion\CopagosController;
 
 Route::middleware(['auth'])->group(function () {
     //COMPRAS
@@ -135,4 +136,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/conciliacion/pagos-honorarios/confirmar', [ConciliacionesController::class, 'confirmarPagosHonorarios'])->name('conciliacion.pagosHonorarios.confirmar');
 
     Route::post('/conciliacion/movimiento/{id}/comentario', [ConciliacionesController::class, 'actualizarComentario'])->name('conciliacion.comentario');
+
+    //COPAGOS IPS
+    Route::get('/copagos/index', [CopagosController::class, 'vistaCopagos'])->name('copagos.index');
 });

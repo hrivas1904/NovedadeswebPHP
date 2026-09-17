@@ -313,6 +313,16 @@
                                 @endif
                             </ul>
                         </li>
+
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link" href="#" role="button" aria-expanded="false">
+                                <i class="fa-solid fa-wallet"></i>
+                                <span class="link-text">Gestión de cobranzas</span>
+                            </a>
+                            <ul class="submenu">
+                                <li><a class="submenu-link" href="{{ route('administracion.copagos.index') }}">Cobranzas IPS</a></li>
+                            </ul>
+                        </li>
                         @endif
 
                         <!-- ===== SECCIÓN: AJUSTES ===== -->
