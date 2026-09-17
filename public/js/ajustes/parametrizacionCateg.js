@@ -49,7 +49,7 @@ function cargarTablaCategorias() {
         },
         autoWidth: false,
         scrollX: false,
-        scrollY: "58vh",
+        scrollY: "62vh",
         info: false,
         searching: false,
     });

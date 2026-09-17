@@ -991,4 +991,49 @@ class ParametrosController extends Controller
             ], 500);
         }
     }
+
+    public function obtenerTiposContratos()
+    {
+        try {
+            $tiposContratos = DB::select("CALL SP_LISTAR_TIPOS_CONTRATOS()");
+            return response()->json($tiposContratos);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => "Error al obtener los tipos de contratos",
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function obtenerTiposContratosActivos()
+    {
+        try {
+            $tiposContratos = DB::select("CALL SP_LISTAR_TIPOS_CONTRATOS_ACTIVOS()");
+            return response()->json($tiposContratos);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => "Error al obtener los tipos de contratos activos",
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function registrarNuevoTipoContrato(Request $request)
+    {
+        $nombreTipoContrato = $request->nombreTipoContrato;
+        $idUser = Auth::id();
+
+        try {
+            DB::statement("CALL SP_NUEVO_TIPOS_CONTRATOS(?,?)", [$nombreTipoContrato, $idUser]);
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Tipo de contrato registrado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al guardar nuevo tipo de contrato',
+                'detalle' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

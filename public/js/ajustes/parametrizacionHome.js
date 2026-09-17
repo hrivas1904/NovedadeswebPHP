@@ -5,12 +5,9 @@ $(document).ready(function () {
         $(this).addClass("active");
         cargarSubvistaParametros($(this));
     });
-
 });
 
-
 function cargarSubvistaParametros(btn) {
-
     const url = btn.data("url");
     const vista = btn.data("vista");
 
@@ -28,28 +25,23 @@ function cargarSubvistaParametros(btn) {
         type: "GET",
 
         success: function (html) {
-
             $(".renderDivParametros").html(html);
 
             inicializarSubvistaParametros(vista);
         },
 
         error: function () {
-
             $(".renderDivParametros").html(`
                 <div class="alert alert-danger">
                     No se pudo cargar la configuración seleccionada.
                 </div>
             `);
-
-        }
+        },
     });
 }
 
 function inicializarSubvistaParametros(vista) {
-
     switch (vista) {
-
         case "areasServicios":
             cargarTablaAreas();
             cargarSelectorNovedadesFuncion();
@@ -58,6 +50,7 @@ function inicializarSubvistaParametros(vista) {
         case "categorias":
             cargarTablaCategorias();
             cargarTablaRegimenes();
+            cargarTablaContratos();
             break;
 
         case "novedades":
@@ -67,6 +60,5 @@ function inicializarSubvistaParametros(vista) {
         case "obrasSociales":
             cargarTablaOs();
             break;
-
     }
 }

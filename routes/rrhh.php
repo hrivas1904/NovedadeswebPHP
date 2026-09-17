@@ -368,6 +368,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/obras-sociales/{id}/campo', [ParametrosController::class, 'editarCamposObrasSociales']);
 
+    Route::get('/contratos/obtenerTiposContratos', [ParametrosController::class, 'obtenerTiposContratos']);
+    Route::get('/contratos/obtenerTiposContratosActivos', [ParametrosController::class, 'obtenerTiposContratosActivos']);
+    Route::post('/contratos/registrarNuevoTipoContrato', [ParametrosController::class, 'registrarNuevoTipoContrato']);
+
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
     Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');

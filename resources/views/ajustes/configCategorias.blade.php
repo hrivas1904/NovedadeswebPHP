@@ -81,6 +81,39 @@
                         <tbody></tbody>
                     </table>
 
+                    <div class="section-divider">
+                        <span>TIPOS DE CONTRATOS</span>
+                    </div>
+
+                    <form id="formNuevaTipoContrato">
+                        @csrf
+                        <div class="row g-2 align-items-end">
+                            <div class="col-12 col-lg-7">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="nombreTipoContrato" id="nombreTipoContrato" required placeholder="Nombre tipo contratación">
+                                    <label for="nombreTipoContrato">Nombre tipo contrato</label>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-5">
+                                <button type="submit" class="btn btn-primary w-100" id="btnCrearTipoContrato">
+                                    Crear nuevo tipo contrato
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <table id="tbContratos" class="table table-hover align-middle table-header-hp3c">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>CONTRATO</th>
+                                <th>ACTIVO</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
                 </div>
             </div>
         </div>

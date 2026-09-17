@@ -26,6 +26,7 @@
 <script src="{{ asset('js/ajustes/parametrizacionCateg.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionRegimenes.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionNovedades.js') }}"></script>
+<script src="{{ asset('js/ajustes/parametrizacionContratos.js') }}"></script>
 <script src="{{ asset('js/ajustes/obraSociales.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionHome.js') }}"></script>
 @endpush
