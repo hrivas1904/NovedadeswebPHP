@@ -24,6 +24,12 @@
             Comparativo Presupuesto
         </button>
 
+        <button type="button" id="btnIrComparativoDiario" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
+            data-url="{{ route('administracion.comparativaDiarioView') }}">
+            <i class="fa-solid fa-calendar-day"></i>
+            Flujo de Fondos Diario
+        </button>
+
         <button type="button" id="btnIrPresupuestoEjecutado" class="btn btn-sm btn-analisis" style="color: var(--color-default);"
             data-url="{{ route('administracion.presupuestadoView') }}">
             <i class="fa-solid fa-scale-balanced"></i>
