@@ -345,6 +345,12 @@
                                 <span class="link-text">Capacitaciones</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('biblioteca.*') ? 'active' : '' }}" href="{{ route('biblioteca.index') }}" @if(request()->routeIs('biblioteca.*')) aria-current="page" @endif>
+                                <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                                <span class="link-text">Biblioteca Institucional</span>
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('rrhh.ayuda') }}">

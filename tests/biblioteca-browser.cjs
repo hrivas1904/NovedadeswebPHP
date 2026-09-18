@@ -1,0 +1,32 @@
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const fs = require('fs'); const path = require('path'); const assert = require('assert');
+(async()=>{
+ const out=process.env.BIBLIOTECA_QA;fs.mkdirSync(out,{recursive:true});
+ const browser=await chromium.launch({channel:'chrome',headless:true});const context=await browser.newContext({viewport:{width:1440,height:1000}});const page=await context.newPage();
+ const base='http://127.0.0.1:8001';const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept(d.type()==='prompt'?'Retiro de prueba':undefined));
+ await page.route('**/*',route=>{const url=new URL(route.request().url());if(url.origin===base && !url.pathname.startsWith('/biblioteca')&&!/^\/(css|js|img|images|fonts|favicon)/.test(url.pathname))return route.abort();return route.continue();});
+ try{
+  await page.goto(base+'/biblioteca',{waitUntil:'networkidle'});await page.locator('.bib-app h1').waitFor();assert.equal(await page.locator('.bib-collection').count(),4);await page.screenshot({path:path.join(out,'01-indice.png'),fullPage:true});
+  await page.getByLabel('Buscar en toda la biblioteca').fill('tesorera');await page.getByRole('button',{name:'Buscar',exact:true}).click();await page.waitForURL('**/biblioteca/buscar?**');
+  await page.locator('.bib-document-link').filter({hasText:/^Tesorera$/}).first().click();await page.locator('.bib-app h2').first().waitFor();assert.equal(await page.locator('li').filter({hasText:'Ética profesional: Demuestra'}).count(),1);await page.screenshot({path:path.join(out,'02-descriptivo.png'),fullPage:true});
+  const log=page.locator('details').filter({has:page.locator('summary',{hasText:'Registro de acciones'})}).first();assert.equal(await log.getAttribute('open'),null);
+  await page.goto(base+'/biblioteca/administracion/nuevo?kind=instructivos');await page.locator('#bib-code').fill('INS-QA-'+Date.now());await page.locator('#bib-title').fill('Guía de verificación Laravel');await page.locator('#bib-responsible').fill('Calidad');
+  await page.locator('[data-manual-title]').fill('Pasos para la atención');await page.locator('.bib-rich-editor').fill('Confirmar identidad y registrar la atención.');
+  await page.getByRole('button',{name:'Guardar borrador',exact:true}).click();await page.getByRole('status').filter({hasText:'Borrador guardado'}).waitFor();await page.reload();await page.locator('#bib-title').waitFor();assert.equal(await page.locator('#bib-title').inputValue(),'Guía de verificación Laravel');
+  await page.getByRole('button',{name:'Vista previa',exact:true}).click();await page.locator('#bib-preview-dialog[open]').waitFor();await page.getByRole('button',{name:'Cerrar vista previa'}).click();
+  await page.getByRole('button',{name:'Guardar y publicar',exact:true}).click();await page.locator('.bib-alert:not(.d-none)').waitFor();assert.match(await page.locator('.bib-alert').textContent(),/fecha de vigencia/i);
+  await page.locator('#bib-validFrom').fill('2026-09-01');await page.locator('#bib-approver').fill('Dirección');await page.locator('#bib-approvalRecord').fill('Acta QA');await page.getByRole('button',{name:'Guardar y publicar',exact:true}).click();await page.waitForURL('**/biblioteca/documentos/**');await page.locator('.bib-badge.current').first().waitFor();
+  await page.getByRole('button',{name:'Crear borrador para editar'}).click();await page.waitForURL('**/editar');await page.locator('.bib-rich-editor').fill('Confirmar identidad y registrar la atención. Actualización validada.');await page.getByRole('button',{name:'Guardar y publicar',exact:true}).click();await page.waitForURL('**/biblioteca/documentos/**');assert.match(await page.locator('.bib-app').textContent(),/Actualización validada/);
+  await page.getByText('Versiones e historial', {exact:false}).click();assert.match(await page.locator('.bib-app').textContent(),/Histórico \/ retirado/);await page.screenshot({path:path.join(out,'03-historial.png'),fullPage:true});
+  await page.getByRole('button',{name:'Retirar versión',exact:true}).click();await page.waitForLoadState('networkidle');await page.locator('.bib-page-heading .bib-badge').filter({hasText:'Histórico / retirado'}).waitFor();
+  await page.goto(base+'/biblioteca/administracion/nuevo?kind=descriptivos');await page.locator('#bib-name').fill('Puesto QA Laravel');await page.locator('#bib-area').fill('Calidad');
+  await page.locator('[data-group="purpose"]').getByRole('button',{name:'+ Agregar texto',exact:true}).click();await page.locator('[data-group="purpose"] textarea').fill('Asegurar el funcionamiento de la biblioteca.');
+  await page.locator('[data-group="tasks"]').getByRole('button',{name:'+ Agregar texto',exact:true}).click();await page.locator('[data-group="tasks"] textarea').fill('Verificar documentos.');
+  await page.locator('[data-group="commitment"]').getByRole('button',{name:'+ Agregar texto',exact:true}).click();await page.locator('[data-group="commitment"] textarea').fill('Cumplir los protocolos.');
+  await page.getByRole('button',{name:'Guardar y publicar',exact:true}).click();await page.waitForURL('**/biblioteca/documentos/**');assert.equal(await page.locator('.bib-reading li').filter({hasText:'Cumplir los protocolos.'}).count(),1);assert.equal(await page.locator('.bib-reading li').filter({hasText:'Ética profesional:'}).count(),1);
+  await page.goto(base+'/biblioteca/administracion/sincronizacion');await page.getByRole('button',{name:'Sincronizar carpetas'}).click();await page.waitForLoadState('networkidle');assert.match(await page.locator('.bib-app').textContent(),/Sin cambios/);assert.doesNotMatch(await page.locator('.bib-app').textContent(),/No se pudo/);
+  for(const width of [390,768,1440]){await page.setViewportSize({width,height:900});await page.goto(base+'/biblioteca',{waitUntil:'networkidle'});const sizes=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,width:innerWidth}));assert(sizes.scroll<=sizes.width+2,JSON.stringify(sizes));await page.screenshot({path:path.join(out,`04-indice-${width}.png`),fullPage:true});}
+  fs.writeFileSync(path.join(out,'resultado.json'),JSON.stringify({status:'ok',errors},null,2));assert.deepEqual(errors,[]);
+ }catch(error){await page.screenshot({path:path.join(out,'fallo.png'),fullPage:true});fs.writeFileSync(path.join(out,'fallo.txt'),error.stack+'\n'+await page.locator('body').innerText());throw error;}
+ finally{await browser.close();}
+})().catch(error=>{process.stderr.write(error.stack+'\n');process.exitCode=1;});

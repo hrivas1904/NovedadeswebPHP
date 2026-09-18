@@ -19,3 +19,5 @@ Route::prefix('administracion')->name('administracion.')->group(function () {
 Route::prefix('configuracion')->name('configuracion.')->group(function () {
     require __DIR__.'/config.php';
 });
+
+require __DIR__.'/biblioteca.php';
