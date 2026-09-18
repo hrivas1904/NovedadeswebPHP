@@ -11,9 +11,9 @@ function cargarTablaContratos() {
             { data: "id", className: "text-start" },
             {
                 data: "nombre",
-                render: function (data) {
+                render: function (data, type, row) {
                     return `
-                        <input class="form-control inputContratos" data-campo="nombreContrato" value="${data}">
+                        <input class="form-control inputContratos" data-id="${row.id}" data-campo="nombreContrato" value="${data}">
                     `;
                 },
             },
@@ -52,7 +52,7 @@ function cargarTablaContratos() {
     });
 }
 
-$("#formNuevaTipoContrato").on("submit", function (e) {
+$(document).on("submit", "#formNuevaTipoContrato", function (e) {
     e.preventDefault();
 
     if (!$("#nombreTipoContrato").val().trim()) {
@@ -84,7 +84,7 @@ $("#formNuevaTipoContrato").on("submit", function (e) {
                 showConfirmButton: false,
             });
 
-            $("#tbContratos").DataTable.ajax.reload();
+            $("#tbContratos").DataTable().ajax.reload(null, false);
         },
         error: function (xhr) {
             console.error("ERROR AJAX:", xhr);
@@ -102,3 +102,107 @@ $("#formNuevaTipoContrato").on("submit", function (e) {
         },
     });
 });
+
+$(document).on(
+    "change",
+    '.inputContratos[data-campo="nombreContrato"]',
+    function () {
+
+        const id = $(this).data("id");
+        const nombre = $(this).val().trim();
+
+        if (!nombre) {
+            Swal.fire({
+                title: "¡Atención!",
+                text: "El nombre del tipo de contrato no puede estar vacío.",
+                icon: "warning",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+
+            return;
+        }
+
+        $.ajax({
+            url: "/rrhh/contratos/editarNombreTipoContrato",
+            type: "PUT",
+
+            data: {
+                idTipo: id,
+                nombre: nombre,
+            },
+
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+
+            success: function (response) {
+                Swal.fire({
+                    title: "Actualizado",
+                    text: "Nombre actualizado correctamente.",
+                    icon: "success",
+                    timer: 1200,
+                    showConfirmButton: false,
+                });
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseText);
+
+                Swal.fire({
+                    title: "Error",
+                    text:
+                        xhr.responseJSON?.detalle ??
+                        "No se pudo actualizar el nombre.",
+                    icon: "error",
+                });
+            },
+        });
+    }
+);
+
+$(document).on(
+    "change",
+    '.inputContratos[data-campo="estadoContrato"]',
+    function () {
+
+        const id = $(this).data("id");
+        const estado = $(this).is(":checked") ? 1 : 0;
+
+        $.ajax({
+            url: "/rrhh/contratos/editarEstadoTipoContrato",
+            type: "PUT",
+
+            data: {
+                idTipo: id,
+                estado: estado,
+            },
+
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+
+            success: function (response) {
+                Swal.fire({
+                    title: "Actualizado",
+                    text: "Estado actualizado correctamente.",
+                    icon: "success",
+                    timer: 1200,
+                    showConfirmButton: false,
+                });
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseText);
+
+                Swal.fire({
+                    title: "Error",
+                    text:
+                        xhr.responseJSON?.detalle ??
+                        "No se pudo actualizar el estado.",
+                    icon: "error",
+                });
+            },
+        });
+    }
+);

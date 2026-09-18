@@ -1024,7 +1024,7 @@ class ParametrosController extends Controller
         $idUser = Auth::id();
 
         try {
-            DB::statement("CALL SP_NUEVO_TIPOS_CONTRATOS(?,?)", [$nombreTipoContrato, $idUser]);
+            DB::statement("CALL SP_NUEVO_TIPO_CONTRATO(?,?)", [$nombreTipoContrato, $idUser]);
             return response()->json([
                 'success' => true,
                 'mensaje' => 'Tipo de contrato registrado correctamente'
@@ -1032,6 +1032,60 @@ class ParametrosController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Error al guardar nuevo tipo de contrato',
+                'detalle' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function editarNombreTipoContrato(Request $request)
+    {
+        $idTipo = $request->idTipo;
+        $nombre = $request->nombre;
+        $idUser = Auth::id();
+
+        try {
+
+            DB::statement(
+                "CALL SP_EDITAR_TIPOS_CONTRATOS_NOMBRE(?, ?, ?)",
+                [$idTipo, $nombre, $idUser]
+            );
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Nombre actualizado correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Error al actualizar el nombre',
+                'detalle' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function editarEstadoTipoContrato(Request $request)
+    {
+        $idTipo = $request->idTipo;
+        $estado = $request->estado;
+        $idUser = Auth::id();
+
+        try {
+
+            DB::statement(
+                "CALL SP_EDITAR_TIPOS_CONTRATOS_ESTADO(?, ?, ?)",
+                [$idTipo, $estado, $idUser]
+            );
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Estado actualizado correctamente'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Error al actualizar el estado',
                 'detalle' => $e->getMessage(),
             ], 500);
         }
