@@ -31,6 +31,60 @@
         try{const result=await request($(this).data('url'),data);window.location.href=result.url;}
         catch(xhr){error(errorMessage(xhr));busy=false;$(this).find('button').prop('disabled',false);}
     });
+    const coverageForm = $('#coverage-filters');
+    if (coverageForm.length) {
+        const results = $('#coverage-results'), feedback = $('#coverage-feedback');
+        let timer, pending, generation = 0;
+        coverageForm.find('[data-coverage-search]').hide();
+        function cancelSearch() {
+            clearTimeout(timer);
+            generation++;
+            if (pending) { pending.abort(); pending = null; }
+        }
+        function loadCoverage(url) {
+            cancelSearch();
+            const current = generation;
+            results.attr('aria-busy', 'true');
+            feedback.text('Buscando…');
+            pending = $.ajax({url, dataType: 'json', headers: {Accept: 'application/json'}})
+                .done(function (data) {
+                    if (current !== generation) return;
+                    results.html(data.html);
+                    feedback.text(results.find('.bib-result-count').text());
+                })
+                .fail(function (xhr, status) {
+                    if (current !== generation || status === 'abort') return;
+                    feedback.text('No se pudieron actualizar los resultados. Se muestran los anteriores. Intentá nuevamente.');
+                    coverageForm.find('[data-coverage-search]').show().text('Reintentar');
+                })
+                .always(function () {
+                    if (current === generation) { results.attr('aria-busy', 'false'); pending = null; }
+                });
+        }
+        function searchUrl() { return coverageForm.attr('action') + '?' + coverageForm.serialize(); }
+        coverageForm.on('input', '#coverage-q', function () {
+            cancelSearch();
+            results.attr('aria-busy', 'true');
+            feedback.text('Buscando…');
+            timer = setTimeout(() => loadCoverage(searchUrl()), 250);
+        });
+        coverageForm.on('change', '#coverage-status', () => loadCoverage(searchUrl()));
+        coverageForm.on('submit', function (event) { event.preventDefault(); loadCoverage(searchUrl()); });
+        results.on('click', '.bib-pagination a', function (event) {
+            event.preventDefault(); loadCoverage(this.href);
+        });
+    }
+    const previewSelect = $('#preview-user');
+    if (previewSelect.length) {
+        const options = previewSelect.find('option').clone();
+        const normalize = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        $('#preview-search').on('input', function () {
+            const q = normalize(this.value), selected = previewSelect.val();
+            previewSelect.empty().append(options.filter(function () { return normalize(this.textContent).includes(q); }).clone());
+            if (selected) previewSelect.val(selected);
+            $('#preview-empty').toggleClass('d-none', previewSelect.find('option').length > 0);
+        });
+    }
     const configElement=document.getElementById('bib-editor-config');if(!configElement)return;
     const config=JSON.parse(configElement.textContent), job=config.kind==='descriptivos';let content=clone(config.content);
     function markDirty(){dirty=true;$('#bib-save-status').text('Cambios sin guardar');}

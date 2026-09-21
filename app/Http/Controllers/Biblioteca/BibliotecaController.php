@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Biblioteca;
 
 use App\Http\Controllers\Controller;
-use App\Services\Biblioteca\{Content,Library,Uploads,WordExport};
+use App\Services\Biblioteca\{Content,Library,Uploads,WordExport,Governance,Acceptances};
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -15,18 +15,18 @@ class BibliotecaController extends Controller
     public function __construct(private Library $library) {}
     private function manager(Request $r): void {abort_unless(Library::manages($r->user()),403,'La gestión de la biblioteca requiere permiso de administración.');}
     private function page(string $view,array $data=[]) {return view('biblioteca.'.$view,$data+['collections'=>config('biblioteca.collections'),'canManage'=>Library::manages(auth()->user())]);}
-    public function index() { $entries=$this->library->filter($this->library->entries(),[]);return $this->page('index',compact('entries')); }
+    public function index() { $governance=new Governance; $entries=$this->library->filter($governance->visibleEntries($this->library->entries(),auth()->user()),[]); $entries=array_values(array_filter($entries,fn($e)=>$governance->sectionVisible($e['document']['kind']))); $signaturePending=app(Acceptances::class)->context(auth()->user())['canSign']; return $this->page('index',compact('entries','signaturePending')); }
     public function catalog(Request $r,?string $kind=null) {
         if($kind)abort_unless(isset(config('biblioteca.collections')[$kind]),404);
-        $control=$r->routeIs('biblioteca.control');$manage=$r->routeIs('biblioteca.manage');if($manage)$this->manager($r);
-        $all=$this->library->entries($control);$filters=$r->only(['q','area','state','review','history']);$filters['kind']=$kind?:$r->query('kind');if($control)$filters['history']=1;
-        $filtered=$this->library->filter($all,$filters);$page=max(1,(int)$r->query('page',1));
-        $entries=new LengthAwarePaginator(array_slice($filtered,($page-1)*15,15),count($filtered),15,$page,['path'=>$r->url(),'query'=>$r->query()]);
+        $control=$r->routeIs('biblioteca.control');$manage=$r->routeIs('biblioteca.manage');if($manage||$control)$this->manager($r);
+        $governance=new Governance;if($kind&&!Library::manages($r->user()))abort_unless($governance->sectionVisible($kind),404);$all=$governance->visibleEntries($this->library->entries($control),$r->user());$filters=$r->only(['q','area','state','review','history']);$filters['kind']=$kind?:$r->query('kind');if($control)$filters['history']=1;if($manage&&!$r->has('history'))$filters['history']=1;
+        $filtered=$this->library->filter($all,$filters);$page=$manage?1:max(1,(int)$r->query('page',1));$perPage=$manage?max(1,count($filtered)):15;
+        $entries=new LengthAwarePaginator(array_slice($filtered,($page-1)*$perPage,$perPage),count($filtered),$perPage,$page,['path'=>$r->url(),'query'=>$r->query()]);
         $areas=collect($all)->pluck('area')->filter()->unique()->sort()->values();$states=collect($all)->pluck('state')->unique()->sort()->values();
         return $this->page('catalog',compact('entries','filters','areas','states','control','manage','kind'));
     }
     public function show(Request $r,string $document) {
-        $entry=$this->library->entry($document,$r->query('version'));$history=$this->library->history($document);
+        $entry=$this->library->entry($document,$r->query('version'));(new Governance)->assertReadable($entry,$r->user());$history=$this->library->history($document);if(!Library::manages($r->user())&&$entry['document']['kind']==='politicas')$history=[$entry['version']];
         $sources=DB::table('bib_sources')->where('document_id',$document)->get();
         $findings=DB::table('bib_findings')->where('document_id',$document)->where('version_id',$entry['version']['source_version_id']?:$entry['version']['id'])->get();
         $events=Library::manages($r->user())?$this->library->events($document):[];
@@ -80,7 +80,7 @@ class BibliotecaController extends Controller
         return response()->download($path,$s['name'],['Content-Type'=>'application/octet-stream','X-Content-Type-Options'=>'nosniff']);
     }
     public function export(Request $r,string $version,string $format) {
-        $v=$this->library->version($version);$entry=$this->library->entry($v['document_id'],$version);$name=Str::slug($entry['title']).'-v'.$v['number'];
+        $v=$this->library->version($version);$entry=$this->library->entry($v['document_id'],$version);(new Governance)->assertReadable($entry,$r->user());$name=Str::slug($entry['title']).'-v'.$v['number'];
         $html=view('biblioteca.export',compact('entry'))->render();
         if($format==='pdf')return Pdf::loadHTML($html)->setPaper('a4')->setOption('isRemoteEnabled',false)->download($name.'.pdf');
         abort_unless($format==='docx',404);$file=(new WordExport)->create($html);return response()->download($file,$name.'.docx',['Content-Type'=>'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])->deleteFileAfterSend(true);

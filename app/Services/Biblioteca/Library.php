@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class Library
 {
-    public static function manages($user): bool { return $user && in_array($user->rol, config('biblioteca.management_roles'), true); }
+    public static function manages($user): bool { return $user && $user->rol === 'Administrador/a' && ($user->estado ?? 'ACTIVO') === 'ACTIVO'; }
     public static function now(): string { return CarbonImmutable::now('UTC')->format('Y-m-d\TH:i:s.v\Z'); }
     public static function today(): string { return CarbonImmutable::now(config('biblioteca.timezone'))->format('Y-m-d'); }
     public static function actor($user): string { return 'usuario:'.$user->getAuthIdentifier().' · '.($user->name ?: $user->username); }
@@ -30,7 +30,7 @@ class Library
         $next=null;
         if(!$job && ($date=$c['lastReview']??$c['validFrom']??null)) $next=CarbonImmutable::parse($date)->addMonthsNoOverflow($c['reviewMonths']??12)->format('Y-m-d');
         $status=[];
-        if(!$job) { if(empty($c['approvalRecord']))$status[]='Falta instrumento de aprobación';if($next && $next<self::today())$status[]='Revisión vencida';elseif($next && $next<=CarbonImmutable::now(config('biblioteca.timezone'))->addDays(60)->format('Y-m-d'))$status[]='Próxima revisión'; }
+        if(!$job) { if(($d['kind']==='politicas'&&!DB::table('bib_policy_approvals')->where('version_id',$v['id'])->exists())||empty($c['approvalRecord']))$status[]=$d['kind']==='politicas'?'Pendiente de aprobación de Gerencia':'Falta instrumento de aprobación';if($next && $next<self::today())$status[]='Revisión vencida';elseif($next && $next<=CarbonImmutable::now(config('biblioteca.timezone'))->addDays(60)->format('Y-m-d'))$status[]='Próxima revisión'; }
         return ['document'=>$d,'version'=>$v,'content'=>$c,'parsed'=>$p,'title'=>$title,'area'=>$area,'state'=>$label,'nextReview'=>$next,'situation'=>implode(' · ',$status),'job'=>$job];
     }
     public function entries(bool $allVersions=false): array {
@@ -86,7 +86,7 @@ class Library
             $v=$this->version($id);if($v['state']==='Borrador'&&!$v['published_at'])return $v;
             $existing=DB::table('bib_versions')->where('based_on',$id)->where('state','Borrador')->first();if($existing)return (array)$existing;
             $c=Content::decode($v['payload_json']);$doc=$this->document($v['document_id']);
-            if($doc['kind']==='descriptivos')$c=Content::institutional($c);else {$parts=explode('.',$c['version']);$parts[count($parts)-1]=(int)end($parts)+1;$c['version']=implode('.',$parts);$c['declaredState']='borrador';}
+            if($doc['kind']==='descriptivos')$c=Content::institutional($c);else {$parts=explode('.',$c['version']);$parts[count($parts)-1]=(int)end($parts)+1;$c['version']=implode('.',$parts);$c['declaredState']='borrador';if($doc['kind']==='politicas'){$c['approvalRecord']=null;$c['approver']='';}}
             $next=$this->insertVersion($v['document_id'],$c,$actor,$v);$this->event($v['document_id'],$next['id'],'crear_borrador_desde_version',$actor,['version'=>$id],$next);return $next;
         });
     }
@@ -103,10 +103,16 @@ class Library
             $next=$this->version($id);$this->event($d['id'],$id,'guardar_borrador',$actor,$v,$next);return $next;
         });
     }
-    public function publish(string $id,int $revision,string $reason,bool $confirmed,string $actor,bool $fromReview=false): array {
+    public function publish(string $id,int $revision,string $reason,bool $confirmed,string $actor,bool $fromReview=false,bool $policyApproval=false): array {
         if(!$confirmed) Content::fail('Confirmá la publicación.');
-        return DB::transaction(function()use($id,$revision,$reason,$actor,$fromReview) {
+        return DB::transaction(function()use($id,$revision,$reason,$actor,$fromReview,$policyApproval) {
             $v=$this->lock($id,$revision);$d=$this->document($v['document_id']);$c=Content::decode($v['payload_json']);$job=$d['kind']==='descriptivos';
+            if($d['kind']==='politicas') {
+                abort_unless($policyApproval && Governance::canApprove(auth()->user()),403,'Esta política requiere la aprobación de Gerencia desde su ficha.');
+                $c['approver']=auth()->user()->name.' · Gerente';
+                $c['approvalRecord']='Aprobación registrada en Biblioteca Institucional por '.Library::actor(auth()->user()).' · '.self::now().' · versión '.$id;
+                $c['validFrom']=$c['validFrom']?:self::today();
+            }
             if($v['published_at']||$v['state']==='Histórico / retirado'||(!$fromReview&&$v['state']!=='Borrador')) Content::fail('Creá un nuevo borrador para publicar.');
             if($job) {
                 $c=Content::validateJob($c);
@@ -127,7 +133,12 @@ class Library
             $p=$job?Content::toParsed($c):null;if($p){$p['metadata']['publishedName']=$d['canonical_name']?:$c['name'];$p['metadata']['publishedArea']=$d['normalized_area']?:$c['area'];}
             DB::table('bib_versions')->where('id',$id)->update(['state'=>$job?'Vigente':'Publicado','review_state'=>'Validado','current_slot'=>1,'published_at'=>self::now(),'published_by'=>$actor,'updated_at'=>self::now(),'change_reason'=>$reason?:'Publicación confirmada.','resolution'=>$reason?:'Validación y publicación confirmadas.','revision'=>$revision+1,'payload_json'=>Content::json($c),'parsed_json'=>$p?Content::json($p):null,'search_text'=>Content::plain(Content::json($c))]);
             $this->resolveFindings($v,$reason?:'Validación y publicación confirmadas.');
-            $next=$this->version($id);$this->event($d['id'],$id,'publicar_version',$actor,$v,$next);return $next;
+            $next=$this->version($id);
+            if($d['kind']==='politicas') {
+                DB::table('bib_policy_approvals')->insert(['version_id'=>$id,'user_id'=>auth()->id(),'approver'=>auth()->user()->name,'approved_at'=>self::now(),'content_hash'=>hash('sha256',$next['payload_json'])]);
+                $this->event($d['id'],$id,'aprobar_politica',$actor,null,['version'=>$id,'content_hash'=>hash('sha256',$next['payload_json'])]);
+            }
+            $this->event($d['id'],$id,'publicar_version',$actor,$v,$next);return $next;
         });
     }
     public function retire(string $id,int $revision,string $reason,string $actor): array {

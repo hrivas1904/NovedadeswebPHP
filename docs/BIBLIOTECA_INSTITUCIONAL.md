@@ -14,7 +14,7 @@ Integración del 18/09/2026 en `NovedadeswebPHP`: Laravel 12, PHP 8.2, Blade, jQ
 - Incorporación de DOCX/PDF con revisión previa: nuevo puesto, versión de un puesto, documento asociado o fuente complementaria. Un archivo ilegible puede conservarse como fuente complementaria.
 - Sincronización manual de las 15 carpetas configuradas: detectar nuevos, modificados, faltantes o restaurados. Los nuevos contenidos quedan pendientes de validación; no reemplazan automáticamente una versión vigente. Los originales nunca se escriben.
 
-Usuarios autenticados pueden consultar. Gestión, importación, revisión y publicación requieren el rol existente `Administrador/a`, configurable en `config/biblioteca.php`. Las comprobaciones se realizan también en el servidor. Las acciones registran el identificador y nombre del usuario.
+Usuarios autenticados pueden consultar. Gestión, importación, revisión y publicación requieren el rol existente `Administrador/a`, verificado explícitamente por el servidor. Las comprobaciones se realizan también en el servidor. Las acciones registran el identificador y nombre del usuario.
 
 ## Datos migrados
 
@@ -102,4 +102,9 @@ Las pruebas funcionales fuerzan una base SQLite separada; no crean documentos de
 
 Los PDF escaneados no incorporan OCR. El original y el contenido extraído se conservan; los archivos que no puedan interpretarse requieren revisión. Las exportaciones representan la versión de la biblioteca, no son una reproducción exacta de la diagramación del archivo fuente. Las tablas se conservan como contenido editable.
 
-La asociación automática con la nómina actual de puestos todavía requiere definir cuál es el catálogo institucional autoritativo y su clave de vinculación. La migración no inventa esa relación ni declara puestos faltantes sin ese catálogo.
+Desde el 20/09/2026, Categorías y firmas usa el catálogo real `categ_empleados`, la nómina `empleados` y el legajo de `users`. La asociación se confirma por categoría, con excepciones individuales. Ver [Firmas y cobertura de descriptivos](FIRMAS_Y_COBERTURA_DESCRIPTIVOS.md).
+
+
+## Actualización del 20/09/2026
+
+Administración y Control documental son exclusivos de `Administrador/a`, con autorización en cada ruta. Se incorporan Mi descriptivo, aceptación personal por versión, constancias históricas privadas y el panel Categorías y firmas. Las tres tablas nuevas requieren la migración `2026_09_20_120000_add_biblioteca_assignments_and_acceptances.php`. Ver [la documentación del circuito y sus pendientes iniciales](FIRMAS_Y_COBERTURA_DESCRIPTIVOS.md).

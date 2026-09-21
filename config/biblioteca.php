@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'management_roles' => ['Administrador/a'],
+    'policy_approver_username' => env('BIBLIOTECA_POLICY_APPROVER', 'mcardoner'),
     'storage' => storage_path('app/private/biblioteca'),
     'python' => env('BIBLIOTECA_PYTHON', 'python'),
     'source_root' => env('BIBLIOTECA_SOURCE_ROOT'),

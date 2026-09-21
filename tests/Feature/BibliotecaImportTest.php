@@ -15,6 +15,7 @@ class BibliotecaImportTest extends TestCase {
         $this->storage=storage_path('framework/testing/biblioteca-'.Str::uuid());
         config(['database.default'=>'sqlite','database.connections.sqlite.database'=>':memory:','session.driver'=>'array','cache.default'=>'array','biblioteca.storage'=>$this->storage,'biblioteca.python'=>getenv('BIBLIOTECA_TEST_PYTHON')?:'python']);DB::purge();
         (require database_path('migrations/2026_09_18_150000_create_biblioteca_tables.php'))->up();
+        (require database_path('migrations/2026_09_21_010000_add_biblioteca_policy_governance.php'))->up();
         if(!Route::has('biblioteca.index'))Route::middleware('web')->group(base_path('routes/biblioteca.php'));Route::getRoutes()->refreshNameLookups();
         $user=new User(['name'=>'Prueba Biblioteca','rol'=>'Administrador/a']);$user->id=99;$this->actingAs($user);
     }

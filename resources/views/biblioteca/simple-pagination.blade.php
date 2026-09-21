@@ -1,0 +1,1 @@
+@if($paginator->hasPages())<nav class="bib-pagination" aria-label="Páginas">@if(!$paginator->onFirstPage())<a href="{{ $paginator->previousPageUrl() }}">Anterior</a>@endif<span>Página {{ $paginator->currentPage() }} de {{ $paginator->lastPage() }}</span>@if($paginator->hasMorePages())<a href="{{ $paginator->nextPageUrl() }}">Siguiente</a>@endif</nav>@endif

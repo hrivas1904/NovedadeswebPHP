@@ -12,6 +12,7 @@ class BibliotecaTest extends TestCase {
         parent::setUp();config(['database.default'=>'sqlite','database.connections.sqlite.database'=>':memory:','session.driver'=>'array','cache.default'=>'array']);DB::purge();
         $this->storage=storage_path('framework/testing/biblioteca-'.Str::uuid());config(['biblioteca.storage'=>$this->storage]);
         (require database_path('migrations/2026_09_18_150000_create_biblioteca_tables.php'))->up();
+        (require database_path('migrations/2026_09_21_010000_add_biblioteca_policy_governance.php'))->up();
         if(!Route::has('biblioteca.index'))Route::middleware('web')->group(base_path('routes/biblioteca.php'));Route::getRoutes()->refreshNameLookups();
         $user=new User(['name'=>'Prueba Biblioteca','username'=>'prueba','rol'=>'Administrador/a']);$user->id=99;$this->actingAs($user);
     }
@@ -58,7 +59,7 @@ class BibliotecaTest extends TestCase {
     public function test_migration_preserves_all_versions_records_files_and_views():void {
         $bundle=getenv('BIBLIOTECA_TEST_BUNDLE');$this->assertNotFalse($bundle,'Configurar BIBLIOTECA_TEST_BUNDLE.');$source=Content::decode(file_get_contents($bundle));$report=(new Importer)->import($bundle);
         $this->assertSame(count($source['tables']['candidates'])+count($source['tables']['institutional_documents']),$report['documents']);$this->assertSame(count($source['tables']['managed_versions'])+count($source['tables']['institutional_versions']),$report['versions']);
-        $this->assertTrue((new Importer)->import($bundle)['alreadyImported']);$this->get(route('biblioteca.index'))->assertOk()->assertSee('Biblioteca Institucional');
+        $this->mock(\App\Services\Biblioteca\Acceptances::class,fn($mock)=>$mock->shouldReceive('context')->andReturn(['canSign'=>false]));$this->assertTrue((new Importer)->import($bundle)['alreadyImported']);$this->get(route('biblioteca.index'))->assertOk()->assertSee('Biblioteca Institucional');
         $library=new Library;foreach($library->entries() as $entry){$this->get(route('biblioteca.show',$entry['document']['id']))->assertOk();if($entry['version']['state']==='Borrador')$this->get(route('biblioteca.edit',$entry['version']['id']))->assertOk();if($entry['job'])$this->get(route('biblioteca.review',$entry['version']['id']))->assertOk();}
         $original=$source['tables']['managed_versions'][0];$this->assertSame($original['parsed_json'],$library->version($original['id'])['parsed_json']);
         $this->get(route('biblioteca.control'))->assertOk();$this->get(route('biblioteca.search',['q'=>'ética']))->assertOk();$this->get(route('biblioteca.new'))->assertOk();$this->get(route('biblioteca.new',['kind'=>'politicas']))->assertOk();
