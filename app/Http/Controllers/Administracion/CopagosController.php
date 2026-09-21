@@ -283,4 +283,150 @@ class CopagosController extends Controller
         DB::statement('CALL SP_COPAGOS_RESUELTO_MARCAR(?, ?, ?)', [$data['nombre_norm'], $data['resuelto'] ? 1 : 0, auth()->id()]);
         return response()->json(['message' => 'Estado actualizado.']);
     }
+
+    public function cargarPacientes(Request $request)
+    {
+        $request->validate(['archivo' => 'required|file|mimes:xlsx,xls,pdf']);
+        $file = $request->file('archivo');
+        $esPdf = strtolower($file->getClientOriginalExtension()) === 'pdf';
+
+        $resultado = $esPdf
+            ? $this->parsearPacientesPdf($file->getRealPath())
+            : $this->parsearPacientesExcel($file->getRealPath());
+
+        if (isset($resultado['error'])) {
+            return response()->json(['message' => $resultado['error']], 422);
+        }
+
+        $total = 0;
+        foreach (array_chunk($resultado, 2000) as $lote) {
+            DB::statement('CALL SP_COPAGOS_PACIENTES_CARGAR_LOTE(?)', [json_encode($lote, JSON_UNESCAPED_UNICODE)]);
+            $total += count($lote);
+        }
+
+        DB::statement('CALL SP_COPAGOS_CARGA_REGISTRAR(?, ?, ?, ?)', ['pacientes', $file->getClientOriginalName(), $total, auth()->id()]);
+
+        return response()->json(['message' => $total . ' contactos procesados (nuevos + actualizados).', 'filas' => $total]);
+    }
+
+    private function parsearPacientesExcel(string $ruta): array
+    {
+        $reader = IOFactory::createReaderForFile($ruta);
+        $reader->setReadDataOnly(true);
+        $grid = $this->hojaAGrid($reader->load($ruta)->getSheet(0));
+        if (!$grid) return ['error' => 'El archivo está vacío.'];
+
+        $normHeader = function ($h) {
+            $h = mb_strtolower(trim((string) ($h ?? '')), 'UTF-8');
+            $h = preg_replace('/\p{Mn}/u', '', \Normalizer::normalize($h, \Normalizer::FORM_D));
+            return trim(preg_replace('/\s+/', ' ', str_replace('.', '', $h)));
+        };
+        $esTelefono = fn($h) => (bool) preg_match('/^(cel|celular|tel|telefono|contacto)$/', $h);
+        $esNombre = fn($h) => (bool) preg_match('/nombre|apellido|paciente/', $h);
+
+        $headerRowIdx = null;
+        $headers = [];
+        $normed = [];
+        foreach (array_slice($grid, 0, 8, true) as $r => $row) {
+            $h = array_map($normHeader, $row);
+            if (array_filter($h, $esTelefono) && array_filter($h, $esNombre)) {
+                $headerRowIdx = $r;
+                $headers = $row;
+                $normed = $h;
+                break;
+            }
+        }
+        if ($headerRowIdx === null) {
+            return ['error' => 'No pude identificar la fila de encabezados (busqué columna de teléfono/celular y de nombre en las primeras 8 filas).'];
+        }
+
+        $telIdx = null;
+        foreach ($normed as $i => $h) if ($esTelefono($h)) {
+            $telIdx = $i;
+            break;
+        }
+        $dniIdx = null;
+        foreach ($normed as $i => $h) if (preg_match('/dni|documento/', $h)) {
+            $dniIdx = $i;
+            break;
+        }
+        $fullNameIdx = null;
+        foreach (['nombre y apellido', 'apellido y nombre', 'paciente', 'nombre completo'] as $cand) {
+            $pos = array_search($cand, $normed, true);
+            if ($pos !== false) {
+                $fullNameIdx = $pos;
+                break;
+            }
+        }
+        $apellidoIdx = array_search('apellido', $normed, true);
+        $nombreIdx = array_search('nombre', $normed, true);
+
+        if ($telIdx === null) return ['error' => 'No encontré columna de teléfono/celular. Encabezados: ' . implode(', ', array_map('strval', $headers))];
+        if ($fullNameIdx === null && !($apellidoIdx !== false && $nombreIdx !== false)) {
+            return ['error' => 'No encontré columna de nombre reconocible. Encabezados: ' . implode(', ', array_map('strval', $headers))];
+        }
+
+        $filas = [];
+        foreach ($grid as $r => $row) {
+            if ($r <= $headerRowIdx) continue;
+            $fullName = $fullNameIdx !== null ? ($row[$fullNameIdx] ?? null)
+                : trim(($row[$apellidoIdx] ?? '') . ' ' . ($row[$nombreIdx] ?? ''));
+            if (!$fullName) continue;
+            $telefono = $row[$telIdx] ?? null;
+            if (!$telefono) continue;
+
+            $dni = $dniIdx !== null ? preg_replace('/\D/', '', (string) ($row[$dniIdx] ?? '')) : null;
+            if ($dni === '') $dni = null;
+
+            $filas[] = [
+                'dni' => $dni,
+                'nombre' => (string) $fullName,
+                'nombre_norm' => $this->normalizarNombre($fullName),
+                'telefono' => trim((string) $telefono),
+            ];
+        }
+        return $filas;
+    }
+
+    private function buscarTelefonos(array $nombresNorm): array
+    {
+        $placeholders = implode(',', array_fill(0, count($nombresNorm), '?'));
+        $exactos = collect(DB::select(
+            "SELECT nombre_norm, telefono FROM copagos_pacientes_contacto WHERE nombre_norm IN ($placeholders)",
+            $nombresNorm
+        ))->keyBy('nombre_norm');
+
+        $telefonos = [];
+        $sinMatch = [];
+        foreach ($nombresNorm as $n) {
+            if ($exactos->has($n)) $telefonos[$n] = $exactos[$n]->telefono;
+            else $sinMatch[] = $n;
+        }
+
+        foreach ($sinMatch as $nombreNorm) {
+            $candidatos = DB::select(
+                'SELECT nombre_norm, telefono FROM copagos_pacientes_contacto WHERE nombre_norm LIKE ? LIMIT 200',
+                [strtok($nombreNorm, ' ') . '%']
+            );
+            $liqWords = array_flip(explode(' ', $nombreNorm));
+            foreach ($candidatos as $c) {
+                $cWords = array_flip(explode(' ', $c->nombre_norm));
+                $allInPat = true;
+                $allInLiq = true;
+                foreach ($liqWords as $w => $_) if (!isset($cWords[$w])) {
+                    $allInPat = false;
+                    break;
+                }
+                foreach ($cWords as $w => $_) if (!isset($liqWords[$w])) {
+                    $allInLiq = false;
+                    break;
+                }
+                if ($allInPat || $allInLiq) {
+                    $telefonos[$nombreNorm] = $c->telefono;
+                    break;
+                }
+            }
+        }
+        return $telefonos;
+    }
 }

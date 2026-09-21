@@ -147,4 +147,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/copagos/cruce', [CopagosController::class, 'obtenerCruce'])->name('cruce');
     Route::post('/copagos/notas', [CopagosController::class, 'guardarNota'])->name('guardarNota');
     Route::post('/copagos/notas/resuelto', [CopagosController::class, 'marcarResuelto'])->name('marcarResuelto');
+    Route::post('/copagos/pacientes', [CopagosController::class, 'cargarPacientes'])->name('cargarPacientes');
 });

@@ -52,8 +52,74 @@
     </div>
 </div>
 
+<div class="row g-3 mb-3 d-none" id="kpisCruce">
+    <div class="col-6 col-lg-3">
+        <div class="card p-3">
+            <label class="text-muted small mb-1">Total liquidado IPS</label>
+            <div class="fs-5 fw-bold" id="kpiLiquidado">$0</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card p-3">
+            <label class="text-muted small mb-1">Total identificado cobrado</label>
+            <div class="fs-5 fw-bold text-success" id="kpiCobrado">$0</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card p-3">
+            <label class="text-muted small mb-1">Diferencia (a verificar)</label>
+            <div class="fs-5 fw-bold" id="kpiDiferencia">$0</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card p-3">
+            <label class="text-muted small mb-1">Pacientes pendientes</label>
+            <div class="fs-5 fw-bold" id="kpiPendientes">0</div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3">
+    <div class="table-responsive">
+        <table id="tablaCruce" class="table table-hover align-middle w-100">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Paciente</th>
+                    <th>FIN</th>
+                    <th>Teléfono</th>
+                    <th>Período(s)</th>
+                    <th class="text-end">Liquidado</th>
+                    <th class="text-end">Cobrado</th>
+                    <th class="text-end">Diferencia</th>
+                    <th>Estado</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
+<script>
+  window.COPAGOS_IPS_ROUTES = {
+    cargarLiquidacion: "{{ route('administracion.cargarLiquidacion') }}",
+    cargarCaja: "{{ route('administracion.cargarCaja') }}",
+    cargarPacientes: "{{ route('administracion.cargarPacientes') }}",
+    cargarPacientesPdf: "{{ route('administracion.cargarPacientesPdf') }}",
+    cruce: "{{ route('administracion.cruce') }}",
+    guardarNota: "{{ route('administracion.guardarNota') }}",
+    marcarResuelto: "{{ route('administracion.marcarResuelto') }}",
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  if (window.pdfjsLib) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+</script>
 <script src="{{ asset('js/administracion/cobranzas/copagosIps.js') }}"></script>
 @endsection
