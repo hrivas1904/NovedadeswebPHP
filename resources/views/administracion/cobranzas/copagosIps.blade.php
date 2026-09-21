@@ -12,7 +12,7 @@
         <div class="card p-3">
             <div class="d-flex flex-column gap-3">
                 <div class="d-flex align-items-center gap-3">
-                    <i class="fs-3 fa-solid fa-file-lines"></i>
+                    <i class="fs-3 fa-solid fa-file-lines" style="color: var(--color-default);"></i>
                     <div class="d-flex flex-column">
                         <label class="fw-bold fs-6">Liquidación IPS (Copagos)</label>
                         <label class="text-muted">Subí el Excel con una hoja por mes (columnas FIN, NOMBRE, PRACTICAS, INTERNAC., HAD's)</label>
@@ -26,7 +26,7 @@
         <div class="card p-3">
             <div class="d-flex flex-column gap-3">
                 <div class="d-flex align-items-center gap-3">
-                    <i class="fs-3 fa-solid fa-file-lines"></i>
+                    <i class="fs-3 fa-solid fa-file-lines" style="color: var(--color-default);"></i>
                     <div class="d-flex flex-column">
                         <label class="fw-bold fs-6">Comprobantes de caja</label>
                         <label class="text-muted">Subí el archivo de comprobantes de caja actualizado a la fecha</label>
@@ -40,7 +40,7 @@
         <div class="card p-3">
             <div class="d-flex flex-column gap-3">
                 <div class="d-flex align-items-center gap-3">
-                    <i class="fs-3 fa-solid fa-file-lines"></i>
+                    <i class="fs-3 fa-solid fa-file-lines" style="color: var(--color-default);"></i>
                     <div class="d-flex flex-column">
                         <label class="fw-bold fs-6">Listado de pacientes</label>
                         <label class="text-muted">Subí el listado (Excel o PDF) con nombre y teléfono/celular</label>
@@ -55,28 +55,99 @@
 <div class="row g-3 mb-3 d-none" id="kpisCruce">
     <div class="col-6 col-lg-3">
         <div class="card p-3">
-            <label class="text-muted small mb-1">Total liquidado IPS</label>
+            <label class="text-muted mb-1">Total liquidado IPS</label>
             <div class="fs-4 fw-bold" id="kpiLiquidado">$0</div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
         <div class="card p-3">
-            <label class="text-muted small mb-1">Total identificado cobrado</label>
-            <div class="fs-4 fw-bold text-success" id="kpiCobrado">$0</div>
+            <label class="text-muted mb-1">Total identificado cobrado</label>
+            <div class="fs-4 fw-bold" id="kpiCobrado" style="color: var(--color-accent-green);">$0</div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
         <div class="card p-3">
-            <label class="text-muted small mb-1">Diferencia (a verificar)</label>
-            <div class="fs-4 fw-bold" id="kpiDiferencia">$0</div>
+            <label class="text-muted mb-1">Diferencia (a verificar)</label>
+            <div class="fs-4 fw-bold text-danger" id="kpiDiferencia">$0</div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
         <div class="card p-3">
-            <label class="text-muted small mb-1">Pacientes pendientes</label>
+            <label class="text-muted mb-1">Pacientes pendientes</label>
             <div class="fs-4 fw-bold" id="kpiPendientes">0</div>
         </div>
     </div>
+</div>
+
+<div class="card p-3 mb-3">
+    <div class="d-flex align-items-center flex-wrap gap-3">
+
+        <label class="mb-0 text-muted">
+            Guardar el estado actual como reporte mensual:
+        </label>
+
+        <input
+            type="month"
+            class="form-control"
+            id="mesSnapshot"
+            value="{{ now()->format('Y-m') }}"
+            style="width: auto;">
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            id="btnGuardarSnapshot">
+            <i class="fa-solid fa-floppy-disk me-1"></i>
+            Guardar snapshot
+        </button>
+
+    </div>
+</div>
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <button
+        type="button"
+        class="btn btn-dark btn-sm btnFiltroCopago active"
+        data-filtro="TODOS">
+        Todos
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm btnFiltroCopago"
+        data-filtro="PENDIENTES">
+        Pendientes
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm btnFiltroCopago"
+        data-filtro="NO COBRADO">
+        No cobrado
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm btnFiltroCopago"
+        data-filtro="COBRO PARCIAL">
+        Cobro parcial
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm btnFiltroCopago"
+        data-filtro="COBRADO">
+        Cobrado
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm btnFiltroCopago"
+        data-filtro="RESUELTOS">
+        Resueltos
+    </button>
+
+    <span class="small text-muted ms-auto" id="contadorCruce"></span>
 </div>
 
 <div class="card p-3">
@@ -113,6 +184,7 @@
         cruce: "{{ route('administracion.cruce') }}",
         guardarNota: "{{ route('administracion.guardarNota') }}",
         marcarResuelto: "{{ route('administracion.marcarResuelto') }}",
+        guardarSnapshot: "{{ route('administracion.guardarSnapshot') }}",
     };
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>

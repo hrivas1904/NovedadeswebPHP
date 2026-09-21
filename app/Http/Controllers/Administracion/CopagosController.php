@@ -286,6 +286,13 @@ class CopagosController extends Controller
 
     public function obtenerCruce()
     {
+        return response()->json([
+            'data' => $this->construirCruce()
+        ]);
+    }
+
+    public function construirCruce(): array
+    {
         $liqRows = DB::select('CALL SP_COPAGOS_LIQUIDACION_LISTAR()');
         $cajaRows = DB::select('CALL SP_COPAGOS_CAJA_LISTAR()');
         $notas = collect(DB::select('CALL SP_COPAGOS_NOTAS_LISTAR()'))->keyBy('nombre_norm');
@@ -334,9 +341,56 @@ class CopagosController extends Controller
             ];
         }
 
-        usort($pacientes, fn($a, $b) => $b['diferencia'] <=> $a['diferencia']);
+        usort(
+            $pacientes,
+            fn($a, $b) => $b['diferencia'] <=> $a['diferencia']
+        );
 
-        return response()->json(['data' => $pacientes]);
+        return $pacientes;
+    }
+
+    public function guardarSnapshot(Request $request)
+    {
+        $data = $request->validate([
+            'mes' => 'required|date_format:Y-m',
+        ]);
+
+        $pacientes = $this->construirCruce();
+
+        $totalLiquidado = array_sum(
+            array_column($pacientes, 'totalLiquidado')
+        );
+
+        $totalCobrado = array_sum(
+            array_column($pacientes, 'totalCobrado')
+        );
+
+        $diferencia = $totalLiquidado - $totalCobrado;
+
+        $pendientes = count(
+            array_filter(
+                $pacientes,
+                fn($p) =>
+                $p['estado'] !== 'COBRADO'
+                    && !$p['resuelto']
+            )
+        );
+
+        DB::statement(
+            'CALL SP_COPAGOS_SNAPSHOT_GUARDAR(?, ?, ?, ?, ?, ?)',
+            [
+                $data['mes'],
+                round($totalLiquidado, 2),
+                round($totalCobrado, 2),
+                round($diferencia, 2),
+                $pendientes,
+                auth()->id(),
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Snapshot mensual guardado correctamente.'
+        ]);
     }
 
     public function guardarNota(Request $request)
@@ -558,19 +612,40 @@ class CopagosController extends Controller
     private function hojaAGrid(Worksheet $sheet): array
     {
         $grid = [];
+
         foreach ($sheet->getRowIterator() as $row) {
             $r = $row->getRowIndex() - 1;
             $fila = [];
+
             foreach ($row->getCellIterator() as $cell) {
-                $c = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($cell->getColumn()) - 1;
-                $value = $cell->getValue();
+
+                $c = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString(
+                    $cell->getColumn()
+                ) - 1;
+
+                /*
+             * Si la celda contiene una fórmula, necesitamos
+             * el RESULTADO calculado y no "=C10+D10".
+             */
+                if (
+                    $cell->getDataType() ===
+                    \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_FORMULA
+                ) {
+                    $value = $cell->getCalculatedValue();
+                } else {
+                    $value = $cell->getValue();
+                }
+
                 if ($value !== null && Date::isDateTime($cell)) {
                     $value = Date::excelToDateTimeObject($value);
                 }
+
                 $fila[$c] = $value;
             }
+
             $grid[$r] = $fila;
         }
+
         return $grid;
     }
 
