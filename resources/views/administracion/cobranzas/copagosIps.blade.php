@@ -55,5 +55,5 @@
 @endsection
 
 @section('scripts')
-
+<script src="{{ asset('js/administracion/cobranzas/copagosIps.js') }}"></script>
 @endsection

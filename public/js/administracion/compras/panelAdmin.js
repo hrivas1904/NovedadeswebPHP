@@ -28,7 +28,7 @@ $("#tablaPedidosCompras").DataTable({
         type: "GET",
         data: function (d) {
             d.prioridades = getPrioridadesSeleccionadas().join(",") || null;
-            d.estados = getEstadosSeleccionadas().join(",") || null;
+            d.estados = getEstadosSeleccionados().join(",") || null;
             d.autorizaciones =
                 getAutorizacionesSeleccionadas().join(",") || null;
             d.desde = $("#filtroDesde").val();
@@ -55,7 +55,6 @@ $("#tablaPedidosCompras").DataTable({
         },
     ],
     createdRow: function (row, data) {
-
         if (
             data.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE" &&
             data.estado === "PENDIENTE"
@@ -74,10 +73,10 @@ $("#tablaPedidosCompras").DataTable({
                 return formatearFechaArgentina(data);
             },
         },
-        { data: "prioridad",},
+        { data: "prioridad" },
         { data: "solicitante" },
-        { data: "sector", },
-        { data: "proveedor", },
+        { data: "sector" },
+        { data: "proveedor" },
         { data: "descripcion", className: "align-middle" },
         { data: "lineas", visible: false },
         { data: "adjuntos", visible: false },
@@ -89,7 +88,6 @@ $("#tablaPedidosCompras").DataTable({
             searchable: false,
             className: "text-center",
             render: function (data) {
-
                 if (!PUEDE_AUTORIZAR_PEDIDOS) {
                     return "";
                 }
@@ -105,7 +103,6 @@ $("#tablaPedidosCompras").DataTable({
                 // ==========================================
 
                 if (data.autorizacion === "PENDIENTE") {
-
                     // El gerente no interviene en esta instancia
                     if (ES_GERENTE) {
                         return "";
@@ -131,7 +128,6 @@ $("#tablaPedidosCompras").DataTable({
                         </button>
                     `;
                 }
-
 
                 // ==========================================
                 // AUTORIZACIÓN GERENTE
@@ -162,7 +158,6 @@ $("#tablaPedidosCompras").DataTable({
                     `;
                 }
 
-
                 // ==========================================
                 // PEDIDO APROBADO
                 // ==========================================
@@ -177,7 +172,7 @@ $("#tablaPedidosCompras").DataTable({
                 }
 
                 return "";
-            }
+            },
         },
     ],
 });
@@ -185,16 +180,13 @@ $("#tablaPedidosCompras").DataTable({
 let PEDIDO_RECHAZO_ID = null;
 
 $(document).on("click", ".btnRechazar", function () {
-
     PEDIDO_RECHAZO_ID = $(this).data("id");
 
     $("#inputObservRechazo").val("");
     $("#modalObservacionRechazo").modal("show");
 });
 
-
 $("#btnConfirmarRechazo").on("click", function () {
-
     const motivo = $("#inputObservRechazo").val().trim();
 
     $.ajax({
@@ -211,7 +203,6 @@ $("#btnConfirmarRechazo").on("click", function () {
         },
 
         success: function () {
-
             $("#modalObservacionRechazo").modal("hide");
 
             PEDIDO_RECHAZO_ID = null;
@@ -225,14 +216,10 @@ $("#btnConfirmarRechazo").on("click", function () {
                 showConfirmButton: false,
             });
 
-            $("#tablaPedidosCompras")
-                .DataTable()
-                .ajax
-                .reload(null, false);
+            $("#tablaPedidosCompras").DataTable().ajax.reload(null, false);
         },
 
         error: function (xhr) {
-
             console.error(xhr.responseText);
 
             Swal.fire({
@@ -245,7 +232,6 @@ $("#btnConfirmarRechazo").on("click", function () {
         },
     });
 });
-
 
 $("#btnCancelarRechazo").on("click", function () {
     PEDIDO_RECHAZO_ID = null;
@@ -432,7 +418,7 @@ function exportarPedidosExcel(ids) {
             type: "hidden",
             name: "_token",
             value: $('meta[name="csrf-token"]').attr("content"),
-        })
+        }),
     );
 
     ids.forEach(function (id) {
@@ -441,7 +427,7 @@ function exportarPedidosExcel(ids) {
                 type: "hidden",
                 name: "ids[]",
                 value: id,
-            })
+            }),
         );
     });
 
@@ -483,8 +469,16 @@ function verPedido(id) {
             $("#verSolicitante").val(c.solicitante);
             $("#verFecha").val(formatearFechaArgentina(c.fecha));
             $("#verPrioridad").val(c.prioridad);
-            cargarCentrosCosto($("#verCentroCosto"), $("#modalDetallePedido"), c.centroCosto);
-            cargarProveedores($("#verProveedor"), $("#modalDetallePedido"), c.proveedor);
+            cargarCentrosCosto(
+                $("#verCentroCosto"),
+                $("#modalDetallePedido"),
+                c.centroCosto,
+            );
+            cargarProveedores(
+                $("#verProveedor"),
+                $("#modalDetallePedido"),
+                c.proveedor,
+            );
             $("#verEstado").val(c.estado);
             $("#verAutorizacion").val(c.autorizacion);
             $("#verDescripcion").val(c.descripcion);
@@ -498,7 +492,6 @@ function verPedido(id) {
             tbody.empty();
 
             response.detalle.forEach(function (item, index) {
-
                 const precioValor =
                     item.precio === null || item.precio === undefined
                         ? ""
@@ -553,10 +546,10 @@ function verPedido(id) {
                 inicializarSelectProducto(
                     $("#productoDetalle_" + index),
                     $("#modalDetallePedido"),
-                    item.producto_id
+                    item.producto_id,
                 );
             });
-            
+
             $("#modalDetallePedido").data("pedido-id", id);
 
             cargarAdjuntosPedido(id);
@@ -564,17 +557,20 @@ function verPedido(id) {
             cargarObservaciones(id);
             $("#modalDetallePedido").modal("show");
 
-            if ($("#verEstado").val()==='GENERADO'){
+            if ($("#verEstado").val() === "GENERADO") {
                 $("#btnRegenerarExcelFinnegans").removeClass("d-none");
-            }
-            else {
+            } else {
                 $("#btnRegenerarExcelFinnegans").addClass("d-none");
             }
 
-            if ($("#verAutorizacion").val()==='APROBADA'){
-                $("#divPresupuestosAdjuntos, #btnHabilitarEdicionPedido").addClass("d-none");
+            if ($("#verAutorizacion").val() === "APROBADA") {
+                $(
+                    "#divPresupuestosAdjuntos, #btnHabilitarEdicionPedido",
+                ).addClass("d-none");
             } else {
-                $("#divPresupuestosAdjuntos, #btnHabilitarEdicionPedido").removeClass("d-none");
+                $(
+                    "#divPresupuestosAdjuntos, #btnHabilitarEdicionPedido",
+                ).removeClass("d-none");
             }
         },
     });
@@ -582,7 +578,6 @@ function verPedido(id) {
 
 let DETALLES_ELIMINADOS = [];
 $(document).on("click", ".btnEliminarProducto", function () {
-
     const fila = $(this).closest("tr");
     const detalleId = fila.data("detalle-id");
 
@@ -599,17 +594,13 @@ function cargarAdjuntosPedido(pedidoId) {
     $("#sinAdjuntosMsg").addClass("d-none");
 
     $.get(`/administracion/compras/${pedidoId}/adjuntos`, function (resp) {
-
         if (!resp.data.length) {
             $("#sinAdjuntosMsg").removeClass("d-none");
             return;
         }
 
         resp.data.forEach((adj) => {
-
-            const icono = adj.esImagen
-                ? "fa-file-image"
-                : "fa-file-pdf";
+            const icono = adj.esImagen ? "fa-file-image" : "fa-file-pdf";
 
             const col = `
                 <div class="col-md-3 col-6">
@@ -651,18 +642,15 @@ function cargarAdjuntosPedido(pedidoId) {
             $("#detalleAdjuntosBody").append(col);
         });
 
-        if ($("#verAutorizacion").val()==='APROBADA'){
-            $(".btnEliminarPresupuesto").addClass('d-none');
+        if ($("#verAutorizacion").val() === "APROBADA") {
+            $(".btnEliminarPresupuesto").addClass("d-none");
         }
-    })
-    .fail(function () {
-
+    }).fail(function () {
         Swal.fire(
             "Error",
             "No se pudieron cargar los adjuntos del pedido.",
             "error",
         );
-
     });
 }
 
@@ -833,7 +821,6 @@ $(document).on("click", ".btnEliminarOrdenCompra", function (e) {
         },
         buttonsStyling: false,
     }).then((result) => {
-
         if (!result.isConfirmed) return;
 
         $.ajax({
@@ -845,7 +832,6 @@ $(document).on("click", ".btnEliminarOrdenCompra", function (e) {
             },
 
             success: function (response) {
-
                 // Recargamos las OC del pedido
                 cargarOrdenesCompra(pedidoId);
 
@@ -859,7 +845,6 @@ $(document).on("click", ".btnEliminarOrdenCompra", function (e) {
             },
 
             error: function (xhr) {
-
                 console.error(xhr.responseText);
 
                 Swal.fire({
@@ -915,56 +900,63 @@ $(document).on("click", "#btnSubirOrdenCompra", function () {
     });
 });
 
-let pedidoActualId = null;  
+let pedidoActualId = null;
 
 function cargarObservaciones(pedidoId) {
     pedidoActualId = pedidoId;
-    $.get(`/administracion/pedidos/${pedidoActualId}/listarObservaciones`, function (data) {
-        const $hilo = $('#hiloObservaciones').empty();
-        if (data.length === 0) {
-            $hilo.html('<div class="text-muted small">Sin observaciones todavía.</div>');
-            return;
-        }
-        data.forEach(obs => {
-            $hilo.append(`
+    $.get(
+        `/administracion/pedidos/${pedidoActualId}/listarObservaciones`,
+        function (data) {
+            const $hilo = $("#hiloObservaciones").empty();
+            if (data.length === 0) {
+                $hilo.html(
+                    '<div class="text-muted small">Sin observaciones todavía.</div>',
+                );
+                return;
+            }
+            data.forEach((obs) => {
+                $hilo.append(`
                 <div class="mb-2">
                     <div class="small text-muted"><strong>${obs.usuario_nombre}</strong> · ${obs.created_at}</div>
                     <div>${obs.mensaje}</div>
                 </div>
             `);
-        });
-        $hilo.scrollTop($hilo[0].scrollHeight);
-    });
+            });
+            $hilo.scrollTop($hilo[0].scrollHeight);
+        },
+    );
 }
 
-$(document).on('click', '#btnEnviarObservacion', function () {
+$(document).on("click", "#btnEnviarObservacion", function () {
     console.log("CLICK NATIVO");
-    const mensaje = $('#inputNuevaObservacion').val().trim();
+    const mensaje = $("#inputNuevaObservacion").val().trim();
     console.log(mensaje);
     if (!mensaje || !pedidoActualId) return;
-    console.log(pedidoActualId)
+    console.log(pedidoActualId);
     $.ajax({
         url: `/administracion/pedidos/${pedidoActualId}/agregarObservaciones`,
-        method: 'POST',
+        method: "POST",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         data: { mensaje: mensaje },
         success: function (obs) {
-            $('#hiloObservaciones').append(`
+            $("#hiloObservaciones").append(`
                 <div class="mb-2">
                     <div class="small text-muted"><strong>${obs.usuario_nombre}</strong> · ${obs.created_at}</div>
                     <div>${obs.mensaje}</div>
                 </div>
             `);
-            $('#inputNuevaObservacion').val('');
-            $('#hiloObservaciones').scrollTop($('#hiloObservaciones')[0].scrollHeight);
-        }
+            $("#inputNuevaObservacion").val("");
+            $("#hiloObservaciones").scrollTop(
+                $("#hiloObservaciones")[0].scrollHeight,
+            );
+        },
     });
 });
 
-$("#btnAbrirModalNuevoPedido").on("click", function(){
+$("#btnAbrirModalNuevoPedido").on("click", function () {
     cargarCentrosCosto($("#cmbCentroCostoModal"), $("#modalCargaPedido"));
-    cargarProveedores($("#cmbProveedorModal"), $("#modalCargaPedido"));      
+    cargarProveedores($("#cmbProveedorModal"), $("#modalCargaPedido"));
     $("#modalCargaPedido").modal("show");
-})
+});

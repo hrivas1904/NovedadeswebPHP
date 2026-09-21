@@ -26,7 +26,7 @@ function getAutorizacionesSeleccionadas() {
         .get();
 }
 
-function getEstadosSeleccionadas() {
+function getEstadosSeleccionados() {
     return $(".check-Estados:checked")
         .map(function () {
             return $(this).val();

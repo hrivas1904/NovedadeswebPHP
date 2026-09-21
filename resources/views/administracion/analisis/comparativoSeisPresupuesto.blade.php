@@ -13,6 +13,14 @@
 
             <tbody>
 
+                {{-- SALDO DE INICIO --}}
+                <tr style="background:#F0F7FF; border-bottom:1px solid #dee2e6;">
+                    <td class="fw-semibold" style="padding:6px 10px; color:#1B2A4A;">SALDO DE INICIO</td>
+                    @foreach($resumen as $r)
+                    <td class="text-end fw-bold" style="padding:6px 10px; color:#1B2A4A;">$ {{ number_format($r['saldo_inicio'], 0, ',', '.') }}</td>
+                    @endforeach
+                </tr>
+
                 {{-- SECCION: INGRESOS --}}
                 <tr style="background: var(--bs-light, #f8f9fa); border-top:2px solid #17a2b8;">
                     <td colspan="{{ count($periodos) + 1 }}" class="fw-bold text-uppercase" style="padding:6px 10px; color:#1B2A4A; letter-spacing:0.06em;">

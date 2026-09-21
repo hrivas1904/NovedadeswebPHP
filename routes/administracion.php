@@ -38,10 +38,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/compras/aprobar-gerente', [ComprasController::class, 'aprobarPedidoGerente']);
     Route::get('pedidos/{pedido}/listarObservaciones', [ComprasController::class, 'listarObservaciones'])->name('pedidos.observaciones.index');
     Route::post('pedidos/{pedido}/agregarObservaciones', [ComprasController::class, 'crearObservacion'])->name('pedidos.observaciones.store');
-    Route::post('/compras/pedidos/{id}/presupuestos',[ComprasController::class, 'subirPresupuesto']);
-    Route::delete('/compras/presupuestos/{id}',[ComprasController::class, 'eliminarPresupuesto']);
-    Route::put('/compras/pedidos/{id}/actualizar',[ComprasController::class, 'actualizarPedido']);
-    Route::delete('/compras/orden-compra/{id}',[ComprasController::class, 'eliminarOrdenCompra'])->name('compras.eliminarOrdenCompra');
+    Route::post('/compras/pedidos/{id}/presupuestos', [ComprasController::class, 'subirPresupuesto']);
+    Route::delete('/compras/presupuestos/{id}', [ComprasController::class, 'eliminarPresupuesto']);
+    Route::put('/compras/pedidos/{id}/actualizar', [ComprasController::class, 'actualizarPedido']);
+    Route::delete('/compras/orden-compra/{id}', [ComprasController::class, 'eliminarOrdenCompra'])->name('compras.eliminarOrdenCompra');
 
     //DASHBOARD
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');
@@ -140,4 +140,11 @@ Route::middleware(['auth'])->group(function () {
 
     //COPAGOS IPS
     Route::get('/copagos/index', [CopagosController::class, 'vistaCopagos'])->name('copagos.index');
+    Route::post('/copagos/liquidacion', [CopagosController::class, 'cargarLiquidacion'])->name('cargarLiquidacion');
+    Route::get('/copagos/liquidacion', [CopagosController::class, 'listarLiquidacion'])->name('listarLiquidacion');
+    Route::post('/copagos/caja', [CopagosController::class, 'cargarCaja'])->name('cargarCaja');
+    Route::get('/copagos/caja', [CopagosController::class, 'listarCaja'])->name('listarCaja');
+    Route::get('/copagos/cruce', [CopagosController::class, 'obtenerCruce'])->name('cruce');
+    Route::post('/copagos/notas', [CopagosController::class, 'guardarNota'])->name('guardarNota');
+    Route::post('/copagos/notas/resuelto', [CopagosController::class, 'marcarResuelto'])->name('marcarResuelto');
 });
