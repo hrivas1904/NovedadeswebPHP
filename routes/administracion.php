@@ -28,7 +28,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/compras/aprobar', [ComprasController::class, 'aprobarPedido']);
     Route::post('/compras/rechazar', [ComprasController::class, 'rechazarPedido']);
     Route::get('/compras/ver/{id}', [ComprasController::class, 'verDetallePedido']);
-    Route::get('/compras/{id}/adjuntos', [ComprasController::class, 'listarAdjuntos'])->name('compras.adjuntos.listar');
     Route::get('/compras/{id}/adjuntos/{tipo?}', [ComprasController::class, 'listarAdjuntos'])->name('compras.adjuntos.listar');
     Route::post('/compras/{id}/orden-compra', [ComprasController::class, 'subirOrdenCompra'])->name('compras.ordenCompra.subir');
     Route::post('/compras/productos/crear', [ComprasController::class, 'crearProducto'])->name('compras.crearProducto');

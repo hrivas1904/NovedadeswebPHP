@@ -31,6 +31,43 @@
         try{const result=await request($(this).data('url'),data);window.location.href=result.url;}
         catch(xhr){error(errorMessage(xhr));busy=false;$(this).find('button').prop('disabled',false);}
     });
+    $('[data-live-filter]').each(function () {
+        const form = $(this), results = $(form.attr('data-live-filter'));
+        const feedback = $(form.attr('data-live-feedback')), button = form.find('[data-live-submit]');
+        let timer, pending, generation = 0;
+        button.hide();
+        function cancel() {
+            clearTimeout(timer); generation++;
+            if (pending) { pending.abort(); pending = null; }
+        }
+        function load(url) {
+            cancel();
+            const current = generation;
+            feedback.text('Buscando…'); results.attr('aria-busy', 'true');
+            pending = $.ajax({url, dataType: 'json', headers: {Accept: 'application/json'}})
+                .done(function (data) {
+                    if (generation !== current) return;
+                    results.html(data.html); button.hide();
+                    feedback.text(results.find('.bib-result-count').text());
+                })
+                .fail(function (xhr, status) {
+                    if (generation !== current || status === 'abort') return;
+                    feedback.text('No se pudieron actualizar los resultados. Se muestran los anteriores. Intentá nuevamente.');
+                    button.show().text('Reintentar');
+                })
+                .always(function () {
+                    if (generation === current) { pending = null; results.attr('aria-busy', 'false'); }
+                });
+        }
+        function url() { return form.attr('action') + '?' + form.serialize(); }
+        form.on('input', 'input:not([type=hidden]):not([type=checkbox]):not([type=radio])', function () {
+            cancel(); feedback.text('Buscando…'); results.attr('aria-busy', 'true');
+            timer = setTimeout(() => load(url()), 300);
+        });
+        form.on('change', 'select, input[type=checkbox], input[type=radio]', () => load(url()));
+        form.on('submit', function (event) { event.preventDefault(); load(url()); });
+        results.on('click', '.bib-pagination a', function (event) { event.preventDefault(); load(this.href); });
+    });
     const coverageForm = $('#coverage-filters');
     if (coverageForm.length) {
         const results = $('#coverage-results'), feedback = $('#coverage-feedback');

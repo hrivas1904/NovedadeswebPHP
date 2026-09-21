@@ -23,6 +23,7 @@ class BibliotecaController extends Controller
         $filtered=$this->library->filter($all,$filters);$page=$manage?1:max(1,(int)$r->query('page',1));$perPage=$manage?max(1,count($filtered)):15;
         $entries=new LengthAwarePaginator(array_slice($filtered,($page-1)*$perPage,$perPage),count($filtered),$perPage,$page,['path'=>$r->url(),'query'=>$r->query()]);
         $areas=collect($all)->pluck('area')->filter()->unique()->sort()->values();$states=collect($all)->pluck('state')->unique()->sort()->values();
+        if ($r->expectsJson()) return response()->json(['html'=>view('biblioteca.catalog-results',compact('entries','control')+['collections'=>config('biblioteca.collections')])->render()]);
         return $this->page('catalog',compact('entries','filters','areas','states','control','manage','kind'));
     }
     public function show(Request $r,string $document) {

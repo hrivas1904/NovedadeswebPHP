@@ -113,6 +113,7 @@ class AcceptanceController extends Controller
             ->when($q !== '', fn ($query) => $query->where(fn ($filter) => $filter->where('employee_name', 'like', '%'.$q.'%')->orWhere('legajo', $q)))
             ->orderByDesc('accepted_at')->paginate(25)->withQueryString();
 
+        if ($request->expectsJson()) return response()->json(['html' => view('biblioteca.acceptance-results', compact('records'))->render()]);
         return $this->page('acceptance-register', compact('records', 'q'));
     }
 }
