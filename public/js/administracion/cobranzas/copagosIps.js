@@ -56,12 +56,11 @@ $(function () {
                         "COBRO PARCIAL": "warning",
                         "NO COBRADO": "danger",
                     };
-                    return (
-                        `<span class="badge bg-${badges[estado]}">${estado}</span>` +
-                        (row.resuelto
-                            ? ' <i class="fa-solid fa-check text-success"></i>'
-                            : "")
-                    );
+                    return `<span class="badge bg-${badges[estado]}">${estado}</span>
+                        <div class="form-check form-check-inline ms-2 align-middle">
+                            <input class="form-check-input" type="checkbox" data-resuelto="${row.nombreNorm}" ${row.resuelto ? "checked" : ""}>
+                            <label class="form-check-label small text-muted">Resuelto</label>
+                        </div>`;
                 },
             },
             {
@@ -116,6 +115,14 @@ $(function () {
             nota: $(this).val(),
             _token: csrf,
         });
+    });
+
+    $("#tablaCruce").on("change", "input[data-resuelto]", function () {
+        $.post(R.marcarResuelto, {
+            nombre_norm: $(this).data("resuelto"),
+            resuelto: this.checked ? 1 : 0,
+            _token: csrf,
+        }).then(() => tablaCruce.ajax.reload(null, false));
     });
 
     function subirArchivo(input, url) {

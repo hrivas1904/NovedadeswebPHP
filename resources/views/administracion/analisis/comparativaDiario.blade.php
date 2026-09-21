@@ -128,6 +128,14 @@
                     <td colspan="{{ count($periodos)+1 }}" style="padding:4px 0;"></td>
                 </tr>
 
+                {{-- SALDO FINAL --}}
+                <tr style="background: var(--color-navy, #1B2A4A);">
+                    <td class="fw-bold" style="padding:8px 10px;">SALDO FINAL</td>
+                    @foreach($resumen as $r)
+                    <td class="text-end fw-bold" style="padding:8px 10px;">$ {{ number_format($r['saldo_final'], 0, ',', '.') }}</td>
+                    @endforeach
+                </tr>
+
             </tbody>
         </table>
     </div>

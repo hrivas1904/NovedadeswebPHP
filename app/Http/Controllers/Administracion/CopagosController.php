@@ -3,29 +3,41 @@
 namespace App\Http\Controllers\Administracion;
 
 use App\Http\Controllers\Controller;
-use App\Support\ClasificadorOperacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Facades\Log;
 
 class CopagosController extends Controller
 {
+    private array $meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+    // ---------- vista ----------
 
     public function vistaCopagos()
     {
         return view('administracion.cobranzas.copagosIps');
     }
 
-    private array $meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    // ---------- liquidación IPS ----------
 
     public function cargarLiquidacion(Request $request)
     {
         $request->validate(['archivo' => 'required|file|mimes:xlsx,xls']);
 
-        $spreadsheet = IOFactory::load($request->file('archivo')->getRealPath());
+        $ruta = $request->file('archivo')->getRealPath();
+
+        try {
+            $reader = IOFactory::createReaderForFile($ruta);
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($ruta);
+        } catch (\Throwable $e) {
+            Log::error('Error leyendo archivo de liquidación: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudo leer el archivo. Verificá que sea un Excel válido.'], 422);
+        }
+
         $filas = [];
 
         foreach ($spreadsheet->getAllSheets() as $sheet) {
@@ -34,7 +46,7 @@ class CopagosController extends Controller
 
             $headerRow = null;
             foreach (array_slice($grid, 0, 10, true) as $r => $row) {
-                if (($row[0] ?? null) === 'FIN') {
+                if ($this->normalizarNombre($row[0] ?? '') === 'FIN') {
                     $headerRow = $r;
                     break;
                 }
@@ -43,7 +55,7 @@ class CopagosController extends Controller
 
             $periodoRaw = null;
             foreach (array_slice($grid, 0, 6, true) as $r => $row) {
-                if (($row[0] ?? null) === 'Período') $periodoRaw = $row[1] ?? null;
+                if ($this->normalizarNombre($row[0] ?? '') === 'PERIODO') $periodoRaw = $row[1] ?? null;
             }
             $periodoLabel = $this->formatearPeriodo($periodoRaw, $sheetName);
 
@@ -54,8 +66,9 @@ class CopagosController extends Controller
                 $practicas = $row[2] ?? null;
                 $internac = $row[3] ?? null;
                 $total = $row[4] ?? null;
+
                 if ($fin === null && $nombre === null && $total === null) break;
-                if ($fin === 'TOTAL') continue;
+                if ($this->normalizarNombre($fin) === 'TOTAL') continue;
                 if (!$nombre) continue;
 
                 $filas[] = [
@@ -64,9 +77,9 @@ class CopagosController extends Controller
                     'nombre_norm' => $this->normalizarNombre($nombre),
                     'periodo' => $periodoLabel,
                     'hoja_origen' => $sheetName,
-                    'practicas' => (float) ($practicas ?? 0),
-                    'internacion' => (float) ($internac ?? 0),
-                    'total' => (float) ($total ?? 0),
+                    'practicas' => $this->parseNumeroArg($practicas),
+                    'internacion' => $this->parseNumeroArg($internac),
+                    'total' => $this->parseNumeroArg($total),
                 ];
             }
         }
@@ -81,6 +94,9 @@ class CopagosController extends Controller
             auth()->id(),
         ]);
 
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+
         return response()->json(['message' => count($filas) . ' filas cargadas.', 'filas' => count($filas)]);
     }
 
@@ -89,108 +105,175 @@ class CopagosController extends Controller
         return response()->json(['data' => DB::select('CALL SP_COPAGOS_LIQUIDACION_LISTAR()')]);
     }
 
-    private function hojaAGrid(Worksheet $sheet): array
-    {
-        $grid = [];
-        foreach ($sheet->getRowIterator() as $row) {
-            $r = $row->getRowIndex() - 1;
-            $fila = [];
-            foreach ($row->getCellIterator() as $cell) {
-                $c = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($cell->getColumn()) - 1;
-                $value = $cell->getValue();
-                if ($value !== null && Date::isDateTime($cell)) {
-                    $value = Date::excelToDateTimeObject($value);
-                }
-                $fila[$c] = $value;
-            }
-            $grid[$r] = $fila;
-        }
-        return $grid;
-    }
-
-    private function normalizarNombre(?string $s): string
-    {
-        if (!$s) return '';
-        $s = mb_strtoupper(trim($s), 'UTF-8');
-        $s = \Normalizer::normalize($s, \Normalizer::FORM_D);
-        $s = preg_replace('/\p{Mn}/u', '', $s);
-        return trim(preg_replace('/\s+/', ' ', $s));
-    }
-
-    private function formatearPeriodo($periodoRaw, string $sheetName): string
-    {
-        if ($periodoRaw instanceof \DateTimeInterface) {
-            return $this->meses[(int) $periodoRaw->format('n') - 1] . '-' . $periodoRaw->format('y');
-        }
-        $clean = trim(preg_replace('/copagos/i', '', $sheetName));
-        if (preg_match('/([a-záéíóúñ]+)\D*(\d{2,4})/iu', $clean, $m)) {
-            $mes = \Normalizer::normalize(mb_strtolower($m[1], 'UTF-8'), \Normalizer::FORM_D);
-            $mes = preg_replace('/\p{Mn}/u', '', $mes);
-            return mb_substr($mes, 0, 3) . '-' . substr($m[2], -2);
-        }
-        return $sheetName;
-    }
+    // ---------- caja ----------
 
     public function cargarCaja(Request $request)
     {
-        $request->validate(['archivo' => 'required|file|mimes:xlsx,xls']);
+        set_time_limit(300);
 
-        $spreadsheet = IOFactory::load($request->file('archivo')->getRealPath());
-        $grid = $this->hojaAGrid($spreadsheet->getSheet(0));
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls'
+        ]);
 
-        if (!$grid) {
-            return response()->json(['message' => 'El archivo está vacío.'], 422);
-        }
+        $archivo = $request->file('archivo');
+        $ruta = $archivo->getRealPath();
 
-        $headers = array_map(fn($h) => $h === null ? '' : trim((string) $h), $grid[0]);
-        $necesarias = ['me_fecha', 'me_ape', 'imp', 'conccaja_nombre', 'mve_anulado', 'osplan'];
-        $idx = [];
-        $faltantes = [];
-        foreach ($necesarias as $h) {
-            $pos = array_search($h, $headers, true);
-            if ($pos === false) {
-                $faltantes[] = $h;
-                continue;
-            }
-            $idx[$h] = $pos;
-        }
-        if ($faltantes) {
+        try {
+            $reader = IOFactory::createReaderForFile($ruta);
+            $reader->setReadDataOnly(true);
+
+            $spreadsheet = $reader->load($ruta);
+            $sheet = $spreadsheet->getSheet(0);
+        } catch (\Throwable $e) {
+            Log::error('Error leyendo archivo de caja: ' . $e->getMessage());
+
             return response()->json([
-                'message' => 'Faltan columnas esperadas en el archivo de caja: ' . implode(', ', $faltantes) . '.',
+                'message' => 'No se pudo leer el archivo.'
             ], 422);
         }
 
-        $filas = [];
-        foreach ($grid as $r => $row) {
-            if ($r === 0) continue;
-            $conc = $row[$idx['conccaja_nombre']] ?? null;
-            if ($conc !== 'Facturación Copago (exento)') continue;
-            if (!empty($row[$idx['mve_anulado']])) continue;
-            $nombre = $row[$idx['me_ape']] ?? null;
-            if (!$nombre) continue;
+        /*
+     * LEER ENCABEZADOS
+     */
+        $headers = [];
 
-            $fecha = $row[$idx['me_fecha']] ?? null;
-            if ($fecha instanceof \DateTimeInterface) $fecha = $fecha->format('Y-m-d');
-            elseif ($fecha !== null) $fecha = substr((string) $fecha, 0, 10);
+        foreach ($sheet->getRowIterator(1, 1) as $row) {
+            foreach ($row->getCellIterator() as $cell) {
+                $indice = \PhpOffice\PhpSpreadsheet\Cell\Coordinate
+                    ::columnIndexFromString($cell->getColumn()) - 1;
+
+                $headers[$indice] = $this->normalizarNombre(
+                    $cell->getValue() ?? ''
+                );
+            }
+        }
+
+        $requeridos = [
+            'me_fecha',
+            'me_ape',
+            'imp',
+            'conccaja_nombre',
+            'mve_anulado',
+            'osplan'
+        ];
+
+        $idx = [];
+
+        foreach ($requeridos as $campo) {
+
+            $pos = array_search(
+                $this->normalizarNombre($campo),
+                $headers,
+                true
+            );
+
+            if ($pos === false) {
+                return response()->json([
+                    'message' => "Falta la columna {$campo}."
+                ], 422);
+            }
+
+            /*
+         * PhpSpreadsheet trabaja desde columna 1.
+         */
+            $idx[$campo] = $pos + 1;
+        }
+
+        /*
+     * RECORRER DIRECTAMENTE EL EXCEL
+     */
+        $filas = [];
+
+        $ultimaFila = $sheet->getHighestDataRow();
+
+        for ($r = 2; $r <= $ultimaFila; $r++) {
+
+            $conc = $sheet
+                ->getCell([$idx['conccaja_nombre'], $r])
+                ->getValue();
+
+            if (
+                $this->normalizarNombre($conc)
+                !== 'FACTURACION COPAGO (EXENTO)'
+            ) {
+                continue;
+            }
+
+            $anulado = $sheet
+                ->getCell([$idx['mve_anulado'], $r])
+                ->getValue();
+
+            if (!empty($anulado)) {
+                continue;
+            }
+
+            $nombre = $sheet
+                ->getCell([$idx['me_ape'], $r])
+                ->getValue();
+
+            if (!$nombre) {
+                continue;
+            }
+
+            $celdaFecha = $sheet->getCell([
+                $idx['me_fecha'],
+                $r
+            ]);
+
+            $fecha = $celdaFecha->getValue();
+
+            if (
+                $fecha !== null &&
+                Date::isDateTime($celdaFecha)
+            ) {
+                $fecha = Date::excelToDateTimeObject($fecha);
+            }
+
+            $importe = $sheet
+                ->getCell([$idx['imp'], $r])
+                ->getValue();
+
+            $osplan = $sheet
+                ->getCell([$idx['osplan'], $r])
+                ->getValue();
 
             $filas[] = [
-                'fecha' => $fecha,
+                'fecha' => $this->parsearFecha($fecha),
                 'nombre' => (string) $nombre,
                 'nombre_norm' => $this->normalizarNombre($nombre),
-                'importe' => (float) ($row[$idx['imp']] ?? 0),
-                'osplan' => $row[$idx['osplan']] !== null ? (string) $row[$idx['osplan']] : null,
+
+                // IMPORTANTE: importe, NO imp
+                'importe' => $this->parseNumeroArg($importe),
+
+                'osplan' => $osplan,
             ];
         }
 
-        DB::statement('CALL SP_COPAGOS_CAJA_CARGAR(?, ?, ?)', [
-            json_encode($filas, JSON_UNESCAPED_UNICODE),
-            $request->file('archivo')->getClientOriginalName(),
-            auth()->id(),
-        ]);
+        if (!$filas) {
+            return response()->json([
+                'message' =>
+                'No se encontraron pagos de "Facturación Copago (exento)".'
+            ], 422);
+        }
+
+        DB::statement(
+            'CALL SP_COPAGOS_CAJA_CARGAR(?, ?, ?)',
+            [
+                json_encode(
+                    $filas,
+                    JSON_UNESCAPED_UNICODE
+                ),
+                $archivo->getClientOriginalName(),
+                auth()->id(),
+            ]
+        );
+
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
 
         return response()->json([
-            'message' => count($filas) . ' pagos "Facturación Copago (exento)" identificados.',
-            'filas' => count($filas),
+            'message' => count($filas) . ' pagos cargados.',
+            'filas' => count($filas)
         ]);
     }
 
@@ -199,18 +282,23 @@ class CopagosController extends Controller
         return response()->json(['data' => DB::select('CALL SP_COPAGOS_CAJA_LISTAR()')]);
     }
 
+    // ---------- cruce ----------
+
     public function obtenerCruce()
     {
         $liqRows = DB::select('CALL SP_COPAGOS_LIQUIDACION_LISTAR()');
         $cajaRows = DB::select('CALL SP_COPAGOS_CAJA_LISTAR()');
-        $pacientesRows = DB::select('CALL SP_COPAGOS_PACIENTES_LISTAR()');
         $notas = collect(DB::select('CALL SP_COPAGOS_NOTAS_LISTAR()'))->keyBy('nombre_norm');
 
-        $cajaConPalabras = array_map(fn($c) => ['row' => $c, 'words' => array_flip(explode(' ', $c->nombre_norm))], $cajaRows);
-        $pacientesConPalabras = array_map(fn($p) => ['row' => $p, 'words' => array_flip(explode(' ', $p->nombre_norm))], $pacientesRows);
+        $cajaConPalabras = array_map(
+            fn($c) => ['row' => $c, 'words' => array_flip(explode(' ', $c->nombre_norm))],
+            $cajaRows
+        );
 
         $porNombre = [];
         foreach ($liqRows as $r) $porNombre[$r->nombre_norm][] = $r;
+
+        $telefonos = $this->buscarTelefonos(array_keys($porNombre));
 
         $pacientes = [];
         foreach ($porNombre as $nombreNorm => $filas) {
@@ -224,31 +312,12 @@ class CopagosController extends Controller
 
             $totalCobrado = array_sum(array_map(fn($m) => (float) $m['row']->importe, $matched));
             $diferencia = round($totalLiq - $totalCobrado, 2);
-
-            $telefono = null;
-            foreach ($pacientesConPalabras as $p) {
-                $allInPat = true;
-                $allInLiq = true;
-                foreach ($liqWords as $w => $_) if (!isset($p['words'][$w])) {
-                    $allInPat = false;
-                    break;
-                }
-                foreach ($p['words'] as $w => $_) if (!isset($liqWords[$w])) {
-                    $allInLiq = false;
-                    break;
-                }
-                if ($allInPat || $allInLiq) {
-                    $telefono = $p['row']->telefono;
-                    break;
-                }
-            }
-
             $nota = $notas->get($nombreNorm);
 
             $pacientes[] = [
                 'nombreNorm' => $nombreNorm,
                 'nombreDisplay' => $filas[0]->nombre,
-                'telefono' => $telefono,
+                'telefono' => $telefonos[$nombreNorm] ?? null,
                 'fins' => array_map(fn($f) => $f->fin, $filas),
                 'periodos' => array_values(array_unique(array_map(fn($f) => $f->periodo, $filas))),
                 'totalLiquidado' => round($totalLiq, 2),
@@ -272,41 +341,90 @@ class CopagosController extends Controller
 
     public function guardarNota(Request $request)
     {
-        $data = $request->validate(['nombre_norm' => 'required|string|max:150', 'nota' => 'nullable|string|max:500']);
-        DB::statement('CALL SP_COPAGOS_NOTA_GUARDAR(?, ?, ?)', [$data['nombre_norm'], $data['nota'] ?? null, auth()->id()]);
+        $data = $request->validate([
+            'nombre_norm' => 'required|string|max:150',
+            'nota' => 'nullable|string|max:500',
+        ]);
+
+        DB::statement('CALL SP_COPAGOS_NOTA_GUARDAR(?, ?, ?)', [
+            $data['nombre_norm'],
+            $data['nota'] ?? null,
+            auth()->id(),
+        ]);
+
         return response()->json(['message' => 'Nota guardada.']);
     }
 
     public function marcarResuelto(Request $request)
     {
-        $data = $request->validate(['nombre_norm' => 'required|string|max:150', 'resuelto' => 'required|boolean']);
-        DB::statement('CALL SP_COPAGOS_RESUELTO_MARCAR(?, ?, ?)', [$data['nombre_norm'], $data['resuelto'] ? 1 : 0, auth()->id()]);
+        $data = $request->validate([
+            'nombre_norm' => 'required|string|max:150',
+            'resuelto' => 'required|boolean',
+        ]);
+
+        DB::statement('CALL SP_COPAGOS_RESUELTO_MARCAR(?, ?, ?)', [
+            $data['nombre_norm'],
+            $data['resuelto'] ? 1 : 0,
+            auth()->id(),
+        ]);
+
         return response()->json(['message' => 'Estado actualizado.']);
     }
 
+    // ---------- pacientes ----------
+
     public function cargarPacientes(Request $request)
     {
-        $request->validate(['archivo' => 'required|file|mimes:xlsx,xls,pdf']);
+        $request->validate(['archivo' => 'required|file|mimes:xlsx,xls']);
         $file = $request->file('archivo');
-        $esPdf = strtolower($file->getClientOriginalExtension()) === 'pdf';
 
-        $resultado = $esPdf
-            ? $this->parsearPacientesPdf($file->getRealPath())
-            : $this->parsearPacientesExcel($file->getRealPath());
-
+        $resultado = $this->parsearPacientesExcel($file->getRealPath());
         if (isset($resultado['error'])) {
             return response()->json(['message' => $resultado['error']], 422);
         }
 
+        return $this->guardarPacientes($resultado, $file->getClientOriginalName());
+    }
+
+    public function cargarPacientesPdf(Request $request)
+    {
+        $data = $request->validate([
+            'nombre_archivo' => 'required|string|max:255',
+            'filas' => 'required|array|min:1',
+            'filas.*.nombre' => 'required|string|max:150',
+            'filas.*.telefono' => 'required|string|max:30',
+            'filas.*.dni' => 'nullable|string|max:20',
+        ]);
+
+        $filas = array_map(fn($f) => [
+            'dni' => $f['dni'] ? preg_replace('/\D/', '', $f['dni']) : null,
+            'nombre' => $f['nombre'],
+            'nombre_norm' => $this->normalizarNombre($f['nombre']),
+            'telefono' => trim($f['telefono']),
+        ], $data['filas']);
+
+        return $this->guardarPacientes($filas, $data['nombre_archivo']);
+    }
+
+    private function guardarPacientes(array $filas, string $nombreArchivo)
+    {
         $total = 0;
-        foreach (array_chunk($resultado, 2000) as $lote) {
+        foreach (array_chunk($filas, 2000) as $lote) {
             DB::statement('CALL SP_COPAGOS_PACIENTES_CARGAR_LOTE(?)', [json_encode($lote, JSON_UNESCAPED_UNICODE)]);
             $total += count($lote);
         }
 
-        DB::statement('CALL SP_COPAGOS_CARGA_REGISTRAR(?, ?, ?, ?)', ['pacientes', $file->getClientOriginalName(), $total, auth()->id()]);
+        DB::statement('CALL SP_COPAGOS_CARGA_REGISTRAR(?, ?, ?, ?)', [
+            'pacientes',
+            $nombreArchivo,
+            $total,
+            auth()->id(),
+        ]);
 
-        return response()->json(['message' => $total . ' contactos procesados (nuevos + actualizados).', 'filas' => $total]);
+        return response()->json([
+            'message' => $total . ' contactos procesados (nuevos + actualizados).',
+            'filas' => $total,
+        ]);
     }
 
     private function parsearPacientesExcel(string $ruta): array
@@ -361,7 +479,9 @@ class CopagosController extends Controller
         $apellidoIdx = array_search('apellido', $normed, true);
         $nombreIdx = array_search('nombre', $normed, true);
 
-        if ($telIdx === null) return ['error' => 'No encontré columna de teléfono/celular. Encabezados: ' . implode(', ', array_map('strval', $headers))];
+        if ($telIdx === null) {
+            return ['error' => 'No encontré columna de teléfono/celular. Encabezados: ' . implode(', ', array_map('strval', $headers))];
+        }
         if ($fullNameIdx === null && !($apellidoIdx !== false && $nombreIdx !== false)) {
             return ['error' => 'No encontré columna de nombre reconocible. Encabezados: ' . implode(', ', array_map('strval', $headers))];
         }
@@ -390,6 +510,8 @@ class CopagosController extends Controller
 
     private function buscarTelefonos(array $nombresNorm): array
     {
+        if (!$nombresNorm) return [];
+
         $placeholders = implode(',', array_fill(0, count($nombresNorm), '?'));
         $exactos = collect(DB::select(
             "SELECT nombre_norm, telefono FROM copagos_pacientes_contacto WHERE nombre_norm IN ($placeholders)",
@@ -427,6 +549,92 @@ class CopagosController extends Controller
                 }
             }
         }
+
         return $telefonos;
+    }
+
+    // ---------- helpers ----------
+
+    private function hojaAGrid(Worksheet $sheet): array
+    {
+        $grid = [];
+        foreach ($sheet->getRowIterator() as $row) {
+            $r = $row->getRowIndex() - 1;
+            $fila = [];
+            foreach ($row->getCellIterator() as $cell) {
+                $c = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($cell->getColumn()) - 1;
+                $value = $cell->getValue();
+                if ($value !== null && Date::isDateTime($cell)) {
+                    $value = Date::excelToDateTimeObject($value);
+                }
+                $fila[$c] = $value;
+            }
+            $grid[$r] = $fila;
+        }
+        return $grid;
+    }
+
+    private function normalizarNombre(?string $s): string
+    {
+        if (!$s) return '';
+        $s = mb_strtoupper(trim($s), 'UTF-8');
+        $s = \Normalizer::normalize($s, \Normalizer::FORM_D);
+        $s = preg_replace('/\p{Mn}/u', '', $s);
+        return trim(preg_replace('/\s+/', ' ', $s));
+    }
+
+    private function formatearPeriodo($periodoRaw, string $sheetName): string
+    {
+        if ($periodoRaw instanceof \DateTimeInterface) {
+            return $this->meses[(int) $periodoRaw->format('n') - 1] . '-' . $periodoRaw->format('y');
+        }
+        if (is_string($periodoRaw) && trim($periodoRaw) !== '') {
+            $val = trim($periodoRaw);
+            if (preg_match('/^[a-záéíóúñ]{3}-\d{2}$/iu', $val)) {
+                return mb_strtolower($val, 'UTF-8');
+            }
+            if (preg_match('/([a-záéíóúñ]+)\D*(\d{2,4})/iu', $val, $m)) {
+                return $this->abreviarMes($m[1]) . '-' . substr($m[2], -2);
+            }
+        }
+        $clean = trim(preg_replace('/copagos/i', '', $sheetName));
+        if (preg_match('/([a-záéíóúñ]+)\D*(\d{2,4})/iu', $clean, $m)) {
+            return $this->abreviarMes($m[1]) . '-' . substr($m[2], -2);
+        }
+        return $sheetName;
+    }
+
+    private function abreviarMes(string $mes): string
+    {
+        $m = preg_replace('/\p{Mn}/u', '', \Normalizer::normalize(mb_strtolower($mes, 'UTF-8'), \Normalizer::FORM_D));
+        return mb_substr($m, 0, 3);
+    }
+
+    private function esVerdadero($valor): bool
+    {
+        if ($valor === null || $valor === '') return false;
+        $s = mb_strtoupper(trim((string) $valor), 'UTF-8');
+        return in_array($s, ['VERDADERO', 'TRUE', '1', 'S', 'SI', 'X'], true);
+    }
+
+    private function parseNumeroArg($valor): float
+    {
+        if ($valor === null || $valor === '') return 0.0;
+        if (is_int($valor) || is_float($valor)) return (float) $valor;
+        $s = str_replace(['.', ' '], '', trim((string) $valor));
+        $s = str_replace(',', '.', $s);
+        return is_numeric($s) ? (float) $s : 0.0;
+    }
+
+    private function parsearFecha($valor): ?string
+    {
+        if ($valor === null || $valor === '') return null;
+        if ($valor instanceof \DateTimeInterface) return $valor->format('Y-m-d');
+        $s = trim((string) $valor);
+        foreach (['d/m/Y H:i:s', 'd/m/Y H:i', 'd/m/Y', 'Y-m-d H:i:s', 'Y-m-d'] as $formato) {
+            $d = \DateTime::createFromFormat($formato, $s);
+            if ($d !== false) return $d->format('Y-m-d');
+        }
+        return null;
     }
 }
