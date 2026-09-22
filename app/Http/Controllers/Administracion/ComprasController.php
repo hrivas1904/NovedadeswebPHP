@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ComprasController extends Controller
 {
@@ -219,6 +220,12 @@ class ComprasController extends Controller
 
     public function listarPedidosCompras(Request $request)
     {
+        Log::info('COMPRAS - LISTAR - INICIO', [
+            'usuario' => Auth::id(),
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
         $data = DB::select(
             "CALL SP_LISTAR_PEDIDOS_COMPRAS(?,?,?,?,?,?)",
             [
