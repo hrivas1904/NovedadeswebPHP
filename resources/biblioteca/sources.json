@@ -1,0 +1,64 @@
+{
+  "folders": [
+    {
+      "path": "ADMINISTRACION",
+      "label": "Administración"
+    },
+    {
+      "path": "CALIDAD",
+      "label": "Calidad"
+    },
+    {
+      "path": "DXI",
+      "label": "DXI"
+    },
+    {
+      "path": "ENFERMERIA",
+      "label": "Enfermería"
+    },
+    {
+      "path": "ESTERILIZACION",
+      "label": "Esterilización"
+    },
+    {
+      "path": "FACTURACION",
+      "label": "Facturación"
+    },
+    {
+      "path": "FARMACIA",
+      "label": "Farmacia"
+    },
+    {
+      "path": "GERENCIA",
+      "label": "Gerencia"
+    },
+    {
+      "path": "LIMPIEZA",
+      "label": "Limpieza"
+    },
+    {
+      "path": "MANTENIMIENTO",
+      "label": "Mantenimiento"
+    },
+    {
+      "path": "MEDICOS",
+      "label": "Médicos"
+    },
+    {
+      "path": "QUIROFANO",
+      "label": "Quirófano"
+    },
+    {
+      "path": "RECURSOS HUMANOS",
+      "label": "Recursos Humanos"
+    },
+    {
+      "path": "SERVICIOS",
+      "label": "Servicios"
+    },
+    {
+      "path": "SISTEMAS",
+      "label": "Sistemas"
+    }
+  ]
+}

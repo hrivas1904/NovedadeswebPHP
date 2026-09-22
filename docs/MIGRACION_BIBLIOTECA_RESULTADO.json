@@ -1,0 +1,33 @@
+{
+    "verifiedAt": "2026-09-18T17:49:53+00:00",
+    "routes": {
+        "/biblioteca": 200,
+        "/biblioteca/coleccion/descriptivos": 200,
+        "/biblioteca/coleccion/politicas": 200,
+        "/biblioteca/control-documental": 200,
+        "/biblioteca/administracion": 200,
+        "/biblioteca/documentos/54a6603f-7184-48d8-8cfe-de92bcdaafee": 200,
+        "/biblioteca/documentos/po-rh-005": 200
+    },
+    "sidebar": "Biblioteca Institucional inmediatamente después de Capacitaciones",
+    "documents": 51,
+    "versions": 61,
+    "events": 122,
+    "findings": 64,
+    "collections": [
+        {
+            "kind": "descriptivos",
+            "documents": 41
+        },
+        {
+            "kind": "politicas",
+            "documents": 5
+        },
+        {
+            "kind": "procedimientos",
+            "documents": 5
+        }
+    ],
+    "bundle": "930fe612bf6d8dc1c142693a3876ccd3a568adc3314ddc54c74f892caae17f45",
+    "readOnlyTransaction": true
+}

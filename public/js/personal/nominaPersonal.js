@@ -584,6 +584,7 @@ function cargarCategorias() {
                 select.append('<option value="">Seleccione categoría</option>');
 
                 data.forEach((cat) => {
+                    if (Number(cat.estado) !== 1) return;
                     select.append(
                         `<option value="${cat.id_categ}">
                             ${cat.nombre}
@@ -605,7 +606,9 @@ function cargarCategorias() {
 
 $(document).on("change", ".js-select-categoria", function () {
     const idCategoria = $(this).val();
-    const selectRol = $(".js-select-rol");
+    const categorySelect = this;
+    const selectRol = $(this).closest("form").find('[name="rol_interno_id"]');
+    const selectedRole = selectRol.val();
 
     // reset del rol
     selectRol
@@ -619,6 +622,7 @@ $(document).on("change", ".js-select-categoria", function () {
         url: `/rrhh/roles-empleados/por-categoria/${idCategoria}`,
         method: "GET",
         success: function (data) {
+            if ($(categorySelect).val() !== idCategoria) return;
             data.forEach((rol) => {
                 selectRol.append(
                     `<option value="${rol.id_rol}">
@@ -627,7 +631,7 @@ $(document).on("change", ".js-select-categoria", function () {
                 );
             });
 
-            selectRol.prop("disabled", false);
+            selectRol.val(selectedRole || "").prop("disabled", false);
         },
         error: function (err) {
             console.error("Error cargando roles", err);

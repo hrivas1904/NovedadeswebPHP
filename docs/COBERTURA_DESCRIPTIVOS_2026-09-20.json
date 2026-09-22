@@ -1,0 +1,177 @@
+{
+    "fecha": "2026-09-20T23:44:57+00:00",
+    "categorias": 23,
+    "categorias_activas": 22,
+    "descriptivos": 41,
+    "descriptivos_vigentes": 2,
+    "colaboradores_activos": 209,
+    "sin_cuenta_activa": 188,
+    "con_varias_cuentas_activas": 2,
+    "asignaciones_categoria": 0,
+    "asignaciones_individuales": 0,
+    "aceptaciones": 0,
+    "detalle_categorias": [
+        {
+            "id": 1,
+            "nombre": "Administrativo 1ra",
+            "activa": true,
+            "colaboradores_activos": 21,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 2,
+            "nombre": "Administrativo 2da",
+            "activa": true,
+            "colaboradores_activos": 7,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 3,
+            "nombre": "Administrativo 3ra",
+            "activa": true,
+            "colaboradores_activos": 8,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 4,
+            "nombre": "Analista",
+            "activa": true,
+            "colaboradores_activos": 4,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 5,
+            "nombre": "Cadete",
+            "activa": true,
+            "colaboradores_activos": 1,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 6,
+            "nombre": "Camillero",
+            "activa": true,
+            "colaboradores_activos": 2,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 7,
+            "nombre": "Coordinador/a",
+            "activa": true,
+            "colaboradores_activos": 10,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 24,
+            "nombre": "Coordinador/a L2",
+            "activa": false,
+            "colaboradores_activos": 0,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 8,
+            "nombre": "Encargado de stock",
+            "activa": true,
+            "colaboradores_activos": 1,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 22,
+            "nombre": "Enfermera/o",
+            "activa": true,
+            "colaboradores_activos": 73,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 9,
+            "nombre": "Farmacéutico",
+            "activa": true,
+            "colaboradores_activos": 1,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 10,
+            "nombre": "Gerente",
+            "activa": true,
+            "colaboradores_activos": 1,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 11,
+            "nombre": "Instrumentista",
+            "activa": true,
+            "colaboradores_activos": 22,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 12,
+            "nombre": "Jefatura",
+            "activa": true,
+            "colaboradores_activos": 7,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 13,
+            "nombre": "Medio oficial",
+            "activa": true,
+            "colaboradores_activos": 2,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 14,
+            "nombre": "Mucama/o",
+            "activa": true,
+            "colaboradores_activos": 31,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 15,
+            "nombre": "Oficial",
+            "activa": true,
+            "colaboradores_activos": 1,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 16,
+            "nombre": "Personal esterilización",
+            "activa": true,
+            "colaboradores_activos": 4,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 25,
+            "nombre": "PRUEBA DE CATEG",
+            "activa": true,
+            "colaboradores_activos": 0,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 17,
+            "nombre": "RSE",
+            "activa": true,
+            "colaboradores_activos": 1,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 18,
+            "nombre": "Secretaria/o",
+            "activa": true,
+            "colaboradores_activos": 1,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 19,
+            "nombre": "Supervisor/a",
+            "activa": true,
+            "colaboradores_activos": 1,
+            "situacion": "Sin descriptivo vinculado"
+        },
+        {
+            "id": 20,
+            "nombre": "Técnico/a",
+            "activa": true,
+            "colaboradores_activos": 10,
+            "situacion": "Sin descriptivo vinculado"
+        }
+    ],
+    "verificacion_accesos": "OK: administración 200; colaborador 403 en administración/control y 200 en Mi descriptivo; transacción de sólo lectura"
+}

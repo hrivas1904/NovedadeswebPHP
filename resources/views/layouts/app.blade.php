@@ -146,6 +146,10 @@
                         <div class="user-role">
                             {{ Auth::user()->rol }}
                         </div>
+                        @if(\App\Services\Biblioteca\UserPreview::allowed(Auth::user()) && !request()->attributes->has('biblioteca_preview'))
+                        <a class="text-white small" href="{{ route('biblioteca.preview') }}">Ver como otro usuario</a>
+                        @endif
+
                     </div>
 
                 </div>
@@ -177,6 +181,7 @@
                             </a>
                             <ul class="submenu">
                                 <li><a class="submenu-link" href="{{ route('rrhh.miLegajo') }}">Mi legajo</a></li>
+                                <li><a class="submenu-link" href="{{ route('biblioteca.mine') }}">Mi Descriptivo</a></li>
                                 @if (Auth::user()->rol === 'Coordinador/a L2' ||
                                 Auth::user()->rol === 'Administrador/a' ||
                                 Auth::user()->rol === 'Coordinador/a')
@@ -343,6 +348,12 @@
                             <a class="nav-link" href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
                                 <i class="fa-solid fa-book-atlas"></i>
                                 <span class="link-text">Capacitaciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('biblioteca.*') ? 'active' : '' }}" href="{{ route('biblioteca.index') }}" @if(request()->routeIs('biblioteca.*')) aria-current="page" @endif>
+                                <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                                <span class="link-text">Biblioteca Institucional</span>
                             </a>
                         </li>
 

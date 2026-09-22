@@ -1,0 +1,15 @@
+@extends('biblioteca.layout')
+@section('library')
+<div class="bib-page-heading"><div><h2>{{ $control?'Control documental':($manage?'Administración de la biblioteca':($kind?$collections[$kind]['label']:'Buscar en la biblioteca')) }}</h2><p>{{ $control?'Versiones, estados y fechas de revisión de todas las colecciones.':($manage?'Creá documentos, revisá borradores y administrá sus publicaciones.':'Explorá los documentos y consultá su versión disponible.') }}</p></div>
+@if($canManage)<div class="bib-actions"><a class="btn btn-outline-secondary" href="{{ route('biblioteca.visibility') }}">Aprobaciones y visibilidad</a><a class="btn btn-outline-secondary" href="{{ route('biblioteca.sync') }}">Sincronizar fuentes</a><a class="btn btn-outline-primary" href="{{ route('biblioteca.upload') }}">Importar descriptivo</a><a class="btn btn-primary" href="{{ route('biblioteca.new',['kind'=>$kind?:'descriptivos']) }}">+ Nuevo documento</a></div>@endif</div>
+<details class="bib-section bib-details" open><summary>Buscador y filtros</summary><div class="bib-reading"><form method="get" action="{{ url()->current() }}" class="bib-filters" data-live-filter="#catalog-results" data-live-feedback="#catalog-feedback">
+<div><label for="q">Buscar</label><input class="form-control" id="q" name="q" value="{{ $filters['q']??'' }}" placeholder="Nombre, tema o contenido"></div>
+@if(!$kind)<div><label for="kind">Colección</label><select name="kind" id="kind" class="form-select"><option value="">Todas</option>@foreach($collections as $key=>$c)@continue(!$canManage && !app(\App\Services\Biblioteca\Governance::class)->sectionVisible($key))<option value="{{ $key }}" @selected(($filters['kind']??'')===$key)>{{ $c['label'] }}</option>@endforeach</select></div>@endif
+<div><label for="area">Área / responsable</label><select name="area" id="area" class="form-select"><option value="">Todas</option>@foreach($areas as $a)<option @selected(($filters['area']??'')===$a)>{{ $a }}</option>@endforeach</select></div>
+<div><label for="state">Estado</label><select name="state" id="state" class="form-select"><option value="">Todos</option>@foreach($states as $s)<option @selected(($filters['state']??'')===$s)>{{ $s }}</option>@endforeach</select></div>
+<div><label for="review">Revisión</label><select name="review" id="review" class="form-select"><option value="">Todas</option>@foreach(['Pendiente','En revisión','Validado'] as $s)<option @selected(($filters['review']??'')===$s)>{{ $s }}</option>@endforeach</select></div>
+<button class="btn btn-primary align-self-end" data-live-submit>Aplicar</button>
+@if(!$control)<input type="hidden" name="history" value="0"><label class="bib-check"><input type="checkbox" name="history" value="1" @checked($filters['history']??false)> Incluir retirados</label>@endif
+</form></div></details>
+<p id="catalog-feedback" role="status" aria-live="polite"></p><div id="catalog-results" aria-busy="false">@include('biblioteca.catalog-results')</div>
+@endsection
