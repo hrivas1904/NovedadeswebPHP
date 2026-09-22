@@ -21,7 +21,7 @@ $request = Illuminate\Http\Request::capture();
 $app->instance('request', $request);
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $kernel->bootstrap();
-$root = storage_path('framework/testing/biblioteca-acceptance-browser');
+$root = storage_path('framework/testing/biblioteca-acceptance-browser'.(getenv('BIBLIOTECA_TEST_RUN') ? '-'.preg_replace('/[^a-zA-Z0-9_-]/', '', getenv('BIBLIOTECA_TEST_RUN')) : ''));
 if (! is_file($root.'/database.sqlite')) {
     throw new RuntimeException('Falta el fixture aislado.');
 }

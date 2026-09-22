@@ -61,8 +61,13 @@ class Assignments
     public function dashboard(): array
     {
         $categories = DB::table('categ_empleados')->orderBy('NOMBRE')->get();
-        $employees = DB::table('empleados')->where('ESTADO', 'ACTIVO')
-            ->select('LEGAJO', 'COLABORADOR', 'ID_CATEG', 'ESTADO')->orderBy('COLABORADOR')->get();
+        $employees = DB::table('empleados as e')
+            ->leftJoin('servicios as s', 's.ID_SERVICIOS', '=', 'e.ID_SERVICIOS')
+            ->leftJoin('rol_empleados as r', 'r.ID_ROL', '=', 'e.ID_ROL')
+            ->where('e.ESTADO', 'ACTIVO')
+            ->select('e.LEGAJO', 'e.COLABORADOR', 'e.ID_CATEG', 'e.ESTADO', 'e.CONVENIO',
+                's.NOMBRE as service_name', 'r.NOMBRE as role_name')
+            ->orderBy('e.COLABORADOR')->get();
         $users = DB::table('users')->where('estado', 'ACTIVO')->select('id', 'legajo')->get()->groupBy('legajo');
         $base = DB::table('bib_category_documents')->get()->keyBy('category_id');
         $individual = DB::table('bib_employee_documents')->get()->keyBy('legajo');
@@ -109,7 +114,7 @@ class Assignments
                 $validAck => 'Firmado',
                 default => 'Pendiente de firma',
             };
-            $employeeRows[] = ['employee' => $e, 'category' => $c, 'individual' => $i, 'document' => $doc,
+            $employeeRows[] = ['employee' => $e, 'category' => $c, 'individual' => $i, 'document' => $doc, 'base' => $b,
                 'origin' => $i?->document_id ? 'Individual' : 'Categoría', 'status' => $status,
                 'accountCount' => $accounts->count(), 'acceptance' => $validAck ? $ack : null];
         }

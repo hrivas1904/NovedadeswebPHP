@@ -71,8 +71,12 @@
     const coverageForm = $('#coverage-filters');
     if (coverageForm.length) {
         const results = $('#coverage-results'), feedback = $('#coverage-feedback');
-        let timer, pending, generation = 0;
+        let timer, pending, generation = 0, assignmentSaving = false, currentUrl = window.location.href;
         coverageForm.find('[data-coverage-search]').hide();
+        results.find('.bib-assignment-form select').prop('disabled', false);
+        window.addEventListener('beforeunload', function (event) {
+            if (assignmentSaving) { event.preventDefault(); event.returnValue = ''; }
+        });
         function cancelSearch() {
             clearTimeout(timer);
             generation++;
@@ -82,11 +86,24 @@
             cancelSearch();
             const current = generation;
             results.attr('aria-busy', 'true');
+            results.find('.bib-assignment-form select').prop('disabled', true);
             feedback.text('Buscando…');
             pending = $.ajax({url, dataType: 'json', headers: {Accept: 'application/json'}})
                 .done(function (data) {
                     if (current !== generation) return;
+                    currentUrl = url;
                     results.html(data.html);
+                    results.find('.bib-assignment-form select').prop('disabled', false);
+                    Object.entries(data.counts).forEach(([key, value]) => {
+                        app.find('[data-coverage-count="' + key + '"]').text(value);
+                    });
+                    $('#coverage-account-warning').toggleClass('d-none', !data.counts.withoutAccount && !data.counts.ambiguousAccounts);
+                    const state = $('#coverage-status'), selected = state.val();
+                    state.empty().append($('<option>', {value: '', text: 'Todas'}));
+                    const statuses = [...new Set([...data.statuses, ...(selected ? [selected] : [])])];
+                    statuses.forEach(text => state.append($('<option>', {value: text, text})));
+                    state.val(selected);
+                    coverageForm.find('[data-coverage-search]').hide();
                     feedback.text(results.find('.bib-result-count').text());
                 })
                 .fail(function (xhr, status) {
@@ -97,18 +114,57 @@
                 .always(function () {
                     if (current === generation) { results.attr('aria-busy', 'false'); pending = null; }
                 });
+            return pending;
         }
         function searchUrl() { return coverageForm.attr('action') + '?' + coverageForm.serialize(); }
         coverageForm.on('input', '#coverage-q', function () {
+            if (assignmentSaving) return;
             cancelSearch();
             results.attr('aria-busy', 'true');
+            results.find('.bib-assignment-form select').prop('disabled', true);
             feedback.text('Buscando…');
             timer = setTimeout(() => loadCoverage(searchUrl()), 250);
         });
-        coverageForm.on('change', '#coverage-status', () => loadCoverage(searchUrl()));
-        coverageForm.on('submit', function (event) { event.preventDefault(); loadCoverage(searchUrl()); });
+        coverageForm.on('change', '#coverage-status', function () { if (!assignmentSaving) loadCoverage(searchUrl()); });
+        coverageForm.on('submit', function (event) { event.preventDefault(); if (!assignmentSaving) loadCoverage(searchUrl()); });
         results.on('click', '.bib-pagination a', function (event) {
-            event.preventDefault(); loadCoverage(this.href);
+            event.preventDefault(); if (!assignmentSaving) loadCoverage(this.href);
+        });
+        results.on('submit', '.bib-assignment-form', event => event.preventDefault());
+        results.on('change', '.bib-assignment-form select[name="document_id"]', async function () {
+            if (assignmentSaving) return;
+            const form = $(this).closest('form'), data = form.serialize(), legajo = form.attr('data-assignment-legajo');
+            cancelSearch();
+            assignmentSaving = true;
+            coverageForm.find(':input').prop('disabled', true);
+            results.find('.bib-assignment-form select').prop('disabled', true);
+            results.attr('aria-busy', 'true');
+            form.find('[data-assignment-feedback]').text('Guardando…');
+            feedback.text('Guardando asignación del legajo ' + legajo + '…');
+            let message, saved = false;
+            try {
+                await $.ajax({url: form.attr('action'), method: 'POST', data, dataType: 'json', headers: {Accept: 'application/json'}});
+                saved = true;
+                message = 'Asignación guardada para el legajo ' + legajo + '.';
+            } catch (xhr) {
+                message = xhr.status === 409 ? 'La asignación cambió en otra sesión. Revisá el valor actual antes de volver a elegir.'
+                    : 'No se pudo confirmar el guardado. ' + errorMessage(xhr);
+            }
+            try {
+                // Reload authoritative values and revision even after an uncertain network response.
+                await loadCoverage(currentUrl);
+                feedback.text(message);
+                const updated = results.find('[data-assignment-legajo="' + legajo + '"]');
+                updated.find('[data-assignment-feedback]').text(saved ? 'Guardado.' : 'Revisá la asignación actual.');
+                updated.find('select')[0]?.focus({preventScroll: true});
+            } catch (_) {
+                feedback.text(message + ' No se pudo actualizar la tabla. Usá Reintentar para consultar lo guardado.');
+                coverageForm.find('[data-coverage-search]').show().text('Reintentar');
+            } finally {
+                assignmentSaving = false;
+                coverageForm.find(':input').prop('disabled', false);
+                results.attr('aria-busy', 'false');
+            }
         });
     }
     const previewSelect = $('#preview-user');

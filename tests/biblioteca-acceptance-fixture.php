@@ -8,7 +8,7 @@ if (PHP_SAPI !== 'cli') {
 require __DIR__.'/../vendor/autoload.php';
 $app = require __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-$root = storage_path('framework/testing/biblioteca-acceptance-browser');
+$root = storage_path('framework/testing/biblioteca-acceptance-browser'.(getenv('BIBLIOTECA_TEST_RUN') ? '-'.preg_replace('/[^a-zA-Z0-9_-]/', '', getenv('BIBLIOTECA_TEST_RUN')) : ''));
 if (is_file($root.'/database.sqlite')) {
     throw new RuntimeException('La base aislada ya existe.');
 }
@@ -35,7 +35,18 @@ Schema::create('empleados', function (Blueprint $t) {
     $t->integer('LEGAJO')->primary();
     $t->string('COLABORADOR');
     $t->integer('ID_CATEG');
+    $t->integer('ID_SERVICIOS')->nullable();
+    $t->integer('ID_ROL')->nullable();
+    $t->string('CONVENIO')->nullable();
     $t->string('ESTADO');
+});
+Schema::create('servicios', function (Blueprint $t) {
+    $t->integer('ID_SERVICIOS')->primary();
+    $t->string('NOMBRE');
+});
+Schema::create('rol_empleados', function (Blueprint $t) {
+    $t->integer('ID_ROL')->primary();
+    $t->string('NOMBRE');
 });
 Schema::create('categ_empleados', function (Blueprint $t) {
     $t->integer('ID_CATEG')->primary();
@@ -52,6 +63,10 @@ DB::table('users')->insert([
 ]);
 DB::table('categ_empleados')->insert([['ID_CATEG' => 1, 'NOMBRE' => 'Analista', 'estado' => 1], ['ID_CATEG' => 2, 'NOMBRE' => 'Categoría sin descriptivo', 'estado' => 1], ['ID_CATEG' => 3, 'NOMBRE' => 'Categoría inactiva', 'estado' => 0]]);
 DB::table('empleados')->insert([['LEGAJO' => 1001, 'COLABORADOR' => 'Colaborador de prueba', 'ID_CATEG' => 1, 'ESTADO' => 'ACTIVO'], ['LEGAJO' => 1002, 'COLABORADOR' => 'Otra persona de prueba', 'ID_CATEG' => 2, 'ESTADO' => 'ACTIVO']]);
+DB::table('servicios')->insert(['ID_SERVICIOS' => 1, 'NOMBRE' => 'Facturación de prueba']);
+DB::table('rol_empleados')->insert(['ID_ROL' => 1, 'NOMBRE' => 'Telefonista de prueba']);
+DB::table('empleados')->where('LEGAJO', 1001)->update(['ID_SERVICIOS' => 1, 'ID_ROL' => 1, 'CONVENIO' => 'SANIDAD']);
+DB::table('empleados')->where('LEGAJO', 1002)->update(['CONVENIO' => 'FUERA DE CONVENIO']);
 $ids = [];
 foreach (['Analista de prueba', 'Auxiliar de prueba'] as $name) {
     $c = Content::institutional(Content::emptyJob());

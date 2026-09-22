@@ -2,6 +2,8 @@
 
 Implementado el 20/09/2026 en el módulo Biblioteca Institucional del sistema Laravel.
 
+**Actualización 21/09/2026:** la pantalla ahora se llama Descriptivos y firmas, trabaja por colaborador y guarda automáticamente al seleccionar un DP. Se retiró la tabla de cobertura por categorías. Convenio y categoría se consideran datos de liquidación; servicio y rol orientan el descriptivo. Ver [criterio vigente y alcance](CATEGORIAS_SERVICIOS_Y_DESCRIPTIVOS.md). La descripción siguiente conserva el diseño inicial y su compatibilidad histórica.
+
 ## Permisos
 
 El rol autorizado para Administración, Control documental, revisión, importación, sincronización, publicación, fuentes documentales, asignaciones y registro general de aceptaciones es exactamente `Administrador/a`, que es la denominación existente en `users.rol`.

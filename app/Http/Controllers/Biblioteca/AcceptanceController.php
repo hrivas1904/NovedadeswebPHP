@@ -60,15 +60,15 @@ class AcceptanceController extends Controller
     public function coverage(Request $request, Assignments $service)
     {
         $data = $service->dashboard();
-        $counts = ['activeCategories' => 0, 'missing' => 0, 'unpublished' => 0, 'covered' => 0,
+        $counts = ['missing' => 0, 'unpublished' => 0,
             'employees' => count($data['employees']), 'signed' => 0, 'pending' => 0, 'withoutAccount' => 0, 'ambiguousAccounts' => 0];
-        foreach ($data['categories'] as $row) {
-            if ((int) $row['category']->estado === 1) {
-                $counts['activeCategories']++;
-                $counts[! $row['document'] ? 'missing' : (! $row['version'] ? 'unpublished' : 'covered')]++;
-            }
-        }
         foreach ($data['employees'] as $row) {
+            if (! $row['document']) {
+                $counts['missing']++;
+            }
+            if ($row['status'] === 'Pendiente de publicación') {
+                $counts['unpublished']++;
+            }
             if ($row['accountCount'] === 0) {
                 $counts['withoutAccount']++;
             }
@@ -84,15 +84,19 @@ class AcceptanceController extends Controller
         }
         $q = Content::normalize(mb_substr((string) $request->query('q', ''), 0, 200));
         $state = (string) $request->query('status', '');
-        $filtered = array_values(array_filter($data['employees'], fn ($r) => (! $q || str_contains(Content::normalize($r['employee']->COLABORADOR.' '.$r['employee']->LEGAJO.' '.($r['category']?->NOMBRE ?? '')), $q))
+        $filtered = array_values(array_filter($data['employees'], fn ($r) => (! $q || str_contains(Content::normalize(implode(' ', [
+            $r['employee']->COLABORADOR, $r['employee']->LEGAJO, $r['category']?->NOMBRE ?? '',
+            $r['employee']->CONVENIO, $r['employee']->service_name, $r['employee']->role_name,
+        ])), $q))
             && (! $state || $r['status'] === $state)));
         $statuses = collect($data['employees'])->pluck('status')->unique()->sort()->all();
-        $page = max(1, $request->integer('page', 1));
+        $page = min(max(1, $request->integer('page', 1)), max(1, (int) ceil(count($filtered) / 20)));
         $data['employees'] = new LengthAwarePaginator(array_slice($filtered, ($page - 1) * 20, 20), count($filtered), 20, $page,
             ['path' => $request->url(), 'query' => $request->query()]);
 
         if ($request->expectsJson()) {
-            return response()->json(['html' => view('biblioteca.coverage-employees', $data)->render()]);
+            return response()->json(['html' => view('biblioteca.coverage-employees', $data)->render(),
+                'counts' => $counts, 'statuses' => array_values($statuses)]);
         }
 
         return $this->page('coverage', $data + compact('counts', 'q', 'state', 'statuses'));
@@ -102,6 +106,10 @@ class AcceptanceController extends Controller
     {
         $data = $request->validate(['document_id' => 'nullable|string|max:160', 'revision' => 'required|integer|min:0']);
         $service->save($scope, $id, $data['document_id'] ?? null, (int) $data['revision'], Library::actor($request->user()));
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Asignación guardada.', 'legajo' => $scope === 'employee' ? $id : null]);
+        }
 
         return redirect()->route('biblioteca.coverage')->with('status', 'Asignación guardada. Las aceptaciones anteriores se conservan como antecedentes.');
     }

@@ -32,7 +32,18 @@ class BibliotecaAcceptanceTest extends TestCase
             $t->integer('LEGAJO')->primary();
             $t->string('COLABORADOR');
             $t->integer('ID_CATEG');
+            $t->integer('ID_SERVICIOS')->nullable();
+            $t->integer('ID_ROL')->nullable();
+            $t->string('CONVENIO')->nullable();
             $t->string('ESTADO');
+        });
+        Schema::create('servicios', function (Blueprint $t) {
+            $t->integer('ID_SERVICIOS')->primary();
+            $t->string('NOMBRE');
+        });
+        Schema::create('rol_empleados', function (Blueprint $t) {
+            $t->integer('ID_ROL')->primary();
+            $t->string('NOMBRE');
         });
         Schema::create('categ_empleados', function (Blueprint $t) {
             $t->integer('ID_CATEG')->primary();
@@ -90,7 +101,7 @@ class BibliotecaAcceptanceTest extends TestCase
         }
         $this->actingAs(User::findOrFail(99));
         $this->get(route('biblioteca.control'))->assertOk();
-        $this->get(route('biblioteca.coverage'))->assertOk()->assertSee('Administrativo')->assertSee('Inactiva');
+        $this->get(route('biblioteca.coverage'))->assertOk()->assertSee('Administrativo')->assertDontSee('Cobertura de todas las categorías');
     }
 
     public function test_explicit_consent_and_authenticated_identity_are_required(): void
@@ -233,15 +244,16 @@ class BibliotecaAcceptanceTest extends TestCase
         $this->assertSame(2, DB::table('bib_acceptances')->value('category_id'));
     }
 
-    public function test_coverage_reports_all_categories_and_unlinked_employees(): void
+    public function test_coverage_reports_employees_instead_of_category_coverage(): void
     {
         $this->actingAs(User::findOrFail(99));
         $response = $this->get(route('biblioteca.coverage'))->assertOk();
-        $response->assertViewHas('counts', fn ($c) => $c['activeCategories'] === 2 && $c['missing'] === 2 && $c['employees'] === 2);
-        $response->assertSee('Sin descriptivo vinculado')->assertSee('Persona Uno')->assertSee('Inactiva');
+        $response->assertViewHas('counts', fn ($c) => $c['missing'] === 2 && $c['employees'] === 2);
+        $response->assertSee('Sin descriptivo asignado')->assertSee('Persona Uno')
+            ->assertDontSee('Cobertura de todas las categorías')->assertDontSee('Guardar asignación');
         $v = $this->job(false);
         $this->post(route('biblioteca.assign', ['scope' => 'category', 'id' => 1]), ['document_id' => $v['document_id'], 'revision' => 0])->assertRedirect();
-        $this->get(route('biblioteca.coverage'))->assertViewHas('counts', fn ($c) => $c['missing'] === 1 && $c['unpublished'] === 1 && $c['covered'] === 0);
+        $this->get(route('biblioteca.coverage'))->assertViewHas('counts', fn ($c) => $c['missing'] === 1 && $c['unpublished'] === 1);
         $this->postJson(route('biblioteca.assign', ['scope' => 'category', 'id' => 3]), ['document_id' => $v['document_id'], 'revision' => 0])->assertUnprocessable();
     }
     public function test_live_coverage_filters_all_employees_and_keeps_pagination_and_permissions(): void
@@ -268,6 +280,52 @@ class BibliotecaAcceptanceTest extends TestCase
         $this->assertStringContainsString('No hay colaboradores con esos filtros', $html);
         $html = $this->getJson($url.'?q=')->assertOk()->json('html');
         $this->assertStringContainsString('27 colaboradores encontrados', $html);
+    }
+
+    public function test_individual_autosave_returns_json_and_preserves_receipts_and_conflict_protection(): void
+    {
+        $first = $this->job();
+        (new Assignments)->save('employee', 101, $first['document_id'], 0, 'test');
+        $receipt = (new Acceptances)->accept(auth()->user(), $this->payload());
+        $second = $this->job();
+        $url = route('biblioteca.assign', ['scope' => 'employee', 'id' => 101]);
+        $this->postJson($url, ['document_id' => $second['document_id'], 'revision' => 1])->assertForbidden();
+        $this->actingAs(User::findOrFail(99));
+        $this->postJson($url, ['document_id' => $second['document_id'], 'revision' => 1])
+            ->assertOk()->assertJsonPath('legajo', 101)->assertJsonPath('message', 'Asignación guardada.');
+        $this->assertSame(2, DB::table('bib_employee_documents')->where('legajo', 101)->value('revision'));
+        $data = $this->getJson(route('biblioteca.coverage').'?q=101')->assertOk()->json();
+        $this->assertSame(1, $data['counts']['pending']);
+        $this->assertSame(0, $data['counts']['signed']);
+        $this->assertStringContainsString('value="2"', $data['html']);
+        $this->assertStringContainsString('Pendiente de firma', $data['html']);
+        $this->postJson($url, ['document_id' => $first['document_id'], 'revision' => 1])->assertConflict();
+        $this->postJson($url, ['document_id' => 'missing', 'revision' => 2])->assertUnprocessable();
+        $this->assertSame($second['document_id'], DB::table('bib_employee_documents')->where('legajo', 101)->value('document_id'));
+        $this->postJson($url, ['document_id' => $second['document_id'], 'revision' => 2])->assertOk();
+        $this->assertSame(2, DB::table('bib_employee_documents')->where('legajo', 101)->value('revision'));
+        $this->postJson($url, ['document_id' => '', 'revision' => 2])->assertOk();
+        $this->getJson(route('biblioteca.coverage'))->assertJsonPath('counts.missing', 2)->assertJsonPath('counts.pending', 0);
+        $this->assertSame($receipt->content_snapshot, DB::table('bib_acceptances')->where('id', $receipt->id)->value('content_snapshot'));
+        $this->assertSame(1, DB::table('bib_acceptances')->count());
+    }
+
+    public function test_coverage_searches_service_role_and_convention_without_changing_categories(): void
+    {
+        DB::table('servicios')->insert(['ID_SERVICIOS' => 1, 'NOMBRE' => 'Facturación']);
+        DB::table('rol_empleados')->insert(['ID_ROL' => 1, 'NOMBRE' => 'Telefonista']);
+        DB::table('empleados')->where('LEGAJO', 101)->update(['ID_SERVICIOS' => 1, 'ID_ROL' => 1, 'CONVENIO' => 'SANIDAD']);
+        DB::table('empleados')->where('LEGAJO', 102)->update(['CONVENIO' => 'FUERA DE CONVENIO']);
+        $this->actingAs(User::findOrFail(99));
+        foreach (['facturacion', 'telefonista', 'sanidad'] as $q) {
+            $html = $this->getJson(route('biblioteca.coverage', ['q' => $q, 'page' => 9]))->assertOk()->json('html');
+            $this->assertStringContainsString('Persona Uno', $html);
+            $this->assertStringNotContainsString('Persona Dos', $html);
+        }
+        $html = $this->getJson(route('biblioteca.coverage', ['q' => 'fuera de convenio']))->assertOk()->json('html');
+        $this->assertStringContainsString('Persona Dos', $html);
+        $this->assertStringContainsString('Servicio sin informar', $html);
+        $this->assertSame(1, DB::table('empleados')->where('LEGAJO', 101)->value('ID_CATEG'));
     }
 
     private function policy(): array

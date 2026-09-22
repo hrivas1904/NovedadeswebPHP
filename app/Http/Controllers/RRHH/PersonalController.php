@@ -147,10 +147,12 @@ class PersonalController extends Controller
     public function listarRolesXCategoria($id)
     {
         try {
-            $roles = DB::select(
-                'CALL SP_LISTA_ROLESXCATEG_EMP(?)',
-                [$id]
-            );
+            // Payroll category and actual job role are independent.
+            // Keep the existing endpoint and response keys for both employee forms.
+            $roles = DB::table('categ_empleados')->where('ID_CATEG', $id)->exists()
+                ? DB::table('rol_empleados')->orderBy('NOMBRE')->orderBy('ID_ROL')
+                    ->get(['ID_ROL as id_rol', 'NOMBRE as nombre'])
+                : collect();
 
             return response()->json($roles);
         } catch (\Exception $e) {
