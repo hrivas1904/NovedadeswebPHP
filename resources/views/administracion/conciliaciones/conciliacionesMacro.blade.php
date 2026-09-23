@@ -38,7 +38,17 @@
                 </div>
                 <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
                     <table class="table table-sm">
-                        <thead><tr><th></th><th>Fecha</th><th>Nro Comp</th><th>Concepto</th><th>Sub-concepto</th><th>Detalle</th><th class="text-end">Importe</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Fecha</th>
+                                <th>Nro Comp</th>
+                                <th>Concepto</th>
+                                <th>Sub-concepto</th>
+                                <th>Detalle</th>
+                                <th class="text-end">Importe</th>
+                            </tr>
+                        </thead>
                         <tbody id="previewExtractoBody"></tbody>
                     </table>
                 </div>
@@ -66,12 +76,24 @@
             <label class="mt-2" id="msgPagos"></label>
             <div id="previewPagosWrapper" style="display:none;">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="text-muted small" id="resumenPagos"></span>
+                    <span class="text-muted small">
+                        <span id="resumenPagos"></span>
+                        <span class="fw-bold text-danger ms-2" id="sumaPagosSeleccionados"></span>
+                    </span>
                     <button type="button" id="btnConfirmarPagos" class="btn btn-primary btn-sm">✓ Confirmar seleccionados</button>
                 </div>
                 <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
                     <table class="table table-sm">
-                        <thead><tr><th><input type="checkbox" id="chkSeleccionarTodosPagos"></th><th>Proveedor (pago)</th><th>Fecha pago</th><th class="text-end">Importe</th><th>Match en presupuesto</th><th>Estado</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="chkSeleccionarTodosPagos"></th>
+                                <th>Proveedor (pago)</th>
+                                <th>Fecha pago</th>
+                                <th class="text-end">Importe</th>
+                                <th>Match en presupuesto</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
                         <tbody id="previewPagosBody"></tbody>
                     </table>
                 </div>
@@ -110,7 +132,16 @@
                 </div>
                 <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
                     <table class="table table-sm">
-                        <thead><tr><th><input type="checkbox" id="chkSeleccionarTodosPagosHono"></th><th>Proveedor (pago)</th><th>Fecha pago</th><th class="text-end">Importe</th><th>Match en presupuesto</th><th>Estado</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="chkSeleccionarTodosPagosHono"></th>
+                                <th>Proveedor (pago)</th>
+                                <th>Fecha pago</th>
+                                <th class="text-end">Importe</th>
+                                <th>Match en presupuesto</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
                         <tbody id="previewPagosHonoBody"></tbody>
                     </table>
                 </div>
@@ -136,31 +167,31 @@
     </div>
 
     <div class="d-flex gap-3 mb-3">
-        <div class="card w-100"  style="background-color: var(--color-second);">
+        <div class="card w-100" style="background-color: var(--color-second);">
             <div class="card-body">
                 <label class="text-white">SALDO INICIAL</label>
                 <h4 class="fw-bold text-white" id="importeSaldoInicial">$0,00</h4>
             </div>
         </div>
-        <div class="card w-100"  style="background-color: var(--color-second);">
+        <div class="card w-100" style="background-color: var(--color-second);">
             <div class="card-body">
                 <label class="text-white">SALDO EXTRACTO</label>
                 <h4 class="fw-bold text-white" id="importeSaldoExtracto">$0,00</h4>
             </div>
         </div>
-        <div class="card w-100"  style="background-color: var(--color-second);">
+        <div class="card w-100" style="background-color: var(--color-second);">
             <div class="card-body">
                 <label class="text-white">PEND. FINNEGANS</label>
                 <h4 class="fw-bold text-white" id="importePendFinnegans">-</h4>
             </div>
         </div>
-        <div class="card w-100"  style="background-color: var(--color-second);">
+        <div class="card w-100" style="background-color: var(--color-second);">
             <div class="card-body">
                 <label class="text-white">PEND. QR</label>
                 <h4 class="fw-bold text-white" id="importePendQr">-</h4>
             </div>
         </div>
-        <div class="card w-100"  style="background-color: var(--color-second);">
+        <div class="card w-100" style="background-color: var(--color-second);">
             <div class="card-body">
                 <label class="text-white">SALDO CONTABLE</label>
                 <h4 class="fw-bold text-white" id="importeSaldoContable">$0,00</h4>
@@ -180,7 +211,7 @@
         <div>
             <button type="button" id="btnExportarExcel" class="btn btn-sm btn-primary">Exportar</button>
         </div>
-        
+
     </div>
 
     <div>

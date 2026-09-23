@@ -268,6 +268,10 @@ $(function () {
         drawCallback: function () {
             actualizarContadorCruce();
         },
+        scrollX: false,
+        scrollY: "58vh",
+        paging: false,
+        scrollCollapse: true,
     });
 
     // =========================================================
@@ -828,5 +832,18 @@ $(function () {
         } finally {
             btn.prop("disabled", false);
         }
+    });
+});
+
+$(document).ready(function () {
+    tablaCopagos = $("#tablaCruce").DataTable();
+
+    $("#buscadorTablaCruce").on("keyup", function () {
+        tablaCopagos.search(this.value).draw();
+    });
+
+    $("#btnLimpiarBuscador").on("click", function () {
+        $("#buscadorTablaCruce").val("");
+        tablaCopagos.search("").draw();
     });
 });

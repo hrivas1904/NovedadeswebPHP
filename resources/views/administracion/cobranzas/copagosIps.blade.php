@@ -105,6 +105,17 @@
 </div>
 
 <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+
+    <div class="input-group">
+        <span class="input-group-text">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Buscar..." id="buscadorTablaCruce">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnLimpiarBuscador">
+            <i class="fa-regular fa-trash-can"></i>
+        </button>
+    </div>
+
     <button
         type="button"
         class="btn btn-dark btn-sm btnFiltroCopago active"
