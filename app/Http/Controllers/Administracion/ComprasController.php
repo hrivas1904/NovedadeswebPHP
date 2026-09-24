@@ -723,4 +723,122 @@ class ComprasController extends Controller
             ], 500);
         }
     }
+
+    public function subirFactura(Request $request, $id)
+    {
+        if (!in_array(Auth::id(), [1, 2, 5, 6])) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No tenés permisos para esta acción.'
+            ], 403);
+        }
+
+        $pedido = DB::table('pedidos_compras')
+            ->where('id', $id)
+            ->first();
+
+        if (!$pedido) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Pedido no encontrado.'
+            ], 404);
+        }
+
+        if ($pedido->autorizacion !== 'APROBADA') {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Solo se pueden cargar facturas en pedidos ya autorizados.'
+            ], 422);
+        }
+
+        $request->validate([
+            'archivo' => [
+                'required',
+                'file',
+                'max:3072',
+                'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'
+            ],
+        ]);
+
+        $archivo = $request->file('archivo');
+
+        $path = $archivo->store(
+            'pedidos_compras/' . $id,
+            'public'
+        );
+
+        DB::statement(
+            "CALL SP_GUARDAR_ADJUNTO_PEDIDO_COMPRA(?,?,?,?)",
+            [
+                $id,
+                $path,
+                $archivo->getClientOriginalName(),
+                'FACTURA'
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Factura adjuntada correctamente.'
+        ]);
+    }
+
+    public function listarFacturas($id)
+    {
+        $facturas = DB::table('pedidos_compras_adjuntos')
+            ->where('pedido_compra_id', $id)
+            ->where('tipo', 'FACTURA')
+            ->orderByDesc('created_at')
+            ->get();
+
+        return response()->json($facturas);
+    }
+
+    public function eliminarFactura($id)
+    {
+        if (!in_array(Auth::id(), [1, 2, 5, 6])) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No tenés permisos para esta acción.'
+            ], 403);
+        }
+
+        $factura = DB::table('pedidos_compras_adjuntos')
+            ->where('id', $id)
+            ->where('tipo', 'FACTURA')
+            ->first();
+
+        if (!$factura) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Factura no encontrada.'
+            ], 404);
+        }
+
+        try {
+
+            if (
+                $factura->archivo &&
+                Storage::disk('public')->exists($factura->archivo)
+            ) {
+                Storage::disk('public')->delete($factura->archivo);
+            }
+
+            DB::table('pedidos_compras_adjuntos')
+                ->where('id', $id)
+                ->where('tipo', 'FACTURA')
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Factura eliminada correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No se pudo eliminar la factura.'
+            ], 500);
+        }
+    }
 }

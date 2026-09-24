@@ -41,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/compras/presupuestos/{id}', [ComprasController::class, 'eliminarPresupuesto']);
     Route::put('/compras/pedidos/{id}/actualizar', [ComprasController::class, 'actualizarPedido']);
     Route::delete('/compras/orden-compra/{id}', [ComprasController::class, 'eliminarOrdenCompra'])->name('compras.eliminarOrdenCompra');
+    Route::get('/compras/{id}/facturas', [ComprasController::class, 'listarFacturas']);
+    Route::post('/compras/{id}/factura', [ComprasController::class, 'subirFactura']);
+    Route::delete('/compras/facturas/{id}', [ComprasController::class, 'eliminarFactura']);
 
     //DASHBOARD
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');

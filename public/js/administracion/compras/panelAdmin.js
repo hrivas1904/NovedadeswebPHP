@@ -554,6 +554,7 @@ function verPedido(id) {
 
             cargarAdjuntosPedido(id);
             cargarOrdenesCompra(id);
+            cargarFacturas(id);
             cargarObservaciones(id);
             $("#modalDetallePedido").modal("show");
 
@@ -672,75 +673,6 @@ function verAdjunto(url, nombre, esImagen) {
 
 $("#modalVisorAdjunto").on("hidden.bs.modal", function () {
     $("#visorAdjuntoContenido").html("");
-});
-
-$(document).on("click", "#btnSubirOrdenCompra", function () {
-    const pedidoId = $("#detallePedidoId").val();
-    const input = $("#inputOrdenCompra")[0];
-    const archivo = input.files[0];
-
-    if (!pedidoId) {
-        Swal.fire("Atención", "No se pudo identificar el pedido.", "warning");
-        return;
-    }
-
-    if (!archivo) {
-        Swal.fire("Atención", "Seleccione un archivo.", "warning");
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("archivo", archivo);
-
-    $.ajax({
-        url: `/administracion/compras/${pedidoId}/orden-compra`,
-        type: "POST",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        data: formData,
-        processData: false,
-        contentType: false,
-
-        beforeSend: function () {
-            $("#btnSubirOrdenCompra").prop("disabled", true).html(`
-                    <span class="spinner-border spinner-border-sm me-2"></span>
-                    Subiendo...
-                `);
-        },
-
-        success: function (response) {
-            $("#inputOrdenCompra").val("");
-
-            Swal.fire({
-                icon: "success",
-                title: "Archivo adjuntado",
-                text: response.mensaje,
-                timer: 1800,
-                showConfirmButton: false,
-            });
-
-            cargarOrdenesCompra(pedidoId);
-        },
-
-        error: function (xhr) {
-            Swal.fire({
-                icon: "error",
-                title: "No se pudo subir el archivo",
-                text:
-                    xhr.responseJSON?.message ??
-                    xhr.responseJSON?.mensaje ??
-                    "Ocurrió un error.",
-            });
-        },
-
-        complete: function () {
-            $("#btnSubirOrdenCompra").prop("disabled", false).html(`
-                    <i class="fa-solid fa-upload me-2"></i>
-                    Subir archivo
-                `);
-        },
-    });
 });
 
 function cargarOrdenesCompra(pedidoId) {
@@ -952,6 +884,234 @@ $(document).on("click", "#btnEnviarObservacion", function () {
                 $("#hiloObservaciones")[0].scrollHeight,
             );
         },
+    });
+});
+
+$(document).on("click", "#btnSubirFactura", function () {
+    const pedidoId = $("#modalDetallePedido").data("pedido-id");
+
+    const input = $("#inputFactura")[0];
+    const archivo = input.files[0];
+
+    if (!pedidoId) {
+        Swal.fire("Atención", "No se pudo identificar el pedido.", "warning");
+
+        return;
+    }
+
+    if (!archivo) {
+        Swal.fire("Atención", "Seleccione un archivo.", "warning");
+
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("archivo", archivo);
+
+    $.ajax({
+        url: `/administracion/compras/${pedidoId}/factura`,
+        type: "POST",
+
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        beforeSend: function () {
+            $("#btnSubirFactura").prop("disabled", true).html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Subiendo...
+                `);
+        },
+
+        success: function (response) {
+            $("#inputFactura").val("");
+
+            Swal.fire({
+                icon: "success",
+                title: "Factura adjunta",
+                text: response.mensaje ?? "Factura adjuntada correctamente.",
+                timer: 1800,
+                showConfirmButton: false,
+            });
+
+            cargarFacturas(pedidoId);
+        },
+
+        error: function (xhr) {
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo subir la factura",
+                text:
+                    xhr.responseJSON?.message ??
+                    xhr.responseJSON?.mensaje ??
+                    "Ocurrió un error.",
+            });
+        },
+
+        complete: function () {
+            $("#btnSubirFactura").prop("disabled", false).html(`
+                    <i class="fa-solid fa-upload me-2"></i>
+                    Subir archivo
+                `);
+        },
+    });
+});
+
+function cargarFacturas(pedidoId) {
+    const contenedor = $("#listaFacturasAdjuntas");
+
+    // Limpiamos inmediatamente las facturas del pedido anterior
+    contenedor.empty();
+
+    contenedor.html(`
+        <div class="text-muted small">
+            Cargando facturas...
+        </div>
+    `);
+
+    $.ajax({
+        url: `/administracion/compras/${pedidoId}/facturas`,
+        type: "GET",
+
+        success: function (facturas) {
+            // Evita mostrar una respuesta vieja si el usuario cambió de pedido
+            const pedidoActual = $("#modalDetallePedido").data("pedido-id");
+
+            if (parseInt(pedidoActual) !== parseInt(pedidoId)) {
+                return;
+            }
+
+            contenedor.empty();
+
+            facturas.forEach(function (factura) {
+                contenedor.append(`
+                    <div class="d-flex justify-content-between align-items-center
+                                border rounded p-2 mb-2">
+
+                        <div class="d-flex align-items-center gap-2 overflow-hidden">
+
+                            <i class="fa-solid fa-file-invoice text-primary"></i>
+
+                            <a
+                                href="/storage/${factura.archivo}"
+                                target="_blank"
+                                class="text-decoration-none text-truncate"
+                                title="${factura.nombre_original}"
+                            >
+                                ${factura.nombre_original}
+                            </a>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger btnEliminarFactura"
+                            data-id="${factura.id}"
+                            title="Eliminar factura"
+                        >
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </div>
+                `);
+            });
+        },
+
+        error: function () {
+            const pedidoActual = $("#modalDetallePedido").data("pedido-id");
+
+            if (parseInt(pedidoActual) !== parseInt(pedidoId)) {
+                return;
+            }
+
+            contenedor.html(`
+                <div class="text-danger small">
+                    No se pudieron cargar las facturas.
+                </div>
+            `);
+        },
+    });
+}
+
+$(document).on("click", ".btnEliminarFactura", function (e) {
+    e.stopPropagation();
+
+    const facturaId = $(this).data("id");
+    const pedidoId = $("#modalDetallePedido").data("pedido-id");
+
+    if (!facturaId || !pedidoId) {
+        Swal.fire(
+            "Atención",
+            "No se pudo identificar la factura o el pedido.",
+            "warning",
+        );
+
+        return;
+    }
+
+    Swal.fire({
+        title: "¿Eliminar factura?",
+        text: "El archivo será eliminado permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        customClass: {
+            confirmButton: "btn btn-danger me-2",
+            cancelButton: "btn btn-secondary",
+        },
+        buttonsStyling: false,
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        $.ajax({
+            url: `/administracion/compras/facturas/${facturaId}`,
+            type: "DELETE",
+
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+
+            beforeSend: function () {
+                Swal.fire({
+                    title: "Eliminando...",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+            },
+
+            success: function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Factura eliminada",
+                    text:
+                        response.mensaje ?? "Factura eliminada correctamente.",
+                    timer: 1800,
+                    showConfirmButton: false,
+                });
+
+                cargarFacturas(pedidoId);
+            },
+
+            error: function (xhr) {
+                Swal.fire({
+                    icon: "error",
+                    title: "No se pudo eliminar",
+                    text: xhr.responseJSON?.mensaje ?? "Ocurrió un error.",
+                });
+            },
+        });
     });
 });
 

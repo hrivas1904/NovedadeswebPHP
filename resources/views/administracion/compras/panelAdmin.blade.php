@@ -342,7 +342,7 @@
                 </div>
 
                 <div id="sinAdjuntosMsg" class="text-muted small d-none">
-                    Este pedido no tiene archivos adjuntos.
+                    Este pedido no tiene presupuestos adjuntos.
                 </div>
 
                 <h6 class="fw-bold mb-3 mt-4">
@@ -362,13 +362,29 @@
                         </button>
                     </div>
                     @endif
+
+                    <div id="detalleOCBody" class="row g-2">
+                    </div>
                 </div>
 
-                <div id="detalleOCBody" class="row g-2">
+                <h6 class="fw-bold mb-3 mt-4">
+                    Factura/s asociada/s
+                </h6>
+
+                <div class="row g-2 align-items-end mb-3" id="divFacturasAdjuntas">
+                    <div class="col-12 col-md-9">
+                        <input type="file" class="form-control" id="inputFactura" accept=".pdf,.jpg,.jpeg,.png,.webp,.xlsx,.xls,.doc,.docx">
+                    </div>
+
+                    <div class="col-12 col-md-3 d-grid">
+                        <button type="button" class="btn btn-primary" id="btnSubirFactura">
+                            <i class="fa-solid fa-upload me-2"></i>
+                            Subir archivo
+                        </button>
+                    </div>
                 </div>
 
-                <div id="sinOCMsg" class="text-muted small d-none">
-                    Este pedido no tiene una orden de compra asociada.
+                <div id="listaFacturasAdjuntas" class="d-flex flex-column gap-2">
                 </div>
 
                 <h6 class="fw-bold mb-3 mt-4">
