@@ -1,5 +1,7 @@
 <p class="bib-result-count">{{ $employees->total() }} colaboradores encontrados</p>
-<div class="bib-table-wrap"><table class="table bib-table"><thead><tr><th>Colaborador</th><th>Convenio y categoría actual</th><th>Servicio y rol</th><th>Descriptivo aplicable</th><th>Aceptación</th><th>Asignar descriptivo</th></tr></thead><tbody>
+<div class="bib-table-wrap"><table class="table bib-table"><thead><tr>@foreach(['employee'=>'Colaborador','category'=>'Convenio y categoría actual','service'=>'Servicio y rol','document'=>'Descriptivo aplicable','status'=>'Aceptación'] as $key=>$label)
+@include('biblioteca.sort-heading',['key'=>$key,'label'=>$label,'paginator'=>$employees,'defaultSort'=>'employee'])
+@endforeach<th>Asignar descriptivo</th></tr></thead><tbody>
 @forelse($employees as $row)
 <tr><td><strong>{{ $row['employee']->COLABORADOR }}</strong><span class="d-block">Legajo {{ $row['employee']->LEGAJO }}</span>@if($row['accountCount']!==1)<small>{{ $row['accountCount'] }} cuentas activas vinculadas</small>@endif</td>
 <td>{{ trim($row['employee']->CONVENIO ?? '') ?: 'Convenio sin informar' }}<span class="d-block">{{ $row['category']?->NOMBRE ?? 'Sin categoría' }}</span></td>

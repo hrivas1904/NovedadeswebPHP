@@ -261,16 +261,16 @@ class BibliotecaAcceptanceTest extends TestCase
         $url = route('biblioteca.coverage');
         $this->getJson($url)->assertForbidden();
         $this->actingAs(User::findOrFail(99));
-        for ($i = 200; $i < 225; $i++) {
+        for ($i = 200; $i < 230; $i++) {
             DB::table('empleados')->insert(['LEGAJO' => $i, 'COLABORADOR' => 'Álvarez '.$i, 'ID_CATEG' => 2, 'ESTADO' => 'ACTIVO']);
         }
         $html = $this->getJson($url.'?q=alvarez')->assertOk()->json('html');
-        $this->assertStringContainsString('25 colaboradores encontrados', $html);
+        $this->assertStringContainsString('30 colaboradores encontrados', $html);
         $this->assertStringContainsString('Página 1 de 2', $html);
         $this->assertStringNotContainsString('Persona Uno', $html);
         $this->assertStringNotContainsString('<html', $html);
         $html = $this->getJson($url.'?q=alvarez&page=2')->assertOk()->json('html');
-        $this->assertStringContainsString('Álvarez 224', $html);
+        $this->assertStringContainsString('Álvarez 229', $html);
         $html = $this->getJson($url.'?q=224')->assertOk()->json('html');
         $this->assertStringContainsString('1 colaboradores encontrados', $html);
         $html = $this->getJson($url.'?q=Administrativo')->assertOk()->json('html');
@@ -279,7 +279,7 @@ class BibliotecaAcceptanceTest extends TestCase
         $html = $this->getJson($url.'?q=alvarez&status=Firmado')->assertOk()->json('html');
         $this->assertStringContainsString('No hay colaboradores con esos filtros', $html);
         $html = $this->getJson($url.'?q=')->assertOk()->json('html');
-        $this->assertStringContainsString('27 colaboradores encontrados', $html);
+        $this->assertStringContainsString('32 colaboradores encontrados', $html);
     }
 
     public function test_individual_autosave_returns_json_and_preserves_receipts_and_conflict_protection(): void
@@ -393,7 +393,7 @@ class BibliotecaAcceptanceTest extends TestCase
         $this->get(route('biblioteca.export',[$v['id'],'pdf']))->assertNotFound();
     }
 
-    public function test_sections_can_be_hidden_and_management_has_all_documents_on_one_page(): void
+    public function test_sections_can_be_hidden_and_management_uses_requested_page_size(): void
     {
         $this->get(route('biblioteca.index'))->assertDontSee('href="'.route('biblioteca.catalog','instructivos').'"',false);
         $this->get(route('biblioteca.catalog','instructivos'))->assertNotFound();
@@ -404,7 +404,44 @@ class BibliotecaAcceptanceTest extends TestCase
         $this->get(route('biblioteca.catalog','instructivos'))->assertOk();
         $this->actingAs(User::findOrFail(99));
         for($i=0;$i<32;$i++) $this->job(false);
-        $this->get(route('biblioteca.manage',['page'=>4]))->assertOk()->assertViewHas('entries',fn($p)=>$p->count()===32 && !$p->hasPages());
+        $this->get(route('biblioteca.manage'))->assertOk()->assertViewHas('entries',fn($p)=>$p->count()===25 && $p->hasPages());
+        $this->get(route('biblioteca.manage',['per_page'=>50]))->assertOk()->assertViewHas('entries',fn($p)=>$p->count()===32 && !$p->hasPages());
+    }
+
+    public function test_dynamic_views_render_without_the_application_shell_and_keep_permissions(): void
+    {
+        $headers = ['X-Biblioteca-Navigation'=>'1', 'Accept'=>'text/html'];
+        $fragment = $this->get(route('biblioteca.index'), $headers)->assertOk();
+        $this->assertContains('X-Biblioteca-Navigation', $fragment->getVary());
+        $this->assertStringContainsString('no-store', $fragment->headers->get('Cache-Control'));
+        $fragment->assertSee('id="bib-view"', false)->assertSee('id="bib-content"', false)
+            ->assertDontSee('<!DOCTYPE html>', false)->assertDontSee('class="topbar"', false)
+            ->assertDontSee('js/biblioteca-navigation.js', false)->assertDontSee('Control documental');
+        $this->get(route('biblioteca.manage'), $headers)->assertForbidden();
+        $this->actingAs(User::findOrFail(99));
+        $this->get(route('biblioteca.manage'), $headers)->assertOk()
+            ->assertSee('Control documental')->assertSee('id="catalog-results"', false);
+        $this->get(route('biblioteca.new'), $headers)->assertOk()
+            ->assertSee('id="bib-editor-config"', false)->assertSee('Nuevo documento');
+        $this->getJson(route('biblioteca.search'))->assertOk()->assertJsonStructure(['html']);
+        $this->get(route('biblioteca.index'))->assertOk()
+            ->assertSee('<!DOCTYPE html>', false)->assertSee('js/biblioteca-navigation.js', false);
+    }
+
+    public function test_home_search_counts_only_the_visible_collections(): void
+    {
+        $this->actingAs(User::findOrFail(99));
+        $job = $this->job();
+        $manual = ['id'=>'','sourceId'=>'','collection'=>'instructivos','code'=>'HOME-HIDDEN','title'=>'Guía oculta del índice','sourceHeading'=>'','summary'=>'','version'=>'1.0','declaredState'=>'borrador','validFrom'=>null,'lastReview'=>null,'reviewMonths'=>12,'approver'=>'','approvalRecord'=>null,'responsible'=>'Calidad','history'=>[],'sections'=>[['id'=>'contenido','title'=>'Contenido','html'=>'<p>Ejemplo.</p>','text'=>'']]];
+        $hidden = (new Library)->create('instructivos', $manual, 'test', (string) Str::uuid());
+        $this->get(route('biblioteca.search', ['visible_sections'=>1]))
+            ->assertOk()->assertSee('Puesto de prueba')->assertDontSee('Guía oculta del índice');
+        $this->getJson(route('biblioteca.search', ['visible_sections'=>1]))
+            ->assertOk()->assertJsonPath('html', fn($html) => str_contains($html, '1 documentos') && !str_contains($html, 'Guía oculta del índice'));
+        $this->get(route('biblioteca.manage'))->assertOk()->assertSee('Guía oculta del índice');
+        (new \App\Services\Biblioteca\Governance)->setVisibility('section:instructivos', true, 0, auth()->user());
+        $this->getJson(route('biblioteca.search', ['visible_sections'=>1]))
+            ->assertOk()->assertJsonPath('html', fn($html) => str_contains($html, '2 documentos') && str_contains($html, 'Guía oculta del índice'));
     }
 
     public function test_index_only_prompts_for_an_unsigned_current_job(): void
@@ -475,4 +512,68 @@ class BibliotecaAcceptanceTest extends TestCase
         $this->assertSame(101,auth()->id());
     }
 
+    public function test_coverage_sizes_sorting_and_acceptance_register_pagination():void {
+        $this->actingAs(User::findOrFail(99));
+        for($i=200;$i<260;$i++)DB::table('empleados')->insert(['LEGAJO'=>$i,'COLABORADOR'=>'Colaborador '.$i,'ID_CATEG'=>2,'ESTADO'=>'ACTIVO']);
+        foreach([25,50,100,150] as $size){
+            $this->get(route('biblioteca.coverage',['per_page'=>$size]))->assertOk()->assertViewHas('employees',fn($p)=>$p->count()===min(62,$size)&&$p->perPage()===$size);
+            $this->get(route('biblioteca.acceptance.register',['per_page'=>$size]))->assertOk()->assertViewHas('records',fn($p)=>$p->perPage()===$size);
+        }
+        $this->get(route('biblioteca.coverage',['sort'=>'employee','direction'=>'desc']))->assertOk()->assertViewHas('employees',fn($p)=>$p->items()[0]['employee']->COLABORADOR==='Persona Uno');
+        $this->get(route('biblioteca.coverage',['q'=>'Colaborador','sort'=>'employee','direction'=>'desc','page'=>2]))->assertOk()->assertViewHas('employees',fn($p)=>$p->items()[0]['employee']->COLABORADOR==='Colaborador 234');
+        $this->getJson(route('biblioteca.coverage',['per_page'=>50,'sort'=>'employee','direction'=>'desc']))->assertOk()->assertSee('per_page=50')->assertSee('descending');
+        $this->get(route('biblioteca.acceptance.register',['sort'=>'invalid','direction'=>'invalid','per_page'=>0]))->assertOk()->assertViewHas('records',fn($p)=>$p->perPage()===25);
+    }
+
+
+    public function test_per_document_visibility_supports_procedures_and_job_descriptions(): void {
+        $job=$this->job();$this->assign($job);$stale=$this->payload();
+        $manual=Content::decode($this->policy()['payload_json']);$manual['collection']='procedimientos';$manual['code']='PR-VIS';$manual['title']='Procedimiento ocultable';
+        $lib=new Library;$procedure=$lib->create('procedimientos',$manual,'test',(string)Str::uuid());
+        $this->actingAs(User::findOrFail(99));
+        $this->get(route('biblioteca.visibility'))->assertOk()->assertSee('Procedimiento ocultable')->assertSee('Puesto de prueba')->assertSee('Visibilidad por documento');
+        foreach([$procedure,$job] as $v){
+            $this->post(route('biblioteca.visibility.save'),['key'=>'document:'.$v['document_id'],'visible'=>0,'revision'=>0])->assertRedirect();
+            $this->get(route('biblioteca.show',$v['document_id']))->assertOk();
+        }
+        $this->actingAs(User::findOrFail(100));
+        foreach([$procedure,$job] as $v){
+            $this->get(route('biblioteca.show',$v['document_id']))->assertNotFound();
+            $this->get(route('biblioteca.export',[$v['id'],'docx']))->assertNotFound();
+        }
+        $this->get(route('biblioteca.search'))->assertDontSee('Procedimiento ocultable')->assertDontSee('Puesto de prueba');
+        $context=(new Acceptances)->context(auth()->user());$this->assertNull($context['entry']);$this->assertFalse($context['canSign']);
+        $this->postJson(route('biblioteca.sign'),$stale)->assertConflict();$this->assertSame(0,DB::table('bib_acceptances')->count());
+        $this->actingAs(User::findOrFail(99));
+        foreach([$procedure,$job] as $v)$this->post(route('biblioteca.visibility.save'),['key'=>'document:'.$v['document_id'],'visible'=>1,'revision'=>1])->assertRedirect();
+        $this->actingAs(User::findOrFail(100));$this->assertTrue((new Acceptances)->context(auth()->user())['canSign']);
+        $receipt=(new Acceptances)->accept(auth()->user(),$this->payload());
+        $this->actingAs(User::findOrFail(99));$this->post(route('biblioteca.visibility.save'),['key'=>'document:'.$job['document_id'],'visible'=>0,'revision'=>2])->assertRedirect();
+        $this->actingAs(User::findOrFail(100));$this->get(route('biblioteca.receipt',$receipt->id))->assertOk();
+        $this->assertSame($receipt->content_snapshot,DB::table('bib_acceptances')->where('id',$receipt->id)->value('content_snapshot'));
+    }
+    public function test_visibility_list_filters_sorts_and_paginates_all_documents(): void {
+        $this->actingAs(User::findOrFail(99));
+        for($i=0;$i<27;$i++)$this->job(false);
+        $this->policy();
+        $this->get(route('biblioteca.visibility'))->assertOk()->assertViewHas('documents',fn($p)=>$p->total()===28&&$p->count()===25);
+        $this->get(route('biblioteca.visibility',['kind'=>'descriptivos','per_page'=>50,'sort'=>'area','direction'=>'desc']))->assertOk()->assertViewHas('documents',fn($p)=>$p->total()===27&&$p->count()===27);
+        $this->getJson(route('biblioteca.visibility',['kind'=>'politicas']))->assertOk()->assertJsonPath('html',fn($html)=>str_contains($html,'Política de prueba')&&!str_contains($html,'Puesto de prueba'));
+    }
+
+    public function test_visibility_autosave_returns_confirmed_state_and_preserves_conflict_protection(): void {
+        $job=$this->job();$key='document:'.$job['document_id'];
+        $this->getJson(route('biblioteca.visibility.state',['key'=>$key]))->assertForbidden();
+        $this->actingAs(User::findOrFail(99));
+        $this->getJson(route('biblioteca.visibility.state',['key'=>$key]))->assertOk()->assertJson(['visible'=>true,'revision'=>0]);
+        $this->getJson(route('biblioteca.visibility.state',['key'=>'section:instructivos']))->assertOk()->assertJson(['visible'=>false,'revision'=>0]);
+        $this->postJson(route('biblioteca.visibility.save'),['key'=>$key,'visible'=>false,'revision'=>0])->assertOk()->assertExactJson(['key'=>$key,'visible'=>false,'revision'=>1]);
+        $this->postJson(route('biblioteca.visibility.save'),['key'=>$key,'visible'=>true,'revision'=>0])->assertConflict();
+        $this->getJson(route('biblioteca.visibility.state',['key'=>$key]))->assertOk()->assertJson(['visible'=>false,'revision'=>1]);
+        $this->postJson(route('biblioteca.visibility.save'),['key'=>'section:procedimientos','visible'=>false,'revision'=>0])->assertOk()->assertJsonPath('navigation',fn($html)=>!str_contains($html,route('biblioteca.catalog','procedimientos')));
+        $this->postJson(route('biblioteca.visibility.save'),['key'=>'section:procedimientos','visible'=>true,'revision'=>1])->assertOk()->assertJsonPath('navigation',fn($html)=>str_contains($html,route('biblioteca.catalog','procedimientos')));
+        $this->get(route('biblioteca.visibility'))->assertOk()->assertSee('role="switch"',false)->assertDontSee('<select id="visible-',false);
+        $this->getJson(route('biblioteca.visibility.state',['key'=>'section:invalid']))->assertStatus(422);
+        $this->getJson(route('biblioteca.visibility.state',['key'=>'document:missing']))->assertNotFound();
+    }
 }

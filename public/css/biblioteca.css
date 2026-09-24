@@ -8,3 +8,202 @@
 @media(max-width:600px){.bib-coverage-counts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .bib-preview-banner { position: sticky; top: 0; z-index: 1020; border: 2px solid #a66a00; }
+
+
+/* Compact document actions and consistent navigation. */
+.bib-document-heading{align-items:center;gap:18px}
+.bib-document-heading>div:first-child{flex:1 1 250px;min-width:220px}
+.bib-document-actions{justify-content:flex-end;flex:0 1 760px}
+.bib-document-actions .btn{padding:8px 11px}
+.bib-back{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;background:#fff;border:1px solid var(--bib-line);border-radius:8px;color:#294d6d;font-weight:600;transition:background .15s,border-color .15s}
+.bib-back:hover{background:#eaf1f7;border-color:#a9bed1;color:#163650}
+.bib-back i{font-size:12px}
+.bib-filters .bib-page-size{flex:0 0 145px;min-width:145px}
+.bib-search .bib-page-size{margin-top:14px;max-width:170px}
+.bib-sort{display:flex;align-items:center;justify-content:space-between;gap:8px;color:inherit;text-decoration:none}
+.bib-sort:hover{color:#0865a5}
+.bib-sort-arrow{font-size:15px;color:#758a9d}
+th[aria-sort="ascending"] .bib-sort-arrow,th[aria-sort="descending"] .bib-sort-arrow{color:#0865a5}
+.bib-rich-tools{gap:5px;align-items:center}
+.bib-rich-tools .btn{padding:6px 9px}
+.bib-rich-tools select{width:auto;max-width:170px;min-height:32px!important}
+.bib-rich-tool-group{display:flex;gap:3px;padding-right:7px;margin-right:2px;border-right:1px solid #c7d5e1}
+.bib-rich-tools [aria-pressed="true"]{background:#203f5c;color:white}
+.bib-rich-editor blockquote{border-left:3px solid #6182a6;padding:7px 14px;margin:12px 0;color:#4b657a;background:#f4f7fb}
+.bib-emoji-dialog{width:min(440px,94vw)}
+.bib-emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0}
+.bib-emoji-grid button{font-size:25px;min-height:45px;border:1px solid var(--bib-line);border-radius:7px;background:white}
+.bib-emoji-grid button:hover{background:#e9f3fa}
+@media(max-width:900px){.bib-document-heading{flex-wrap:wrap}.bib-document-actions{flex:1 1 100%;justify-content:flex-start}}
+@media(max-width:600px){.bib-document-heading>div:first-child{flex:auto}.bib-filters .bib-page-size{flex:1 1 100%}.bib-rich-tools{gap:6px}.bib-rich-tool-group{flex-wrap:wrap}.bib-back{align-self:flex-start}}
+
+.bib-rich-tools [data-rich-command="bold"]{font-weight:800}
+.bib-rich-tools [data-rich-command="italic"]{font-style:italic}
+.bib-rich-tools [data-rich-command="underline"]{text-decoration:underline}
+.bib-rich-tools [data-rich-command="strikeThrough"]{text-decoration:line-through}
+
+
+/* Shared institutional header and navigation across library sections. */
+.bib-app{padding-top:22px}
+.bib-app .bib-header{margin-bottom:18px}
+.bib-app .bib-header h1{font-size:25px;letter-spacing:-.6px}
+.bib-app .bib-header p{font-size:13px}
+.bib-app .bib-header-tools{justify-content:flex-end}
+.bib-app .bib-header-tools .btn{background:transparent;border-color:#ccd9e4;color:#526b81;padding:8px 11px}
+.bib-app .bib-header-tools .btn:hover{background:#e8eff5;color:#14304a}
+.bib-app .bib-nav{margin-bottom:22px;padding-bottom:10px}
+.bib-app .bib-nav a.active{background:color-mix(in srgb,var(--bib-color,#00568B) 10%,white);color:color-mix(in srgb,var(--bib-color,#00568B) 70%,var(--bib-ink));font-weight:600}
+.bib-app .bib-nav a>i{color:var(--bib-color,#00568B)}
+.bib-type{color:color-mix(in srgb,var(--bib-color,var(--bib-ink)) 70%,var(--bib-ink))}
+/* Landing content keeps its own layout below the shared header. */
+.bib-home [hidden]{display:none!important}
+.bib-home-hero{position:relative;isolation:isolate;overflow:hidden;border-radius:18px;padding:24px 30px 21px;background:linear-gradient(112deg,#163b56 0%,#1c5266 75%,#246874 100%);color:#fff;box-shadow:0 8px 24px #193e5810}
+.bib-home-hero::before,.bib-home-hero::after{content:"";position:absolute;z-index:-1;width:480px;height:480px;border:1px solid #ffffff10;border-radius:50%;right:-140px;top:-260px;pointer-events:none}
+.bib-home-hero::after{width:640px;height:640px;right:-220px;top:-340px}
+.bib-home-hero-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}
+.bib-home-kicker{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:600;letter-spacing:1.5px;color:#cae5e9}
+.bib-home-kicker i{font-size:14px}
+.bib-home-total{white-space:nowrap;font-size:11px;color:#e6f1f4;padding:5px 10px;border:1px solid #ffffff26;border-radius:20px}
+.bib-home-hero h2{font-size:32px;font-weight:600;letter-spacing:-1px;line-height:1.2;margin:0 0 9px}
+.bib-home-hero>p{font-size:13px;line-height:1.6;color:#c9dfe8;margin:0 0 16px}
+.bib-home-searchbox{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid transparent;border-radius:10px;padding:6px;box-shadow:0 4px 12px #0b25331c}
+.bib-home-searchbox:focus-within{border-color:#86d4d2;box-shadow:0 0 0 3px #a5e5e52e}
+.bib-home-search-icon{color:#7190a4;font-size:17px;margin-left:12px}
+.bib-home-searchbox input{flex:1;min-width:0;width:100%;border:0;background:transparent;padding:10px 0;font-size:14px;line-height:1.5;color:#173e59;outline:0}
+.bib-home-searchbox input::placeholder{color:#71899d;opacity:1}
+.bib-home-searchbox input::-webkit-search-cancel-button{display:none}
+.bib-home .bib-home-submit{display:flex;align-items:center;justify-content:center;gap:24px;background:#087f82;color:white;border:1px solid #087f82;border-radius:6px;padding:12px 19px;font-size:13px;font-weight:600;white-space:nowrap}
+.bib-home .bib-home-submit:hover{background:#096b6f;border-color:#096b6f}
+.bib-home-clear{display:grid;place-items:center;flex-shrink:0;width:32px;height:32px;border:0;border-radius:50%;background:#eff4f7;color:#61778a}
+.bib-home-clear:hover{background:#dde8ee;color:#153a54}
+.bib-home-scopes{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0 0;padding:0;border:0;min-width:0}
+.bib-home .bib-home-scopes label{position:relative;margin:0;cursor:pointer}
+.bib-home-scopes input{position:absolute;opacity:0;width:1px;height:1px}
+.bib-home-scopes span{display:flex;gap:7px;align-items:center;padding:7px 12px;border:1px solid #ffffff32;border-radius:20px;color:#e1edf2;font-size:11px;line-height:1.3;transition:background .15s,border-color .15s}
+.bib-home-scopes input:checked+span{background:#fff;color:#1e5266;border-color:#fff;font-weight:600}
+.bib-home-scopes input:focus-visible+span{outline:3px solid #9be1e2;outline-offset:3px}
+.bib-home-scopes span:hover{background:#ffffff18}
+.bib-home-browse{margin-top:28px}
+.bib-home-section-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.bib-home-section-heading h2,.bib-home-results-head h2{font-size:19px;font-weight:600;letter-spacing:-.4px;margin:0 0 5px}
+.bib-home-section-heading p{font-size:12px;color:var(--bib-muted);margin:0}
+.bib-home-all{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:#296179;text-decoration:none;white-space:nowrap}
+.bib-home-all:hover{text-decoration:underline;color:#143e59}
+.bib-home-collections{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.bib-home-collection{display:flex;flex-direction:column;position:relative;padding:23px 23px 17px;border:1px solid var(--bib-line);border-radius:13px;background:#fff;color:var(--bib-ink);text-decoration:none;transition:border-color .18s,box-shadow .18s,transform .18s}
+.bib-home-collection:hover{color:var(--bib-ink);border-color:color-mix(in srgb,var(--bib-color) 50%,white);box-shadow:0 8px 22px #16334b0d;transform:translateY(-3px)}
+.bib-home-card-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:19px}
+.bib-home-card-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:12px;color:var(--bib-color);background:color-mix(in srgb,var(--bib-color) 9%,white);font-size:20px}
+.bib-home-card-count{display:flex;gap:5px;align-items:baseline;font-size:11px;color:var(--bib-muted)}
+.bib-home-card-count strong{font-weight:600;color:#3b566d}
+.bib-home-collection h3{font-size:19px;font-weight:600;letter-spacing:-.4px;margin:0 0 9px}
+.bib-home-collection>p{font-size:12px;line-height:1.7;color:var(--bib-muted);margin:0 0 20px;max-width:340px;flex:1}
+.bib-home-card-link{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #edf1f5;padding-top:13px;color:color-mix(in srgb,var(--bib-color) 70%,var(--bib-ink));font-size:11px;font-weight:600}
+.bib-home-card-link>span{color:var(--bib-color);display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:color-mix(in srgb,var(--bib-color) 8%,white)}
+.bib-home-personal{display:flex;align-items:center;gap:17px;padding:20px 23px;border:1px solid #dce7ec;border-radius:12px;background:#edf4f7;margin-top:20px}
+.bib-home-personal-icon{display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;color:#47667e;background:#fff;border-radius:10px;font-size:20px}
+.bib-home-personal>div{flex:1;min-width:0}
+.bib-home-personal-heading{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.bib-home-personal h2{font-size:14px;font-weight:600;margin:0}
+.bib-home-personal p{font-size:12px;color:#596f81;margin:5px 0 0;line-height:1.6}
+.bib-home-personal .btn{flex-shrink:0;font-weight:500;border-color:#b9ceda;color:#285573;background:#fff}
+.bib-home-personal .btn:hover{background:#e0edf2}
+.bib-home-personal-pending{border-color:#e2d5b3;background:#fff9ec}
+.bib-home-personal-pending .btn-primary{color:#fff;background:#203f5c;border-color:#203f5c}
+.bib-home-personal-pending .btn-primary:hover{background:#14304a}
+.bib-home-pending-badge{padding:3px 8px;font-size:10px;font-weight:600;color:#805b12;background:#fff0c5;border-radius:5px}
+.bib-home-management{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:22px;padding:0 2px;font-size:11px;color:#718396}
+.bib-home-management span,.bib-home-management a{display:flex;align-items:center;gap:8px}
+.bib-home-management a{color:#546d82;text-decoration:none}
+.bib-home-management a:hover{text-decoration:underline;color:#20445f}
+.bib-home-results-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:26px 0 16px}
+.bib-home-results-head p{font-size:12px;color:var(--bib-muted);margin:0;min-height:18px}
+.bib-home-result-tools{display:flex;align-items:center;gap:20px}
+.bib-home-result-tools .bib-page-size{display:flex;align-items:center;gap:9px}
+.bib-home-result-tools .bib-page-size label{white-space:nowrap;margin:0}
+.bib-home-result-tools .form-select{width:80px}
+.bib-home-text-button{display:flex;align-items:center;gap:8px;padding:7px 0;border:0;background:transparent;color:#296179;font-size:11px;font-weight:600}
+.bib-home-text-button:hover{text-decoration:underline}
+.bib-home-results>.bib-result-count{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.bib-home-results[aria-busy="true"]{opacity:.55;pointer-events:none}
+.bib-home-results .bib-table-wrap{border:1px solid var(--bib-line);border-radius:12px;background:#fff}
+.bib-home-results .bib-table{border:0;margin:0}
+.bib-home-results .bib-table th{background:#edf3f7}
+.bib-home-empty{text-align:center;padding:45px 20px;border:1px solid var(--bib-line);border-radius:13px;background:white}
+.bib-home-empty-icon{display:grid;place-items:center;margin:0 auto 18px;width:58px;height:58px;border-radius:50%;background:#edf4f7;color:#6d899b;font-size:22px}
+.bib-home-empty h3{font-size:18px;font-weight:600}
+.bib-home-empty p{font-size:13px;color:var(--bib-muted);margin:10px 0 20px}
+@media(min-width:901px){.bib-home-collections:has(> :nth-child(3):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.bib-home-hero{padding:25px}.bib-home-hero h2{font-size:29px}.bib-app .bib-header-tools{max-width:250px}.bib-home-results-head{flex-wrap:wrap}.bib-home-result-tools{flex-wrap:wrap;gap:10px 20px}.bib-home-collections{grid-template-columns:repeat(2,minmax(0,1fr))}.bib-home-collection:last-child:nth-child(odd){grid-column:1/-1}.bib-home-personal{flex-wrap:wrap}.bib-home-personal .btn{margin-left:59px}.bib-home-collection>p{max-width:none}}
+@media(max-width:600px){.bib-app{padding-top:12px}.bib-app .bib-header{gap:12px;margin-bottom:16px}.bib-app .bib-header h1{font-size:22px}.bib-app .bib-header-tools{justify-content:flex-start;max-width:none}.bib-app .bib-header-tools .btn{font-size:10px;padding:7px 9px}.bib-app .bib-nav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;margin-bottom:17px;padding-bottom:10px;gap:3px}.bib-app .bib-nav a{flex-shrink:0;white-space:nowrap;padding:8px 10px}.bib-home-hero{border-radius:13px;padding:21px 17px 19px}.bib-home-hero-top{flex-wrap:wrap;gap:10px;margin-bottom:16px}.bib-home-kicker{display:none}.bib-home-kicker i{font-size:12px}.bib-home-total{font-size:10px;padding:3px 8px}.bib-home-hero h2{font-size:26px;letter-spacing:-.8px}.bib-home-hero>p{font-size:12px;margin-bottom:17px}.bib-home-searchbox{gap:5px;padding:5px}.bib-home-search-icon{display:none}.bib-home-searchbox input{font-size:12px;padding:9px 4px}.bib-home-searchbox input::placeholder{font-size:11px}.bib-home .bib-home-submit{font-size:11px;padding:10px 11px;gap:0}.bib-home-submit i{display:none}.bib-home-clear{width:26px;height:26px;font-size:12px}.bib-home-scopes{gap:7px;margin-top:14px}.bib-home-scopes span{font-size:10px;padding:7px 9px}.bib-home-browse{margin-top:23px}.bib-home-section-heading{align-items:flex-start;flex-direction:column;gap:11px;margin-bottom:14px}.bib-home-section-heading h2{font-size:18px}.bib-home-all{font-size:11px}.bib-home-collections{grid-template-columns:1fr;gap:12px}.bib-home-collection{padding:17px 19px 13px}.bib-home-card-top{margin-bottom:13px}.bib-home-card-icon{width:36px;height:36px;font-size:18px;border-radius:10px}.bib-home-collection h3{font-size:18px;margin-bottom:6px}.bib-home-collection>p{margin-bottom:13px}.bib-home-card-link{padding-top:10px}.bib-home-personal{padding:17px;gap:12px}.bib-home-personal-icon{width:36px;height:36px;font-size:17px}.bib-home-personal .btn{margin-left:48px;font-size:11px}.bib-home-personal h2{font-size:13px}.bib-home-personal p{font-size:11px}.bib-home-management{align-items:flex-start;flex-direction:column;gap:10px}.bib-home-results-head{gap:10px}.bib-home-results-head h2{font-size:18px}.bib-home-result-tools{justify-content:space-between;width:100%}.bib-home-result-tools .bib-page-size{gap:7px}.bib-home-result-tools .bib-page-size label{font-size:10px}.bib-home-result-tools .form-select{width:73px;min-height:34px;font-size:11px}.bib-home-text-button{font-size:10px}.bib-home-empty{padding:30px 15px}}
+@media(prefers-reduced-motion:reduce){.bib-home-collection,.bib-home-scopes span{transition:none}.bib-home-collection:hover{transform:none}}
+
+/* On small screens, search results stack without losing the sort controls. */
+@media(max-width:600px){
+    .bib-home-results .bib-table{display:block;min-width:0;width:100%}
+    .bib-home-results .bib-table thead,.bib-home-results .bib-table tbody{display:block}
+    .bib-home-results .bib-table thead tr{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px;background:#edf3f7;border-bottom:1px solid var(--bib-line)}
+    .bib-home-results .bib-table th{display:block;padding:8px 10px;border:1px solid #d4e1eb;border-radius:6px;font-size:10px;background:#fff}
+    .bib-home-results .bib-table th:last-child{display:none}
+    .bib-home-results .bib-table tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:13px 16px;padding:17px;border-bottom:1px solid var(--bib-line)}
+    .bib-home-results .bib-table tbody tr:last-child{border-bottom:0}
+    .bib-home-results .bib-table td{display:block;min-width:0;padding:0;border:0;overflow-wrap:anywhere}
+    .bib-home-results .bib-table td:first-child{grid-column:1/-1}
+    .bib-home-results .bib-table td:nth-child(2)::before,.bib-home-results .bib-table td:nth-child(3)::before,.bib-home-results .bib-table td:nth-child(4)::before{display:block;margin-bottom:5px;color:#60788c;font-size:10px}
+    .bib-home-results .bib-table td:nth-child(2)::before{content:"Área / responsable"}
+    .bib-home-results .bib-table td:nth-child(3)::before{content:"Versión y estado"}
+    .bib-home-results .bib-table td:nth-child(4)::before{content:"Revisión"}
+    .bib-home-results .bib-table td:last-child{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-end;justify-content:flex-end}
+    .bib-home-results .bib-table td:last-child .btn{margin:0!important;padding:7px 9px;font-size:10px}
+    .bib-home-results .bib-type{margin-bottom:5px}
+    .bib-home-results .bib-pagination{font-size:11px;gap:10px}
+}
+
+/* Dynamic views leave the library header and navigation mounted. */
+#bib-content{min-width:0}
+#bib-view:focus{outline:none}
+.bib-navigation-feedback{display:flex;align-items:center;gap:12px;padding:12px 16px;margin:0 0 18px;border:1px solid #c7dde8;border-radius:8px;background:#eef6fa;color:#254f69;font-size:13px}
+.bib-navigation-feedback[hidden]{display:none!important}
+.bib-navigation-feedback::before{content:"";width:16px;height:16px;flex-shrink:0;border:2px solid #bdd6e3;border-top-color:#00568B;border-radius:50%;animation:bib-loading .8s linear infinite}
+.bib-navigation-error{background:#fff7e8;border-color:#e6d3a7;color:#694e18;flex-wrap:wrap}
+.bib-navigation-error::before{display:none}
+.bib-navigating #bib-view{opacity:.55}
+@keyframes bib-loading{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.bib-navigation-feedback::before{animation:none}}
+@media print{.bib-navigation-feedback{display:none!important}}
+
+/* Rich formatting within individual job-description blocks. */
+.bib-job-rich-editor{min-height:100px;background:#fff;white-space:pre-wrap;overflow-wrap:anywhere}
+.bib-editor-block .bib-rich-tools{padding:7px}
+.bib-editor-block .bib-block-tools{justify-content:flex-end}
+.bib-editor-block .bib-block-tools [data-block-format]{margin-right:auto}
+.bib-editor-block[data-format="heading"] .bib-job-rich-editor{font-weight:600;font-size:15px}
+.bib-rich-block{overflow-wrap:anywhere}
+.bib-rich-block>p:first-child,.bib-rich-block>div:first-child{margin-top:0}
+.bib-rich-block>p:last-child,.bib-rich-block>div:last-child{margin-bottom:0}
+.bib-rich-block-heading{font-size:13px;font-weight:650;color:#264764;margin:13px 0 8px}
+#bib-delete-draft{margin-left:4px}
+
+/* Shared autosaving visibility switches for sections and documents. */
+.bib-visibility-control{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin:0;min-width:170px}
+.bib-app .bib-visibility-switch{display:inline-flex;align-items:center;gap:10px;position:relative;cursor:pointer;white-space:nowrap;margin:0;min-height:38px;color:#36526b;font-weight:600}
+.bib-visibility-switch input{position:absolute;opacity:0;width:44px;height:26px;left:0;margin:0;cursor:pointer}
+.bib-switch-track{display:inline-block;width:44px;height:26px;border-radius:20px;background:#8394a3;box-shadow:inset 0 0 0 1px #00000012;transition:background .15s;flex-shrink:0;pointer-events:none}
+.bib-switch-track:after{content:"";display:block;width:20px;height:20px;margin:3px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:transform .15s}
+.bib-visibility-switch input:checked+.bib-switch-track{background:#008973}
+.bib-visibility-switch input:checked+.bib-switch-track:after{transform:translateX(18px)}
+.bib-visibility-switch input:focus-visible+.bib-switch-track{outline:3px solid #7aaecf;outline-offset:3px}
+.bib-visibility-switch:has(input:disabled){cursor:wait;opacity:.65}
+.bib-visibility-status{font-size:11px;color:#627386;max-width:240px}
+.bib-visibility-status:empty{display:none}
+.bib-visibility-status.is-error{color:#a83232}
+.bib-visibility-retry{border:0;background:none;color:#00568b;text-decoration:underline;padding:0;font-size:12px}
+.bib-visibility-sections{border:1px solid #dce5ee;border-radius:8px;overflow:hidden}
+.bib-visibility-section-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;background:#fff}
+.bib-visibility-section-row+.bib-visibility-section-row{border-top:1px solid #e6edf3}
+.bib-visibility-section-name{display:flex;align-items:center;gap:12px}
+.bib-visibility-section-name i{width:22px;text-align:center;font-size:17px}
+.bib-visibility-table th:last-child{width:220px}
+.bib-visibility-table td{vertical-align:middle}
+@media(max-width:600px){.bib-visibility-section-row{padding:12px;gap:10px}.bib-visibility-section-row .bib-visibility-control{min-width:108px;max-width:130px}.bib-visibility-section-name{gap:7px}.bib-visibility-section-name strong{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.bib-switch-track,.bib-switch-track:after{transition:none}}

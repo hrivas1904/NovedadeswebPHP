@@ -59,14 +59,15 @@ class Library
     }
     public function lock(string $id,int $revision): array {
         $v=$this->version($id); DB::table('bib_documents')->where('id',$v['document_id'])->lockForUpdate()->first();
-        $v=(array)DB::table('bib_versions')->where('id',$id)->lockForUpdate()->first();
+        $locked=DB::table('bib_versions')->where('id',$id)->lockForUpdate()->first();
+        abort_unless($locked,409,'La versión ya no está disponible. Recargá antes de continuar.');$v=(array)$locked;
         abort_if((int)$v['revision']!==$revision,409,'Otra persona modificó esta versión. Recargá antes de guardar.'); return $v;
     }
     public function create(string $kind,array $c,string $actor,string $requestId): array {
         abort_unless(isset(config('biblioteca.collections')[$kind]),422);
         $c=$kind==='descriptivos'?Content::validateJob($c):Content::validateManual($c);
         return DB::transaction(function() use($kind,$c,$actor,$requestId) {
-            $old=DB::table('bib_requests')->where('id',$requestId)->first();if($old)return $this->version($old->version_id);
+            $old=DB::table('bib_requests')->where('id',$requestId)->first();if($old){abort_unless(DB::table('bib_versions')->where('id',$old->version_id)->exists(),409,'El borrador de esta solicitud fue eliminado. Iniciá un documento nuevo.');return $this->version($old->version_id);}
             $id=(string)Str::uuid();$now=self::now();$job=$kind==='descriptivos';
             if(!$job && DB::table('bib_documents')->where('code',$c['code'])->exists()) Content::fail('Ya existe un documento con ese código.');
             DB::table('bib_documents')->insert(['id'=>$id,'kind'=>$kind,'title'=>$job?$c['name']:$c['title'],'area'=>$job?$c['area']:$c['responsible'],'code'=>$job?null:$c['code'],'aliases'=>'[]','created_at'=>$now,'origin'=>'system']);
@@ -77,29 +78,74 @@ class Library
     }
     public function insertVersion(string $id,array $c,string $actor,?array $base=null,array $extra=[]): array {
         $job=$this->document($id)['kind']==='descriptivos';$now=self::now();$vid=(string)Str::uuid();
-        $v=['id'=>$vid,'document_id'=>$id,'number'=>1+(int)DB::table('bib_versions')->where('document_id',$id)->max('number'),'revision'=>0,'state'=>'Borrador','review_state'=>'Pendiente','current_slot'=>null,'based_on'=>$base['id']??null,'source_version_id'=>$base['source_version_id']??null,'origin'=>'system','created_at'=>$now,'updated_at'=>$now,'created_by'=>$actor,'published_at'=>null,'published_by'=>null,'resolution'=>'','change_reason'=>'','payload_json'=>Content::json($c),'parsed_json'=>$job?Content::json(Content::toParsed($c)):null,'search_text'=>Content::plain(Content::json($c))];
+        $lastNumber=(int)DB::table('bib_versions')->where('document_id',$id)->max('number');
+        foreach(DB::table('bib_events')->where('document_id',$id)->where('action','eliminar_borrador')->pluck('before_json') as $deleted)$lastNumber=max($lastNumber,(int)(Content::decode($deleted)['number']??0));
+        $v=['id'=>$vid,'document_id'=>$id,'number'=>$lastNumber+1,'revision'=>0,'state'=>'Borrador','review_state'=>'Pendiente','current_slot'=>null,'based_on'=>$base['id']??null,'source_version_id'=>$base['source_version_id']??null,'origin'=>'system','created_at'=>$now,'updated_at'=>$now,'created_by'=>$actor,'published_at'=>null,'published_by'=>null,'resolution'=>'','change_reason'=>'','payload_json'=>Content::json($c),'parsed_json'=>$job?Content::json(Content::toParsed($c)):null,'search_text'=>Content::plain(Content::json($c))];
         $v=array_merge($v,$extra);DB::table('bib_versions')->insert($v);return $v;
+    }
+    public function contentForNewVersion(array $base): array {
+        $c=Content::decode($base['payload_json']);
+        if($this->document($base['document_id'])['kind']==='descriptivos')return Content::institutional($c,false);
+        // Suggest an unused document version even when starting from a historical version.
+        $latest='1.0';
+        foreach($this->history($base['document_id']) as $version) {
+            $label=Content::decode($version['payload_json'])['version']??'1.0';
+            if(version_compare($label,$latest,'>'))$latest=$label;
+        }
+        $parts=explode('.',$latest);$parts[count($parts)-1]=(int)end($parts)+1;
+        $c['version']=implode('.',$parts);$c['declaredState']='borrador';
+        $c['approver']='';$c['approvalRecord']=null;
+        return $c;
+    }
+    private function versionContent(array $document,array $base,array $content): array {
+        if($document['kind']==='descriptivos')return Content::validateJob($content);
+        $c=Content::validateManual($content);$old=Content::decode($base['payload_json']);
+        foreach(['id','code','collection'] as $key)if($c[$key]!==$old[$key])Content::fail('El código y la sección identifican al documento y no se cambian.');
+        foreach(['history','sourceId','sourceHeading'] as $key)$c[$key]=$old[$key];
+        $c['declaredState']='borrador';
+        // Policy approval belongs to the exact version approved by Management.
+        if($document['kind']==='politicas'){$c['approver']='';$c['approvalRecord']=null;}
+        return $c;
     }
     public function draft(string $id,string $actor): array {
         return DB::transaction(function()use($id,$actor) {
             $v=$this->version($id);DB::table('bib_documents')->where('id',$v['document_id'])->lockForUpdate()->first();
             $v=$this->version($id);if($v['state']==='Borrador'&&!$v['published_at'])return $v;
-            $existing=DB::table('bib_versions')->where('based_on',$id)->where('state','Borrador')->first();if($existing)return (array)$existing;
-            $c=Content::decode($v['payload_json']);$doc=$this->document($v['document_id']);
-            if($doc['kind']==='descriptivos')$c=Content::institutional($c);else {$parts=explode('.',$c['version']);$parts[count($parts)-1]=(int)end($parts)+1;$c['version']=implode('.',$parts);$c['declaredState']='borrador';if($doc['kind']==='politicas'){$c['approvalRecord']=null;$c['approver']='';}}
-            $next=$this->insertVersion($v['document_id'],$c,$actor,$v);$this->event($v['document_id'],$next['id'],'crear_borrador_desde_version',$actor,['version'=>$id],$next);return $next;
+            $existing=DB::table('bib_versions')->where('based_on',$id)->where('state','Borrador')->whereNull('published_at')->first();if($existing)return (array)$existing;
+            $next=$this->insertVersion($v['document_id'],$this->contentForNewVersion($v),$actor,$v);
+            $this->event($v['document_id'],$next['id'],'crear_borrador_desde_version',$actor,['version'=>$id],$next);return $next;
         });
     }
-    public function save(string $id,int $revision,array $content,string $actor): array {
-        return DB::transaction(function()use($id,$revision,$content,$actor) {
-            $v=$this->lock($id,$revision);if($v['state']!=='Borrador'||$v['published_at'])Content::fail('Creá un borrador para editar esta versión.');
-            $d=$this->document($v['document_id']);$job=$d['kind']==='descriptivos';$old=Content::decode($v['payload_json']);
-            $c=$job?Content::validateJob($content):Content::validateManual($content);
-            if(!$job) {
-                foreach(['id','code','collection'] as $key)if($c[$key]!==$old[$key])Content::fail('El código y la sección identifican al documento y no se cambian.');
-                foreach(['history','sourceId','sourceHeading'] as $key)$c[$key]=$old[$key];$c['declaredState']='borrador';
+    public function saveNewVersion(string $id,int $revision,array $content,string $reason,string $actor,string $requestId): array {
+        return DB::transaction(function()use($id,$revision,$content,$reason,$actor,$requestId) {
+            $base=$this->version($id);
+            DB::table('bib_documents')->where('id',$base['document_id'])->lockForUpdate()->first();
+            // A retry after a lost response must return the same saved version.
+            $request=DB::table('bib_requests')->where('id',$requestId)->first();
+            if($request) {
+                abort_unless(DB::table('bib_versions')->where('id',$request->version_id)->exists(),409,'El borrador de esta solicitud fue eliminado. Iniciá una nueva edición.');
+                $saved=$this->version($request->version_id);
+                abort_unless($saved['document_id']===$base['document_id'] && $saved['based_on']===$id,409,'La solicitud corresponde a otra versión.');
+                $event=DB::table('bib_events')->where('version_id',$saved['id'])->where('action','guardar_nueva_version')->first();
+                $requestHash=Content::decode($event->before_json??null)['request_hash']??'';
+                abort_unless(hash_equals($requestHash,hash('sha256',Content::json([$content,trim($reason)]))) && (int)$saved['revision']===0,409,'Esta solicitud ya guardó una versión. Conservá tus cambios y revisá el borrador guardado antes de continuar.');
+                return $saved;
             }
-            DB::table('bib_versions')->where('id',$id)->update(['payload_json'=>Content::json($c),'parsed_json'=>$job?Content::json(Content::toParsed($c)):null,'search_text'=>Content::plain(Content::json($c)),'updated_at'=>self::now(),'revision'=>$revision+1]);
+            $base=$this->lock($id,$revision);
+            $document=$this->document($base['document_id']);
+            $c=$this->versionContent($document,$base,$content);
+            $next=$this->insertVersion($document['id'],$c,$actor,$base,['change_reason'=>trim($reason)]);
+            $this->event($document['id'],$next['id'],'guardar_nueva_version',$actor,['version'=>$id,'request_hash'=>hash('sha256',Content::json([$content,trim($reason)]))],$next);
+            DB::table('bib_requests')->insert(['id'=>$requestId,'document_id'=>$document['id'],'version_id'=>$next['id']]);
+            return $next;
+        });
+    }
+    public function save(string $id,int $revision,array $content,string $actor,?string $reason=null): array {
+        return DB::transaction(function()use($id,$revision,$content,$actor,$reason) {
+            $v=$this->lock($id,$revision);if($v['state']!=='Borrador'||$v['published_at'])Content::fail('Creá un borrador para editar esta versión.');
+            $d=$this->document($v['document_id']);$job=$d['kind']==='descriptivos';
+            $c=$this->versionContent($d,$v,$content);
+            DB::table('bib_versions')->where('id',$id)->update(['payload_json'=>Content::json($c),'parsed_json'=>$job?Content::json(Content::toParsed($c)):null,'search_text'=>Content::plain(Content::json($c)),'updated_at'=>self::now(),'revision'=>$revision+1,'review_state'=>'Pendiente','resolution'=>'','change_reason'=>$reason===null?$v['change_reason']:trim($reason)]);
             $next=$this->version($id);$this->event($d['id'],$id,'guardar_borrador',$actor,$v,$next);return $next;
         });
     }
@@ -107,6 +153,7 @@ class Library
         if(!$confirmed) Content::fail('Confirmá la publicación.');
         return DB::transaction(function()use($id,$revision,$reason,$actor,$fromReview,$policyApproval) {
             $v=$this->lock($id,$revision);$d=$this->document($v['document_id']);$c=Content::decode($v['payload_json']);$job=$d['kind']==='descriptivos';
+            $reason=trim($reason)?:($v['change_reason']??'');
             if($d['kind']==='politicas') {
                 abort_unless($policyApproval && Governance::canApprove(auth()->user()),403,'Esta política requiere la aprobación de Gerencia desde su ficha.');
                 $c['approver']=auth()->user()->name.' · Gerente';
@@ -139,6 +186,47 @@ class Library
                 $this->event($d['id'],$id,'aprobar_politica',$actor,null,['version'=>$id,'content_hash'=>hash('sha256',$next['payload_json'])]);
             }
             $this->event($d['id'],$id,'publicar_version',$actor,$v,$next);return $next;
+        });
+    }
+    public function deleteDraft(string $id,int $revision,bool $confirmed,string $actor): array {
+        if(!$confirmed)Content::fail('Confirmá la eliminación del borrador.');
+        return DB::transaction(function()use($id,$revision,$actor) {
+            $candidate=DB::table('bib_versions')->where('id',$id)->first();
+            if(!$candidate) {
+                $deleted=DB::table('bib_events')->where('version_id',$id)->where('action','eliminar_borrador')->lockForUpdate()->first();
+                abort_unless($deleted,404);
+                return Content::decode($deleted->after_json);
+            }
+            DB::table('bib_documents')->where('id',$candidate->document_id)->lockForUpdate()->first();
+            // A concurrent retry may have waited while the first request deleted the draft.
+            if(!DB::table('bib_versions')->where('id',$id)->lockForUpdate()->first()) {
+                $deleted=DB::table('bib_events')->where('version_id',$id)->where('action','eliminar_borrador')->lockForUpdate()->first();
+                abort_unless($deleted,409);
+                return Content::decode($deleted->after_json);
+            }
+            $v=$this->lock($id,$revision);
+            abort_unless($v['state']==='Borrador' && !$v['published_at'] && !$v['current_slot'] && $v['origin']==='system',422,'Sólo se pueden eliminar borradores que nunca se publicaron.');
+            abort_if((bool)DB::table('bib_versions')->where('based_on',$id)->lockForUpdate()->first(),409,'Este borrador es la base de otra versión. Revisá primero esa versión.');
+            foreach(['bib_acceptances','bib_policy_approvals'] as $table) {
+                if(\Illuminate\Support\Facades\Schema::hasTable($table))abort_if(DB::table($table)->where('version_id',$id)->exists(),409,'El borrador tiene registros vinculados y no se puede eliminar.');
+            }
+            $others=DB::table('bib_versions')->where('document_id',$v['document_id'])->where('id','!=',$id)->lockForUpdate()->get();
+            if($others->isEmpty()) {
+                foreach(['bib_sources','bib_uploads','bib_category_documents','bib_employee_documents'] as $table) {
+                    if(\Illuminate\Support\Facades\Schema::hasTable($table))abort_if(DB::table($table)->where('document_id',$v['document_id'])->exists(),409,'El documento tiene fuentes o asignaciones vinculadas. No se puede eliminar su único borrador.');
+                }
+            }
+            $previous=$others->firstWhere('id',$v['based_on']);
+            if(!$previous)$previous=$others->firstWhere('current_slot',1)??$others->sortByDesc('number')->first();
+            $result=['document_id'=>$others->isEmpty()?null:$v['document_id'],'version_id'=>$previous?->id,'deleted'=>true];
+            // Retain the audit snapshot and request IDs so retries cannot recreate the draft.
+            $this->event($v['document_id'],$id,'eliminar_borrador',$actor,$v,$result);
+            DB::table('bib_versions')->where('id',$id)->delete();
+            if($others->isEmpty()) {
+                DB::table('bib_visibility')->where('key','document:'.$v['document_id'])->delete();
+                DB::table('bib_documents')->where('id',$v['document_id'])->delete();
+            }
+            return $result;
         });
     }
     public function retire(string $id,int $revision,string $reason,string $actor): array {

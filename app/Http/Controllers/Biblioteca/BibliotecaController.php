@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Biblioteca;
 
 use App\Http\Controllers\Controller;
-use App\Services\Biblioteca\{Content,Library,Uploads,WordExport,Governance,Acceptances};
+use App\Services\Biblioteca\{Content,Library,Uploads,WordExport,Governance,Acceptances,Listing};
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -20,10 +20,16 @@ class BibliotecaController extends Controller
         if($kind)abort_unless(isset(config('biblioteca.collections')[$kind]),404);
         $control=$r->routeIs('biblioteca.control');$manage=$r->routeIs('biblioteca.manage');if($manage||$control)$this->manager($r);
         $governance=new Governance;if($kind&&!Library::manages($r->user()))abort_unless($governance->sectionVisible($kind),404);$all=$governance->visibleEntries($this->library->entries($control),$r->user());$filters=$r->only(['q','area','state','review','history']);$filters['kind']=$kind?:$r->query('kind');if($control)$filters['history']=1;if($manage&&!$r->has('history'))$filters['history']=1;
-        $filtered=$this->library->filter($all,$filters);$page=$manage?1:max(1,(int)$r->query('page',1));$perPage=$manage?max(1,count($filtered)):15;
-        $entries=new LengthAwarePaginator(array_slice($filtered,($page-1)*$perPage,$perPage),count($filtered),$perPage,$page,['path'=>$r->url(),'query'=>$r->query()]);
+        // Keep the landing's search consistent with its visible collection counts.
+        if($r->boolean('visible_sections'))$all=array_values(array_filter($all,fn($e)=>$governance->sectionVisible($e['document']['kind'])));
+        $filtered=$this->library->filter($all,$filters);
+        [$sort,$direction]=Listing::sorting($r,['title','area','version','review','next_review'],'title');
+        $entries=Listing::paginate($filtered,$r,fn($e)=>match($sort) {
+            'area'=>$e['area'],'version'=>(int)$e['version']['number'],'review'=>$e['version']['review_state'],
+            'next_review'=>$e['nextReview']??'','title'=>$e['title'],
+        },fn($e)=>$e['version']['id'],$direction);
         $areas=collect($all)->pluck('area')->filter()->unique()->sort()->values();$states=collect($all)->pluck('state')->unique()->sort()->values();
-        if ($r->expectsJson()) return response()->json(['html'=>view('biblioteca.catalog-results',compact('entries','control')+['collections'=>config('biblioteca.collections')])->render()]);
+        if ($r->expectsJson()) return response()->json(['html'=>view('biblioteca.catalog-results',compact('entries','control')+['collections'=>config('biblioteca.collections'),'canManage'=>Library::manages($r->user())])->render()]);
         return $this->page('catalog',compact('entries','filters','areas','states','control','manage','kind'));
     }
     public function show(Request $r,string $document) {
@@ -36,13 +42,14 @@ class BibliotecaController extends Controller
     public function create(Request $r) {
         $this->manager($r);$kind=$r->query('kind','descriptivos');abort_unless(isset(config('biblioteca.collections')[$kind]),404);
         $content=$kind==='descriptivos'?Content::institutional(Content::emptyJob()):['id'=>'','sourceId'=>'','collection'=>$kind,'code'=>'','title'=>'','sourceHeading'=>'','summary'=>'','version'=>'1.0','declaredState'=>'borrador','validFrom'=>null,'lastReview'=>null,'reviewMonths'=>12,'approver'=>'','approvalRecord'=>null,'responsible'=>'','history'=>[],'sections'=>[['id'=>(string)Str::uuid(),'title'=>'Contenido','html'=>'','text'=>'']]];
-        $entry=null;$duplicate=$r->query('duplicate');if($duplicate){$v=$this->library->version($duplicate);$source=$this->library->document($v['document_id']);abort_unless($source['kind']===$kind,422);$content=Content::decode($v['payload_json']);if($kind==='descriptivos'){$content=Content::institutional($content);$content['name']='Copia de '.$content['name'];}else{$content['id']='';$content['code']='';$content['title']='Copia de '.$content['title'];$content['version']='1.0';$content['history']=[];}}
+        $entry=null;$duplicate=$r->query('duplicate');if($duplicate){$v=$this->library->version($duplicate);$source=$this->library->document($v['document_id']);abort_unless($source['kind']===$kind,422);$content=Content::decode($v['payload_json']);if($kind==='descriptivos'){$content=Content::institutional($content,false);$content['name']='Copia de '.$content['name'];}else{$content['id']='';$content['code']='';$content['title']='Copia de '.$content['title'];$content['version']='1.0';$content['history']=[];}}
         return $this->page('editor',['entry'=>$entry,'content'=>$content,'kind'=>$kind,'requestId'=>(string)Str::uuid(),'upload'=>null]);
     }
     public function edit(Request $r,string $version) {
         $this->manager($r);$v=$this->library->version($version);$entry=$this->library->entry($v['document_id'],$version);
-        abort_unless($v['state']==='Borrador'&&!$v['published_at'],409,'Creá un borrador antes de editar.');
-        return $this->page('editor',['entry'=>$entry,'content'=>$entry['content'],'kind'=>$entry['document']['kind'],'requestId'=>(string)Str::uuid(),'upload'=>null]);
+        $newVersion=$v['state']!=='Borrador'||(bool)$v['published_at'];
+        $content=$newVersion?$this->library->contentForNewVersion($v):$entry['content'];
+        return $this->page('editor',['entry'=>$entry,'content'=>$content,'kind'=>$entry['document']['kind'],'requestId'=>(string)Str::uuid(),'upload'=>null,'newVersion'=>$newVersion]);
     }
     public function store(Request $r) {
         $this->manager($r);$r->validate(['kind'=>'required|string','content'=>'required|array','requestId'=>'required|uuid']);
@@ -57,11 +64,17 @@ class BibliotecaController extends Controller
         }
         return $r->input('content');
     }
-    private function result(array $v) {return response()->json(['version'=>$v['id'],'documentId'=>$v['document_id'],'revision'=>$v['revision'],'url'=>route('biblioteca.show',['document'=>$v['document_id'],'version'=>$v['id']]),'editUrl'=>route('biblioteca.edit',$v['id'])]);}
+    private function result(array $v) {return response()->json(['number'=>$v['number'],'version'=>$v['id'],'documentId'=>$v['document_id'],'revision'=>$v['revision'],'url'=>route('biblioteca.show',['document'=>$v['document_id'],'version'=>$v['id']]),'editUrl'=>route('biblioteca.edit',$v['id'])]);}
     public function action(Request $r,string $version) {
-        $this->manager($r);$r->validate(['action'=>'required|in:draft,save,publish,retire','revision'=>'required_unless:action,draft|integer|min:0','reason'=>'nullable|string|max:4000','confirmed'=>'nullable|boolean','content'=>'required_if:action,save|array']);
+        $this->manager($r);$r->validate(['action'=>'required|in:draft,save,new_version,publish,retire,delete_draft','revision'=>'required_unless:action,draft|integer|min:0','reason'=>'nullable|string|max:4000','confirmed'=>'nullable|boolean','content'=>'required_if:action,save,new_version|array','requestId'=>'required_if:action,new_version|uuid']);
         $actor=Library::actor($r->user());$action=$r->input('action');
-        $v=match($action) {'draft'=>$this->library->draft($version,$actor),'save'=>$this->library->save($version,$r->integer('revision'),$this->content($r),$actor),'publish'=>$this->library->publish($version,$r->integer('revision'),$r->input('reason')??'',$r->boolean('confirmed'),$actor),'retire'=>$this->library->retire($version,$r->integer('revision'),$r->input('reason')??'',$actor)};return $this->result($v);
+        if($action==='delete_draft') {
+            $deleted=$this->library->deleteDraft($version,$r->integer('revision'),$r->boolean('confirmed'),$actor);
+            $exists=$deleted['document_id'] && DB::table('bib_documents')->where('id',$deleted['document_id'])->exists();
+            $previous=$deleted['version_id'] && DB::table('bib_versions')->where('id',$deleted['version_id'])->exists()?$deleted['version_id']:null;
+            return response()->json(['deleted'=>true,'url'=>$exists?route('biblioteca.show',['document'=>$deleted['document_id'],'version'=>$previous]):route('biblioteca.manage')]);
+        }
+        $v=match($action) {'draft'=>$this->library->draft($version,$actor),'save'=>$this->library->save($version,$r->integer('revision'),$this->content($r),$actor,$r->input('reason')),'new_version'=>$this->library->saveNewVersion($version,$r->integer('revision'),$this->content($r),$r->input('reason')??'',$actor,$r->input('requestId')),'publish'=>$this->library->publish($version,$r->integer('revision'),$r->input('reason')??'',$r->boolean('confirmed'),$actor),'retire'=>$this->library->retire($version,$r->integer('revision'),$r->input('reason')??'',$actor)};return $this->result($v);
     }
     public function review(Request $r,string $version) {
         $this->manager($r);$v=$this->library->version($version);$entry=$this->library->entry($v['document_id'],$version);abort_unless($entry['job'],404);

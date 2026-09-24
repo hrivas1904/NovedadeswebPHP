@@ -8,6 +8,7 @@
 <div><label for="area">Área / responsable</label><select name="area" id="area" class="form-select"><option value="">Todas</option>@foreach($areas as $a)<option @selected(($filters['area']??'')===$a)>{{ $a }}</option>@endforeach</select></div>
 <div><label for="state">Estado</label><select name="state" id="state" class="form-select"><option value="">Todos</option>@foreach($states as $s)<option @selected(($filters['state']??'')===$s)>{{ $s }}</option>@endforeach</select></div>
 <div><label for="review">Revisión</label><select name="review" id="review" class="form-select"><option value="">Todas</option>@foreach(['Pendiente','En revisión','Validado'] as $s)<option @selected(($filters['review']??'')===$s)>{{ $s }}</option>@endforeach</select></div>
+@include('biblioteca.page-size',['prefix'=>'catalog'])
 <button class="btn btn-primary align-self-end" data-live-submit>Aplicar</button>
 @if(!$control)<input type="hidden" name="history" value="0"><label class="bib-check"><input type="checkbox" name="history" value="1" @checked($filters['history']??false)> Incluir retirados</label>@endif
 </form></div></details>

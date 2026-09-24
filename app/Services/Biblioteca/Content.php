@@ -40,8 +40,8 @@ class Content
         if(!empty($p['extras'])) $c['additional'][]=['key'=>'preserved','title'=>'Contenido adicional de la fuente','blocks'=>$p['extras']];
         return $c;
     }
-    public static function institutional(array $c): array {
-        $c['groups']['generic']=array_map(fn($s)=>self::paragraph($s,true),config('biblioteca.competencies'));
+    public static function institutional(array $c,bool $defaults=true): array {
+        if($defaults && empty($c['groups']['generic']))$c['groups']['generic']=array_map(fn($s)=>self::paragraph($s,true),config('biblioteca.competencies'));
         foreach($c['groups']['commitment']??[] as $i=>$b) if($b['kind']==='paragraph' && trim($b['text'])!=='') {
             $b['text']=preg_replace('/^(?:[-•]|\d+[.)])\s+/u','',trim($b['text'])); $b['heading']=false;
             $b['list']=['id'=>'commitment','level'=>0,'format'=>'bullet','start'=>1]; $c['groups']['commitment'][$i]=$b;
@@ -56,12 +56,35 @@ class Content
         foreach(config('biblioteca.groups') as $key=>$label) self::checkBlocks($c['groups'][$key]??null,$count);
         if(!isset($c['additional']) || !is_array($c['additional']) || count($c['additional'])>100) self::fail('Secciones adicionales inválidas.');
         foreach($c['additional'] as $s) { if(!is_string($s['title']??null)||mb_strlen($s['title'])>500||!is_string($s['key']??null)) self::fail('Título de sección inválido.'); self::checkBlocks($s['blocks']??null,$count); }
-        return self::institutional($c);
+        foreach(config('biblioteca.groups') as $key=>$label)$c['groups'][$key]=self::sanitizeBlocks($c['groups'][$key]);
+        foreach($c['additional'] as &$section)$section['blocks']=self::sanitizeBlocks($section['blocks']);
+        unset($section);
+        return self::institutional($c,false);
+    }
+    public static function sanitizeBlocks(array $blocks): array {
+        foreach($blocks as &$block) {
+            if(isset($block['html']) && !is_string($block['html']))unset($block['html']);
+            if($block['kind']==='paragraph' && isset($block['html'])) {
+                $block['html']=self::sanitize($block['html']);
+                $block['text']=trim(html_entity_decode(strip_tags(preg_replace('~<br\s*/?>|</(?:p|div|li|h[1-6])>~i',"\n",$block['html'])),ENT_QUOTES|ENT_HTML5,'UTF-8'));
+                if(mb_strlen($block['text'])>50000)self::fail('El texto del bloque es demasiado extenso.');
+            }
+            if($block['kind']==='table') {
+                foreach($block['rows'] as &$row)foreach($row['cells'] as &$cell) {
+                    $cell['blocks']=self::sanitizeBlocks($cell['blocks']);
+                    if(array_filter($cell['blocks'],fn($b)=>isset($b['html'])))$cell['text']=implode("\n",array_column($cell['blocks'],'text'));
+                }
+                unset($row,$cell);
+            }
+        }
+        unset($block);
+        return $blocks;
     }
     private static function checkBlocks(mixed $blocks, int &$count, int $depth=0): void {
         if(!is_array($blocks)||count($blocks)>1000||$depth>4) self::fail('Estructura de bloques inválida.');
         foreach($blocks as $b) {
             if(++$count>5000||!is_array($b)||!is_string($b['id']??null)||!is_string($b['text']??null)||mb_strlen($b['text'])>50000||!in_array($b['kind']??'', ['paragraph','table','image'])) self::fail('Bloque inválido.');
+            if(isset($b['html']) && ($b['kind']!=='paragraph'||!is_string($b['html'])||strlen($b['html'])>150000))self::fail('Formato de texto inválido.');
             if(isset($b['list']) && (!is_int($b['list']['level']??null)||$b['list']['level']<0||$b['list']['level']>12)) self::fail('Lista inválida.');
             if($b['kind']==='table') {
                 if(!is_array($b['rows']??null)||count($b['rows'])>500) self::fail('Tabla inválida.');
@@ -83,7 +106,7 @@ class Content
         $dom=new DOMDocument('1.0','UTF-8'); $old=libxml_use_internal_errors(true);
         $dom->loadHTML('<?xml encoding="UTF-8"><div id="bib-root">'.$html.'</div>',LIBXML_HTML_NOIMPLIED|LIBXML_HTML_NODEFDTD|LIBXML_NONET);
         libxml_clear_errors();libxml_use_internal_errors($old);
-        $allowed=['div','p','br','strong','b','em','i','u','s','ul','ol','li','table','thead','tbody','tfoot','tr','th','td','h2','h3','h4','h5','blockquote','a','span','hr','sup','sub'];
+        $allowed=['div','p','br','strong','b','em','i','u','s','strike','ul','ol','li','table','thead','tbody','tfoot','tr','th','td','h2','h3','h4','h5','blockquote','a','span','hr','sup','sub'];
         $walk=function($node) use (&$walk,$allowed) {
             foreach(iterator_to_array($node->childNodes) as $child) {
                 if($child instanceof \DOMElement) {

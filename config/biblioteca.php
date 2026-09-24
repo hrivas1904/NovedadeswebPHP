@@ -7,10 +7,10 @@ return [
     'source_root' => env('BIBLIOTECA_SOURCE_ROOT'),
     'timezone' => 'America/Argentina/Buenos_Aires',
     'collections' => [
-        'politicas' => ['label' => 'Políticas', 'icon' => 'fa-shield-halved', 'color' => '#3766ad', 'description' => 'Criterios y lineamientos para las decisiones del Hospital.'],
-        'procedimientos' => ['label' => 'Procedimientos', 'icon' => 'fa-diagram-project', 'color' => '#19877a', 'description' => 'Circuitos de trabajo, responsables y pasos de cada proceso.'],
-        'instructivos' => ['label' => 'Instructivos', 'icon' => 'fa-list-check', 'color' => '#bd8024', 'description' => 'Guías prácticas para realizar tareas y utilizar herramientas.'],
-        'descriptivos' => ['label' => 'Descriptivos de puesto', 'icon' => 'fa-users', 'color' => '#8063ac', 'description' => 'Propósito, funciones, competencias y relaciones de cada puesto.'],
+        'politicas' => ['label' => 'Políticas', 'icon' => 'fa-shield-halved', 'color' => '#00568B', 'description' => 'Criterios y lineamientos para las decisiones del Hospital.'],
+        'procedimientos' => ['label' => 'Procedimientos', 'icon' => 'fa-diagram-project', 'color' => '#008ECF', 'description' => 'Circuitos de trabajo, responsables y pasos de cada proceso.'],
+        'instructivos' => ['label' => 'Instructivos', 'icon' => 'fa-list-check', 'color' => '#008ECF', 'description' => 'Guías prácticas para realizar tareas y utilizar herramientas.'],
+        'descriptivos' => ['label' => 'Descriptivos de puesto', 'icon' => 'fa-users', 'color' => '#02B18F', 'description' => 'Propósito, funciones, competencias y relaciones de cada puesto.'],
     ],
     'groups' => ['purpose'=>'Propósito del puesto','tasks'=>'Principales tareas y responsabilidades','internal'=>'Relaciones internas','external'=>'Relaciones externas','education'=>'Formación','experience'=>'Experiencia','knowledge'=>'Conocimientos','generic'=>'Competencias genéricas','specific'=>'Competencias específicas','commitment'=>'Compromiso','contribution'=>'Contribución al Hospital'],
     'competencies' => [

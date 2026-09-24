@@ -7,6 +7,7 @@ use App\Services\Biblioteca\Acceptances;
 use App\Services\Biblioteca\Assignments;
 use App\Services\Biblioteca\Content;
 use App\Services\Biblioteca\Library;
+use App\Services\Biblioteca\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -90,9 +91,14 @@ class AcceptanceController extends Controller
         ])), $q))
             && (! $state || $r['status'] === $state)));
         $statuses = collect($data['employees'])->pluck('status')->unique()->sort()->all();
-        $page = min(max(1, $request->integer('page', 1)), max(1, (int) ceil(count($filtered) / 20)));
-        $data['employees'] = new LengthAwarePaginator(array_slice($filtered, ($page - 1) * 20, 20), count($filtered), 20, $page,
-            ['path' => $request->url(), 'query' => $request->query()]);
+        [$sort,$direction]=Listing::sorting($request,['employee','category','service','document','status'],'employee');
+        $data['employees']=Listing::paginate($filtered,$request,fn($row)=>match($sort) {
+            'employee'=>$row['employee']->COLABORADOR,
+            'category'=>($row['employee']->CONVENIO??'').' '.($row['category']?->NOMBRE??''),
+            'service'=>($row['employee']->service_name??'').' '.($row['employee']->role_name??''),
+            'document'=>$row['document']?->canonical_name?:($row['document']?->title??''),
+            'status'=>$row['status'],
+        },fn($row)=>$row['employee']->LEGAJO,$direction);
 
         if ($request->expectsJson()) {
             return response()->json(['html' => view('biblioteca.coverage-employees', $data)->render(),
@@ -117,9 +123,10 @@ class AcceptanceController extends Controller
     public function register(Request $request)
     {
         $q = mb_substr(trim((string) $request->query('q', '')), 0, 200);
+        [$sort,$direction]=Listing::sorting($request,['employee_name','category_name','version_number','accepted_at'],'accepted_at','desc');
         $records = DB::table('bib_acceptances')->select('id', 'employee_name', 'legajo', 'category_name', 'version_number', 'accepted_at')
             ->when($q !== '', fn ($query) => $query->where(fn ($filter) => $filter->where('employee_name', 'like', '%'.$q.'%')->orWhere('legajo', $q)))
-            ->orderByDesc('accepted_at')->paginate(25)->withQueryString();
+            ->orderBy($sort,$direction)->orderBy('id')->paginate(Listing::perPage($request))->withQueryString();
 
         if ($request->expectsJson()) return response()->json(['html' => view('biblioteca.acceptance-results', compact('records'))->render()]);
         return $this->page('acceptance-register', compact('records', 'q'));

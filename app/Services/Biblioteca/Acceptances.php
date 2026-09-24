@@ -62,6 +62,11 @@ class Acceptances
 
             return $result;
         }
+        $visibility=$read(DB::table('bib_visibility')->where('key','document:'.$documentId));
+        if(!Library::manages($user) && $visibility && !$visibility->visible) {
+            $result['status']='Tu descriptivo está temporalmente oculto. Consultá a Administración.';
+            return $result;
+        }
         $result['entry'] = (new Library)->present((array) $doc, (array) $version);
         $result['token'] = Assignments::token((int) $category->ID_CATEG, $base, $individual);
         $result['origin'] = $individual?->document_id ? 'individual' : 'category';

@@ -9,7 +9,7 @@ Integración del 18/09/2026 en `NovedadeswebPHP`: Laravel 12, PHP 8.2, Blade, jQ
 - Consulta y búsqueda por contenido, área, estado, revisión y colección; control documental, versiones e historial.
 - Administración: crear, duplicar, editar borradores, previsualizar, publicar y retirar versiones. Una publicación conserva la versión anterior en el historial. No hay eliminación de documentos ni edición del contenido de una versión publicada.
 - Revisión de descriptivos: guardar observaciones, validar, o validar y publicar. Nombre y área son explícitos; el comentario es opcional y se registra una resolución automática al confirmar.
-- Competencias genéricas institucionales en cinco viñetas. Compromiso se presenta con viñetas. Registro de acciones contraíble.
+- Competencias genéricas institucionales propuestas en cinco viñetas, editables por documento. Compromiso se presenta con viñetas. Registro de acciones contraíble.
 - Exportación PDF y Word; descarga del original, extracción y huella SHA-256.
 - Incorporación de DOCX/PDF con revisión previa: nuevo puesto, versión de un puesto, documento asociado o fuente complementaria. Un archivo ilegible puede conservarse como fuente complementaria.
 - Sincronización manual de las 15 carpetas configuradas: detectar nuevos, modificados, faltantes o restaurados. Los nuevos contenidos quedan pendientes de validación; no reemplazan automáticamente una versión vigente. Los originales nunca se escriben.
@@ -108,3 +108,105 @@ Desde el 20/09/2026, Categorías y firmas usa el catálogo real `categ_empleados
 ## Actualización del 20/09/2026
 
 Administración y Control documental son exclusivos de `Administrador/a`, con autorización en cada ruta. Se incorporan Mi descriptivo, aceptación personal por versión, constancias históricas privadas y el panel Categorías y firmas. Las tres tablas nuevas requieren la migración `2026_09_20_120000_add_biblioteca_assignments_and_acceptances.php`. Ver [la documentación del circuito y sus pendientes iniciales](FIRMAS_Y_COBERTURA_DESCRIPTIVOS.md).
+
+
+## Edición y nuevas versiones — 23/09/2026
+
+Con una cuenta de administración, cada política, procedimiento, instructivo y descriptivo tiene **Editar** en el listado y **Editar y crear nueva versión** en su ficha.
+
+1. Abrir el editor y modificar el contenido. Se pueden conservar y editar las tablas y secciones existentes.
+2. Registrar opcionalmente el motivo o resumen del cambio.
+3. Elegir **Guardar nueva versión**. La aplicación asigna el siguiente número interno y conserva la versión base, su contenido y sus documentos fuente. Abrir el editor o cancelar no crea registros.
+4. El resultado queda en borrador. Se puede seguir trabajando con **Guardar borrador**, recargar el editor o abrir **Ver versión guardada**. La ficha muestra los borradores en preparación con **Continuar borrador**.
+5. Publicar cuando corresponda: la versión vigente anterior pasa al historial. Las políticas conservan su aprobación exclusiva de Gerencia. Las nuevas versiones de procedimientos e instructivos deben registrar su propia aprobación e instrumento antes de publicarse.
+
+**Versiones e historial** muestra número, versión de origen, estado y última actualización. Administración también ve el autor de creación, el motivo y accesos para continuar borradores o preparar una nueva versión desde un antecedente. El registro de acciones conserva cada guardado y su autor.
+
+La nueva versión se crea con una transacción, bloqueo del documento, control de revisión e identificador de solicitud. Reintentar el mismo guardado no duplica versiones; una edición sobre una revisión desactualizada se rechaza sin sobrescribir contenido. Guardar cambios de contenido devuelve la revisión a Pendiente. El motivo se conserva durante la publicación.
+
+No requiere migraciones nuevas. La implementación está en este proyecto Laravel; la aplicación anterior y el paquete de migración permanecen como antecedentes.
+
+### Verificación
+
+- Pruebas funcionales: BibliotecaTest.php, BibliotecaImportTest.php y BibliotecaAcceptanceTest.php, con SQLite aislado. Incluyen las cuatro colecciones, versiones importadas e históricas, cancelación sin creación, reintentos, permisos, conflictos, tablas, publicación y conservación del original.
+- Prueba de navegador: tests/biblioteca-versions-fixture.php y tests/biblioteca-versions-browser.cjs. Usan el router local de aceptación y un BIBLIOTECA_TEST_RUN exclusivo. Verifican editar desde ficha/listado, vista previa, guardar, recargar, continuar, publicar e historial en 390, 768 y 1440 píxeles.
+- Los datos de prueba se guardan exclusivamente en storage/framework/testing/biblioteca-acceptance-browser-<BIBLIOTECA_TEST_RUN>; nunca en la base institucional.
+
+Resultado de esta actualización: **35 pruebas funcionales, 627 comprobaciones y recorrido en Chrome aprobado para las cuatro colecciones**, sin errores JavaScript. Revisadas las capturas del historial y del editor en pantalla pequeña.
+
+
+## Ajustes de interfaz — 23/09/2026
+
+- Las acciones Editar, Duplicar y Retirar versión comparten la cabecera con PDF, Word e Imprimir. El regreso a la colección tiene formato de botón.
+- El editor ofrece Descartar cambios para recuperar el último guardado. En una edición basada en otra versión o un documento nuevo, Descartar edición / Descartar nuevo documento sale sin crear ni modificar registros. Si existen cambios sin guardar, solicita confirmación.
+- Aprobaciones y visibilidad e Importar descriptivo incluyen Volver a Administración.
+- Las competencias genéricas se ofrecen como una propuesta editable: se pueden modificar, agregar o quitar. Los cambios se conservan al guardar, publicar, duplicar y preparar nuevas versiones.
+- El editor de políticas, procedimientos e instructivos incluye estilos de título, subtítulo y cita; negrita, cursiva, subrayado y tachado; listas, enlaces, tablas configurables, deshacer/rehacer y limpieza de formato. El selector de emojis también está disponible en los bloques y tablas de descriptivos.
+- Los buscadores del índice, colecciones, Administración, Control documental, colaboradores y registro de aceptaciones permiten mostrar 25, 50, 100 o 150 filas. Por defecto se muestran 25.
+- Al pulsar un encabezado con flechas se alterna el orden ascendente/descendente. El orden se aplica al conjunto filtrado antes de paginar y se conserva al cambiar de página o de cantidad. Las versiones se ordenan como números y las fechas cronológicamente.
+
+Pruebas de interfaz: tests/biblioteca-ui-fixture.php y tests/biblioteca-ui-browser.cjs, sobre SQLite aislado con más de 150 documentos, colaboradores y constancias ficticias.
+
+Verificación de estos ajustes: **38 pruebas funcionales y 711 comprobaciones aprobadas**. Recorrido completo en Chrome aprobado, sin errores JavaScript: descartes sin escrituras, conservación de formato/emojis/competencias después de recargar, navegación, tamaños de página, orden global y diseño en 390, 768 y 1440 píxeles.
+
+
+## Rediseño del índice — 24/09/2026
+
+La portada concentra la consulta en un buscador destacado con filtros por colección. Las tarjetas de las colecciones son enlaces completos y se presentan en tres columnas en escritorio. El acceso personal al descriptivo conserva el aviso de firma pendiente; los accesos administrativos respetan los permisos existentes.
+
+- La búsqueda funciona al escribir, pulsar Buscar o seleccionar una colección. Ver todos los documentos abre el listado en la misma página. Limpiar búsqueda o Escape restablece las colecciones.
+- Los resultados incluyen cantidad, 25/50/100/150 filas por página, orden y paginación. El selector aparece junto a los resultados, donde se utiliza.
+- Las búsquedas iniciadas desde el índice usan visible_sections=1 para coincidir con sus conteos y colecciones habilitadas. Administración conserva el acceso a las colecciones ocultas.
+- Se contemplan búsquedas sin coincidencias, errores con reintento y cancelación de respuestas pendientes. Sin JavaScript siguen funcionando el formulario y los enlaces normales.
+- En celular las filas se distribuyen en bloques con sus datos y acciones; se mantienen los encabezados para ordenar sin desplazamiento horizontal.
+- El diseño reutiliza la paleta institucional, iconos existentes y recursos locales. No requiere migraciones ni nuevas dependencias.
+
+Verificación específica: 7 pruebas funcionales y 135 comprobaciones aprobadas sobre SQLite aislado, más recorrido en Chrome en 320, 390, 768, 1024 y 1440 píxeles. Incluye búsqueda, filtros, orden, paginación, permisos, firma pendiente, reintento, cancelación y funcionamiento sin JavaScript. Sin errores JavaScript ni escrituras documentales durante el recorrido.
+
+El fixture tests/biblioteca-home-fixture.php genera 51 documentos visibles en una base separada. tests/biblioteca-home-browser.cjs utiliza el router local de aceptación con BIBLIOTECA_ACCEPTANCE_TEST=1 y un BIBLIOTECA_TEST_RUN exclusivo; no debe registrarse como ruta pública.
+
+
+## Identidad visual y encabezado compartido — 24/09/2026
+
+Las colecciones usan los colores extraídos del logo institucional: Políticas #00568B, Procedimientos #008ECF y Descriptivos de puesto #02B18F. Instructivos comparte el turquesa cuando se habilita. Iconos y acentos mantienen los colores originales; los textos pequeños utilizan una variante más oscura para facilitar la lectura.
+
+El encabezado del índice se comparte con todas las pantallas de la biblioteca: título, subtítulo, acciones en la misma fila y navegación con la sección activa. Ver como otro usuario y Control documental conservan sus permisos; durante la consulta como otra persona permanece el aviso y el regreso a la cuenta propia. Las subsecciones de administración también señalan su pestaña.
+
+Comprobado en 14 pantallas de escritorio y en celular, sin errores JavaScript ni escrituras documentales. Las 6 pruebas existentes de permisos, visibilidad, firma pendiente y consulta como otro usuario aprobaron 126 comprobaciones.
+
+
+## Navegación dinámica — 24/09/2026
+
+El contenido bajo el menú está contenido en #bib-content. El encabezado, la navegación y los recursos globales permanecen montados; #bib-view recibe cada nueva vista. Durante la carga se muestra un estado accesible y se conserva la vista anterior si ocurre un error.
+
+biblioteca-navigation.js intercepta los enlaces internos y los formularios que no tienen un manejador específico. Solicita HTML con X-Biblioteca-Navigation: 1; el layout fragment.blade.php omite la estructura y los scripts de la aplicación. Se conservan la URL, Atrás/Adelante y los filtros al regresar. La respuesta actualiza la pestaña activa, las opciones permitidas, el token CSRF y el aviso de consulta como otro usuario cuando corresponde. Los fragmentos no se almacenan en caché y sus respuestas declaran Vary.
+
+biblioteca.js expone un ciclo de montaje y limpieza por vista: retira eventos y cancela búsquedas pendientes al salir. Impide salir durante guardados y pide confirmación cuando hay cambios del editor sin guardar. Los scripts recibidos no se ejecutan; sólo se conserva la configuración JSON del editor. Las respuestas de navegación atrasadas se descartan.
+
+Los formularios conservan validación, archivos mediante FormData, confirmaciones y permisos del servidor. Ante una respuesta incierta a un POST, Revisar vista consulta por GET y no repite la operación. Descargas, enlaces externos, anclas y apertura en otra pestaña mantienen su comportamiento normal. Sin JavaScript se usan las rutas y formularios completos.
+
+Verificación: tests/biblioteca-navigation-browser.cjs, con tests/biblioteca-home-fixture.php y un BIBLIOTECA_TEST_RUN nuevo por ejecución. El recorrido carga el documento principal una sola vez y comprueba la identidad de los nodos del encabezado y menú. Incluye filtros, historial, respuestas atrasadas, reintento, protección de ediciones, guardado único, vista previa/emojis, asignaciones, visibilidad, consulta como otro usuario, carga real de Word, descargas, firma personal y navegación móvil. Todo sobre SQLite y archivos de prueba aislados.
+
+## Formato de descriptivos, eliminación de borradores y visibilidad documental — 24/09/2026
+
+Los bloques de texto de descriptivos ahora usan edición enriquecida: negrita, cursiva, subrayado, tachado, enlaces, deshacer/rehacer, limpieza de formato y emojis. El selector de párrafo, viñeta, numeración o subtítulo conserva la estructura de cada bloque. Cada barra opera sobre su propio campo, también en secciones adicionales. El HTML se valida y sanitiza en servidor, se conserva junto al texto de búsqueda y se utiliza en la lectura y vista previa. La exportación Word conserva los estilos en línea y los saltos de línea. Los bloques antiguos de texto plano y las tablas continúan siendo compatibles.
+
+Descartar cambios vuelve al último guardado y mantiene el borrador. Eliminar borrador es una acción distinta, con confirmación, disponible después de guardar: elimina sólo una versión de origen sistema que nunca se publicó y regresa a la versión de origen o a la vigente anterior. Si era el único borrador de un documento nuevo sin vínculos, elimina también su ficha. Rechaza revisiones desactualizadas, versiones publicadas, bases de otras versiones y vínculos que deban preservarse. Conserva la auditoría y los identificadores de solicitudes; los reintentos no recrean el borrador y los números eliminados no se reutilizan.
+
+Aprobaciones y visibilidad permite Mostrar/Ocultar cada documento de todas las colecciones, con buscador, filtro por colección, orden y 25/50/100/150 filas. Las políticas conservan su requisito de aprobación. Los colaboradores no pueden buscar, abrir, descargar ni firmar un descriptivo oculto; las constancias anteriores permanecen disponibles para su titular y Administración. Los administradores conservan acceso a todos los documentos.
+
+Pruebas sobre SQLite y datos ficticios: regresiones de formato, Word, descarte definitivo, concurrencia mediante revisión, idempotencia, permisos, visibilidad y conservación de constancias. tests/biblioteca-editor-browser.cjs comprueba formato en el segundo bloque, emoji, vista previa, guardar/reabrir, ambos descartes, filtros, Mostrar/Ocultar y navegación sin recargar el encabezado. Capturas en 1440 y 390 píxeles. No requiere migraciones ni cambios sobre documentos reales.
+
+Verificación final: 46 pruebas funcionales y 849 comprobaciones aprobadas, más los recorridos de editor y navegación dinámica en Chrome, sin errores JavaScript. Las pruebas utilizaron exclusivamente documentos y usuarios ficticios en SQLite aislado.
+
+## Interruptores de visibilidad con guardado automático — 24/09/2026
+
+Todos los controles Mostrar/Ocultar de Biblioteca comparten visibility-switch.blade.php: interruptor accesible por teclado, estado Visible/Oculto y mensaje local de guardado. Las secciones se presentan como filas compactas con icono y el interruptor a la derecha. Los documentos usan el mismo control dentro de la columna de visibilidad. Sin JavaScript queda un botón de envío como alternativa.
+
+El POST devuelve el estado y la revisión confirmados por la transacción. Mientras guarda se bloquean nuevos cambios, filtros y salida de la vista. Las secciones actualizan los enlaces del menú conservando sus nodos y el contenido de la pantalla. No se recarga la página ni se pierde la posición en la tabla.
+
+Ante error, una consulta GET protegida verifica el estado persistido: restaura el estado real o confirma un guardado cuya respuesta se perdió, sin repetir la escritura. Los conflictos de revisión muestran el estado actual y permiten una nueva decisión. Si tampoco se puede consultar, el interruptor queda deshabilitado con Verificar estado. Se mantienen permisos y la protección de consulta como otro usuario.
+
+Pruebas: BibliotecaAcceptanceTest y tests/biblioteca-visibility-browser.cjs sobre SQLite aislado; incluyen teclado, secciones/documentos, menú persistente, filtros, error de red, respuesta perdida, revisión desactualizada y recuperación por consulta. Los demás controles de visibilidad de períodos ya utilizaban interruptores con guardado automático; los filtros de búsqueda y campos de formularios de datos personales conservan su función.
+
+Verificación de esta actualización: 26 pruebas funcionales, 383 comprobaciones y recorrido específico de interruptores aprobados. Revisión visual de secciones y documentos en escritorio y móvil.

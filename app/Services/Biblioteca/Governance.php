@@ -26,15 +26,17 @@ class Governance
         }));
     }
     public function assertReadable(array $entry,$user): void { abort_unless($this->visibleEntries([$entry],$user),404); }
-    public function setVisibility(string $key,bool $visible,int $revision,$user): void {
+    public function setVisibility(string $key,bool $visible,int $revision,$user): array {
         abort_unless(Library::manages($user),403);
-        DB::transaction(function() use($key,$visible,$revision,$user) {
+        return DB::transaction(function() use($key,$visible,$revision,$user) {
+            if(str_starts_with($key,'document:'))abort_unless(DB::table('bib_documents')->where('id',substr($key,9))->lockForUpdate()->first(),404);
             // Serialize panel updates, including first-time document settings.
             DB::table('bib_visibility')->where('key','section:politicas')->lockForUpdate()->first();
             $old=DB::table('bib_visibility')->where('key',$key)->lockForUpdate()->first();
             abort_unless((int)($old->revision??0)===$revision,409,'La visibilidad cambió. Recargá el panel.');
             DB::table('bib_visibility')->updateOrInsert(['key'=>$key],['visible'=>$visible,'revision'=>$revision+1]);
             DB::table('bib_events')->insert(['id'=>(string)\Illuminate\Support\Str::uuid(),'document_id'=>str_starts_with($key,'document:')?substr($key,9):null,'version_id'=>null,'action'=>'cambiar_visibilidad','actor'=>Library::actor($user),'happened_at'=>Library::now(),'before_json'=>Content::json($old),'after_json'=>Content::json(['key'=>$key,'visible'=>$visible])]);
+            return ['key'=>$key,'visible'=>$visible,'revision'=>$revision+1];
         });
     }
 }

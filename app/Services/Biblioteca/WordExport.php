@@ -12,18 +12,45 @@ class WordExport
         $properties=($style?'<w:pStyle w:val="'.$style.'"/>':'').($bullet?'<w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr>':'');
         return '<w:p><w:pPr>'.$properties.'<w:spacing w:after="120"/></w:pPr><w:r><w:t xml:space="preserve">'.$this->text(trim($text)).'</w:t></w:r></w:p>';
     }
+    private function runs($node,array $format=[]): string {
+        if($node instanceof \DOMText) {
+            $properties='';foreach($format as $tag)$properties.='<w:'.$tag.'/>';
+            return '<w:r><w:rPr>'.$properties.'</w:rPr><w:t xml:space="preserve">'.$this->text($node->textContent).'</w:t></w:r>';
+        }
+        if(!$node instanceof \DOMElement)return '';
+        $tag=strtolower($node->tagName);
+        if($tag==='br')return '<w:r><w:br/></w:r>';
+        $mark=['b'=>'b','strong'=>'b','i'=>'i','em'=>'i','u'=>'u w:val="single"','s'=>'strike','strike'=>'strike','del'=>'strike'][$tag]??null;
+        if($mark)$format[]=$mark;
+        $xml='';foreach($node->childNodes as $child)$xml.=$this->runs($child,array_unique($format));
+        if(in_array($tag,['p','div'])&&$node->nextSibling)$xml.='<w:r><w:br/></w:r>';
+        return $xml;
+    }
+    private function richParagraph(string $runs,string $style='',bool $bullet=false): string {
+        $properties=($style?'<w:pStyle w:val="'.$style.'"/>':'').($bullet?'<w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr>':'');
+        return '<w:p><w:pPr>'.$properties.'<w:spacing w:after="120"/></w:pPr>'.$runs.'</w:p>';
+    }
     private function nodes($node): string {
-        $xml='';foreach($node->childNodes as $child) {
+        $xml='';$inline='';
+        $flush=function()use(&$xml,&$inline){if($inline!==''){$xml.=$this->richParagraph($inline);$inline='';}};
+        foreach($node->childNodes as $child) {
+            if($child instanceof \DOMText){if(trim($child->textContent)!==''||$inline!=='')$inline.=$this->runs($child);continue;}
             if(!$child instanceof \DOMElement)continue;$tag=strtolower($child->tagName);
+            if(in_array($tag,['head','style','script']))continue;
+            if(in_array($tag,['a','b','strong','i','em','u','s','strike','del','span','br'])){$inline.=$this->runs($child);continue;}
+            $flush();
             if($tag==='table') {
                 $xml.='<w:tbl><w:tblPr><w:tblW w:w="5000" w:type="pct"/><w:tblBorders><w:top w:val="single" w:sz="4"/><w:left w:val="single" w:sz="4"/><w:bottom w:val="single" w:sz="4"/><w:right w:val="single" w:sz="4"/><w:insideH w:val="single" w:sz="4"/><w:insideV w:val="single" w:sz="4"/></w:tblBorders></w:tblPr>';
                 foreach($child->getElementsByTagName('tr') as $row) {
                     $parent=$row->parentNode;while($parent&&strtolower($parent->nodeName)!=='table')$parent=$parent->parentNode;if($parent!==$child)continue;
-                    $xml.='<w:tr>';foreach($row->childNodes as $cell)if($cell instanceof \DOMElement&&in_array(strtolower($cell->tagName),['th','td'])) {$span=max(1,(int)$cell->getAttribute('colspan'));$xml.='<w:tc><w:tcPr>'.($span>1?'<w:gridSpan w:val="'.$span.'"/>':'').'</w:tcPr>'.$this->paragraph($cell->textContent).'</w:tc>';}$xml.='</w:tr>';
+                    $xml.='<w:tr>';foreach($row->childNodes as $cell)if($cell instanceof \DOMElement&&in_array(strtolower($cell->tagName),['th','td'])) {$span=max(1,(int)$cell->getAttribute('colspan'));$xml.='<w:tc><w:tcPr>'.($span>1?'<w:gridSpan w:val="'.$span.'"/>':'').'</w:tcPr>'.($this->nodes($cell)?:$this->paragraph('')).'</w:tc>';}$xml.='</w:tr>';
                 }$xml.='</w:tbl>';
-            } elseif(in_array($tag,['p','h1','h2','h3','h4','li','dt','dd']))$xml.=$this->paragraph($child->textContent,str_starts_with($tag,'h')?'Heading'.min((int)substr($tag,1),3):'',$tag==='li');
-            else $xml.=$this->nodes($child);
-        }return $xml;
+            } elseif(in_array($tag,['p','h1','h2','h3','h4','li','dt','dd'])||$child->getAttribute('role')==='heading') {
+                $style=str_starts_with($tag,'h')?'Heading'.min((int)substr($tag,1),3):($child->getAttribute('role')==='heading'?'Heading3':'');
+                $xml.=$this->richParagraph($this->runs($child),$style,$tag==='li');
+            } else $xml.=$this->nodes($child);
+        }
+        $flush();return $xml;
     }
     public function create(string $html): string {
         $dom=new DOMDocument();$old=libxml_use_internal_errors(true);$dom->loadHTML('<?xml encoding="UTF-8">'.$html,LIBXML_NONET);libxml_clear_errors();libxml_use_internal_errors($old);

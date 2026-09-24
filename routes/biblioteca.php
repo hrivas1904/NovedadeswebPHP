@@ -3,7 +3,7 @@
 use App\Http\Controllers\Biblioteca\BibliotecaController as Library;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth',\App\Http\Middleware\BibliotecaUserPreview::class])->prefix('biblioteca')->name('biblioteca.')->group(function () {
+Route::middleware(['auth',\App\Http\Middleware\BibliotecaNavigation::class,\App\Http\Middleware\BibliotecaUserPreview::class])->prefix('biblioteca')->name('biblioteca.')->group(function () {
     Route::get('/ver-como',[\App\Http\Controllers\Biblioteca\UserPreviewController::class,'index'])->name('preview');
     Route::post('/ver-como',[\App\Http\Controllers\Biblioteca\UserPreviewController::class,'start'])->name('preview.start');
     Route::post('/volver-a-mi-usuario',[\App\Http\Controllers\Biblioteca\UserPreviewController::class,'stop'])->name('preview.stop');
@@ -13,6 +13,7 @@ Route::middleware(['auth',\App\Http\Middleware\BibliotecaUserPreview::class])->p
     Route::get('/constancias/{acceptance}', [\App\Http\Controllers\Biblioteca\AcceptanceController::class, 'receipt'])->name('receipt');
     Route::middleware(\App\Http\Middleware\RequireBibliotecaAdmin::class)->group(function () {
         Route::get('/administracion/visibilidad',[\App\Http\Controllers\Biblioteca\GovernanceController::class,'index'])->name('visibility');
+        Route::get('/administracion/visibilidad/estado',[\App\Http\Controllers\Biblioteca\GovernanceController::class,'state'])->name('visibility.state');
         Route::post('/administracion/visibilidad',[\App\Http\Controllers\Biblioteca\GovernanceController::class,'save'])->name('visibility.save');
         Route::post('/versiones/{version}/aprobar-politica',[\App\Http\Controllers\Biblioteca\GovernanceController::class,'approve'])->name('policy.approve');
 
@@ -35,7 +36,7 @@ Route::middleware(['auth',\App\Http\Middleware\BibliotecaUserPreview::class])->p
     Route::post('/administracion/importar/{id}',[Library::class,'confirmUpload'])->middleware(\App\Http\Middleware\RequireBibliotecaAdmin::class)->name('upload.confirm');
     Route::post('/documentos',[Library::class,'store'])->middleware(\App\Http\Middleware\RequireBibliotecaAdmin::class)->name('store');
     Route::get('/documentos/{document}',[Library::class,'show'])->name('show');
-    Route::get('/versiones/{version}/editar',[Library::class,'edit'])->name('edit');
+    Route::get('/versiones/{version}/editar',[Library::class,'edit'])->middleware(\App\Http\Middleware\RequireBibliotecaAdmin::class)->name('edit');
     Route::post('/versiones/{version}/accion',[Library::class,'action'])->middleware(\App\Http\Middleware\RequireBibliotecaAdmin::class)->name('action');
     Route::get('/versiones/{version}/revision',[Library::class,'review'])->middleware(\App\Http\Middleware\RequireBibliotecaAdmin::class)->name('review');
     Route::post('/versiones/{version}/revision',[Library::class,'saveReview'])->middleware(\App\Http\Middleware\RequireBibliotecaAdmin::class)->name('review.save');
