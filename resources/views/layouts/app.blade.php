@@ -194,8 +194,10 @@
                                 <li><a class="submenu-link" href="{{ route('rrhh.cronogramaTrabajo') }}">Cronograma de trabajo</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.zkteco') }}">Marcaciones</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.medicos') }}">Médicos</a></li>
-                                <li><a class="submenu-link" href="{{ route('rrhh.edd.index') }}">EDD</a></li>
                                 @endif
+                                @can('edd.acceder')
+                                <li><a class="submenu-link" href="{{ route('rrhh.edd.index') }}">Evaluación de desempeño</a></li>
+                                @endcan
                             </ul>
                         </li>
 

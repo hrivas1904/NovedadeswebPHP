@@ -443,7 +443,24 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/medicos/registrarNuevoMedico', [MedicosController::class, 'registrarNuevoMedico']);
 
     // EVALUACIÓN DE DESEMPEÑO
-    Route::get('/edd', [EddController::class, 'index'])->name('edd.index');
+    Route::prefix('edd')->name('edd.')->middleware('can:edd.acceder')->group(function () {
+        Route::get('/', [EddController::class, 'index'])->name('index');
+        Route::get('/autoevaluacion', [EddController::class, 'autoevaluacion'])->name('autoevaluacion');
+
+        Route::middleware('can:edd.evaluar')->group(function () {
+            Route::get('/equipo', [EddController::class, 'equipo'])->name('equipo');
+            Route::get('/modelo-evaluacion', [EddController::class, 'modeloEvaluacion'])->name('evaluacion.modelo');
+        });
+
+        Route::middleware('can:edd.administrar')->group(function () {
+            Route::get('/resumen', [EddController::class, 'resumen'])->name('resumen');
+            Route::get('/configuracion', [EddController::class, 'configuracion'])->name('configuracion');
+            Route::get('/configuracion/poblacion', [EddController::class, 'poblacion'])->name('configuracion.poblacion');
+            Route::get('/configuracion/evaluadores', [EddController::class, 'evaluadores'])->name('configuracion.evaluadores');
+            Route::get('/configuracion/instrumento', [EddController::class, 'instrumento'])->name('configuracion.instrumento');
+            Route::get('/reportes', [EddController::class, 'reportes'])->name('reportes');
+        });
+    });
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {
