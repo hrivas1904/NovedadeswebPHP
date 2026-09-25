@@ -11,6 +11,7 @@ use App\Http\Controllers\RRHH\ParametrosController;
 use App\Http\Controllers\RRHH\CronogramaController;
 use App\Http\Controllers\RRHH\ZktecoController;
 use App\Http\Controllers\RRHH\MedicosController;
+use App\Http\Controllers\RRHH\EddController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -440,6 +441,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/medicos/obtenerLegajo/{idMedico}', [MedicosController::class, 'obtenerLegajoMedico']);
     Route::get('/medicos/obtenerServicios', [MedicosController::class, 'obtenerServiciosMedicos']);
     Route::put('/medicos/registrarNuevoMedico', [MedicosController::class, 'registrarNuevoMedico']);
+
+    // EVALUACIÓN DE DESEMPEÑO
+    Route::get('/edd', [EddController::class, 'index'])->name('edd.index');
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {
