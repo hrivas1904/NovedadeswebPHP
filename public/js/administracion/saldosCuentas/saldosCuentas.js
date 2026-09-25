@@ -12,9 +12,12 @@ function fmtPesos(v) {
 }
 
 function fmtUsd(v) {
+    const n = Number(v || 0);
+    const signo = n < 0 ? "-" : "";
     return (
-        "USD " +
-        Math.abs(Number(v || 0)).toLocaleString("es-AR", {
+        signo +
+        "USD\u202f" +
+        Math.abs(n).toLocaleString("es-AR", {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         })
@@ -24,7 +27,7 @@ function fmtUsd(v) {
 function renderFilaPesos(r) {
     const estiloInput = r.carga_manual ? 'style="background:#FFF9E0;"' : "";
     const asterisco = r.carga_manual ? " *" : "";
-    const valor = Number(r.saldo_inicial).toFixed(2);
+    const valor = fmtPesos(r.saldo_inicial);
 
     return (
         '<tr data-cuenta="' +
@@ -52,7 +55,7 @@ function renderFilaPesos(r) {
 }
 
 function renderFilaUsd(r) {
-    const valor = Number(r.saldo_inicial).toFixed(2);
+    const valor = fmtUsd(r.saldo_inicial);
 
     return (
         '<tr data-cuenta="' +

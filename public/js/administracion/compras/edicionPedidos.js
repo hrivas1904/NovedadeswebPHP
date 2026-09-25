@@ -1,15 +1,28 @@
-$("#btnHabilitarEdicionPedido").on("click", function(){
-    $(this).addClass("d-none");
-    $("#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla").removeClass("d-none");
-    $("#verPrioridad, #verCentroCosto, #verProveedor, #verMoneda").prop("disabled",false).trigger("change.select2");
-    $("#verDescripcion").prop("readonly",false);
+$(document).on("keydown", ".input-precio", function (e) {
+    if (e.originalEvent.code === "NumpadDecimal") {
+        e.preventDefault();
+        insertarEnCursor(this, ",");
+    }
+});
 
-    $(".selector-producto").prop("disabled",false).trigger("change.select2");
-    $(".input-descripcion, .input-cantidad, .input-cantidad").prop("readonly",false);
-})
+$("#btnHabilitarEdicionPedido").on("click", function () {
+    $(this).addClass("d-none");
+    $(
+        "#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla",
+    ).removeClass("d-none");
+    $("#verPrioridad, #verCentroCosto, #verProveedor, #verMoneda")
+        .prop("disabled", false)
+        .trigger("change.select2");
+    $("#verDescripcion").prop("readonly", false);
+
+    $(".selector-producto").prop("disabled", false).trigger("change.select2");
+    $(".input-descripcion, .input-cantidad, .input-cantidad").prop(
+        "readonly",
+        false,
+    );
+});
 
 $("#btnGuardarCambiosPedidos").on("click", function () {
-
     const pedidoId = $("#modalDetallePedido").data("pedido-id");
 
     console.log("PEDIDO A ACTUALIZAR:", pedidoId);
@@ -45,7 +58,6 @@ $("#btnGuardarCambiosPedidos").on("click", function () {
         },
 
         success: function (response) {
-
             Swal.fire({
                 icon: "success",
                 title: "¡Operación exitosa!",
@@ -54,23 +66,26 @@ $("#btnGuardarCambiosPedidos").on("click", function () {
                 showConfirmButton: false,
             });
 
-            $("#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla").addClass("d-none");
-            $("#verPrioridad, #verCentroCosto, #verProveedor, #verMoneda").prop("disabled",true)
-            $("#verDescripcion").prop("readonly",true);
+            $(
+                "#btnGuardarCambiosPedidos, #divBotonAgregarProductoDetalle, .campoDeleteTabla, #campoDeleteTabla",
+            ).addClass("d-none");
+            $("#verPrioridad, #verCentroCosto, #verProveedor, #verMoneda").prop(
+                "disabled",
+                true,
+            );
+            $("#verDescripcion").prop("readonly", true);
             $("#btnHabilitarEdicionPedido").removeClass("d-none");
 
-            $(".selector-producto").prop("disabled",true);
-            $(".input-descripcion, .input-cantidad, .input-cantidad").prop("readonly",true);
+            $(".selector-producto").prop("disabled", true);
+            $(".input-descripcion, .input-cantidad, .input-cantidad").prop(
+                "readonly",
+                true,
+            );
 
-
-            $("#tablaPedidosCompras")
-                .DataTable()
-                .ajax
-                .reload(null, false);
+            $("#tablaPedidosCompras").DataTable().ajax.reload(null, false);
         },
 
         error: function (xhr) {
-
             console.error(xhr.responseText);
 
             Swal.fire({
@@ -85,7 +100,6 @@ $("#btnGuardarCambiosPedidos").on("click", function () {
 });
 
 $("#btnSubirPresupuesto").on("click", function () {
-
     const pedidoId = $("#idPedido").val();
 
     if (!pedidoId) {
@@ -125,16 +139,13 @@ $("#btnSubirPresupuesto").on("click", function () {
         contentType: false,
 
         beforeSend: function () {
-            $("#btnSubirPresupuesto")
-                .prop("disabled", true)
-                .html(`
+            $("#btnSubirPresupuesto").prop("disabled", true).html(`
                     <i class="fa-solid fa-spinner fa-spin me-2"></i>
                     Subiendo...
                 `);
         },
 
         success: function () {
-
             $("#inputPresupuesto").val("");
 
             cargarAdjuntosPedido(pedidoId);
@@ -149,7 +160,6 @@ $("#btnSubirPresupuesto").on("click", function () {
         },
 
         error: function (xhr) {
-
             console.error(xhr.responseText);
 
             Swal.fire({
@@ -162,10 +172,7 @@ $("#btnSubirPresupuesto").on("click", function () {
         },
 
         complete: function () {
-
-            $("#btnSubirPresupuesto")
-                .prop("disabled", false)
-                .html(`
+            $("#btnSubirPresupuesto").prop("disabled", false).html(`
                     <i class="fa-solid fa-upload me-2"></i>
                     Subir archivo
                 `);
@@ -174,7 +181,6 @@ $("#btnSubirPresupuesto").on("click", function () {
 });
 
 $(document).on("click", ".btnEliminarPresupuesto", function (e) {
-
     e.stopPropagation();
 
     const adjuntoId = $(this).data("id");
@@ -193,7 +199,6 @@ $(document).on("click", ".btnEliminarPresupuesto", function (e) {
         },
         buttonsStyling: false,
     }).then((result) => {
-
         if (!result.isConfirmed) return;
 
         $.ajax({
@@ -201,12 +206,10 @@ $(document).on("click", ".btnEliminarPresupuesto", function (e) {
             type: "DELETE",
 
             headers: {
-                "X-CSRF-TOKEN":
-                    $('meta[name="csrf-token"]').attr("content"),
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
 
             success: function () {
-
                 // Usamos TU función existente
                 cargarAdjuntosPedido(pedidoId);
 
@@ -220,7 +223,6 @@ $(document).on("click", ".btnEliminarPresupuesto", function (e) {
             },
 
             error: function (xhr) {
-
                 Swal.fire({
                     icon: "error",
                     title: "Error",
@@ -228,7 +230,6 @@ $(document).on("click", ".btnEliminarPresupuesto", function (e) {
                         xhr.responseJSON?.mensaje ??
                         "No fue posible eliminar el presupuesto.",
                 });
-
             },
         });
     });
@@ -238,26 +239,25 @@ function leerDetallePedido() {
     const detalle = [];
 
     $("#detalleProductosBody tr").each(function () {
-
         const fila = $(this);
 
         const cantidad = fila.find(".input-cantidad").val();
-        const precio = fila.find(".input-precio").val();
+        const precioRaw = fila.find(".input-precio").val().trim();
+        const precio =
+            precioRaw === ""
+                ? ""
+                : precioRaw.replace(/\./g, "").replace(",", ".");
 
         detalle.push({
             id: fila.data("detalle-id") || null,
 
-            producto_id:
-                fila.find(".selector-producto").val(),
+            producto_id: fila.find(".selector-producto").val(),
 
-            descripcion_item:
-                fila.find(".input-descripcion").val().trim(),
+            descripcion_item: fila.find(".input-descripcion").val().trim(),
 
-            cantidad:
-                cantidad === "" ? null : parseFloat(cantidad),
+            cantidad: cantidad === "" ? null : parseFloat(cantidad),
 
-            precio:
-                precio === "" ? null : parseFloat(precio),
+            precio: precio === "" ? null : parseFloat(precio),
         });
     });
 

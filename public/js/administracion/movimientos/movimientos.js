@@ -12,6 +12,24 @@ function getEstadosSeleccionados() {
         .get();
 }
 
+function insertarEnCursor(input, texto) {
+    const inicio = input.selectionStart;
+    const fin = input.selectionEnd;
+    const valor = input.value;
+    input.value = valor.slice(0, inicio) + texto + valor.slice(fin);
+    const nuevaPos = inicio + texto.length;
+    input.setSelectionRange(nuevaPos, nuevaPos);
+    // Disparamos "input" para que cualquier listener existente (validaciones, etc.) se entere
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+$(document).on("keydown", ".input-importe-movimiento", function (e) {
+    if (e.originalEvent.code === "NumpadDecimal") {
+        e.preventDefault();
+        insertarEnCursor(this, ",");
+    }
+});
+
 // "Todos" es excluyente con los demas: tildarlo destilda el resto (no
 // tiene sentido filtrar por estados puntuales Y "todos" a la vez).
 $(document).on("change", "#chkTodos", function () {
@@ -29,25 +47,26 @@ $(document).on("change", ".chkEstado:not(#chkTodos)", function () {
 });
 
 function getCuentasSeleccionadas() {
-    return $('.chkCuenta:not(#chkCuentaTodos):checked').map(function () {
-        return $(this).val();
-    }).get();
+    return $(".chkCuenta:not(#chkCuentaTodos):checked")
+        .map(function () {
+            return $(this).val();
+        })
+        .get();
 }
- 
-$(document).on('change', '#chkCuentaTodos', function () {
-    if ($(this).is(':checked')) {
-        $('.chkCuenta').not('#chkCuentaTodos').prop('checked', false);
+
+$(document).on("change", "#chkCuentaTodos", function () {
+    if ($(this).is(":checked")) {
+        $(".chkCuenta").not("#chkCuentaTodos").prop("checked", false);
     }
     tablaMovimientos.ajax.reload();
 });
- 
-$(document).on('change', '.chkCuenta:not(#chkCuentaTodos)', function () {
-    if ($(this).is(':checked')) {
-        $('#chkCuentaTodos').prop('checked', false);
+
+$(document).on("change", ".chkCuenta:not(#chkCuentaTodos)", function () {
+    if ($(this).is(":checked")) {
+        $("#chkCuentaTodos").prop("checked", false);
     }
     tablaMovimientos.ajax.reload();
 });
- 
 
 $("#btnLimpiarFiltros").on("click", function () {
     $("#inputFechaDesde").val("");
@@ -294,13 +313,18 @@ $(document).ready(function () {
                 className: "text-end",
                 render: function (importe, type, row) {
                     if (type !== "display") return importe;
+                    const formateado = Number(importe).toLocaleString("es-AR", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    });
                     return (
                         '<input type="text" class="form-control form-control-sm text-end input-importe-movimiento" data-id="' +
                         row.id +
                         '" value="' +
-                        Number(importe).toFixed(2) +
-                        '" data-original="' +
-                        Number(importe).toFixed(2) +
+                        formateado +
+                        '"' +
+                        ' data-original="' +
+                        formateado +
                         '">'
                     );
                 },
@@ -582,19 +606,24 @@ $(document).on("blur", ".input-detalle-movimiento", function () {
     });
 });
 
-$(document).on("blur", ".input-importe-movimiento", function () {
+$(document).on("blur", ".input-importe-movimiento", function (e) {
     const $input = $(this);
     const raw = $input.val().trim();
     if (raw === String($input.data("original"))) return; // no cambio, no disparamos nada
 
     const id = $input.data("id");
-    const importe = raw.replace(/\./g, "").replace(",", ".");
+    const importe = raw.replace(/\./g, "").replace(",", "."); // ya viaja parseado a la BD
 
     $.post(
         MOVIMIENTOS_ROUTES.importe.replace(":id", id),
         { importe: importe },
         function () {
-            $input.data("original", Number(importe).toFixed(2));
+            const formateado = Number(importe).toLocaleString("es-AR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+            $input.val(formateado);
+            $input.data("original", formateado);
             tablaMovimientos.ajax.reload(null, false);
         },
     );

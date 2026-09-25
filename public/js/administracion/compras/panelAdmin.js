@@ -96,14 +96,9 @@ $("#tablaPedidosCompras").DataTable({
                     return "";
                 }
 
-                const ES_GERENTE = USER_ID === 5;
-
-                // ==========================================
-                // AUTORIZACIÓN NORMAL
-                // ==========================================
+                const ES_GERENTE = PUEDE_APROBAR_GERENCIA;
 
                 if (data.autorizacion === "PENDIENTE") {
-                    // El gerente no interviene en esta instancia
                     if (ES_GERENTE) {
                         return "";
                     }
@@ -129,10 +124,6 @@ $("#tablaPedidosCompras").DataTable({
                     `;
                 }
 
-                // ==========================================
-                // AUTORIZACIÓN GERENTE
-                // ==========================================
-
                 if (
                     data.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE" &&
                     ES_GERENTE
@@ -157,10 +148,6 @@ $("#tablaPedidosCompras").DataTable({
                         </button>
                     `;
                 }
-
-                // ==========================================
-                // PEDIDO APROBADO
-                // ==========================================
 
                 if (data.autorizacion === "APROBADA") {
                     return `
@@ -495,7 +482,10 @@ function verPedido(id) {
                 const precioValor =
                     item.precio === null || item.precio === undefined
                         ? ""
-                        : parseFloat(item.precio);
+                        : Number(item.precio).toLocaleString("es-AR", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                          });
 
                 tbody.append(`
                     <tr data-detalle-id="${item.id}">
@@ -523,10 +513,8 @@ function verPedido(id) {
 
                         <td class="text-end">
                             <input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                class="form-control input-precio"
+                                type="text"
+                                class="form-control text-end input-precio"
                                 value="${precioValor}"
                                 readonly>
                         </td>
