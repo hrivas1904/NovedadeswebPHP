@@ -1,6 +1,17 @@
 @extends('edd.layout')
 
 @section('edd-content')
+    @if($asignaciones->isNotEmpty())
+        <section class="edd-panel mt-4">
+            <h2 class="h5">Mi equipo</h2>
+            <p class="edd-muted">Estas son las personas asignadas a tu cuenta. La carga de respuestas todavía no está habilitada; el siguiente paso del desarrollo será la autoevaluación del colaborador.</p>
+            <div class="table-responsive">
+                <table class="table align-middle"><thead><tr><th>Período</th><th>Colaborador</th><th>Área</th><th>Situación</th></tr></thead><tbody>
+                    @foreach($asignaciones as $asignacion)<tr><td>{{ $asignacion['periodo'] }}</td><td>{{ $asignacion['nombre'] }}<small class="d-block">Legajo {{ $asignacion['legajo'] }}</small></td><td>{{ $asignacion['area'] }}</td><td><span class="badge text-bg-secondary">Asignación configurada</span></td></tr>@endforeach
+                </tbody></table>
+            </div>
+        </section>
+    @else
     <section class="edd-panel mt-4" data-edd-equipo>
         <div class="edd-panel-header">
             <div><h2 class="h5">Mi equipo</h2><p class="edd-muted mb-0 mt-2">Evaluaciones asignadas a tu cuenta</p></div>
@@ -39,4 +50,5 @@
         <p class="small edd-muted mt-3 mb-0">Avance del equipo: sin evaluaciones asignadas. Se calculará con las cerradas sobre el total previsto.</p>
     </section>
     @include('edd.partials.flujo')
+    @endif
 @endsection

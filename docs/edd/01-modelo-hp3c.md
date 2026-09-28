@@ -1,10 +1,12 @@
 # Etapa 1. Modelo de Evaluación de Desempeño HP3C
 
+> Para la primera versión funcional rige el [alcance simplificado definido posteriormente por el usuario](05-alcance-primera-version.md): dos grupos de competencias y el recorrido autoevaluación → evaluación de la jefatura → cierre. Los bloques y pasos adicionales descritos en este documento quedan como referencia de ampliaciones, no como requisitos del primer desarrollo.
+
 ## Alcance de esta entrega
 
-Estructura inicial del módulo EDD del Sistema de Gestión RRHH. Incluye el modelo funcional, pantallas navegables, controles de acceso, diseño de información y especificación de implementación. La carga de períodos, asignaciones, respuestas y cierres se desarrollará sobre esta estructura. Las pantallas iniciales muestran estados vacíos, sin presentar ejemplos como resultados institucionales.
+Modelo del módulo EDD del Sistema de Gestión RRHH. La primera entrega incluyó pantallas navegables, controles de acceso, diseño de información y especificación de implementación. La continuación de la etapa 2 incorpora el guardado real de períodos e instrumentos; asignaciones, respuestas y cierres permanecen pendientes. Las pantallas sin carga real muestran estados vacíos, sin presentar ejemplos como resultados institucionales.
 
-Se conserva la rama de trabajo `FRAN240926`. Cada etapa tiene su propio commit. No se integra a `main`.
+Se conserva la rama de trabajo `FRAN240926`. Cada etapa tendrá su propio commit, después de presentar los cambios para revisión en VS Code y recibir el OK explícito del usuario. No se integra a `main`.
 
 ## Decisiones para EDD 2026
 

@@ -11,7 +11,7 @@
                 <h1 class="h3 mb-2">Evaluación de desempeño</h1>
                 <p class="mb-0 edd-muted">{{ $periodoReferencia }} <span class="mx-2" aria-hidden="true">·</span> Escala de 1 a {{ max(array_keys($escala)) }}</p>
             </div>
-            <span class="badge edd-design-badge">Diseño inicial</span>
+            <span class="badge edd-design-badge">{{ ($almacenamientoDisponible ?? false) ? 'En configuración' : 'Diseño inicial' }}</span>
         </header>
 
         <nav class="edd-navigation" aria-label="Evaluación de desempeño">
@@ -30,7 +30,11 @@
 
         <p class="edd-notice" id="edd-disponibilidad">
             <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
-            Estructura inicial del módulo. Todavía no hay un período habilitado para cargar evaluaciones.
+            @if($almacenamientoDisponible ?? false)
+                Configurá el período, las competencias, la población y los responsables. El envío de autoevaluaciones y la carga de respuestas todavía no están habilitados.
+            @else
+                Estructura inicial del módulo. Todavía no hay un período habilitado para cargar evaluaciones.
+            @endif
         </p>
 
         @yield('edd-content')

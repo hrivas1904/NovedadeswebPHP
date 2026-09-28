@@ -1,10 +1,14 @@
 # Etapa 4. Especificación para continuar el desarrollo
 
-Este documento es el encargo de la siguiente implementación. No implica que las operaciones de carga, cálculo o cierre estén implementadas en la entrega de estructura. Los documentos de las etapas 1–3 y el código del módulo son el punto de partida.
+**Punto de partida actualizado:** ya están implementadas población, asignaciones, competencias funcionales por área/persona y Mi equipo por asignación. Consultar [el incremento vigente](06-poblacion-y-competencias.md) antes de aplicar los apartados históricos que todavía las describen como pendientes. Para las futuras respuestas, resolver las funcionales desde esta configuración y congelarlas al abrir, sin duplicarlas desde el editor inicial de instrumentos.
+
+> Antes de continuar, aplicar el [alcance simplificado de la primera versión](05-alcance-primera-version.md), definido posteriormente por el usuario. Tiene prioridad sobre los requisitos más amplios de este encargo: competencias genéricas/específicas, asignaciones, autoevaluación enviada al responsable, evaluación y cierre. No implementar el conjunto completo de ampliaciones como requisito del primer desarrollo.
+
+Este documento conserva el encargo integral y distingue lo implementado de lo pendiente. La continuación de la etapa 2 ya incorpora configuración persistente de períodos e instrumentos. Las operaciones de carga de evaluaciones, cálculo y cierre siguen pendientes. Los documentos de las etapas 1–3 y el código del módulo son el punto de partida.
 
 ## Encargo
 
-Desarrollar la persistencia y el funcionamiento del módulo de Evaluación de Desempeño del Hospital Privado Tres Cerritos dentro del Sistema de Gestión RRHH existente, en Laravel 12 / PHP 8.2. Continuar sobre la estructura de EDD ya creada, respetando la rama de trabajo y realizando commits por incremento. No hacer merge en `main`.
+Desarrollar la persistencia y el funcionamiento del módulo de Evaluación de Desempeño del Hospital Privado Tres Cerritos dentro del Sistema de Gestión RRHH existente, en Laravel 12 / PHP 8.2. Continuar sobre la estructura de EDD ya creada, respetando la rama de trabajo. Presentar cada incremento sin commit para su revisión en VS Code y esperar el OK explícito del usuario antes de crear el commit correspondiente. No hacer merge en `main`.
 
 Mantener todas las vistas EDD en `resources/views/edd`, todo JavaScript propio en `public/js/edd` y las acciones HTTP en `app/Http/Controllers/RRHH/EddController.php`. Colocar las reglas de negocio y los cálculos en servicios EDD, validación en Form Requests y autorización sobre registros en Policies o Gates. Usar las rutas `rrhh.edd.*`, la autenticación, el layout y las convenciones del proyecto. Evitar consultas y cambios de estado desde Blade o JavaScript.
 
@@ -13,14 +17,14 @@ Leer primero:
 1. `docs/edd/01-modelo-hp3c.md`: reglas del modelo y escala confirmada **1 a 4**.
 2. `docs/edd/02-diseno-funcional.md`: pantallas, acceso y transiciones.
 3. `docs/edd/03-modelo-informacion.md`: entidades, integridad e historia.
-4. `app/Enums/Edd/EstadoEvaluacion.php`, `config/edd.php`, el controlador, las vistas y `tests/Feature/EddStructureTest.php`.
+4. `app/Enums/Edd/EstadoEvaluacion.php`, `config/edd.php`, el controlador, `app/Services/Edd/ConfiguracionEdd.php`, las vistas y ambas pruebas `tests/Feature/Edd*Test.php`.
 5. `App\Services\Biblioteca\Assignments` y `Acceptances`: identidades, puestos y asignación de descriptivos.
 
 ## Punto de partida
 
-Ya existen diez rutas GET, navegación según perfil, configuración visual de período/población/evaluadores/instrumento, lista vacía de equipo, modelos deshabilitados de evaluación y autoevaluación, devolución/cierre y estructura de reportes. El acceso administrativo está protegido en servidor. El período 2026 mostrado es una referencia de diseño, no un registro abierto.
+Ya existen diez rutas GET y seis escrituras de configuración. Períodos e instrumentos se guardan en seis tablas `edd_`, con criterios, ponderaciones, escala 1–4 por versión, publicación inmutable, nuevas versiones, auditoría transaccional y revisión optimista. Las rutas concretas están en la etapa 2. Reutilizar este servicio y extenderlo sin recrear las tablas ni reemplazar versiones publicadas.
 
-Todavía faltan migraciones y modelos persistentes, consultas por asignación, endpoints de escritura, transiciones transaccionales, cálculo, constancias y reportes reales. No habilitar controles que simulen éxito. Mostrar confirmación de guardado solamente después de una respuesta de persistencia verificada.
+Población y evaluadores, la lista vacía de equipo, los modelos de evaluación/autoevaluación, devolución/cierre y los reportes conservan la estructura inicial. Todavía faltan sus migraciones, consultas por asignación, escrituras, transiciones, cálculos y constancias. La configuración textual de condiciones/excepciones deberá convertirse en reglas operativas explícitas antes de habilitar períodos. No hay períodos abiertos ni resultados de ejemplo cargados por esta entrega.
 
 ## Requisitos por incremento
 
@@ -76,13 +80,13 @@ Todavía faltan migraciones y modelos persistentes, consultas por asignación, e
 
 ## Contratos HTTP previstos
 
-Son rutas propuestas para la siguiente implementación, no rutas registradas por esta entrega. Mantener los GET existentes cuando sea posible y usar parámetros por ID para los recursos persistentes.
+Crear/editar períodos y publicar instrumentos ya están registrados, junto con crear/editar instrumentos y crear versiones (ver la etapa 2). Las demás rutas de esta tabla son propuestas para la implementación pendiente. Mantener los GET existentes cuando sea posible y usar parámetros por ID para los recursos persistentes.
 
 | Operación | Método y ruta relativa a `/rrhh/edd` | Autorización y validación |
 | --- | --- | --- |
 | Crear período | `POST /periodos` | RRHH, reglas iniciales válidas. |
 | Editar período | `PATCH /periodos/{periodo}` | RRHH, borrador, revisión. |
-| Publicar instrumento | `POST /instrumentos/{instrumento}/publicar` | RRHH, criterios/escala/pesos completos. |
+| Publicar instrumento | `POST /periodos/{periodo}/instrumentos/{instrumento}/publicar` | RRHH, pertenencia al período, revisión, criterios/escala/pesos completos y confirmación. |
 | Preparar población | `POST /periodos/{periodo}/poblacion` | RRHH, fuente verificada, corte y excepciones. |
 | Asignar responsable | `PUT /participantes/{participante}/evaluador` | RRHH, misma participación, revisión. |
 | Habilitar período | `POST /periodos/{periodo}/habilitar` | RRHH, transacción e idempotencia. |
@@ -121,4 +125,4 @@ Las ponderaciones, fechas, población definitiva, rúbricas por puesto, autoeval
 
 ## Entrega esperada del siguiente desarrollo
 
-Código, migraciones aditivas, pruebas útiles, documentación actualizada y commits por incremento. Informar qué funciona de extremo a extremo, qué decisiones permanecen pendientes y qué comandos se verificaron. No importar ni publicar los resultados personales de la planilla de referencia. Mantener `main` sin merge.
+Código, migraciones aditivas, pruebas útiles y documentación actualizada, con commits por incremento únicamente después del OK explícito del usuario. Informar qué funciona de extremo a extremo, qué decisiones permanecen pendientes y qué comandos se verificaron. Dejar los cambios sin preparar en el índice para que puedan revisarse en VS Code. No importar ni publicar los resultados personales de la planilla de referencia. Mantener `main` sin merge.

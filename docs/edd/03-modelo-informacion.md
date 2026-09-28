@@ -1,8 +1,16 @@
 # Etapa 3. Modelo de información
 
+**Implementación vigente:** la migración `2026_09_26_100000_create_edd_population_tables.php` define `edd_area_competencias`, `edd_participantes` y `edd_asignaciones`. Ver [campos y comportamiento actuales](06-poblacion-y-competencias.md). El participante incorpora área EDD y lista personal opcional; vínculos a instrumento/descriptivo y evaluaciones de las tablas propuestas abajo siguen pendientes. Extender las tablas existentes en nuevas migraciones, no recrearlas.
+
+> El orden y alcance del próximo desarrollo se ajustan a la [primera versión funcional sencilla](05-alcance-primera-version.md). Las entidades de entrevista, plan de acción, firmas y reaperturas descritas aquí son ampliaciones; no deben condicionar la implementación inicial de autoevaluación, evaluación y cierre.
+
 ## Estado y convenciones
 
-Diseño para la persistencia posterior. Esta etapa no crea tablas ni ejecuta migraciones. Las pantallas entregadas funcionan sin tablas EDD. Antes de escribir migraciones se verificarán tipos, índices y claves de las tablas institucionales en el ambiente de desarrollo; las migraciones históricas de Laravel no describen por completo la nómina actual.
+Diseño integral de la persistencia. La primera entrega de esta etapa fue documental. La continuación funcional de la etapa 2 implementa las seis tablas de configuración y auditoría descritas a continuación; las entidades de población, asignación, respuestas y cierre todavía son diseño. Las pantallas conservan un estado informativo cuando faltan tablas EDD.
+
+La migración `2026_09_25_170000_create_edd_configuration_tables.php` crea `edd_periodos`, `edd_instrumentos`, `edd_bloques`, `edd_items`, `edd_periodo_instrumentos` y `edd_eventos`. Se verificó en `desarrollo` que `users.id` es `bigint unsigned`; las referencias de autoría usan ese tipo con borrado restringido. El servicio usa Query Builder y transacciones. No se introducen dependencias de nómina ni descriptivos en esta migración.
+
+`edd_eventos` registra ahora período, entidad, acción, actor, estado anterior/posterior, identificador de operación y fecha UTC. `evaluacion_id` y `motivo` se agregarán con las operaciones que los necesiten. `conductas_json`, `criterio_cumplimiento_json` y `criterio_aplicacion_json` están reservados y permanecen nulos; los formularios actuales guardan título, descripción, código de competencia, ponderación y obligatoriedad. “No aplica” permanece deshabilitado. Verificar las demás claves institucionales antes de crear las relaciones futuras: las migraciones históricas de Laravel no describen por completo la nómina actual.
 
 Tablas nuevas con prefijo `edd_`, claves propias `id` y fechas de auditoría. Los identificadores de usuario, legajo y documentos existentes conservarán sus tipos reales. Los importes de ponderación y los resultados usan decimales, nunca flotantes binarios para almacenamiento. Los instantes se guardan en UTC y se muestran en `America/Argentina/Buenos_Aires`; las fechas de corte y vencimiento son fechas locales.
 
@@ -126,9 +134,9 @@ Solo intervienen ítems aplicables, completos y de la respuesta del evaluador. N
 ## Orden de implementación de migraciones
 
 1. Verificar claves institucionales y relación área/servicio en desarrollo.
-2. Crear período e instrumento versionado, bloques e ítems.
+2. Período, instrumento versionado, bloques, ítems, vínculo al período y eventos de configuración: implementados en la migración de configuración.
 3. Crear población, asignaciones y evaluación con copias históricas.
-4. Crear respuestas, devolución, acciones, cierres y auditoría.
+4. Crear respuestas, devolución, acciones y cierres; extender la auditoría existente para estas entidades.
 5. Probar migración y reversión en una base desechable, integridad y conservación de registros previos. No ejecutar `migrate:fresh` contra una base institucional.
 
 No se importa la planilla personal aportada, ni se insertan períodos abiertos, personas, respuestas o resultados de ejemplo como datos reales.

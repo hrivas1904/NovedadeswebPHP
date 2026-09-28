@@ -9,7 +9,7 @@ class EddStructureTest extends TestCase
 {
     private const ADMIN_PAGES = [
         'resumen', 'configuracion', 'configuracion.poblacion',
-        'configuracion.evaluadores', 'configuracion.instrumento', 'reportes',
+        'configuracion.evaluadores', 'configuracion.instrumento', 'configuracion.competencias', 'reportes',
     ];
 
     private function usuario(string $rol, string $estado = 'ACTIVO', ?int $legajo = 90001): User
