@@ -1,11 +1,11 @@
 document.getElementById("fFecha").value = new Date().toISOString().slice(0, 10);
 
-$(function () {    
+$(function () {
     cargarCentrosCosto($("#cmbCentroCosto"), null);
     cargarProveedores($("#cmbProveedor"), null);
     cargarProductos(function () {
         agregarLinea();
-    });     
+    });
 });
 
 function cargarCentrosCosto(
@@ -108,7 +108,6 @@ function cargarProveedores(
 let PRODUCTOS = [];
 
 function cargarProductos(callback = null) {
-
     if (cargarProductos.productos?.length > 0) {
         if (typeof callback === "function") {
             callback(cargarProductos.productos);
@@ -122,7 +121,6 @@ function cargarProductos(callback = null) {
         dataType: "json",
 
         success: function (response) {
-
             cargarProductos.productos = response;
 
             if (typeof callback === "function") {
@@ -144,7 +142,11 @@ function cargarProductos(callback = null) {
 
 cargarProductos.productos = [];
 
-function inicializarSelectProducto(selectorProducto, contenedorPadre = null, valorSeleccionado = null) {
+function inicializarSelectProducto(
+    selectorProducto,
+    contenedorPadre = null,
+    valorSeleccionado = null,
+) {
     cargarProductos(function (productos) {
         const select = $(selectorProducto);
         if (select.hasClass("select2-hidden-accessible")) {
@@ -175,9 +177,7 @@ function inicializarSelectProducto(selectorProducto, contenedorPadre = null, val
         select.select2(config);
 
         if (valorSeleccionado !== null && valorSeleccionado !== undefined) {
-            select
-                .val(String(valorSeleccionado))
-                .trigger("change.select2");
+            select.val(String(valorSeleccionado)).trigger("change.select2");
         }
     });
 }
@@ -212,8 +212,9 @@ function agregarLinea(prefill = null) {
 
         <td>
             <input type="text"
-                class="form-control form-control-sm"
-                id="desc_${id}">
+                class="form-control form-control-sm descripcion-item"
+                id="desc_${id}"
+                data-editado-manualmente="false">
         </td>
 
         <td>
@@ -249,20 +250,18 @@ function agregarLinea(prefill = null) {
     inicializarSelectProducto(
         select,
         modalPadre.length ? modalPadre : null,
-        prefill?.producto_id ?? null
+        prefill?.producto_id ?? null,
     );
 
     select.on("change", function () {
+        const descripcionItem = $("#desc_" + id);
+        const descripcionGeneral = $("#fDescripcion").val().trim();
 
-        const descripcion = $("#desc_" + id);
-
-        if (descripcion.val().trim() === "") {
-            descripcion.val(
-                $(this)
-                    .find("option:selected")
-                    .text()
-                    .trim()
-            );
+        if (
+            descripcionItem.val().trim() === "" &&
+            descripcionItem.attr("data-editado-manualmente") !== "true"
+        ) {
+            descripcionItem.val(descripcionGeneral);
         }
     });
 
@@ -373,27 +372,22 @@ function renderAdjuntosList() {
 }
 
 function enviarPedido(desdeModal = false) {
-
     const lineas = leerLineas();
 
     if (lineas.length === 0) {
-        Swal.fire(
-            "Atención",
-            "Debe agregar al menos un producto.",
-            "warning"
-        );
+        Swal.fire("Atención", "Debe agregar al menos un producto.", "warning");
         return;
     }
 
-    const campoDescripcion=$("#fDescripcion");
+    const campoDescripcion = $("#fDescripcion");
 
     if (campoDescripcion.length === 0 || !campoDescripcion.val().trim()) {
         Swal.fire({
-            title:"Atención!",
-            text:"Campo descripción obligatorio.",
-            icon:"warning",
+            title: "Atención!",
+            text: "Campo descripción obligatorio.",
+            icon: "warning",
             timer: 1500,
-            showConfirmButton:false,           
+            showConfirmButton: false,
         });
         return;
     }
@@ -406,9 +400,7 @@ function enviarPedido(desdeModal = false) {
         ? $("#cmbProveedorModal").val()
         : $("#cmbProveedor").val();
 
-    const moneda = desdeModal
-        ? $("#fMonedaModal").val()
-        : $("#fMoneda").val();
+    const moneda = desdeModal ? $("#fMonedaModal").val() : $("#fMoneda").val();
 
     const formData = new FormData();
 
@@ -421,24 +413,15 @@ function enviarPedido(desdeModal = false) {
     formData.append("descripcion", $("#fDescripcion").val());
 
     lineas.forEach((item, i) => {
-        formData.append(
-            `detalle[${i}][producto_id]`,
-            item.producto_id
-        );
+        formData.append(`detalle[${i}][producto_id]`, item.producto_id);
 
-        formData.append(
-            `detalle[${i}][cantidad]`,
-            item.cantidad
-        );
+        formData.append(`detalle[${i}][cantidad]`, item.cantidad);
 
-        formData.append(
-            `detalle[${i}][precio]`,
-            item.precio
-        );
+        formData.append(`detalle[${i}][precio]`, item.precio);
 
         formData.append(
             `detalle[${i}][descripcion_item]`,
-            item.descripcion_item || ""
+            item.descripcion_item || "",
         );
     });
 
@@ -451,8 +434,7 @@ function enviarPedido(desdeModal = false) {
         type: "POST",
 
         headers: {
-            "X-CSRF-TOKEN":
-                $('meta[name="csrf-token"]').attr("content"),
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
 
         data: formData,
@@ -460,7 +442,6 @@ function enviarPedido(desdeModal = false) {
         contentType: false,
 
         success: function (response) {
-
             Swal.fire({
                 icon: "success",
                 title: "¡Operación exitosa!",
@@ -468,14 +449,11 @@ function enviarPedido(desdeModal = false) {
                 timer: 1500,
                 showConfirmButton: false,
             }).then(() => {
-
                 if (desdeModal) {
                     $("#modalCargaPedido").modal("hide");
                     $("#tablaPedidosCompras")
                         .DataTable()
-                        .ajax
-                        .reload(null, false);
-
+                        .ajax.reload(null, false);
                 } else {
                     window.location.href = "/administracion/panelAdminView";
                 }
@@ -483,7 +461,6 @@ function enviarPedido(desdeModal = false) {
         },
 
         error: function (xhr) {
-
             console.error(xhr.responseText);
 
             Swal.fire({

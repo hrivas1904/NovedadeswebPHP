@@ -4,6 +4,7 @@ namespace App\Http\Controllers\RRHH;
 
 use App\Http\Controllers\Controller;
 use Mithun\PhpZkteco\Libs\ZKTeco;
+use App\Services\ZktecoAttendanceService;
 
 class ZktecoController extends Controller
 {
@@ -12,84 +13,85 @@ class ZktecoController extends Controller
         return view('zkteco.index');
     }
 
-    public function marcaciones()
-    {
+    public function marcaciones(
+        ZktecoAttendanceService $zktecoService
+    ) {
+
         set_time_limit(120);
-
-        if (!defined('ZKTECO_DEBUG')) {
-            define('ZKTECO_DEBUG', true);
-        }
-
-        if (!defined('ZKTECO_DEBUG_LOG')) {
-            define(
-                'ZKTECO_DEBUG_LOG',
-                storage_path('logs/zkteco_debug.log')
-            );
-        }
-
-        $zk = new ZKTeco(
-            host: config('zkteco.ip'),
-            port: config('zkteco.port'),
-            shouldPing: false,
-            timeout: config('zkteco.timeout'),
-            password: config('zkteco.password'),
-            protocol: config('zkteco.protocol')
-        );
-
-        $conectado = false;
 
         try {
 
-            $conectado = $zk->connect();
-
-            if (!$conectado) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No se pudo conectar con el reloj.',
-                    'data' => []
-                ], 500);
-            }
-
             $inicio = microtime(true);
 
-            // SOLO LECTURA
-            $marcaciones = $zk->getAttendances();
+            $marcaciones =
+                $zktecoService->obtenerMarcaciones();
 
             $tiempo = round(
                 microtime(true) - $inicio,
                 2
             );
 
-            $total = count($marcaciones);
 
-            $ultimas = array_slice($marcaciones, -50);
-            $ultimas = array_reverse($ultimas);
+            /*
+        |--------------------------------------------------------------------------
+        | ORDENAR MÁS RECIENTES PRIMERO
+        |--------------------------------------------------------------------------
+        */
+
+            usort(
+                $marcaciones,
+                function ($a, $b) {
+
+                    return strcmp(
+                        $b['record_time'],
+                        $a['record_time']
+                    );
+                }
+            );
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | MOSTRAR SOLO 50
+        |--------------------------------------------------------------------------
+        */
+
+            $ultimas = array_slice(
+                $marcaciones,
+                0,
+                50
+            );
+
 
             return response()->json([
                 'success' => true,
-                'total_reloj' => $total,
-                'cantidad_mostrada' => count($ultimas),
-                'tiempo' => $tiempo,
-                'timeout_config' => config('zkteco.timeout'),
-                'timeout_instancia' => $zk->_timeout,
-                'data' => $ultimas
+
+                'total_reloj' =>
+                count($marcaciones),
+
+                'cantidad_mostrada' =>
+                count($ultimas),
+
+                'tiempo' =>
+                $tiempo,
+
+                'data' =>
+                $ultimas
             ]);
         } catch (\Throwable $e) {
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error consultando marcaciones.',
-                'detalle' => $e->getMessage(),
-                'data' => []
-            ], 500);
-        } finally {
 
-            if ($conectado) {
-                try {
-                    $zk->disconnect();
-                } catch (\Throwable $e) {
-                }
-            }
+                'message' =>
+                'Error consultando marcaciones.',
+
+                'detalle' =>
+                $e->getMessage(),
+
+                'data' => []
+
+            ], 500);
         }
     }
 
@@ -261,7 +263,7 @@ class ZktecoController extends Controller
             host: config('zkteco.ip'),
             port: config('zkteco.port'),
             shouldPing: false,
-            timeout: 15,
+            timeout: config('zkteco.timeout'),
             password: config('zkteco.password'),
             protocol: config('zkteco.protocol')
         );
@@ -275,7 +277,8 @@ class ZktecoController extends Controller
             if (!$conectado) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No se pudo conectar con el reloj.'
+                    'message' => 'No se pudo conectar con el reloj ZKTeco.',
+                    'data' => []
                 ], 500);
             }
 
@@ -289,38 +292,47 @@ class ZktecoController extends Controller
                 2
             );
 
-            $primerUsuario = !empty($usuarios)
-                ? reset($usuarios)
-                : null;
+            /*
+        |--------------------------------------------------------------------------
+        | Normalizar respuesta
+        |--------------------------------------------------------------------------
+        |
+        | No devolvemos password.
+        |
+        */
+
+            $usuariosLimpios = [];
+
+            foreach ($usuarios as $usuario) {
+
+                $usuariosLimpios[] = [
+                    'uid' => $usuario['uid'] ?? null,
+                    'user_id' => $usuario['user_id'] ?? null,
+                    'name' => $usuario['name'] ?? null,
+                    'role' => $usuario['role'] ?? null,
+                    'card_no' => $usuario['card_no'] ?? null,
+                    'device_ip' => $usuario['device_ip'] ?? null,
+                ];
+            }
 
             return response()->json([
                 'success' => true,
-                'cantidad' => count($usuarios),
+                'cantidad' => count($usuariosLimpios),
                 'tiempo' => $tiempo,
-
-                // No mostramos datos personales.
-                // Solo queremos conocer la estructura.
-                'campos' => is_array($primerUsuario)
-                    ? array_keys($primerUsuario)
-                    : [],
-
-                // Para conocer cómo viene indexado el array exterior
-                'primeros_indices' => array_slice(
-                    array_keys($usuarios),
-                    0,
-                    5
-                )
+                'data' => $usuariosLimpios
             ]);
         } catch (\Throwable $e) {
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error consultando usuarios.',
-                'detalle' => $e->getMessage()
+                'message' => 'Error consultando usuarios del reloj.',
+                'detalle' => $e->getMessage(),
+                'data' => []
             ], 500);
         } finally {
 
             if ($conectado) {
+
                 try {
                     $zk->disconnect();
                 } catch (\Throwable $e) {
