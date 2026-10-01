@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Mithun\PhpZkteco\Libs\ZKTeco;
 use Illuminate\Http\Request;
 use App\Services\ZktecoAttendanceService;
+use App\Services\ZktecoSyncService;
 use Illuminate\Support\Facades\DB;
 
 class ZktecoController extends Controller
@@ -15,176 +16,90 @@ class ZktecoController extends Controller
         return view('zkteco.index');
     }
 
-    public function marcaciones(
-        Request $request,
-        ZktecoAttendanceService $zktecoService
-    ) {
-        set_time_limit(120);
-
+    public function marcaciones(Request $request)
+    {
         try {
 
-            $inicio = microtime(true);
+            $query = DB::table('zkteco_marcaciones as zm')
+                ->join(
+                    'zkteco_dispositivos as zd',
+                    'zd.id',
+                    '=',
+                    'zm.dispositivo_id'
+                )
+                ->leftJoin(
+                    'medicos as m',
+                    'm.id',
+                    '=',
+                    'zm.user_id'
+                )
+                ->select([
+                    'zm.id',
+                    'zm.uid',
+                    'zm.user_id',
+                    'zm.record_time',
+                    'zm.state',
+                    'zm.type',
+                    'zm.dispositivo_id',
 
-            /*
-        |--------------------------------------------------------------------------
-        | 1. OBTENER MARCACIONES DEL RELOJ
-        |--------------------------------------------------------------------------
-        */
+                    'zd.nombre as dispositivo',
+                    'zd.tipo_entidad',
 
-            $marcaciones = $zktecoService->obtenerMarcaciones();
-
-
-            /*
-        |--------------------------------------------------------------------------
-        | 2. FILTROS
-        |--------------------------------------------------------------------------
-        */
-
-            $desde = $request->input('desde');
-            $hasta = $request->input('hasta');
-
-            $marcaciones = collect($marcaciones)
-                ->filter(function ($marcacion) use ($desde, $hasta) {
-
-                    if (empty($marcacion['record_time'])) {
-                        return false;
-                    }
-
-                    /*
-                 * record_time:
-                 * 2026-09-29 13:45:10
-                 *
-                 * Nos quedamos con:
-                 * 2026-09-29
-                 */
-                    $fecha = substr(
-                        $marcacion['record_time'],
-                        0,
-                        10
-                    );
-
-                    if ($desde && $fecha < $desde) {
-                        return false;
-                    }
-
-                    if ($hasta && $fecha > $hasta) {
-                        return false;
-                    }
-
-                    return true;
-                })
-                ->values();
+                    'm.nombre as medico'
+                ]);
 
 
-            /*
-        |--------------------------------------------------------------------------
-        | 3. OBTENER IDs DE MÉDICOS
-        |--------------------------------------------------------------------------
-        |
-        | ZKTeco user_id = medicos.id
-        |
-        */
+            // FILTRO TIPO ENTIDAD
+            if ($request->filled('tipo_entidad')) {
 
-            $idsMedicos = $marcaciones
-                ->pluck('user_id')
-                ->filter()
-                ->unique()
-                ->values()
-                ->all();
+                $query->where(
+                    'zd.tipo_entidad',
+                    $request->tipo_entidad
+                );
+            }
 
 
-            /*
-        |--------------------------------------------------------------------------
-        | 4. CONSULTAR MÉDICOS
-        |--------------------------------------------------------------------------
-        |
-        | Una única consulta SQL.
-        |
-        */
+            // FILTRO DESDE
+            if ($request->filled('desde')) {
 
-            $medicos = DB::table('medicos')
-                ->whereIn('id', $idsMedicos)
-                ->get()
-                ->keyBy(function ($medico) {
-                    return (string) $medico->id;
-                });
+                $query->whereDate(
+                    'zm.record_time',
+                    '>=',
+                    $request->desde
+                );
+            }
 
 
-            /*
-        |--------------------------------------------------------------------------
-        | 5. CRUZAR MARCACIONES CON MÉDICOS
-        |--------------------------------------------------------------------------
-        */
+            // FILTRO HASTA
+            if ($request->filled('hasta')) {
 
-            $marcaciones = $marcaciones
-                ->map(function ($marcacion) use ($medicos) {
-
-                    $userId = (string) $marcacion['user_id'];
-
-                    $medico = $medicos->get($userId);
-
-                    if ($medico) {
-
-                        /*
-                     * AJUSTAR según los nombres reales
-                     * de las columnas de tu tabla medicos.
-                     */
-                        $nombreCompleto = trim(
-                            ($medico->apellido ?? '') . ' ' .
-                                ($medico->nombre ?? '')
-                        );
-
-                        $marcacion['medico_id'] = $medico->id;
-
-                        $marcacion['medico'] =
-                            $nombreCompleto !== ''
-                            ? $nombreCompleto
-                            : 'Médico #' . $medico->id;
-                    } else {
-
-                        $marcacion['medico_id'] = null;
-                        $marcacion['medico'] = 'Sin identificar';
-                    }
-
-                    return $marcacion;
-                });
+                $query->whereDate(
+                    'zm.record_time',
+                    '<=',
+                    $request->hasta
+                );
+            }
 
 
-            /*
-        |--------------------------------------------------------------------------
-        | 6. ORDENAR MÁS RECIENTES PRIMERO
-        |--------------------------------------------------------------------------
-        */
-
-            $marcaciones = $marcaciones
-                ->sortByDesc('record_time')
-                ->values();
+            $marcaciones = $query
+                ->orderByDesc('zm.record_time')
+                ->get();
 
 
-            /*
-        |--------------------------------------------------------------------------
-        | 7. RESPUESTA
-        |--------------------------------------------------------------------------
-        */
+            $marcaciones->transform(function ($marcacion) {
 
-            $tiempo = round(
-                microtime(true) - $inicio,
-                2
-            );
+                $marcacion->medico =
+                    $marcacion->medico
+                    ?? 'Sin identificar';
+
+                return $marcacion;
+            });
+
 
             return response()->json([
                 'success' => true,
-
-                'filtros' => [
-                    'desde' => $desde,
-                    'hasta' => $hasta,
-                ],
-
                 'cantidad' => $marcaciones->count(),
-
-                'tiempo' => $tiempo,
-
-                'data' => $marcaciones->all()
+                'data' => $marcaciones
             ]);
         } catch (\Throwable $e) {
 
@@ -441,6 +356,40 @@ class ZktecoController extends Controller
                     //
                 }
             }
+        }
+    }
+
+    public function sincronizar(
+        ZktecoSyncService $syncService
+    ) {
+        try {
+
+            $dispositivos = DB::table('zkteco_dispositivos')
+                ->where('activo', 1)
+                ->get();
+
+            $resultado = [];
+
+            foreach ($dispositivos as $dispositivo) {
+
+                $resultado[] = [
+                    'dispositivo' => $dispositivo->nombre,
+                    'resultado' => $syncService
+                        ->sincronizar($dispositivo)
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $resultado
+            ]);
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error sincronizando relojes ZKTeco.',
+                'detalle' => $e->getMessage()
+            ], 500);
         }
     }
 }

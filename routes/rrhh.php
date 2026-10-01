@@ -371,8 +371,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contratos/obtenerTiposContratos', [ParametrosController::class, 'obtenerTiposContratos']);
     Route::get('/contratos/obtenerTiposContratosActivos', [ParametrosController::class, 'obtenerTiposContratosActivos']);
     Route::post('/contratos/registrarNuevoTipoContrato', [ParametrosController::class, 'registrarNuevoTipoContrato']);
-    Route::put('/contratos/editarNombreTipoContrato',[ParametrosController::class, 'editarNombreTipoContrato']);
-    Route::put('/contratos/editarEstadoTipoContrato',[ParametrosController::class, 'editarEstadoTipoContrato']);
+    Route::put('/contratos/editarNombreTipoContrato', [ParametrosController::class, 'editarNombreTipoContrato']);
+    Route::put('/contratos/editarEstadoTipoContrato', [ParametrosController::class, 'editarEstadoTipoContrato']);
 
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
@@ -433,6 +433,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/zkteco/probar-lectura', [ZktecoController::class, 'probarLectura']);
     Route::get('/zkteco/diagnostico', [ZktecoController::class, 'diagnostico']);
     Route::get('/zkteco/probar-usuarios', [ZktecoController::class, 'probarUsuarios']);
+    Route::get('/zkteco/sincronizar', [ZktecoController::class, 'sincronizar']);
+    Route::post('/zkteco/sincronizar', [ZktecoController::class, 'sincronizar'])->name('zkteco.sincronizar');
 
     //MEDICOS
     Route::get('/medicos', [MedicosController::class, 'medicosView'])->name('medicos');

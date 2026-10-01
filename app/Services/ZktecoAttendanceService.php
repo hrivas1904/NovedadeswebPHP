@@ -8,15 +8,15 @@ use Mithun\PhpZkteco\Libs\Services\Util;
 
 class ZktecoAttendanceService
 {
-    public function obtenerMarcaciones(): array
+    public function obtenerMarcaciones(object $dispositivo): array
     {
         $zk = new ZKTeco(
-            host: config('zkteco.ip'),
-            port: config('zkteco.port'),
+            host: $dispositivo->ip,
+            port: $dispositivo->puerto ?? 4370,
             shouldPing: false,
             timeout: config('zkteco.timeout'),
             password: config('zkteco.password'),
-            protocol: config('zkteco.protocol')
+            protocol: 'tcp'
         );
 
         $conectado = false;

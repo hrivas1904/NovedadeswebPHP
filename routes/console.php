@@ -11,3 +11,7 @@ Artisan::command('inspire', function () {
 Schedule::command('alertas:enviar-push')
     ->everyMinute()
     ->withoutOverlapping();
+
+Schedule::command('zkteco:sincronizar')
+    ->everyFifteenMinutes()
+    ->withoutOverlapping();

@@ -16,12 +16,39 @@
                     <label class="text-muted">Desde</label>
                     <input class="form-control" type="date" id="filtroHasta">
                 </div>
+                <div>
+                    <label class="text-muted">Tipo</label>
+                    <select id="filtroTipoEntidad" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="MEDICO">Médicos</option>
+                        <option value="COLABORADOR">Colaboradores</option>
+                    </select>
+                </div>
             </div>
             <div>
-                <button type="button" class="btn btn-primary" id="btnConsultarZkteco">
-                    <i class="fa-solid fa-rotate me-1"></i>
-                    Consultar reloj
-                </button>
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        id="btnConsultarMarcaciones">
+
+                        <i class="fa-solid fa-magnifying-glass me-1"></i>
+                        Consultar marcaciones
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="btnSincronizarZkteco">
+
+                        <i class="fa-solid fa-rotate me-1"></i>
+                        Sincronizar reloj
+
+                    </button>
+
+                </div>
             </div>
         </div>
 
@@ -180,7 +207,7 @@
             });
 
 
-            $('#btnConsultarZkteco').on('click', function() {
+            $('#btnConsultarMarcaciones').on('click', function() {
                 consultarMarcaciones();
             });
 
@@ -189,16 +216,9 @@
 
         function consultarMarcaciones() {
 
-            const btn = $('#btnConsultarZkteco');
-            const estado = $('#estadoZkteco');
+            const btn = $('#btnConsultarMarcaciones');
 
             btn.prop('disabled', true);
-
-            estado
-                .removeClass()
-                .addClass('badge text-bg-warning')
-                .text('Consultando...');
-
 
             $.ajax({
 
@@ -208,31 +228,11 @@
 
                 data: {
                     desde: $('#filtroDesde').val() || null,
-                    hasta: $('#filtroHasta').val() || null
+                    hasta: $('#filtroHasta').val() || null,
+                    tipo_entidad: $('#filtroTipoEntidad').val() || null
                 },
 
                 success: function(response) {
-
-                    if (!response.success) {
-
-                        tablaMarcacionesZkteco
-                            .clear()
-                            .draw();
-
-                        estado
-                            .removeClass()
-                            .addClass('badge text-bg-danger')
-                            .text('Error');
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.message ??
-                                'No se pudieron obtener las marcaciones.'
-                        });
-
-                        return;
-                    }
 
                     const marcaciones = response.data ?? [];
 
@@ -240,46 +240,89 @@
                         .clear()
                         .rows.add(marcaciones)
                         .draw();
-
-                    estado
-                        .removeClass()
-                        .addClass('badge text-bg-success')
-                        .text(
-                            `Reloj conectado (${marcaciones.length})`
-                        );
                 },
 
                 error: function(xhr) {
 
                     const response = xhr.responseJSON;
 
-                    tablaMarcacionesZkteco
-                        .clear()
-                        .draw();
-
-                    estado
-                        .removeClass()
-                        .addClass('badge text-bg-danger')
-                        .text('Sin conexión');
-
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error de conexión',
+                        title: 'Error',
                         text: response?.detalle ??
                             response?.message ??
-                            'No se pudo consultar el reloj ZKTeco.'
+                            'No se pudieron consultar las marcaciones.'
                     });
-
                 },
 
                 complete: function() {
 
                     btn.prop('disabled', false);
-
                 }
+            });
+        }
 
+        $('#btnSincronizarZkteco').on('click', function() {
+            sincronizarZkteco();
+        });
+
+        function sincronizarZkteco() {
+
+            const btn = $('#btnSincronizarZkteco');
+
+            btn.prop('disabled', true);
+
+            Swal.fire({
+                title: 'Sincronizando',
+                text: 'Consultando marcaciones del reloj...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
             });
 
+
+            $.ajax({
+
+                url: '/rrhh/zkteco/sincronizar',
+
+                type: 'POST',
+
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+
+                success: function(response) {
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sincronización completada',
+                        text: 'Las marcaciones fueron actualizadas correctamente.'
+                    });
+
+                    // Después de sincronizar,
+                    // refrescamos la tabla desde MySQL.
+                    consultarMarcaciones();
+                },
+
+                error: function(xhr) {
+
+                    const response = xhr.responseJSON;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de sincronización',
+                        text: response?.detalle ??
+                            response?.message ??
+                            'No se pudo sincronizar el reloj.'
+                    });
+                },
+
+                complete: function() {
+
+                    btn.prop('disabled', false);
+                }
+            });
         }
     </script>
 
