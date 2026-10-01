@@ -15,6 +15,16 @@ use App\Http\Controllers\RRHH\EddController;
 
 use Illuminate\Support\Facades\Route;
 
+Route::middleware(['auth', 'can:organigrama.ver'])->prefix('organigrama')->name('organigrama.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'index'])->name('index');
+    Route::get('/datos', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'datos'])->name('datos');
+    Route::middleware('can:organigrama.editar')->group(function () {
+        Route::post('/posiciones', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'store'])->name('store');
+        Route::put('/posiciones/{posicion}', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'update'])->name('update');
+        Route::delete('/posiciones/{posicion}', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'destroy'])->name('destroy');
+    });
+});
+
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [HomeController::class, 'dashboard'])

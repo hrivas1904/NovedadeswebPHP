@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::define('organigrama.ver', fn (User $user): bool => $user->estado === 'ACTIVO');
+        Gate::define('organigrama.editar', fn (User $user): bool => Gate::forUser($user)->allows('edd.administrar'));
+
         Gate::define('edd.acceder', fn (User $user): bool => $user->estado === 'ACTIVO');
 
         Gate::define('edd.administrar', fn (User $user): bool => $user->estado === 'ACTIVO' && $user->rol === 'Administrador/a'

@@ -195,9 +195,6 @@
                                 <li><a class="submenu-link" href="{{ route('rrhh.zkteco') }}">Marcaciones</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.medicos') }}">Médicos</a></li>
                                 @endif
-                                @can('edd.acceder')
-                                <li><a class="submenu-link" href="{{ route('rrhh.edd.index') }}">Evaluación de desempeño</a></li>
-                                @endcan
                             </ul>
                         </li>
 
@@ -347,6 +344,24 @@
 
                         <li class="nav-section-title section-general"><span class="section-dot"></span>General</li>
 
+                        @can('organigrama.ver')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('rrhh.organigrama.*') ? 'active' : '' }}" href="{{ route('rrhh.organigrama.index') }}" @if(request()->routeIs('rrhh.organigrama.*')) aria-current="page" @endif>
+                                <i class="fa-solid fa-sitemap" aria-hidden="true"></i>
+                                <span class="link-text">Organigrama</span>
+                            </a>
+                        </li>
+                        @endcan
+
+                        @can('edd.acceder')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('rrhh.edd.*') ? 'active' : '' }}" href="{{ route('rrhh.edd.index') }}" @if(request()->routeIs('rrhh.edd.*')) aria-current="page" @endif>
+                                <i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>
+                                <span class="link-text">Evaluación de Desempeño</span>
+                            </a>
+                        </li>
+                        @endcan
+
                         <li class="nav-item">
                             <a class="nav-link" href="https://capacitacion.hp3c.com.ar/login/index.php" target="_blank">
                                 <i class="fa-solid fa-book-atlas"></i>
@@ -356,7 +371,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('biblioteca.*') ? 'active' : '' }}" href="{{ route('biblioteca.index') }}" @if(request()->routeIs('biblioteca.*')) aria-current="page" @endif>
                                 <i class="fa-solid fa-book-open" aria-hidden="true"></i>
-                                <span class="link-text">Biblioteca Institucional</span>
+                                <span class="link-text">Biblioteca Organizacional</span>
                             </a>
                         </li>
 
