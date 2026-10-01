@@ -66,7 +66,7 @@
     <div class="col-auto d-flex gap-2 align-items-center">
         <label class="form-label h6 fw-bold mb-0" style="color: var(--color-default);">Hasta: </label>
         <input type="date" class="form-control" id="inputFechaHasta" style="width: 150px;">
-    </div>    
+    </div>
 
     <div class="col-auto d-flex align-items-center">
         <div class="d-flex align-items-center gap-3 flex-wrap border rounded px-3" style="min-height: 38px;">
@@ -100,8 +100,8 @@
                 </label>
             </div>
         </div>
-    </div> 
-    
+    </div>
+
     <div class="col-auto">
         <button type="button" class="btn btn-sm btn-primary" id="btnAbrirManual" data-bs-toggle="modal" data-bs-target="#modalMovimientoManual">
             Manual
@@ -115,30 +115,36 @@
     </div>
 </div>
 
-<div class="d-flex mb-2 align-items-center gap-3">
-    <button type="button" class="btn btn-primary" id="btnMarcarCumplido" title="Marcar cumplido">
-        <i class="fs-5 fa-regular fa-square-check"></i>
-    </button>
+<div class="d-flex justify-content-between mb-2 align-items-center gap-3">
+    <div class="d-flex gap-3 align-items-center">
+        <button type="button" class="btn btn-primary" id="btnMarcarCumplido" title="Marcar cumplido">
+            <i class="fs-5 fa-regular fa-square-check"></i>
+        </button>
 
-    <button type="button" class="btn btn-secondary" id="btnDuplicar" title="Duplicar">
-        <i class="fs-5 fa-solid fa-copy"></i>
-    </button>
+        <button type="button" class="btn btn-secondary" id="btnDuplicar" title="Duplicar">
+            <i class="fs-5 fa-solid fa-copy"></i>
+        </button>
 
-    <button type="button" class="btn btn-danger" id="btnEliminar" title="Eliminar">
-        <i class="fs-5 fa-regular fa-trash-can"></i>
-    </button>
+        <button type="button" class="btn btn-danger" id="btnEliminar" title="Eliminar">
+            <i class="fs-5 fa-regular fa-trash-can"></i>
+        </button>
 
-    <button type="button" class="btn btn-secondary " id="btnVolverPresupuesto" title="Volver a presupuesto">
-        <i class="fs-5 fa-solid fa-rotate-left"></i>
-    </button>
+        <button type="button" class="btn btn-secondary " id="btnVolverPresupuesto" title="Volver a presupuesto">
+            <i class="fs-5 fa-solid fa-rotate-left"></i>
+        </button>
 
-    <input class="form-control w-auto" type="date" id="inputCambioFechaMasiva">
-    <button type="button" class="btn btn-primary" id="btnCambiarFechaMasiva">Cambiar fecha</button>
+        <input class="form-control w-auto" type="date" id="inputCambioFechaMasiva">
+        <button type="button" class="btn btn-primary" id="btnCambiarFechaMasiva">Cambiar fecha</button>
 
-    <label class="fw-bold fs-6" id="labelSeleccionadosMovimientos">0 SELECCIONADOS</label>
+        <label class="fw-bold fs-6" id="labelSeleccionadosMovimientos">0 SELECCIONADOS</label>
 
-    <button type="button" id="btnLimpiarSeleccion" class="btn btn-sm btn-outline-secondary" onclick="limpiarSeleccionMovimientos()">
-        Limpiar selección
+        <button type="button" id="btnLimpiarSeleccion" class="btn btn-sm btn-outline-secondary" onclick="limpiarSeleccionMovimientos()">
+            Limpiar selección
+        </button>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="btnExportarMovSeleccionados" title="Exportar movimientos seleccionados">
+        <i class="fs-5 fa-solid fa-download"></i>
     </button>
 </div>
 
@@ -240,6 +246,10 @@
 </div>
 @endpush
 
+@php
+$cuentasCatalogo = $cuentas->pluck('nombre');
+@endphp
+
 @push('scripts')
 <script>
     $.ajaxSetup({
@@ -265,9 +275,10 @@
         operacion: "{{ route('administracion.movimientos.operacion', ':id') }}",
         extractoPreview: @json(route('administracion.conciliacion.extracto.preview')),
         extractoConfirmar: @json(route('administracion.conciliacion.extracto.confirmar')),
+        exportarSeleccionados: @json(route('administracion.movimientos.exportarSeleccionados')),
     };
 
-    const CUENTAS_CATALOGO = @json($cuentas->pluck('nombre'));
+    const CUENTAS_CATALOGO = @json($cuentasCatalogo);
     const CONCEPTOS_CATALOGO = @json($conceptos);
     const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
     const OPERACIONES_CATALOGO = ['INGRESOS', 'TRANSFERENCIAS', 'CHEQUES', 'EFECTIVO'];

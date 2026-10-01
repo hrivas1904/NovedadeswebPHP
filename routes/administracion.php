@@ -86,6 +86,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/movimientos/{id}/texto', [MovimientosController::class, 'actualizarTexto'])->name('movimientos.texto');
     Route::post('/movimientos/{id}/importe', [MovimientosController::class, 'actualizarImporte'])->name('movimientos.importe');
 
+    Route::post('/movimientos/exportar-seleccionados', [MovimientosController::class, 'exportarSeleccionados'])
+        ->name('movimientos.exportarSeleccionados');
+
     //INTERBANKING
     Route::get('/interbankingView', [InterbankingController::class, 'interbankingView'])->name('interbankingView');
     Route::post('/interbanking/preview', [InterbankingController::class, 'preview'])->name('interbanking.preview');

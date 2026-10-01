@@ -4,7 +4,9 @@ namespace App\Http\Controllers\RRHH;
 
 use App\Http\Controllers\Controller;
 use Mithun\PhpZkteco\Libs\ZKTeco;
+use Illuminate\Http\Request;
 use App\Services\ZktecoAttendanceService;
+use Illuminate\Support\Facades\DB;
 
 class ZktecoController extends Controller
 {
@@ -14,83 +16,183 @@ class ZktecoController extends Controller
     }
 
     public function marcaciones(
+        Request $request,
         ZktecoAttendanceService $zktecoService
     ) {
-
         set_time_limit(120);
 
         try {
 
             $inicio = microtime(true);
 
-            $marcaciones =
-                $zktecoService->obtenerMarcaciones();
+            /*
+        |--------------------------------------------------------------------------
+        | 1. OBTENER MARCACIONES DEL RELOJ
+        |--------------------------------------------------------------------------
+        */
+
+            $marcaciones = $zktecoService->obtenerMarcaciones();
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 2. FILTROS
+        |--------------------------------------------------------------------------
+        */
+
+            $desde = $request->input('desde');
+            $hasta = $request->input('hasta');
+
+            $marcaciones = collect($marcaciones)
+                ->filter(function ($marcacion) use ($desde, $hasta) {
+
+                    if (empty($marcacion['record_time'])) {
+                        return false;
+                    }
+
+                    /*
+                 * record_time:
+                 * 2026-09-29 13:45:10
+                 *
+                 * Nos quedamos con:
+                 * 2026-09-29
+                 */
+                    $fecha = substr(
+                        $marcacion['record_time'],
+                        0,
+                        10
+                    );
+
+                    if ($desde && $fecha < $desde) {
+                        return false;
+                    }
+
+                    if ($hasta && $fecha > $hasta) {
+                        return false;
+                    }
+
+                    return true;
+                })
+                ->values();
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 3. OBTENER IDs DE MÉDICOS
+        |--------------------------------------------------------------------------
+        |
+        | ZKTeco user_id = medicos.id
+        |
+        */
+
+            $idsMedicos = $marcaciones
+                ->pluck('user_id')
+                ->filter()
+                ->unique()
+                ->values()
+                ->all();
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 4. CONSULTAR MÉDICOS
+        |--------------------------------------------------------------------------
+        |
+        | Una única consulta SQL.
+        |
+        */
+
+            $medicos = DB::table('medicos')
+                ->whereIn('id', $idsMedicos)
+                ->get()
+                ->keyBy(function ($medico) {
+                    return (string) $medico->id;
+                });
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 5. CRUZAR MARCACIONES CON MÉDICOS
+        |--------------------------------------------------------------------------
+        */
+
+            $marcaciones = $marcaciones
+                ->map(function ($marcacion) use ($medicos) {
+
+                    $userId = (string) $marcacion['user_id'];
+
+                    $medico = $medicos->get($userId);
+
+                    if ($medico) {
+
+                        /*
+                     * AJUSTAR según los nombres reales
+                     * de las columnas de tu tabla medicos.
+                     */
+                        $nombreCompleto = trim(
+                            ($medico->apellido ?? '') . ' ' .
+                                ($medico->nombre ?? '')
+                        );
+
+                        $marcacion['medico_id'] = $medico->id;
+
+                        $marcacion['medico'] =
+                            $nombreCompleto !== ''
+                            ? $nombreCompleto
+                            : 'Médico #' . $medico->id;
+                    } else {
+
+                        $marcacion['medico_id'] = null;
+                        $marcacion['medico'] = 'Sin identificar';
+                    }
+
+                    return $marcacion;
+                });
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 6. ORDENAR MÁS RECIENTES PRIMERO
+        |--------------------------------------------------------------------------
+        */
+
+            $marcaciones = $marcaciones
+                ->sortByDesc('record_time')
+                ->values();
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 7. RESPUESTA
+        |--------------------------------------------------------------------------
+        */
 
             $tiempo = round(
                 microtime(true) - $inicio,
                 2
             );
 
-
-            /*
-        |--------------------------------------------------------------------------
-        | ORDENAR MÁS RECIENTES PRIMERO
-        |--------------------------------------------------------------------------
-        */
-
-            usort(
-                $marcaciones,
-                function ($a, $b) {
-
-                    return strcmp(
-                        $b['record_time'],
-                        $a['record_time']
-                    );
-                }
-            );
-
-
-            /*
-        |--------------------------------------------------------------------------
-        | MOSTRAR SOLO 50
-        |--------------------------------------------------------------------------
-        */
-
-            $ultimas = array_slice(
-                $marcaciones,
-                0,
-                50
-            );
-
-
             return response()->json([
                 'success' => true,
 
-                'total_reloj' =>
-                count($marcaciones),
+                'filtros' => [
+                    'desde' => $desde,
+                    'hasta' => $hasta,
+                ],
 
-                'cantidad_mostrada' =>
-                count($ultimas),
+                'cantidad' => $marcaciones->count(),
 
-                'tiempo' =>
-                $tiempo,
+                'tiempo' => $tiempo,
 
-                'data' =>
-                $ultimas
+                'data' => $marcaciones->all()
             ]);
         } catch (\Throwable $e) {
 
             return response()->json([
                 'success' => false,
-
-                'message' =>
-                'Error consultando marcaciones.',
-
-                'detalle' =>
-                $e->getMessage(),
-
+                'message' => 'Error consultando marcaciones.',
+                'detalle' => $e->getMessage(),
                 'data' => []
-
             ], 500);
         }
     }

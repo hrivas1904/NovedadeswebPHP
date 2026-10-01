@@ -844,3 +844,40 @@ function limpiarSeleccionMovimientos() {
     $(".chk-movimiento").prop("checked", false); // NUEVO: destilda los que estan visibles ahora mismo
     actualizarResumenSeleccionMovimientos();
 }
+
+//Exportación de movimientos
+$(document).on("click", "#btnExportarMovSeleccionados", function () {
+    const ids = idsSeleccionadosMovimientos();
+    if (!ids.length) {
+        Swal.fire({
+            title: "Atención",
+            text: "Seleccioná al menos un movimiento.",
+            icon: "warning",
+            timer: 1200,
+            showConfirmButton: false,
+        });
+        return;
+    }
+
+    const $form = $("<form>", {
+        method: "POST",
+        action: MOVIMIENTOS_ROUTES.exportarSeleccionados,
+        target: "_blank",
+    });
+
+    $form.append(
+        $("<input>", {
+            type: "hidden",
+            name: "_token",
+            value: $('meta[name="csrf-token"]').attr("content"),
+        }),
+    );
+
+    ids.forEach(function (id) {
+        $form.append(
+            $("<input>", { type: "hidden", name: "ids[]", value: id }),
+        );
+    });
+
+    $form.appendTo("body").submit().remove();
+});

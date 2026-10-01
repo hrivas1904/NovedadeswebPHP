@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Support\ClasificadorOperacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 class MovimientosController extends Controller
 {
@@ -230,7 +233,9 @@ class MovimientosController extends Controller
             'valor' => 'nullable|string|max:255',
         ]);
         DB::statement('CALL SP_FF_MOVIMIENTO_ACTUALIZAR_TEXTO(?,?,?)', [
-            $id, $request->input('campo'), $request->input('valor'),
+            $id,
+            $request->input('campo'),
+            $request->input('valor'),
         ]);
         return response()->json(['ok' => true]);
     }
@@ -268,5 +273,69 @@ class MovimientosController extends Controller
         ]);
 
         return response()->json(['ok' => true]);
+    }
+
+    public function exportarSeleccionados(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            abort(400, 'No se seleccionaron movimientos.');
+        }
+
+        $movimientos = DB::table('ff_movimientos as m')
+            ->join('ff_cuentas as c', 'c.id', '=', 'm.id_cuenta')
+            ->join('ff_conceptos as k', 'k.id', '=', 'm.id_concepto')
+            ->whereIn('m.id', $ids)
+            ->whereNull('m.deleted_at')
+            ->orderByDesc('m.fecha')
+            ->select([
+                'm.fecha',
+                'm.nro_comprobante',
+                'm.ejecucion',
+                'm.operacion',
+                'c.nombre as cuenta',
+                'k.nombre as concepto',
+                'm.subconcepto',
+                'm.detalle',
+                'm.importe',
+            ])
+            ->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Movimientos');
+
+        $encabezados = ['Fecha', 'Nro Comprobante', 'Estado', 'Operación', 'Cuenta', 'Concepto', 'Sub-concepto', 'Detalle', 'Importe'];
+        $sheet->fromArray($encabezados, null, 'A1');
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
+
+        $fila = 2;
+        foreach ($movimientos as $m) {
+            $sheet->setCellValue('A' . $fila, $m->fecha);
+            $sheet->setCellValue('B' . $fila, $m->nro_comprobante);
+            $sheet->setCellValue('C' . $fila, $m->ejecucion);
+            $sheet->setCellValue('D' . $fila, $m->operacion);
+            $sheet->setCellValue('E' . $fila, $m->cuenta);
+            $sheet->setCellValue('F' . $fila, $m->concepto);
+            $sheet->setCellValue('G' . $fila, $m->subconcepto);
+            $sheet->setCellValue('H' . $fila, $m->detalle);
+            $sheet->setCellValueExplicit('I' . $fila, $m->importe, DataType::TYPE_NUMERIC);
+            $fila++;
+        }
+
+        foreach (range('A', 'I') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+        $sheet->getStyle('I2:I' . ($fila - 1))->getNumberFormat()->setFormatCode('#,##0.00');
+
+        $nombreArchivo = 'movimientos_' . now()->format('Ymd_His') . '.xlsx';
+        $writer = new Xlsx($spreadsheet);
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $nombreArchivo, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }

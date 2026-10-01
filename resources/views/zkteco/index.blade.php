@@ -4,258 +4,283 @@
 
 <div class="container-fluid">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h3 class="tituloVista mb-0">MARCACIONES</h3>
-        </div>
-        <button type="button" class="btn btn-primary" id="btnConsultarZkteco">
-            <i class="fa-solid fa-rotate me-1"></i>
-            Consultar reloj
-        </button>
-    </div>
-
-
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <span class="text-muted">
-                    Estado:
-                </span>
-
-                <span class="badge text-bg-secondary" id="estadoZkteco">
-                    Sin consultar
-                </span>
+    <div class="d-flex flex-column gap-3 mb-3">
+        <h3 class="tituloVista mb-0">MARCACIONES</h3>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex gap-3">
+                <div>
+                    <label class="text-muted">Desde</label>
+                    <input class="form-control" type="date" id="filtroDesde">
+                </div>
+                <div>
+                    <label class="text-muted">Desde</label>
+                    <input class="form-control" type="date" id="filtroHasta">
+                </div>
             </div>
-
-
-            <div class="table-responsive">
-                <table class="table table-hover align-middle w-100" id="tbMarcacionesZkteco">
-                    <thead>
-                        <tr>
-                            <th>UID</th>
-                            <th>ID Usuario</th>
-                            <th>Fecha</th>
-                            <th>Hora</th>
-                            <th>Estado</th>
-                            <th>Tipo</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div>
+                <button type="button" class="btn btn-primary" id="btnConsultarZkteco">
+                    <i class="fa-solid fa-rotate me-1"></i>
+                    Consultar reloj
+                </button>
             </div>
-
         </div>
 
+
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="text-muted">
+                        Estado:
+                    </span>
+
+                    <span class="badge text-bg-secondary" id="estadoZkteco">
+                        Sin consultar
+                    </span>
+                </div>
+
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle w-100" id="tbMarcacionesZkteco">
+                        <thead>
+                            <tr>
+                                <th>UID</th>
+                                <th>ID Usuario</th>
+                                <th>Médico</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estado</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-</div>
-
-@endsection
+    @endsection
 
 
-@push('scripts')
+    @push('scripts')
 
-<script>
-    let tablaMarcacionesZkteco = null;
+    <script>
+        let tablaMarcacionesZkteco = null;
 
-    $(document).ready(function() {
+        $(document).ready(function() {
 
-        tablaMarcacionesZkteco = $('#tbMarcacionesZkteco').DataTable({
+            tablaMarcacionesZkteco = $('#tbMarcacionesZkteco').DataTable({
 
-            data: [],
+                data: [],
 
-            language: {
-                url: '/js/es-ES.json'
-            },
-
-            paging: true,
-            pageLength: 25,
-            searching: true,
-            info: true,
-
-            order: [
-                [2, 'desc'],
-                [3, 'desc']
-            ],
-
-            columns: [
-
-                {
-                    data: 'uid',
-                    className: 'text-start',
-                    defaultContent: '-'
+                language: {
+                    url: '/js/es-ES.json'
                 },
 
-                {
-                    data: 'user_id',
-                    className: 'text-start',
-                    defaultContent: '-'
-                },
+                paging: true,
+                pageLength: 25,
+                searching: true,
+                info: true,
 
-                {
-                    data: 'record_time',
-                    className: 'text-start',
-
-                    render: function(data, type) {
-
-                        if (!data) return '-';
-
-                        // Para ordenar, usamos el timestamp original
-                        if (type === 'sort' || type === 'type') {
-                            return data;
-                        }
-
-                        const [fecha] = data.split(' ');
-
-                        if (!fecha) return '-';
-
-                        const [anio, mes, dia] = fecha.split('-');
-
-                        return `${dia}/${mes}/${anio}`;
+                layout: {
+                    topStart: {
+                        buttons: [
+                            'copyHtml5',
+                            'excelHtml5',
+                            'csvHtml5',
+                            'pdfHtml5'
+                        ]
                     }
                 },
 
-                {
-                    data: 'record_time',
-                    className: 'text-start',
+                scrollY: '52vh',
+                scrollCollapse: true,
 
-                    render: function(data, type) {
+                order: [
+                    [3, 'desc'],
+                    [4, 'desc']
+                ],
 
-                        if (!data) return '-';
+                columns: [
 
-                        // Para ordenar, usamos el timestamp completo
-                        if (type === 'sort' || type === 'type') {
-                            return data;
+                    {
+                        data: 'uid',
+                        className: 'text-start',
+                        defaultContent: '-'
+                    },
+
+                    {
+                        data: 'user_id',
+                        className: 'text-start',
+                        defaultContent: '-'
+                    },
+
+                    {
+                        data: 'medico',
+                        className: 'text-start',
+                        defaultContent: 'Sin identificar'
+                    },
+
+                    {
+                        data: 'record_time',
+                        className: 'text-start',
+
+                        render: function(data, type) {
+
+                            if (!data) return '-';
+
+                            if (type === 'sort' || type === 'type') {
+                                return data;
+                            }
+
+                            const [fecha] = data.split(' ');
+
+                            if (!fecha) return '-';
+
+                            const [anio, mes, dia] = fecha.split('-');
+
+                            return `${dia}/${mes}/${anio}`;
                         }
+                    },
 
-                        const partes = data.split(' ');
+                    {
+                        data: 'record_time',
+                        className: 'text-start',
 
-                        return partes[1] ?? '-';
+                        render: function(data, type) {
+
+                            if (!data) return '-';
+
+                            if (type === 'sort' || type === 'type') {
+                                return data;
+                            }
+
+                            const partes = data.split(' ');
+
+                            return partes[1] ?? '-';
+                        }
+                    },
+
+                    {
+                        data: 'state',
+                        className: 'text-start',
+                        defaultContent: '-'
+                    },
+
+                    {
+                        data: 'type',
+                        className: 'text-start',
+                        defaultContent: '-'
                     }
-                },
 
-                {
-                    data: 'state',
-                    className: 'text-start',
-                    defaultContent: '-'
-                },
+                ]
+            });
 
-                {
-                    data: 'type',
-                    className: 'text-start',
-                    defaultContent: '-'
-                }
 
-            ]
+            $('#btnConsultarZkteco').on('click', function() {
+                consultarMarcaciones();
+            });
+
         });
 
 
-        $('#btnConsultarZkteco').on('click', function() {
-            consultarMarcaciones();
-        });
+        function consultarMarcaciones() {
 
-    });
+            const btn = $('#btnConsultarZkteco');
+            const estado = $('#estadoZkteco');
 
+            btn.prop('disabled', true);
 
-    function consultarMarcaciones() {
-
-        const btn = $('#btnConsultarZkteco');
-        const estado = $('#estadoZkteco');
-
-        btn.prop('disabled', true);
-
-        estado
-            .removeClass()
-            .addClass('badge text-bg-warning')
-            .text('Consultando...');
+            estado
+                .removeClass()
+                .addClass('badge text-bg-warning')
+                .text('Consultando...');
 
 
-        $.ajax({
+            $.ajax({
 
-            url: '/rrhh/zkteco/marcaciones',
+                url: '/rrhh/zkteco/marcaciones',
 
-            type: 'GET',
+                type: 'GET',
 
-            success: function(response) {
+                data: {
+                    desde: $('#filtroDesde').val() || null,
+                    hasta: $('#filtroHasta').val() || null
+                },
 
-                if (!response.success) {
+                success: function(response) {
 
-                    tablaMarcacionesZkteco.clear().draw();
+                    if (!response.success) {
 
-                    estado
-                        .removeClass()
-                        .addClass('badge text-bg-danger')
-                        .text('Error');
+                        tablaMarcacionesZkteco
+                            .clear()
+                            .draw();
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message ?? 'No se pudieron obtener las marcaciones.'
-                    });
+                        estado
+                            .removeClass()
+                            .addClass('badge text-bg-danger')
+                            .text('Error');
 
-                    return;
-                }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message ??
+                                'No se pudieron obtener las marcaciones.'
+                        });
 
+                        return;
+                    }
 
-                const marcaciones = response.data ?? [];
+                    const marcaciones = response.data ?? [];
 
-
-                tablaMarcacionesZkteco
-                    .clear()
-                    .rows.add(marcaciones)
-                    .draw();
-
-
-                if (response.mock) {
-
-                    estado
-                        .removeClass()
-                        .addClass('badge text-bg-warning')
-                        .text(`Modo simulación (${marcaciones.length})`);
-
-                } else {
+                    tablaMarcacionesZkteco
+                        .clear()
+                        .rows.add(marcaciones)
+                        .draw();
 
                     estado
                         .removeClass()
                         .addClass('badge text-bg-success')
-                        .text(`Reloj conectado (${marcaciones.length})`);
+                        .text(
+                            `Reloj conectado (${marcaciones.length})`
+                        );
+                },
+
+                error: function(xhr) {
+
+                    const response = xhr.responseJSON;
+
+                    tablaMarcacionesZkteco
+                        .clear()
+                        .draw();
+
+                    estado
+                        .removeClass()
+                        .addClass('badge text-bg-danger')
+                        .text('Sin conexión');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: response?.detalle ??
+                            response?.message ??
+                            'No se pudo consultar el reloj ZKTeco.'
+                    });
+
+                },
+
+                complete: function() {
+
+                    btn.prop('disabled', false);
+
                 }
 
-            },
+            });
 
-            error: function(xhr) {
+        }
+    </script>
 
-                const response = xhr.responseJSON;
-
-                tablaMarcacionesZkteco
-                    .clear()
-                    .draw();
-
-                estado
-                    .removeClass()
-                    .addClass('badge text-bg-danger')
-                    .text('Sin conexión');
-
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error de conexión',
-                    text: response?.detalle ??
-                        response?.message ??
-                        'No se pudo consultar el reloj ZKTeco.'
-                });
-
-            },
-
-            complete: function() {
-
-                btn.prop('disabled', false);
-
-            }
-
-        });
-
-    }
-</script>
-
-@endpush
+    @endpush

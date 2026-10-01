@@ -24,6 +24,7 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/4.1.2/css/buttons.dataTables.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -57,8 +58,8 @@
             <div id="divBtnHome" class="mx-2 d-none d-lg-block text-white" style="cursor: pointer;">
                 <div class="d-flex align-items-center gap-2">
                     <div>
-                       <img src="{{ asset('img/logo-hp3c-white.png') }}" class="logo-icon" alt="HP3C" style="height: 36px; width: auto;">     
-                    </div>                   
+                        <img src="{{ asset('img/logo-hp3c-white.png') }}" class="logo-icon" alt="HP3C" style="height: 36px; width: auto;">
+                    </div>
                 </div>
             </div>
 
@@ -69,8 +70,8 @@
                     {{-- ALERTAS --}}
                     <div class="alertas-wrapper">
                         <button class="topbar-action position-relative"
-                                id="btnAlertas"
-                                title="Alertas">
+                            id="btnAlertas"
+                            title="Alertas">
 
                             <i class="fa-regular fa-bell"></i>
 
@@ -89,7 +90,7 @@
                                         </span>
 
                                         <button id="btnLimpiarAlertas"
-                                                class="btn btn-sm text-danger p-0">
+                                            class="btn btn-sm text-danger p-0">
                                             Limpiar
                                         </button>
                                     </div>
@@ -103,7 +104,7 @@
 
                                 <div class="card-footer d-flex justify-content-center">
                                     <a href="{{ route('notificaciones.panel') }}"
-                                    class="btn btn-sm btn-primary w-100">
+                                        class="btn btn-sm btn-primary w-100">
                                         Panel de Notificaciones
                                     </a>
                                 </div>
@@ -115,13 +116,13 @@
 
                     {{-- LOG --}}
                     @if (Auth::user()->rol == 'Administrador/a')
-                        <a class="topbar-action"
+                    <a class="topbar-action"
                         id="btnVerLog"
                         title="Ver Log"
                         href="{{ route('logTransactView') }}">
 
-                            <i class="fa-solid fa-table-list"></i>
-                        </a>
+                        <i class="fa-solid fa-table-list"></i>
+                    </a>
                     @endif
 
                 </div>
@@ -378,9 +379,9 @@
                 </div>
 
             </aside>
-            
+
             <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-                      
+
             <main class="container-fluid content-area">
                 @yield('content')
             </main>
