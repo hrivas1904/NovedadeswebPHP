@@ -2,7 +2,7 @@
 
 Módulo para EDD 2026, con escala **1 a 4** confirmada por el usuario. Períodos, instrumentos, población, competencias funcionales por área/persona y evaluadores tienen guardado real. El envío de autoevaluaciones y las respuestas permanecen pendientes.
 
-**Incremento vigente:** [Población, evaluadores y competencias funcionales](06-poblacion-y-competencias.md). Incluye las ocho listas compartidas por RRHH y la personalización sin descriptivo de puesto. Hay 22 rutas (12 GET y 10 escrituras) y 33 pruebas correctas con 443 verificaciones. Mi equipo muestra las asignaciones reales del responsable.
+**Incremento vigente:** [Planificación simple](07-planificacion-simple.md). Generales comunes, bibliotecas reutilizables, específicas por área/grupo/persona, rol y servicio desde la nómina, y varios evaluadores por área. Hay 31 rutas (16 GET y 15 escrituras) y 40 pruebas correctas con 582 verificaciones. Mi equipo muestra únicamente las asignaciones reales del responsable.
 
 **Alcance prioritario de la primera versión:** [circuito funcional sencillo](05-alcance-primera-version.md). Competencias genéricas y específicas, áreas, colaboradores y evaluadores definidos por RRHH; autoevaluación enviada al responsable asignado; evaluación de la jefatura y cierre. Esta definición posterior del usuario simplifica el desarrollo previsto en las etapas siguientes.
 
@@ -30,10 +30,12 @@ app/Http/Controllers/RRHH/EddController.php
 app/Http/Requests/Edd/                       # Validación de período e instrumento
 app/Services/Edd/ConfiguracionEdd.php        # Persistencia, versiones y auditoría
 app/Services/Edd/PoblacionEdd.php            # Participantes, asignaciones y competencias por área/persona
+app/Services/Edd/PlanificacionEdd.php        # Generales, bibliotecas y evaluadores por área
 app/Enums/Edd/EstadoEvaluacion.php
 app/Providers/AppServiceProvider.php          # Gates EDD
 config/edd.php                               # Referencia 2026 y escala 1–4
 config/edd_competencias.php                   # 40 competencias funcionales compartidas por RRHH
+config/edd_generales.php                     # Cinco generales de referencia, con guardado explícito
 routes/rrhh.php                              # Rutas autenticadas rrhh.edd.*
 resources/views/edd/
   index.blade.php                            # Resumen RRHH
@@ -51,6 +53,7 @@ public/js/edd/configuracion.js               # Guardado, criterios y conflictos
 public/js/edd/poblacion.js                   # Selección de bases y personalización
 database/migrations/2026_09_25_170000_create_edd_configuration_tables.php
 database/migrations/2026_09_26_100000_create_edd_population_tables.php
+database/migrations/2026_09_28_100000_create_edd_planning_tables.php
 tests/Feature/EddStructureTest.php
 tests/Feature/EddConfigurationTest.php
 tests/Feature/EddPopulationTest.php
@@ -58,11 +61,11 @@ tests/Feature/EddPopulationTest.php
 
 ## Alcance implementado
 
-Doce rutas GET y diez escrituras. A la configuración de períodos e instrumentos se agregan población, responsables y competencias por área/persona. El editor inicial de instrumentos conserva su publicación con ponderaciones; el panel funcional del alcance simple permite preparar las listas sin ese requisito. La escala sigue siendo 1–4.
+Dieciséis rutas GET y quince escrituras. La planificación incluye población, responsables por área, generales comunes y específicas por área/grupo/persona. El editor inicial de instrumentos conserva su publicación con ponderaciones por compatibilidad, fuera de la navegación principal; el panel simple permite preparar las listas sin ese requisito. La escala sigue siendo 1–4 y no se agregan objetivos ni metas separados.
 
 Cada operación exige una cuenta activa con permiso administrativo. El servicio guarda cambios y auditoría en la misma transacción; una revisión desactualizada devuelve 409 sin sobrescribir. La interfaz conserva lo escrito ante errores o conflictos y confirma éxito únicamente después de persistir. Las versiones publicadas quedan protegidas.
 
-Población y asignaciones ya son persistentes; las competencias funcionales se heredan por área o se personalizan por participante/período. Quedan pendientes las competencias genéricas definitivas, apertura, respuestas, cierre y reportes. Entrevistas y planes de acción son ampliaciones. Las condiciones de cierre del editor inicial aún son definiciones textuales. La etapa 3 describe también entidades futuras y la etapa 4 mantiene el encargo restante.
+Población, asignaciones y bibliotecas son persistentes; las generales se guardan una vez por período y las específicas se heredan por área o se personalizan. Quedan pendientes apertura, respuestas, cierre y reportes. La etapa 3 describe también entidades futuras y la etapa 4 mantiene el encargo restante.
 
 El detalle para revisar este incremento está en [Revisión de la etapa 2](REVISION_ETAPA_2.md).
 
@@ -77,7 +80,7 @@ node --check public/js/edd/poblacion.js
 git diff --check
 ```
 
-Resultado actualizado: 33 pruebas correctas (443 verificaciones) en SQLite aislado. Se comprobaron períodos/instrumentos, población, asignaciones, personalización, herencia, exclusiones y alcance de Mi equipo. Formularios revisados en navegador y móvil; PHP formateado con Pint y JavaScript comprobado por sintaxis. Ver el detalle del nuevo incremento en su guía.
+Resultado actualizado: 40 pruebas correctas (582 verificaciones) en SQLite aislado. Se comprobaron períodos/instrumentos, población, asignaciones, generales, bibliotecas, aplicación masiva, datos de nómina, personalización, herencia, exclusiones y alcance de Mi equipo. Formularios revisados en navegador; PHP comprobado con Pint y JavaScript por sintaxis. Ver el detalle del nuevo incremento en su guía.
 
 ## Trabajo por etapas
 

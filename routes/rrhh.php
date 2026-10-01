@@ -458,6 +458,15 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/configuracion/poblacion', [EddController::class, 'poblacion'])->name('configuracion.poblacion');
             Route::get('/configuracion/evaluadores', [EddController::class, 'evaluadores'])->name('configuracion.evaluadores');
             Route::get('/configuracion/competencias', [EddController::class, 'competencias'])->name('configuracion.competencias');
+            Route::get('/configuracion/generales', [EddController::class, 'biblioteca'])->name('configuracion.generales');
+            Route::get('/configuracion/biblioteca', [EddController::class, 'biblioteca'])->name('configuracion.biblioteca');
+            Route::get('/configuracion/competencias-masivas', [EddController::class, 'competenciasMasivas'])->name('configuracion.competencias-masivas');
+            Route::get('/configuracion/evaluador-areas', [EddController::class, 'areasEvaluadores'])->name('configuracion.evaluador-areas');
+            Route::post('/periodos/{periodo}/generales', [EddController::class, 'guardarLista'])->whereNumber('periodo')->name('generales.update');
+            Route::post('/periodos/{periodo}/biblioteca', [EddController::class, 'guardarLista'])->whereNumber('periodo')->name('biblioteca.store');
+            Route::post('/periodos/{periodo}/competencias-masivas', [EddController::class, 'aplicarCompetencias'])->whereNumber('periodo')->name('competencias.aplicar');
+            Route::post('/periodos/{periodo}/evaluador-areas', [EddController::class, 'registrarAreaEvaluador'])->whereNumber('periodo')->name('evaluador-areas.store');
+            Route::delete('/periodos/{periodo}/evaluador-areas/{registro}', [EddController::class, 'quitarAreaEvaluador'])->whereNumber(['periodo', 'registro'])->name('evaluador-areas.destroy');
             Route::get('/periodos/{periodo}/participantes/{participante}', [EddController::class, 'participante'])->whereNumber(['periodo', 'participante'])->name('configuracion.participante');
             Route::post('/periodos/{periodo}/poblacion', [EddController::class, 'agregarPoblacion'])->whereNumber('periodo')->name('poblacion.store');
             Route::patch('/periodos/{periodo}/competencias/{area}', [EddController::class, 'guardarCompetencias'])->whereNumber(['periodo', 'area'])->name('competencias.update');

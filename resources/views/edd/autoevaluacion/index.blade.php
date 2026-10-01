@@ -3,7 +3,7 @@
 @section('edd-content')
     <section class="edd-panel mt-4">
         <h2 class="h5">Mi autoevaluación</h2>
-        <p class="edd-muted">Tu reflexión sobre el desempeño, las competencias y los objetivos del período.</p>
+        <p class="edd-muted">Tu calificación del 1 al 4 para cada competencia general y específica del período.</p>
         @if(!$tieneLegajo)
             <p class="edd-notice">Tu cuenta todavía no tiene un legajo vinculado. RRHH deberá completar ese dato para habilitar tu autoevaluación.</p>
         @else

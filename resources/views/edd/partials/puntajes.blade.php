@@ -1,11 +1,11 @@
 <fieldset disabled aria-describedby="edd-disponibilidad">
     <legend>Puntajes y comentarios {{ $tipoRespuesta === 'autoevaluacion' ? 'del colaborador' : 'del evaluador' }}</legend>
     <div class="row g-3">
-        @foreach($bloques as $codigo => $bloque)
+        @foreach(array_intersect_key($bloques, array_flip(['generales', 'especificas'])) as $codigo => $bloque)
             <div class="col-12">
                 <div class="border rounded p-3">
                     <h3 class="h6">{{ $bloque['nombre'] }}</h3>
-                    <p class="small edd-muted">{{ $bloque['descripcion'] }} Los ítems se mostrarán según el instrumento asignado.</p>
+                    <p class="small edd-muted">{{ $codigo === 'generales' ? 'Las mismas competencias para todo el personal.' : 'Las competencias del área o la lista personalizada del colaborador.' }} Cada competencia se califica del 1 al 4.</p>
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label" for="{{ $tipoRespuesta }}-puntaje-{{ $codigo }}">Puntaje del ítem</label>

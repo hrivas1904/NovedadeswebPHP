@@ -99,6 +99,10 @@
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             if (busy || form.dataset.blocked === '1') return;
+            if (form.matches('[data-edd-quitar-inscripcion]') && document.querySelector('[data-edd-inscripcion]')?.dataset.dirty === '1') {
+                message(form, ['Guardá primero la inscripción que estás editando.']);
+                return;
+            }
             if (form === publish && editor?.dataset.dirty === '1') {
                 message(form, ['Guardá los cambios del instrumento antes de publicar.']);
                 return;

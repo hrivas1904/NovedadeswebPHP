@@ -6,8 +6,10 @@ use App\Enums\Edd\EstadoEvaluacion;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Edd\GuardarInstrumentoRequest;
 use App\Http\Requests\Edd\GuardarPeriodoRequest;
+use App\Http\Requests\Edd\GuardarPlanificacionRequest;
 use App\Http\Requests\Edd\GuardarPoblacionRequest;
 use App\Services\Edd\ConfiguracionEdd;
+use App\Services\Edd\PlanificacionEdd;
 use App\Services\Edd\PoblacionEdd;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +19,7 @@ use Illuminate\Support\Facades\Gate;
 
 class EddController extends Controller
 {
-    public function __construct(private readonly ConfiguracionEdd $configuracionEdd, private readonly PoblacionEdd $poblacionEdd) {}
+    public function __construct(private readonly ConfiguracionEdd $configuracionEdd, private readonly PoblacionEdd $poblacionEdd, private readonly PlanificacionEdd $planificacionEdd) {}
 
     public function index(): RedirectResponse
     {
@@ -71,7 +73,7 @@ class EddController extends Controller
 
         return $this->pantalla('edd.configuracion.competencias', array_merge($datos, [
             'areaSeleccionada' => $area, 'base' => $base, 'textoCompetencias' => $this->poblacionEdd->textoCompetencias($base['items']),
-            'catalogo' => config('edd_competencias'),
+            'catalogo' => $datos['periodo'] ? $this->planificacionEdd->catalogo($datos['periodo']['id']) : config('edd_competencias'),
         ]));
     }
 
@@ -84,7 +86,82 @@ class EddController extends Controller
         return $this->pantalla('edd.configuracion.participante', array_merge($datos, [
             'participante' => $persona, 'evaluadores' => $this->poblacionEdd->evaluadores(),
             'textoCompetencias' => $this->poblacionEdd->textoCompetencias($this->poblacionEdd->competenciasEfectivas($persona)),
+            'catalogo' => $this->planificacionEdd->catalogo($periodo),
+            'generales' => $this->planificacionEdd->disponible() ? $this->planificacionEdd->lista($periodo, generales: true)['items'] : [],
         ]));
+    }
+
+    public function biblioteca(Request $request): View
+    {
+        $datos = $this->contextoPoblacion($request);
+        $request->validate(['lista' => ['nullable', 'integer', 'min:1']]);
+        $generales = $request->routeIs('rrhh.edd.configuracion.generales');
+        $lista = $datos['planificacionDisponible'] && $datos['periodo']
+            ? $this->planificacionEdd->lista($datos['periodo']['id'], $generales ? null : $request->input('lista'), $generales)
+            : ['id' => null, 'revision' => 0, 'nombre' => '', 'items' => []];
+
+        return $this->pantalla('edd.configuracion.biblioteca', array_merge($datos, [
+            'esGenerales' => $generales, 'lista' => $lista,
+            'bibliotecas' => $datos['planificacionDisponible'] && $datos['periodo'] ? $this->planificacionEdd->bibliotecas($datos['periodo']['id']) : collect(),
+            'textoCompetencias' => $this->poblacionEdd->textoCompetencias($lista['items']),
+            'catalogo' => $generales ? config('edd_generales') : ($datos['periodo'] ? $this->planificacionEdd->catalogo($datos['periodo']['id']) : config('edd_competencias')),
+        ]));
+    }
+
+    public function competenciasMasivas(Request $request): View
+    {
+        $datos = $this->contextoPoblacion($request);
+        $lista = $datos['poblacionDisponible'] && $datos['periodo'];
+
+        return $this->pantalla('edd.configuracion.competencias-masivas', array_merge($datos, [
+            'participantes' => $lista ? $this->poblacionEdd->participantes($datos['periodo']['id'], $datos['filtros'], true) : collect(),
+            'catalogo' => $lista ? $this->planificacionEdd->catalogo($datos['periodo']['id']) : [],
+        ]));
+    }
+
+    public function guardarLista(GuardarPlanificacionRequest $request, int $periodo): JsonResponse
+    {
+        abort_unless($this->planificacionEdd->disponible(), 409, 'Falta instalar la configuración de bibliotecas.');
+        $generales = $request->routeIs('rrhh.edd.generales.update');
+        $id = $this->planificacionEdd->guardarLista($periodo, $request->validated(), (int) $request->user()->id, $generales);
+
+        return $this->poblacionGuardada('rrhh.edd.configuracion.'.($generales ? 'generales' : 'biblioteca'),
+            ['periodo' => $periodo] + ($generales ? [] : ['lista' => $id]),
+            $generales ? 'Competencias generales guardadas para todo el período.' : 'Lista guardada en la biblioteca del período. Las copias ya aplicadas se conservan.');
+    }
+
+    public function aplicarCompetencias(GuardarPlanificacionRequest $request, int $periodo): JsonResponse
+    {
+        $this->poblacionEdd->aplicarCompetencias($periodo, $request->validated(), (int) $request->user()->id);
+
+        return $this->poblacionGuardada('rrhh.edd.configuracion.competencias-masivas', ['periodo' => $periodo], 'Competencias específicas aplicadas a los colaboradores seleccionados.');
+    }
+
+    public function areasEvaluadores(Request $request): View
+    {
+        $datos = $this->contextoPoblacion($request);
+        $lista = $datos['planificacionDisponible'] && $datos['periodo'];
+
+        return $this->pantalla('edd.configuracion.evaluador-areas', array_merge($datos, [
+            'evaluadores' => $lista ? $this->poblacionEdd->evaluadores() : collect(),
+            'registros' => $lista ? $this->planificacionEdd->areasEvaluadores($datos['periodo']['id']) : collect(),
+        ]));
+    }
+
+    public function registrarAreaEvaluador(GuardarPlanificacionRequest $request, int $periodo): JsonResponse
+    {
+        abort_unless($this->planificacionEdd->disponible(), 409, 'Falta instalar la configuración de evaluadores por área.');
+        $this->planificacionEdd->registrarArea($periodo, $request->validated('evaluador_user_id'), $request->validated('area_id'), (int) $request->user()->id);
+
+        return $this->poblacionGuardada('rrhh.edd.configuracion.evaluador-areas', ['periodo' => $periodo], 'Evaluador registrado en el área. Ahora podés asignarle colaboradores.');
+    }
+
+    public function quitarAreaEvaluador(GuardarPlanificacionRequest $request, int $periodo, int $registro): JsonResponse
+    {
+        abort_unless($this->planificacionEdd->disponible(), 409, 'Falta instalar la configuración de evaluadores por área.');
+        $this->planificacionEdd->quitarArea($periodo, $registro, (int) $request->user()->id);
+
+        return $this->poblacionGuardada('rrhh.edd.configuracion.evaluador-areas', ['periodo' => $periodo], 'Inscripción en el área eliminada.');
     }
 
     public function agregarPoblacion(GuardarPoblacionRequest $request, int $periodo): JsonResponse
@@ -123,6 +200,7 @@ class EddController extends Controller
 
         return array_merge($datos, [
             'poblacionDisponible' => $disponible, 'filtros' => $filtros,
+            'planificacionDisponible' => $disponible && $this->planificacionEdd->disponible(),
             'areas' => $disponible ? $this->poblacionEdd->areas() : collect(),
         ]);
     }

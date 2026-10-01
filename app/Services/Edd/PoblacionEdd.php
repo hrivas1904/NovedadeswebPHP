@@ -23,8 +23,18 @@ class PoblacionEdd
 
     public function evaluadores()
     {
-        return DB::table('users')->where('estado', 'ACTIVO')->orderBy('name')
-            ->get(['id', 'name', 'legajo', 'rol']);
+        return DB::table('users as u')->leftJoin('areas as a', 'a.ID_AREA', '=', 'u.area_id')
+            ->where('u.estado', 'ACTIVO')->orderBy('u.name')
+            ->get(['u.id', 'u.name', 'u.legajo', 'u.rol', 'a.NOMBRE as area_nombre']);
+    }
+
+    private function nomina()
+    {
+        return DB::table('empleados as e')->leftJoin('areas as a', 'a.ID_AREA', '=', 'e.ID_AREA')
+            ->leftJoin('rol_empleados as r', 'r.ID_ROL', '=', 'e.ID_ROL')
+            ->leftJoin('servicios as sv', 'sv.ID_SERVICIOS', '=', 'e.ID_SERVICIOS')
+            ->select('e.LEGAJO', 'e.COLABORADOR', 'e.ESTADO', 'e.ID_AREA', 'e.ID_ROL', 'e.ID_SERVICIOS',
+                'a.NOMBRE as area_nombre', 'r.NOMBRE as rol_nombre', 'sv.NOMBRE as servicio_nombre');
     }
 
     public function equipo(int $usuario)
@@ -42,7 +52,7 @@ class PoblacionEdd
 
     public function candidatos(int $periodo, array $filtros)
     {
-        $query = DB::table('empleados as e')->leftJoin('areas as a', 'a.ID_AREA', '=', 'e.ID_AREA')
+        $query = $this->nomina()
             ->where('e.ESTADO', 'ACTIVO')->whereNotExists(function ($query) use ($periodo) {
                 $query->selectRaw('1')->from('edd_participantes as p')->where('p.periodo_id', $periodo)->whereColumn('p.legajo', 'e.LEGAJO');
             });
@@ -54,7 +64,7 @@ class PoblacionEdd
         }
 
         return $query->orderBy('e.COLABORADOR')->orderBy('e.LEGAJO')
-            ->paginate(25, ['e.LEGAJO', 'e.COLABORADOR', 'a.NOMBRE as area_nombre'], 'candidatos_page')->withQueryString();
+            ->paginate(25, ['*'], 'candidatos_page')->withQueryString();
     }
 
     public function participantes(int $periodo, array $filtros = [], bool $soloIncluidos = false)
@@ -69,10 +79,12 @@ class PoblacionEdd
 
         // La búsqueda nominal se aplica a la nómina de candidatos. El listado de
         // participantes mantiene todos los registros del área, incluidos los excluidos.
-        return $query->orderBy('p.legajo')->paginate(25, ['p.*', 'a.NOMBRE as area_nombre',
+        $pagina = $query->orderBy('p.legajo')->paginate(25, ['p.*', 'a.NOMBRE as area_nombre',
             'u.name as evaluador_nombre', 'u.estado as evaluador_estado', 's.evaluador_user_id', 's.funcion',
-            'cuentas.cantidad as cuentas_activas'], 'participantes_page')->withQueryString()
-            ->through(fn ($row) => $this->presentarParticipante($row));
+            'cuentas.cantidad as cuentas_activas'], 'participantes_page')->withQueryString();
+        $nomina = $this->nomina()->whereIn('e.LEGAJO', $pagina->getCollection()->pluck('legajo'))->get()->groupBy('LEGAJO');
+
+        return $pagina->through(fn ($row) => $this->presentarParticipante($row, $nomina->get($row->legajo, collect())));
     }
 
     public function participante(int $periodo, int $id): array
@@ -83,7 +95,7 @@ class PoblacionEdd
         ]);
         abort_unless($row, 404);
 
-        return $this->presentarParticipante($row);
+        return $this->presentarParticipante($row, $this->nomina()->where('e.LEGAJO', $row->legajo)->get());
     }
 
     private function consultaParticipantes(int $periodo)
@@ -98,11 +110,12 @@ class PoblacionEdd
             ->leftJoinSub($cuentas, 'cuentas', fn ($join) => $join->on('cuentas.legajo', '=', 'p.legajo'));
     }
 
-    private function presentarParticipante(object $row): array
+    private function presentarParticipante(object $row, $nomina): array
     {
         $datos = (array) $row;
         $datos['contexto'] = json_decode($row->contexto_snapshot_json, true, flags: JSON_THROW_ON_ERROR);
         $datos['competencias_personales'] = $row->competencias_json === null ? null : json_decode($row->competencias_json, true, flags: JSON_THROW_ON_ERROR);
+        $datos['nomina'] = $nomina->count() === 1 ? (array) $nomina->first() : null;
 
         return $datos;
     }
@@ -130,8 +143,7 @@ class PoblacionEdd
     {
         return DB::transaction(function () use ($periodo, $legajos, $actor) {
             $this->configuracion->bloquearPeriodo($periodo);
-            $empleados = DB::table('empleados as e')->leftJoin('areas as a', 'a.ID_AREA', '=', 'e.ID_AREA')
-                ->whereIn('e.LEGAJO', $legajos)->get(['e.LEGAJO', 'e.COLABORADOR', 'e.ESTADO', 'e.ID_AREA', 'e.ID_SERVICIOS', 'a.NOMBRE as area_nombre']);
+            $empleados = $this->nomina()->whereIn('e.LEGAJO', $legajos)->get();
             $agrupados = $empleados->groupBy('LEGAJO');
             foreach ($legajos as $legajo) {
                 $coincidencias = $agrupados->get($legajo, collect());
@@ -148,7 +160,8 @@ class PoblacionEdd
                     'periodo_id' => $periodo, 'legajo' => $empleado->LEGAJO, 'area_id' => $empleado->ID_AREA,
                     'contexto_snapshot_json' => $this->json([
                         'nombre' => $empleado->COLABORADOR, 'area' => $empleado->area_nombre,
-                        'servicio_id' => $empleado->ID_SERVICIOS, 'incorporado_at' => $this->ahora(),
+                        'rol_id' => $empleado->ID_ROL, 'rol' => $empleado->rol_nombre,
+                        'servicio_id' => $empleado->ID_SERVICIOS, 'servicio' => $empleado->servicio_nombre, 'incorporado_at' => $this->ahora(),
                     ]),
                     'incluido' => true, 'revision' => 0, 'created_by' => $actor, 'updated_by' => $actor,
                     'created_at' => $this->ahora(), 'updated_at' => $this->ahora(),
@@ -199,7 +212,9 @@ class PoblacionEdd
                 'competencias_json' => $competencias, 'revision' => $antes->revision + 1,
                 'updated_by' => $actor, 'updated_at' => $this->ahora(),
             ]);
-            $this->asignar($antes, $datos['incluido'] ? ($datos['evaluador_user_id'] ?? null) : null,
+            $paraAsignar = clone $antes;
+            $paraAsignar->area_id = $datos['area_id'];
+            $this->asignar($paraAsignar, $datos['incluido'] ? ($datos['evaluador_user_id'] ?? null) : null,
                 $datos['funcion'], $actor, $datos['incluido'] ? 'Cambio de configuración' : $datos['motivo_exclusion']);
             $this->configuracion->evento($periodo, 'participante', $id, 'guardar_participante', $actor, (array) $antes,
                 (array) DB::table('edd_participantes')->find($id));
@@ -224,12 +239,39 @@ class PoblacionEdd
         });
     }
 
+    public function aplicarCompetencias(int $periodo, array $datos, int $actor): void
+    {
+        DB::transaction(function () use ($periodo, $datos, $actor) {
+            $this->configuracion->bloquearPeriodo($periodo);
+            foreach ($datos['participantes'] as $id => $revision) {
+                abort_unless(ctype_digit((string) $id) && (int) $id > 0, 422, 'Selección de colaboradores inválida.');
+                $antes = $this->bloquearParticipante($periodo, (int) $id, $revision);
+                if (! $antes->incluido) {
+                    throw ValidationException::withMessages(['participantes' => 'La selección contiene un colaborador excluido.']);
+                }
+                $previos = $antes->competencias_json === null ? [] : json_decode($antes->competencias_json, true, flags: JSON_THROW_ON_ERROR);
+                $contenido = $datos['modo_competencias'] === 'area' ? null : $this->json($this->parsearCompetencias($datos['competencias'], $previos));
+                DB::table('edd_participantes')->where('id', $id)->update([
+                    'competencias_json' => $contenido, 'revision' => $antes->revision + 1,
+                    'updated_by' => $actor, 'updated_at' => $this->ahora(),
+                ]);
+                $this->configuracion->evento($periodo, 'participante', $id, 'aplicar_competencias', $actor,
+                    (array) $antes, (array) DB::table('edd_participantes')->find($id));
+            }
+        });
+    }
+
     private function asignar(object $participante, ?int $evaluador, string $funcion, int $actor, string $motivo): void
     {
         if ($evaluador) {
             $usuario = DB::table('users')->where('id', $evaluador)->where('estado', 'ACTIVO')->first(['id', 'legajo']);
             if (! $usuario || ($usuario->legajo !== null && (int) $usuario->legajo === (int) $participante->legajo)) {
                 throw ValidationException::withMessages(['evaluador_user_id' => 'Elegí una cuenta activa distinta del colaborador evaluado.']);
+            }
+            // La asignación explícita también registra al responsable en el área EDD.
+            // Una inscripción en un área no otorga acceso a personas sin asignación.
+            if (Schema::hasTable('edd_evaluador_areas')) {
+                app(PlanificacionEdd::class)->registrarArea($participante->periodo_id, $evaluador, $participante->area_id, $actor);
             }
         }
         $actual = DB::table('edd_asignaciones')->where('participante_id', $participante->id)->where('current_slot', 1)->first();
@@ -261,7 +303,7 @@ class PoblacionEdd
         return $row;
     }
 
-    private function parsearCompetencias(string $texto, array $anteriores): array
+    public function parsearCompetencias(string $texto, array $anteriores): array
     {
         $lineas = array_values(array_filter(array_map('trim', preg_split('/\R/u', $texto)), fn ($linea) => $linea !== ''));
         if (count($lineas) < 1 || count($lineas) > 100) {

@@ -5,7 +5,9 @@
     @if($poblacionDisponible && $periodo)
         <section class="edd-panel">
             <h3 class="h6">Asignar evaluador</h3>
+            <p><a href="{{ route('rrhh.edd.configuracion.evaluador-areas', ['periodo' => $periodo['id']]) }}">Configurar evaluadores por área</a></p>
             <p class="edd-muted">Marcá colaboradores incluidos en la población y elegí su responsable. La selección corresponde a esta página. Si ya tenían evaluador, se conserva el historial de la asignación anterior.</p>
+            <p class="small edd-muted">Varios evaluadores pueden compartir un área. Repartí los colaboradores entre ellos: cada persona tendrá un responsable. Al asignar, ese evaluador también queda registrado en las áreas EDD de los seleccionados.</p>
             @include('edd.configuracion.filtro-area')
             <form method="post" action="{{ route('rrhh.edd.evaluadores.update', $periodo['id']) }}" data-edd-form>
                 @csrf
@@ -16,11 +18,12 @@
                             <label class="form-label" for="edd-evaluador">Evaluador responsable *</label>
                             <select class="form-select" id="edd-evaluador" name="evaluador_user_id" required>
                                 <option value="">Seleccioná una cuenta activa</option>
-                                @foreach($evaluadores as $evaluador)<option value="{{ $evaluador->id }}">{{ $evaluador->name }} · {{ $evaluador->rol }} · #{{ $evaluador->id }}</option>@endforeach
+                                @foreach($evaluadores as $evaluador)<option value="{{ $evaluador->id }}">{{ $evaluador->name }} · {{ $evaluador->area_nombre ?? 'Sin área en la cuenta' }} · #{{ $evaluador->id }}</option>@endforeach
                             </select>
                         </div>
                         <div class="col-md-4"><label class="form-label" for="edd-funcion">Función *</label><select class="form-select" id="edd-funcion" name="funcion">@foreach(['coordinador' => 'Coordinador/a', 'jefe' => 'Jefe/a', 'responsable' => 'Responsable', 'gerente' => 'Gerente'] as $valor => $etiqueta)<option value="{{ $valor }}">{{ $etiqueta }}</option>@endforeach</select></div>
                     </div>
+                    <button class="btn btn-outline-secondary btn-sm mb-2" type="button" data-edd-seleccionar>Seleccionar / desmarcar esta página</button>
                     <div class="table-responsive">
                         <table class="table align-middle">
                             <thead><tr><th>Seleccionar</th><th>Legajo</th><th>Colaborador</th><th>Área</th><th>Evaluador actual</th><th></th></tr></thead>

@@ -1,6 +1,6 @@
 # Revisión de la etapa 2: configuración y guardado
 
-Esta revisión corresponde al primer incremento. El posterior de [población, evaluadores y competencias por área/persona](06-poblacion-y-competencias.md) ya reemplaza esos pendientes. Ambos siguen sin commit a la espera del OK explícito del usuario.
+Esta revisión corresponde al primer incremento, ya incorporado junto con población en `00eab19`. La revisión actual, todavía sin commit, está en [Planificación simple](07-planificacion-simple.md). El contenido siguiente se conserva como registro de la entrega anterior.
 
 ## Resultado de este incremento
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\Edd\PlanificacionEdd;
 use App\Services\Edd\PoblacionEdd;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,7 @@ class EddPopulationTest extends TestCase
             $table->string('rol');
             $table->string('estado');
             $table->integer('legajo')->nullable();
+            $table->integer('area_id')->nullable();
         });
         Schema::create('areas', function (Blueprint $table) {
             $table->integer('ID_AREA')->primary();
@@ -36,6 +38,15 @@ class EddPopulationTest extends TestCase
             $table->string('ESTADO');
             $table->integer('ID_AREA');
             $table->integer('ID_SERVICIOS')->nullable();
+            $table->integer('ID_ROL')->nullable();
+        });
+        Schema::create('rol_empleados', function (Blueprint $table) {
+            $table->integer('ID_ROL')->primary();
+            $table->string('NOMBRE');
+        });
+        Schema::create('servicios', function (Blueprint $table) {
+            $table->integer('ID_SERVICIOS')->primary();
+            $table->string('NOMBRE');
         });
         DB::table('areas')->insert([['ID_AREA' => 10, 'NOMBRE' => 'Administración QA'], ['ID_AREA' => 20, 'NOMBRE' => 'Recepción QA']]);
         foreach ([1 => [900, 'Administrador/a', 'ACTIVO'], 2 => [200, 'Colaborador/a', 'ACTIVO'],
@@ -48,6 +59,7 @@ class EddPopulationTest extends TestCase
         }
         (require database_path('migrations/2026_09_25_170000_create_edd_configuration_tables.php'))->up();
         (require database_path('migrations/2026_09_26_100000_create_edd_population_tables.php'))->up();
+        (require database_path('migrations/2026_09_28_100000_create_edd_planning_tables.php'))->up();
         $this->actingAs(User::findOrFail(1));
         $this->periodo = $this->postJson(route('rrhh.edd.periodos.store'), ['codigo' => 'QA', 'nombre' => 'Período QA', 'anio' => 2026])->assertCreated()->json('id');
     }
@@ -248,6 +260,7 @@ class EddPopulationTest extends TestCase
 
     public function test_population_migration_rollback_preserves_existing_configuration_and_payroll(): void
     {
+        (require database_path('migrations/2026_09_28_100000_create_edd_planning_tables.php'))->down();
         (require database_path('migrations/2026_09_26_100000_create_edd_population_tables.php'))->down();
         $this->assertFalse(Schema::hasTable('edd_participantes'));
         $this->assertDatabaseCount('edd_periodos', 1);
@@ -270,5 +283,157 @@ class EddPopulationTest extends TestCase
         $this->get(route('rrhh.edd.index'))->assertRedirect(route('rrhh.edd.autoevaluacion'));
         $this->actingAs(User::findOrFail(5));
         $this->get(route('rrhh.edd.equipo'))->assertOk()->assertSee('Persona QA 101')->assertSee('Persona QA 102');
+    }
+
+    public function test_payroll_role_and_service_are_read_from_existing_tables_without_mutating_them(): void
+    {
+        DB::table('rol_empleados')->insert(['ID_ROL' => 7, 'NOMBRE' => 'Rol técnico QA']);
+        DB::table('servicios')->insert(['ID_SERVICIOS' => 8, 'NOMBRE' => 'Servicio QA']);
+        DB::table('empleados')->where('LEGAJO', 101)->update(['ID_ROL' => 7, 'ID_SERVICIOS' => 8]);
+        $this->get(route('rrhh.edd.configuracion.poblacion', ['periodo' => $this->periodo]))
+            ->assertOk()->assertSee('Rol técnico QA')->assertSee('Servicio QA');
+        [$id] = $this->agregar([101]);
+        $poblacion = app(PoblacionEdd::class);
+        $persona = $poblacion->participante($this->periodo, $id);
+        $this->assertSame('Rol técnico QA', $persona['contexto']['rol']);
+        $this->assertSame('Servicio QA', $persona['contexto']['servicio']);
+        DB::table('servicios')->where('ID_SERVICIOS', 8)->update(['NOMBRE' => 'Servicio actualizado QA']);
+        $persona = $poblacion->participante($this->periodo, $id);
+        $this->assertSame('Servicio actualizado QA', $persona['nomina']['servicio_nombre']);
+        $this->assertSame('Servicio QA', $persona['contexto']['servicio']);
+        $this->assertDatabaseHas('empleados', ['LEGAJO' => 101, 'ID_ROL' => 7, 'ID_SERVICIOS' => 8]);
+    }
+
+    public function test_general_competencies_are_shared_and_cannot_be_overridden_by_personal_lists(): void
+    {
+        [$a, $b] = $this->agregar();
+        $texto = implode("\n", config('edd_generales.generales-hp3c.competencias'));
+        $this->postJson(route('rrhh.edd.generales.update', $this->periodo), ['revision' => 0, 'competencias' => $texto])->assertOk();
+        $this->guardarArea()->assertOk();
+        $this->guardarPersona($a, array_replace($this->datosPersona(), ['modo_competencias' => 'personal', 'competencias' => 'Pagos']))->assertOk();
+        $poblacion = app(PoblacionEdd::class);
+        $plan = app(PlanificacionEdd::class);
+        $uno = $plan->competenciasDelParticipante($poblacion->participante($this->periodo, $a));
+        $dos = $plan->competenciasDelParticipante($poblacion->participante($this->periodo, $b));
+        $this->assertCount(5, $uno['generales']);
+        $this->assertSame($uno['generales'], $dos['generales']);
+        $this->assertSame('Pagos', $uno['especificas'][0]['titulo']);
+        $this->assertSame('Trabajo técnico', $dos['especificas'][0]['titulo']);
+        $this->postJson(route('rrhh.edd.generales.update', $this->periodo), ['revision' => 0, 'competencias' => 'Obsoleto'])->assertConflict();
+        $this->assertDatabaseCount('edd_listas_competencias', 1);
+        $this->assertSame([1, 2, 3, 4], array_keys(config('edd.escala')));
+        $this->get(route('rrhh.edd.configuracion.participante', [$this->periodo, $a]))->assertOk()->assertSee('Ética profesional');
+    }
+
+    public function test_reusable_libraries_and_bulk_copies_remain_independent_with_atomic_revision_checks(): void
+    {
+        [$a, $b] = $this->agregar();
+        $texto = "Conciliación: Revisar los movimientos.\nGestión de pagos";
+        $url = route('rrhh.edd.biblioteca.store', $this->periodo);
+        $this->postJson($url, ['nombre' => 'Pagos QA', 'revision' => 0, 'competencias' => $texto])->assertOk();
+        $id = DB::table('edd_listas_competencias')->value('id');
+        $datos = ['participantes' => [$a => 0, $b => 0], 'modo_competencias' => 'personal', 'competencias' => $texto];
+        $aplicar = route('rrhh.edd.competencias.aplicar', $this->periodo);
+        $this->postJson($aplicar, $datos)->assertOk();
+        $this->postJson($url, ['lista_id' => $id, 'nombre' => 'Pagos QA', 'revision' => 1, 'competencias' => 'Nueva biblioteca'])->assertOk();
+        $this->postJson($url, ['lista_id' => $id, 'nombre' => 'Pagos QA', 'revision' => 1, 'competencias' => 'Obsoleto'])->assertConflict();
+        $poblacion = app(PoblacionEdd::class);
+        $this->assertSame($texto, $poblacion->textoCompetencias($poblacion->participante($this->periodo, $a)['competencias_personales']));
+        $this->postJson($aplicar, array_replace($datos, ['participantes' => [$a => 1, $b => 0], 'competencias' => 'Intento parcial']))->assertConflict();
+        $this->assertSame($texto, $poblacion->textoCompetencias($poblacion->participante($this->periodo, $a)['competencias_personales']));
+        $this->postJson($aplicar, ['participantes' => [$a => 1], 'modo_competencias' => 'area'])->assertOk();
+        $this->assertNull($poblacion->participante($this->periodo, $a)['competencias_personales']);
+        $this->assertSame($texto, $poblacion->textoCompetencias($poblacion->participante($this->periodo, $b)['competencias_personales']));
+        foreach (['biblioteca', 'competencias-masivas', 'competencias'] as $pagina) {
+            $this->get(route('rrhh.edd.configuracion.'.$pagina, ['periodo' => $this->periodo]))->assertOk()->assertSee('Pagos QA');
+        }
+    }
+
+    public function test_libraries_and_bulk_updates_reject_cross_period_ids_and_exclusions(): void
+    {
+        [$a, $b] = $this->agregar();
+        $otro = $this->postJson(route('rrhh.edd.periodos.store'), ['codigo' => 'OTRO', 'nombre' => 'Otro período', 'anio' => 2026])->assertCreated()->json('id');
+        $this->postJson(route('rrhh.edd.biblioteca.store', $otro), ['nombre' => 'Otra', 'revision' => 0, 'competencias' => 'Otra competencia'])->assertOk();
+        $id = DB::table('edd_listas_competencias')->value('id');
+        $this->postJson(route('rrhh.edd.biblioteca.store', $this->periodo), ['lista_id' => $id, 'nombre' => 'Inválida', 'revision' => 1, 'competencias' => 'Cambio'])->assertNotFound();
+        $this->get(route('rrhh.edd.configuracion.biblioteca', ['periodo' => $this->periodo, 'lista' => $id]))->assertNotFound();
+        $this->postJson(route('rrhh.edd.competencias.aplicar', $otro), ['participantes' => [$a => 0], 'modo_competencias' => 'area'])->assertNotFound();
+        DB::table('edd_participantes')->where('id', $b)->update(['incluido' => false]);
+        $this->postJson(route('rrhh.edd.competencias.aplicar', $this->periodo),
+            ['participantes' => [$a => 0, $b => 0], 'modo_competencias' => 'personal', 'competencias' => 'Cambio'])->assertUnprocessable();
+        $this->assertDatabaseHas('edd_participantes', ['id' => $a, 'revision' => 0, 'competencias_json' => null]);
+        $this->postJson(route('rrhh.edd.generales.update', $this->periodo), ['lista_id' => $id, 'revision' => 0, 'competencias' => 'Cambio'])->assertUnprocessable();
+    }
+
+    public function test_area_registration_allows_multiple_evaluators_without_granting_unassigned_access(): void
+    {
+        [$a, $b] = $this->agregar();
+        $url = route('rrhh.edd.evaluador-areas.store', $this->periodo);
+        foreach ([2, 5, 2] as $evaluador) {
+            $this->postJson($url, ['evaluador_user_id' => $evaluador, 'area_id' => 10])->assertOk();
+        }
+        $this->assertDatabaseCount('edd_evaluador_areas', 2);
+        $this->assertDatabaseCount('edd_asignaciones', 0);
+        $this->actingAs(User::findOrFail(2));
+        $this->get(route('rrhh.edd.equipo'))->assertForbidden();
+        $this->actingAs(User::findOrFail(1));
+        $this->asignar([$a => 0], 2)->assertOk();
+        $this->asignar([$b => 0], 5)->assertOk();
+        $registro = DB::table('edd_evaluador_areas')->where('evaluador_user_id', 2)->value('id');
+        $this->deleteJson(route('rrhh.edd.evaluador-areas.destroy', [$this->periodo, $registro]))->assertUnprocessable();
+        $this->asignar([$a => 1], 5)->assertOk();
+        $this->deleteJson(route('rrhh.edd.evaluador-areas.destroy', [$this->periodo, $registro]))->assertOk();
+        $this->assertDatabaseCount('edd_evaluador_areas', 1);
+        foreach ([['evaluador_user_id' => 4, 'area_id' => 10], ['evaluador_user_id' => 2, 'area_id' => 999]] as $datos) {
+            $this->postJson($url, $datos)->assertUnprocessable();
+        }
+        $this->get(route('rrhh.edd.configuracion.evaluador-areas', ['periodo' => $this->periodo]))->assertOk()->assertSee('Cuenta QA 5');
+    }
+
+    public function test_planning_writes_require_active_rrhh_draft_period_and_working_audit(): void
+    {
+        [$a] = $this->agregar([101]);
+        $writes = [
+            [route('rrhh.edd.generales.update', $this->periodo), ['revision' => 0, 'competencias' => 'General']],
+            [route('rrhh.edd.biblioteca.store', $this->periodo), ['revision' => 0, 'nombre' => 'Lista', 'competencias' => 'Específica']],
+            [route('rrhh.edd.competencias.aplicar', $this->periodo), ['participantes' => [$a => 0], 'modo_competencias' => 'personal', 'competencias' => 'Específica']],
+            [route('rrhh.edd.evaluador-areas.store', $this->periodo), ['evaluador_user_id' => 2, 'area_id' => 10]],
+        ];
+        foreach ([2, 4] as $usuario) {
+            $this->actingAs(User::findOrFail($usuario));
+            foreach ($writes as [$url, $datos]) {
+                $this->postJson($url, $datos)->assertForbidden();
+            }
+            $this->deleteJson(route('rrhh.edd.evaluador-areas.destroy', [$this->periodo, 1]))->assertForbidden();
+        }
+        $this->actingAs(User::findOrFail(1));
+        DB::table('edd_periodos')->where('id', $this->periodo)->update(['estado' => 'habilitado']);
+        foreach ($writes as [$url, $datos]) {
+            $this->postJson($url, $datos)->assertConflict();
+        }
+        $this->deleteJson(route('rrhh.edd.evaluador-areas.destroy', [$this->periodo, 1]))->assertConflict();
+        DB::table('edd_periodos')->where('id', $this->periodo)->update(['estado' => 'borrador']);
+        $fail = true;
+        DB::connection()->beforeExecuting(function ($sql) use (&$fail): void {
+            if ($fail && str_contains($sql, 'insert into "edd_eventos"')) {
+                $fail = false;
+                throw new \RuntimeException('Auditoría no disponible.');
+            }
+        });
+        $this->postJson($writes[1][0], $writes[1][1])->assertStatus(500);
+        $this->assertDatabaseCount('edd_listas_competencias', 0);
+    }
+
+    public function test_planning_migration_imports_existing_evaluator_areas_without_changing_assignments(): void
+    {
+        [$a, $b] = $this->agregar();
+        $this->asignar([$a => 0, $b => 0], 2)->assertOk();
+        $antes = DB::table('edd_asignaciones')->get()->toJson();
+        $migration = require database_path('migrations/2026_09_28_100000_create_edd_planning_tables.php');
+        $migration->down();
+        $migration->up();
+        $this->assertSame($antes, DB::table('edd_asignaciones')->get()->toJson());
+        $this->assertDatabaseCount('edd_evaluador_areas', 1);
+        $this->assertDatabaseHas('edd_evaluador_areas', ['periodo_id' => $this->periodo, 'evaluador_user_id' => 2, 'area_id' => 10]);
     }
 }

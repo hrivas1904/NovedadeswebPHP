@@ -11,14 +11,15 @@
                 @csrf
                 <fieldset @disabled($periodo['estado'] !== 'borrador')>
                     <legend class="visually-hidden">Colaboradores disponibles</legend>
+                    <button class="btn btn-outline-secondary btn-sm mb-2" type="button" data-edd-seleccionar>Seleccionar / desmarcar esta página</button>
                     <div class="table-responsive">
                         <table class="table align-middle">
-                            <thead><tr><th>Agregar</th><th>Legajo</th><th>Colaborador</th><th>Área</th></tr></thead>
+                            <thead><tr><th>Agregar</th><th>Legajo</th><th>Colaborador</th><th>Área</th><th>Rol / servicio</th></tr></thead>
                             <tbody>
                             @forelse($candidatos as $persona)
-                                <tr><td><input class="form-check-input" type="checkbox" name="legajos[]" value="{{ $persona->LEGAJO }}" aria-label="Agregar {{ $persona->COLABORADOR }}"></td><td>{{ $persona->LEGAJO }}</td><td>{{ $persona->COLABORADOR }}</td><td>{{ $persona->area_nombre ?? 'Sin área' }}</td></tr>
+                                <tr><td><input class="form-check-input" type="checkbox" name="legajos[]" value="{{ $persona->LEGAJO }}" aria-label="Agregar {{ $persona->COLABORADOR }}"></td><td>{{ $persona->LEGAJO }}</td><td>{{ $persona->COLABORADOR }}</td><td>{{ $persona->area_nombre ?? 'Sin área' }}</td><td>{{ $persona->rol_nombre ?? 'Rol sin informar' }}<br><span class="small edd-muted">{{ $persona->servicio_nombre ?? 'Servicio sin informar' }}</span></td></tr>
                             @empty
-                                <tr><td colspan="4">No hay colaboradores disponibles con estos filtros.</td></tr>
+                                <tr><td colspan="5">No hay colaboradores disponibles con estos filtros.</td></tr>
                             @endforelse
                             </tbody>
                         </table>
@@ -32,20 +33,22 @@
         <section class="edd-panel mt-4">
             <div class="edd-panel-header"><h3 class="h6">Población guardada · {{ $participantes->total() }} registros con este filtro de área</h3><a class="btn btn-outline-primary btn-sm" href="{{ route('rrhh.edd.configuracion.evaluadores', ['periodo' => $periodo['id']]) }}">Asignar evaluadores</a></div>
             <p class="edd-muted">En Configurar podés elegir el evaluador, personalizar las competencias o excluir a una persona conservando su registro.</p>
+            <p><a href="{{ route('rrhh.edd.configuracion.competencias-masivas', ['periodo' => $periodo['id'], 'area' => $filtros['area'] ?? null]) }}">Aplicar competencias específicas a un grupo</a></p>
             <div class="table-responsive">
                 <table class="table align-middle">
-                    <thead><tr><th>Legajo</th><th>Colaborador</th><th>Área EDD</th><th>Cuenta para autoevaluación</th><th>Participación</th><th>Competencias</th><th></th></tr></thead>
+                    <thead><tr><th>Legajo</th><th>Colaborador</th><th>Área EDD</th><th>Rol / servicio actual</th><th>Cuenta para autoevaluación</th><th>Participación</th><th>Competencias</th><th></th></tr></thead>
                     <tbody>
                     @forelse($participantes as $persona)
                         <tr>
                             <td>{{ $persona['legajo'] }}</td><td>{{ $persona['contexto']['nombre'] }}</td><td>{{ $persona['area_nombre'] }}</td>
+                            <td>@include('edd.configuracion.rol-servicio')</td>
                             <td>@include('edd.configuracion.cuenta-participante')</td>
                             <td>{{ $persona['incluido'] ? 'Incluida' : 'Excluida' }}</td>
                             <td>{{ $persona['competencias_personales'] === null ? 'Base del área' : 'Personalizadas' }}</td>
                             <td><a href="{{ route('rrhh.edd.configuracion.participante', ['periodo' => $periodo['id'], 'participante' => $persona['id']]) }}" aria-label="Configurar {{ $persona['contexto']['nombre'] }}">Configurar</a></td>
                         </tr>
                     @empty
-                        <tr><td colspan="7">Todavía no hay participantes con este filtro. Agregalos desde la nómina de arriba.</td></tr>
+                        <tr><td colspan="8">Todavía no hay participantes con este filtro. Agregalos desde la nómina de arriba.</td></tr>
                     @endforelse
                     </tbody>
                 </table>

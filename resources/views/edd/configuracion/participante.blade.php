@@ -9,6 +9,12 @@
         </div>
         @include('edd.configuracion.cuenta-participante', ['persona' => $participante])
         <p class="small edd-muted mt-2">Esta configuración pertenece únicamente a {{ $periodo['nombre'] }}. No modifica el legajo ni requiere un descriptivo de puesto.</p>
+        <p class="small">Nómina actual: {{ $participante['nomina']['area_nombre'] ?? 'Área sin informar' }} · {{ $participante['nomina']['rol_nombre'] ?? 'Rol sin informar' }} · {{ $participante['nomina']['servicio_nombre'] ?? 'Servicio sin informar' }}</p>
+        <details class="mb-3">
+            <summary>Competencias generales comunes · {{ count($generales) }}</summary>
+            @forelse($generales as $competencia)<p class="mt-2 mb-1"><strong>{{ $competencia['titulo'] }}</strong>@if($competencia['descripcion']) — {{ $competencia['descripcion'] }}@endif</p>
+            @empty<p class="mt-2">Todavía no hay generales guardadas. Configuralas en Generales.</p>@endforelse
+        </details>
         <form method="post" action="{{ route('rrhh.edd.participantes.update', ['periodo' => $periodo['id'], 'participante' => $participante['id']]) }}" data-edd-form>
             @csrf
             @method('PATCH')
@@ -48,6 +54,7 @@
                         </select>
                         <p class="small edd-muted mt-2">La base sigue los cambios del área mientras el período está en borrador. Personalizar permite quitar, cambiar o agregar competencias únicamente para esta persona.</p>
                         <p class="alert alert-info" data-edd-area-cambiada hidden>Guardá el cambio de área para consultar su base actualizada. Si elegís personalizar, se guardará el texto que ves debajo.</p>
+                        @include('edd.configuracion.selector-biblioteca')
                         <label class="form-label" for="edd-competencias">Lista de competencias</label>
                         <textarea class="form-control" id="edd-competencias" name="competencias" rows="12" maxlength="30000" @disabled($participante['competencias_personales'] === null)>{{ $textoCompetencias }}</textarea>
                         @if(!$textoCompetencias)<p class="text-warning-emphasis mt-2">Todavía no hay competencias definidas. Podés configurar la base del área o personalizar esta lista.</p>@endif
