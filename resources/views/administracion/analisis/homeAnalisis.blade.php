@@ -51,19 +51,26 @@
 
 @push('scripts')
 <script>
-    const FLUJO_FONDOS_ROUTES = {view: @json(route('administracion.flujoFondosView'))};
+    const FLUJO_FONDOS_ROUTES = {
+        view: @json(route('administracion.flujoFondosView')),
+        detalle: @json(route('administracion.flujoFondos.detalle')),
+    };
 </script>
 <script src="{{ asset('js/administracion/analisis/flujoFondos.js') }}"></script>
 
 <script>
-    const PRESUP_EJECUTADO_ROUTES = {view: @json(route('administracion.presupuestadoView'))};
+    const PRESUP_EJECUTADO_ROUTES = {
+        view: @json(route('administracion.presupuestadoView'))
+    };
 </script>
 <script src="{{ asset('js/administracion/analisis/presupEjecutado.js') }}"></script>
 
 <script>
-    const RESUMEN_ANUAL_ROUTES = {view: @json(route('administracion.resumenAnualView'))};
+    const RESUMEN_ANUAL_ROUTES = {
+        view: @json(route('administracion.resumenAnualView'))
+    };
 </script>
 <script src="{{ asset('js/administracion/analisis/resumenAnual.js') }}"></script>
-    
+
 <script src="/js/administracion/analisis/homeAnalisis.js"></script>
 @endpush

@@ -46,6 +46,26 @@ class AnalisisController extends Controller
         ]);
     }
 
+    public function detalleConceptoFlujoFondos(Request $request)
+    {
+        $request->validate([
+            'concepto' => 'required|string',
+            'periodo'  => 'required|date_format:Y-m',
+        ]);
+
+        $movimientos = DB::table('ff_movimientos as m')
+            ->join('ff_conceptos as k', 'k.id', '=', 'm.id_concepto')
+            ->where('k.nombre', $request->input('concepto'))
+            ->where('m.periodo', $request->input('periodo'))
+            ->where('m.ejecucion', 'EJECUTADO')
+            ->whereNull('m.deleted_at')
+            ->orderBy('m.fecha')
+            ->select(['m.fecha', 'm.subconcepto', 'm.detalle', 'm.importe'])
+            ->get();
+
+        return response()->json($movimientos);
+    }
+
     public function comparativaView()
     {
         $pdo  = DB::connection()->getPdo();

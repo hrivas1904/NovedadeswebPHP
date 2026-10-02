@@ -102,6 +102,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/resumenAnualView', [AnalisisController::class, 'resumenAnualView'])->name('resumenAnualView');
     Route::get('/comparativaPresupuestoView', [AnalisisController::class, 'comparativaPresupuestoView'])->name('comparativaPresupuestoView');
     Route::get('/analisis/comparativo-diario', [AnalisisController::class, 'comparativaDiarioView'])->name('comparativaDiarioView');
+    Route::get('/analisis/flujo-fondos/detalle', [AnalisisController::class, 'detalleConceptoFlujoFondos'])->name('flujoFondos.detalle');
 
     //IMPORTACION
     Route::get('/importacionView', [ImportacionController::class, 'importacionView'])->name('importacionView');

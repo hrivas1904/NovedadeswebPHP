@@ -2,7 +2,7 @@
     <input type="month" id="mesFlujoFondos" class="form-control form-control-sm" style="width:150px;" value="{{ $mes }}">
 </div>
 
-<div class="card p-0" style="overflow:hidden;">
+<div class="card p-0" id="cardFlujoFondos" data-mes="{{ $mes }}" style="overflow:hidden;">
 
     <div class="d-flex justify-content-between align-items-center px-3 py-2 text-white"
         style="background: var(--color-navy, #1B2A4A);">
@@ -30,14 +30,16 @@
                 </td>
             </tr>
 
-            @forelse($detalle->get('INGRESOS', []) as $fila)
-                <tr>
-                    <td style="padding-left:20px;">{{ $fila['label'] }}</td>
-                    <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
-                    <td class="text-end text-muted">{{ number_format($fila['pct'], 2, ',', '.') }}%</td>
-                </tr>
+            @forelse($detalle->get('PAGOS_OPERATIVOS', []) as $fila)
+            <tr class="fila-detalle-concepto" style="cursor:pointer;" data-concepto="{{ $fila['concepto'] }}">
+                <td style="padding-left:20px;">{{ $fila['label'] }}</td>
+                <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
+                <td class="text-end text-muted">{{ number_format($fila['pct'], 2, ',', '.') }}%</td>
+            </tr>
             @empty
-                <tr><td colspan="3" class="text-muted" style="padding-left:20px;">Sin datos.</td></tr>
+            <tr>
+                <td colspan="3" class="text-muted" style="padding-left:20px;">Sin datos.</td>
+            </tr>
             @endforelse
 
             <tr style="border-top:1px solid var(--color-accent-green); background-color: var(--color-accent-green);">
@@ -57,13 +59,15 @@
             </tr>
 
             @forelse($detalle->get('PAGOS_OPERATIVOS', []) as $fila)
-                <tr>
-                    <td style="padding-left:20px;">{{ $fila['label'] }}</td>
-                    <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
-                    <td class="text-end text-muted">{{ number_format($fila['pct'], 2, ',', '.') }}%</td>
-                </tr>
+            <tr class="fila-detalle-concepto" style="cursor:pointer;" data-concepto="{{ $fila['concepto'] }}">
+                <td style="padding-left:20px;">{{ $fila['label'] }}</td>
+                <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
+                <td class="text-end text-muted">{{ number_format($fila['pct'], 2, ',', '.') }}%</td>
+            </tr>
             @empty
-                <tr><td colspan="3" class="text-muted" style="padding-left:20px;">Sin datos.</td></tr>
+            <tr>
+                <td colspan="3" class="text-muted" style="padding-left:20px;">Sin datos.</td>
+            </tr>
             @endforelse
 
             <tr style="border-top:1px solid #dee2e6;">
@@ -95,13 +99,15 @@
             </tr>
 
             @forelse($detalle->get('USO_FONDOS', []) as $fila)
-                <tr>
-                    <td style="padding-left:20px;">{{ $fila['label'] }}</td>
-                    <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
-                    <td class="text-end text-muted">{{ number_format($fila['pct'], 2, ',', '.') }}%</td>
-                </tr>
+            <tr class="fila-detalle-concepto" style="cursor:pointer;" data-concepto="{{ $fila['concepto'] }}">
+                <td style="padding-left:20px;">{{ $fila['label'] }}</td>
+                <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
+                <td class="text-end text-muted">{{ number_format($fila['pct'], 2, ',', '.') }}%</td>
+            </tr>
             @empty
-                <tr><td colspan="3" class="text-muted" style="padding-left:20px;">Sin datos.</td></tr>
+            <tr>
+                <td colspan="3" class="text-muted" style="padding-left:20px;">Sin datos.</td>
+            </tr>
             @endforelse
 
             {{-- TOTAL USO DE FONDOS --}}
@@ -129,4 +135,34 @@
 
         </tbody>
     </table>
+
+    <div class="modal fade" id="modalDetalleMovimientos" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                        Detalle de movimientos <span id="nombreConcepto">-</span> // <span id="mesVista">-$_COOKIE</span>
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-end px-3 pt-2 pb-1">
+                        <span class="fw-bold">Total: <span id="totalDetalleMovimientos">$ 0,00</span></span>
+                    </div>
+                    <div style="max-height: 76vh; overflow-y: auto;">
+                        <table class="table table-striped table-hover align-middle table-header-hp3c" id="tbDetalleMovimientosConcepto">
+                            <thead>
+                                <tr>
+                                    <th>FECHA</th>
+                                    <th>SUBCONCEPTO</th>
+                                    <th>DETALLE</th>
+                                    <th>IMPORTE</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
