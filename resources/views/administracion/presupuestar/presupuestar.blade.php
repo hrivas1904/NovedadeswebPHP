@@ -40,8 +40,11 @@
         <label class="fw-bolder" style="font-size:1rem; color:var(--color-default);">2. PAGOS A PROVEEDORES DESDE
             FINNEGANS (CUENTAS A PAGAR)</label>
         <hr style="color: var(--color-default); border: 1px solid;" />
-        <label class="fw-bolder text-muted mb-2" style="font-size:0.8rem;">Pegá el reporte de cuentas a pagar.</label>
-        <textarea class="form-control" id="contenidoIvaVentas" name="contenidoIvaVentas"
+        <label class="fw-bolder text-muted mb-2" style="font-size:0.8rem;">Pegá el reporte de cuentas a pagar. Importacion desde Pagos Masivos</label>
+        <label class="text-muted mb-2" style="font-size:0.8rem;">
+            <span class="fw-bolder">Columnas: </span> Organizacion F vto F comprobante Documento Comprobante Pendiente Fecha vto cheque Cuenta de pago Operacion bancaria Moneda de pago Moneda Cotizacion Descripcion Cbu Bpmprocesoactividadid
+        </label>
+        <textarea class="form-control" id="contenidoCuentasPagar" name="contenidoCuentasPagar"
             placeholder="Pegá el contenido de Cuentas a Pagar de Finnegans..." rows="3"></textarea>
 
         <label class="mt-2" id="msgFinnegans"></label>

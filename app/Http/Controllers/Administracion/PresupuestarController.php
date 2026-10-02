@@ -159,9 +159,9 @@ class PresupuestarController extends Controller
             }
             return -1;
         };
-        $iImp   = $ix('importe');
+        $iImp   = $ix('pendiente');     // antes: $ix('importe')
         $iOrg   = $ix('organizacion');
-        $iFecha = $ix('fechavto');
+        $iFecha = $ix('f vto');         // antes: $ix('fechavto')
 
         $rows = [];
         for ($i = 1; $i < count($lines); $i++) {
