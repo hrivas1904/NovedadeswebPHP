@@ -8,10 +8,20 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('alertas:enviar-push')
+
+Schedule::call(function () {
+
+    Artisan::call('alertas:enviar-push');
+})
+    ->name('alertas:enviar-push')
     ->everyMinute()
     ->withoutOverlapping();
 
-Schedule::command('zkteco:sincronizar')
+
+Schedule::call(function () {
+
+    Artisan::call('zkteco:sincronizar');
+})
+    ->name('zkteco:sincronizacion-automatica')
     ->everyFifteenMinutes()
     ->withoutOverlapping();

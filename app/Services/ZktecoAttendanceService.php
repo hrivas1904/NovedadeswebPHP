@@ -12,11 +12,11 @@ class ZktecoAttendanceService
     {
         $zk = new ZKTeco(
             host: $dispositivo->ip,
-            port: $dispositivo->puerto ?? 4370,
+            port: (int) ($dispositivo->puerto),
             shouldPing: false,
-            timeout: config('zkteco.timeout'),
-            password: config('zkteco.password'),
-            protocol: 'tcp'
+            timeout: (int) config('zkteco.timeout', 60),
+            password: (int) config('zkteco.password', 0),
+            protocol: config('zkteco.protocol', 'tcp')
         );
 
         $conectado = false;

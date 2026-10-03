@@ -112,15 +112,27 @@ class ZktecoController extends Controller
         }
     }
 
-    public function probarConexion()
+    public function probarConexion(Request $request)
     {
+        $dispositivo = DB::table('zkteco_dispositivos')
+            ->where('id', $request->dispositivo_id)
+            ->where('activo', 1)
+            ->first();
+
+        if (!$dispositivo) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dispositivo ZKTeco no encontrado o inactivo.'
+            ], 404);
+        }
+
         $zk = new ZKTeco(
-            host: config('zkteco.ip'),
-            port: config('zkteco.port'),
+            host: $dispositivo->ip,
+            port: (int) $dispositivo->puerto,
             shouldPing: false,
-            timeout: config('zkteco.timeout'),
-            password: config('zkteco.password'),
-            protocol: config('zkteco.protocol')
+            timeout: (int) config('zkteco.timeout', 60),
+            password: (int) config('zkteco.password', 0),
+            protocol: config('zkteco.protocol', 'tcp')
         );
 
         $conectado = false;
@@ -140,6 +152,7 @@ class ZktecoController extends Controller
 
                 return response()->json([
                     'success' => false,
+                    'dispositivo' => $dispositivo->nombre,
                     'message' => 'El reloj no respondió a la conexión TCP.',
                     'tiempo' => $tiempo
                 ], 500);
@@ -147,6 +160,8 @@ class ZktecoController extends Controller
 
             return response()->json([
                 'success' => true,
+                'dispositivo' => $dispositivo->nombre,
+                'tipo_entidad' => $dispositivo->tipo_entidad,
                 'message' => 'Conexión TCP con ZKTeco realizada correctamente.',
                 'tiempo' => $tiempo
             ]);
@@ -154,6 +169,7 @@ class ZktecoController extends Controller
 
             return response()->json([
                 'success' => false,
+                'dispositivo' => $dispositivo->nombre,
                 'message' => 'Error al conectar con el reloj ZKTeco.',
                 'detalle' => $e->getMessage()
             ], 500);
@@ -170,15 +186,31 @@ class ZktecoController extends Controller
         }
     }
 
-    public function probarLectura()
+    public function probarLectura(Request $request)
     {
+        $request->validate([
+            'dispositivo_id' => 'required|integer'
+        ]);
+
+        $dispositivo = DB::table('zkteco_dispositivos')
+            ->where('id', $request->dispositivo_id)
+            ->where('activo', 1)
+            ->first();
+
+        if (!$dispositivo) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dispositivo ZKTeco no encontrado o inactivo.'
+            ], 404);
+        }
+
         $zk = new ZKTeco(
-            host: config('zkteco.ip'),
-            port: config('zkteco.port'),
+            host: $dispositivo->ip,
+            port: (int) $dispositivo->puerto,
             shouldPing: false,
-            timeout: config('zkteco.timeout'),
-            password: config('zkteco.password'),
-            protocol: config('zkteco.protocol')
+            timeout: (int) config('zkteco.timeout', 60),
+            password: (int) config('zkteco.password', 0),
+            protocol: config('zkteco.protocol', 'tcp')
         );
 
         $conectado = false;
@@ -190,6 +222,7 @@ class ZktecoController extends Controller
             if (!$conectado) {
                 return response()->json([
                     'success' => false,
+                    'dispositivo' => $dispositivo->nombre,
                     'message' => 'No se pudo conectar con el reloj.'
                 ], 500);
             }
@@ -198,6 +231,8 @@ class ZktecoController extends Controller
 
             return response()->json([
                 'success' => true,
+                'dispositivo' => $dispositivo->nombre,
+                'tipo_entidad' => $dispositivo->tipo_entidad,
                 'message' => 'Lectura realizada correctamente.',
                 'hora_reloj' => $hora
             ]);
@@ -205,6 +240,7 @@ class ZktecoController extends Controller
 
             return response()->json([
                 'success' => false,
+                'dispositivo' => $dispositivo->nombre,
                 'message' => 'Error al leer información del reloj.',
                 'detalle' => $e->getMessage()
             ], 500);
@@ -220,15 +256,31 @@ class ZktecoController extends Controller
         }
     }
 
-    public function diagnostico()
+    public function diagnostico(Request $request)
     {
+        $request->validate([
+            'dispositivo_id' => 'required|integer'
+        ]);
+
+        $dispositivo = DB::table('zkteco_dispositivos')
+            ->where('id', $request->dispositivo_id)
+            ->where('activo', 1)
+            ->first();
+
+        if (!$dispositivo) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dispositivo ZKTeco no encontrado o inactivo.'
+            ], 404);
+        }
+
         $zk = new ZKTeco(
-            host: config('zkteco.ip'),
-            port: config('zkteco.port'),
+            host: $dispositivo->ip,
+            port: (int) $dispositivo->puerto,
             shouldPing: false,
-            timeout: config('zkteco.timeout'),
-            password: config('zkteco.password'),
-            protocol: config('zkteco.protocol')
+            timeout: (int) config('zkteco.timeout', 60),
+            password: (int) config('zkteco.password', 0),
+            protocol: config('zkteco.protocol', 'tcp')
         );
 
         $conectado = false;
@@ -240,6 +292,7 @@ class ZktecoController extends Controller
             if (!$conectado) {
                 return response()->json([
                     'success' => false,
+                    'dispositivo' => $dispositivo->nombre,
                     'message' => 'No se pudo conectar con el reloj.'
                 ], 500);
             }
@@ -248,6 +301,8 @@ class ZktecoController extends Controller
 
             return response()->json([
                 'success' => true,
+                'dispositivo' => $dispositivo->nombre,
+                'tipo_entidad' => $dispositivo->tipo_entidad,
                 'hora' => $zk->getTime(),
                 'modelo' => $zk->deviceName(),
                 'serial' => $zk->serialNumber(),
@@ -259,6 +314,7 @@ class ZktecoController extends Controller
 
             return response()->json([
                 'success' => false,
+                'dispositivo' => $dispositivo->nombre,
                 'message' => 'Error al consultar diagnóstico.',
                 'detalle' => $e->getMessage()
             ], 500);
