@@ -11,8 +11,19 @@ use App\Http\Controllers\RRHH\ParametrosController;
 use App\Http\Controllers\RRHH\CronogramaController;
 use App\Http\Controllers\RRHH\ZktecoController;
 use App\Http\Controllers\RRHH\MedicosController;
+use App\Http\Controllers\RRHH\EddController;
 
 use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'can:organigrama.ver'])->prefix('organigrama')->name('organigrama.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'index'])->name('index');
+    Route::get('/datos', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'datos'])->name('datos');
+    Route::middleware('can:organigrama.editar')->group(function () {
+        Route::post('/posiciones', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'store'])->name('store');
+        Route::put('/posiciones/{posicion}', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'update'])->name('update');
+        Route::delete('/posiciones/{posicion}', [\App\Http\Controllers\RRHH\OrganigramaController::class, 'destroy'])->name('destroy');
+    });
+});
 
 Route::middleware(['auth'])->group(function () {
 
@@ -442,6 +453,47 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/medicos/obtenerLegajo/{idMedico}', [MedicosController::class, 'obtenerLegajoMedico']);
     Route::get('/medicos/obtenerServicios', [MedicosController::class, 'obtenerServiciosMedicos']);
     Route::put('/medicos/registrarNuevoMedico', [MedicosController::class, 'registrarNuevoMedico']);
+
+    // EVALUACIÓN DE DESEMPEÑO
+    Route::prefix('edd')->name('edd.')->middleware('can:edd.acceder')->group(function () {
+        Route::get('/', [EddController::class, 'index'])->name('index');
+        Route::get('/autoevaluacion', [EddController::class, 'autoevaluacion'])->name('autoevaluacion');
+
+        Route::middleware('can:edd.evaluar')->group(function () {
+            Route::get('/equipo', [EddController::class, 'equipo'])->name('equipo');
+            Route::get('/modelo-evaluacion', [EddController::class, 'modeloEvaluacion'])->name('evaluacion.modelo');
+        });
+
+        Route::middleware('can:edd.administrar')->group(function () {
+            Route::get('/resumen', [EddController::class, 'resumen'])->name('resumen');
+            Route::get('/configuracion', [EddController::class, 'configuracion'])->name('configuracion');
+            Route::get('/configuracion/poblacion', [EddController::class, 'poblacion'])->name('configuracion.poblacion');
+            Route::get('/configuracion/evaluadores', [EddController::class, 'evaluadores'])->name('configuracion.evaluadores');
+            Route::get('/configuracion/competencias', [EddController::class, 'competencias'])->name('configuracion.competencias');
+            Route::get('/configuracion/generales', [EddController::class, 'biblioteca'])->name('configuracion.generales');
+            Route::get('/configuracion/biblioteca', [EddController::class, 'biblioteca'])->name('configuracion.biblioteca');
+            Route::get('/configuracion/competencias-masivas', [EddController::class, 'competenciasMasivas'])->name('configuracion.competencias-masivas');
+            Route::get('/configuracion/evaluador-areas', [EddController::class, 'areasEvaluadores'])->name('configuracion.evaluador-areas');
+            Route::post('/periodos/{periodo}/generales', [EddController::class, 'guardarLista'])->whereNumber('periodo')->name('generales.update');
+            Route::post('/periodos/{periodo}/biblioteca', [EddController::class, 'guardarLista'])->whereNumber('periodo')->name('biblioteca.store');
+            Route::post('/periodos/{periodo}/competencias-masivas', [EddController::class, 'aplicarCompetencias'])->whereNumber('periodo')->name('competencias.aplicar');
+            Route::post('/periodos/{periodo}/evaluador-areas', [EddController::class, 'registrarAreaEvaluador'])->whereNumber('periodo')->name('evaluador-areas.store');
+            Route::delete('/periodos/{periodo}/evaluador-areas/{registro}', [EddController::class, 'quitarAreaEvaluador'])->whereNumber(['periodo', 'registro'])->name('evaluador-areas.destroy');
+            Route::get('/periodos/{periodo}/participantes/{participante}', [EddController::class, 'participante'])->whereNumber(['periodo', 'participante'])->name('configuracion.participante');
+            Route::post('/periodos/{periodo}/poblacion', [EddController::class, 'agregarPoblacion'])->whereNumber('periodo')->name('poblacion.store');
+            Route::patch('/periodos/{periodo}/competencias/{area}', [EddController::class, 'guardarCompetencias'])->whereNumber(['periodo', 'area'])->name('competencias.update');
+            Route::patch('/periodos/{periodo}/participantes/{participante}', [EddController::class, 'guardarParticipante'])->whereNumber(['periodo', 'participante'])->name('participantes.update');
+            Route::post('/periodos/{periodo}/evaluadores', [EddController::class, 'asignarEvaluadores'])->whereNumber('periodo')->name('evaluadores.update');
+            Route::get('/configuracion/instrumento', [EddController::class, 'instrumento'])->name('configuracion.instrumento');
+            Route::get('/reportes', [EddController::class, 'reportes'])->name('reportes');
+            Route::post('/periodos', [EddController::class, 'crearPeriodo'])->name('periodos.store');
+            Route::patch('/periodos/{periodo}', [EddController::class, 'guardarPeriodo'])->whereNumber('periodo')->name('periodos.update');
+            Route::post('/periodos/{periodo}/instrumentos', [EddController::class, 'crearInstrumento'])->whereNumber('periodo')->name('instrumentos.store');
+            Route::patch('/periodos/{periodo}/instrumentos/{instrumento}', [EddController::class, 'guardarInstrumento'])->whereNumber(['periodo', 'instrumento'])->name('instrumentos.update');
+            Route::post('/periodos/{periodo}/instrumentos/{instrumento}/publicar', [EddController::class, 'publicarInstrumento'])->whereNumber(['periodo', 'instrumento'])->name('instrumentos.publicar');
+            Route::post('/periodos/{periodo}/instrumentos/{instrumento}/versiones', [EddController::class, 'nuevaVersionInstrumento'])->whereNumber(['periodo', 'instrumento'])->name('instrumentos.versiones');
+        });
+    });
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {

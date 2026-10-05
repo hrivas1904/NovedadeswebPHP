@@ -1,0 +1,2273 @@
+{
+  "fuente": {
+    "archivo": "AUTOEVALUACION 2025 (respuestas) (1).xlsx",
+    "hoja": "Respuestas de formulario 1",
+    "sha256": "e989c35dcc26e7e5f9526f440d645c75b1055e7cbb60cb895f216c9e4fbbc209"
+  },
+  "competencias_genericas": [
+    {
+      "id": "G001",
+      "tipo": "generica",
+      "nombre": "Ética profesional",
+      "descripcion": "Demuestra altos estándares de conducta ética, actuando con integridad y transparencia en todas las acciones y decisiones, fomentando un entorno de confianza y respeto"
+    },
+    {
+      "id": "G002",
+      "tipo": "generica",
+      "nombre": "Trabajo en equipo colaborativo",
+      "descripcion": "Participa activamente en la colaboración con las diferentes áreas, promoviendo la sinergia grupal, la alineación y el cumplimiento de los objetivos comunes"
+    },
+    {
+      "id": "G003",
+      "tipo": "generica",
+      "nombre": "Compromiso con el propósito",
+      "descripcion": "Identifica los objetivos del Hospital, su vínculo entre el rol individual y la misión institucional"
+    },
+    {
+      "id": "G004",
+      "tipo": "generica",
+      "nombre": "Orientación al paciente/cliente",
+      "descripcion": "Identifica y satisface proactivamente las necesidades y expectativas de los pacientes y clientes, manteniendo un enfoque adaptativo y flexible para ofrecer un servicio de calidad"
+    },
+    {
+      "id": "G005",
+      "tipo": "generica",
+      "nombre": "Excelencia operativa",
+      "descripcion": "Se compromete con la mejora continua en los procesos, garantizando la calidad y excelencia en cada tarea y manteniendo altos estándares de servicio al paciente. Promueve una cultura de seguridad en el trabajo y el cumplimiento de normativas para proteger a todos los colaboradores y minimizar riesgos"
+    }
+  ],
+  "competencias_especificas": [
+    {
+      "id": "E001",
+      "tipo": "especifica",
+      "nombre": "Conocimientos de técnicas de enfermería general",
+      "descripcion": null
+    },
+    {
+      "id": "E002",
+      "tipo": "especifica",
+      "nombre": "Administración segura de medicación",
+      "descripcion": null
+    },
+    {
+      "id": "E003",
+      "tipo": "especifica",
+      "nombre": "Protocolos de bioseguridad",
+      "descripcion": null
+    },
+    {
+      "id": "E004",
+      "tipo": "especifica",
+      "nombre": "Uso de equipamiento hospitalario",
+      "descripcion": null
+    },
+    {
+      "id": "E005",
+      "tipo": "especifica",
+      "nombre": "Organización y priorización del trabajo",
+      "descripcion": null
+    },
+    {
+      "id": "E006",
+      "tipo": "especifica",
+      "nombre": "Aplicación de protocolos de limpieza y desinfección hospitalaria",
+      "descripcion": null
+    },
+    {
+      "id": "E007",
+      "tipo": "especifica",
+      "nombre": "Conocimiento en uso y dilución de productos químicos",
+      "descripcion": null
+    },
+    {
+      "id": "E008",
+      "tipo": "especifica",
+      "nombre": "Organización del trabajo y control de insumos",
+      "descripcion": null
+    },
+    {
+      "id": "E009",
+      "tipo": "especifica",
+      "nombre": "Cumplimiento de normas de bioseguridad y seguridad ocupacional",
+      "descripcion": null
+    },
+    {
+      "id": "E010",
+      "tipo": "especifica",
+      "nombre": "Comunicación efectiva con el paciente, colaboración inter e intrasectorial",
+      "descripcion": null
+    },
+    {
+      "id": "E011",
+      "tipo": "especifica",
+      "nombre": "Interpretación de historias clínicas, nomencladores y prácticas",
+      "descripcion": null
+    },
+    {
+      "id": "E012",
+      "tipo": "especifica",
+      "nombre": "Carga, auditoría y validación de prestaciones",
+      "descripcion": null
+    },
+    {
+      "id": "E013",
+      "tipo": "especifica",
+      "nombre": "Manejo de sistemas de facturación y liquidación de obras sociales",
+      "descripcion": null
+    },
+    {
+      "id": "E014",
+      "tipo": "especifica",
+      "nombre": "Control de documentación respaldatoria y seguimiento de rechazos",
+      "descripcion": null
+    },
+    {
+      "id": "E015",
+      "tipo": "especifica",
+      "nombre": "Dominio de circuitos administrativos y términos técnicos",
+      "descripcion": null
+    },
+    {
+      "id": "E016",
+      "tipo": "especifica",
+      "nombre": "Mantenimiento preventivo y correctivo de equipos e instalaciones",
+      "descripcion": null
+    },
+    {
+      "id": "E017",
+      "tipo": "especifica",
+      "nombre": "Conocimientos técnicos en electricidad y plomería",
+      "descripcion": null
+    },
+    {
+      "id": "E018",
+      "tipo": "especifica",
+      "nombre": "Uso seguro de herramientas y materiales",
+      "descripcion": null
+    },
+    {
+      "id": "E019",
+      "tipo": "especifica",
+      "nombre": "Diagnóstico y resolución de fallas",
+      "descripcion": null
+    },
+    {
+      "id": "E020",
+      "tipo": "especifica",
+      "nombre": "Cumplimiento de normas de seguridad e higiene laboral",
+      "descripcion": null
+    },
+    {
+      "id": "E021",
+      "tipo": "especifica",
+      "nombre": "Gestión documental y registración administrativa",
+      "descripcion": "Capacidad para organizar, cargar y resguardar información y documentación administrativa con precisión, orden y criterios de trazabilidad"
+    },
+    {
+      "id": "E022",
+      "tipo": "especifica",
+      "nombre": "Orientación al detalle y control de la información",
+      "descripcion": "Habilidad para revisar datos, detectar inconsistencias, asegurar exactitud en los registros e identificar desvíos sin necesidad de supervisión constante"
+    },
+    {
+      "id": "E023",
+      "tipo": "especifica",
+      "nombre": "Comunicación, trato profesional y trabajo en equipo",
+      "descripcion": "Capacidad para interactuar con proveedores, bancos, áreas del hospital, pacientes internos y terceros con claridad, respeto y eficacia, transmitiendo información correcta y oportuna, y cooperando activamente con el resto del equipo para asegurar un flujo de trabajo coordinado y confiable"
+    },
+    {
+      "id": "E024",
+      "tipo": "especifica",
+      "nombre": "Uso competente de sistemas administrativos y herramientas digitales",
+      "descripcion": "Dominio de plataformas de gestión, sistemas contables, planillas y herramientas informáticas para procesar y analizar información de manera eficiente"
+    },
+    {
+      "id": "E025",
+      "tipo": "especifica",
+      "nombre": "Cumplimiento de procedimientos y estándares administrativos",
+      "descripcion": "Aptitud para aplicar políticas internas, normativa vigente y procesos establecidos, asegurando orden, transparencia y confiabilidad en las operaciones diarias"
+    },
+    {
+      "id": "E026",
+      "tipo": "especifica",
+      "nombre": "Conocimiento de normas de esterilización y bioseguridad quirúrgica",
+      "descripcion": null
+    },
+    {
+      "id": "E027",
+      "tipo": "especifica",
+      "nombre": "Manejo técnico del instrumental y aparatología médica",
+      "descripcion": null
+    },
+    {
+      "id": "E028",
+      "tipo": "especifica",
+      "nombre": "Coordinación con cirujanos y anestesistas en procedimientos quirúrgicos",
+      "descripcion": null
+    },
+    {
+      "id": "E029",
+      "tipo": "especifica",
+      "nombre": "Registro y trazabilidad de materiales e insumos utilizados",
+      "descripcion": null
+    },
+    {
+      "id": "E030",
+      "tipo": "especifica",
+      "nombre": "Cumplimiento de protocolos de seguridad del paciente",
+      "descripcion": null
+    },
+    {
+      "id": "E031",
+      "tipo": "especifica",
+      "nombre": "Administración y mantenimiento de redes y servidores",
+      "descripcion": null
+    },
+    {
+      "id": "E032",
+      "tipo": "especifica",
+      "nombre": "Gestión de soporte técnico y resolución de incidencias",
+      "descripcion": null
+    },
+    {
+      "id": "E033",
+      "tipo": "especifica",
+      "nombre": "Documentación técnica e inventario de infraestructura IT",
+      "descripcion": null
+    },
+    {
+      "id": "E034",
+      "tipo": "especifica",
+      "nombre": "Conocimiento de sistemas de gestión hospitalaria y software institucional",
+      "descripcion": null
+    },
+    {
+      "id": "E035",
+      "tipo": "especifica",
+      "nombre": "Seguridad informática y resguardo de datos",
+      "descripcion": null
+    },
+    {
+      "id": "E036",
+      "tipo": "especifica",
+      "nombre": "Conocimientos sólidos en liquidación de sueldos y cargas sociales",
+      "descripcion": null
+    },
+    {
+      "id": "E037",
+      "tipo": "especifica",
+      "nombre": "Dominio de sistemas de gestión de RRHH y Excel intermedio",
+      "descripcion": null
+    },
+    {
+      "id": "E038",
+      "tipo": "especifica",
+      "nombre": "Interpretación de convenios colectivos y normativa laboral",
+      "descripcion": null
+    },
+    {
+      "id": "E039",
+      "tipo": "especifica",
+      "nombre": "Gestión documental y manejo de legajos",
+      "descripcion": null
+    },
+    {
+      "id": "E040",
+      "tipo": "especifica",
+      "nombre": "Capacidad de resolución de conflictos vinculados a la gestión salarial",
+      "descripcion": null
+    },
+    {
+      "id": "E041",
+      "tipo": "especifica",
+      "nombre": "Conocimiento en técnicas de traslado y movilización segura de pacientes",
+      "descripcion": null
+    },
+    {
+      "id": "E042",
+      "tipo": "especifica",
+      "nombre": "Aplicación de protocolos de bioseguridad y seguridad del paciente",
+      "descripcion": null
+    },
+    {
+      "id": "E043",
+      "tipo": "especifica",
+      "nombre": "Capacidad de respuesta ante emergencias médicas",
+      "descripcion": null
+    },
+    {
+      "id": "E044",
+      "tipo": "especifica",
+      "nombre": "Comunicación efectiva con enfermería y áreas asistenciales",
+      "descripcion": null
+    },
+    {
+      "id": "E045",
+      "tipo": "especifica",
+      "nombre": "Organización y control de elementos de transporte hospitalario",
+      "descripcion": null
+    },
+    {
+      "id": "E046",
+      "tipo": "especifica",
+      "nombre": "Gestión integral de la atención en contextos críticos",
+      "descripcion": "Capacidad para organizar, priorizar y resolver simultáneamente demandas asistenciales, administrativas y comunicacionales en situaciones de urgencia y alta presión, garantizando continuidad de la atención y seguridad del paciente"
+    },
+    {
+      "id": "E047",
+      "tipo": "especifica",
+      "nombre": "Dominio de sistemas de gestión de RRHH y Excel avanzado",
+      "descripcion": null
+    },
+    {
+      "id": "E048",
+      "tipo": "especifica",
+      "nombre": "Comunicación clínica–administrativa efectiva",
+      "descripcion": "Capacidad para comunicarse de manera clara, precisa y profesional con equipos médicos, áreas internas, pacientes y entidades externas, asegurando correcta transmisión de información crítica y continuidad asistencial"
+    },
+    {
+      "id": "E049",
+      "tipo": "especifica",
+      "nombre": "Gestión operativa integral del paciente internado",
+      "descripcion": "Capacidad para coordinar y ejecutar los procesos administrativos y operativos vinculados a la internación del paciente, asegurando continuidad, orden y cumplimiento de los circuitos institucionales durante toda la estadía, incluyendo la detección y canalización de necesidades operativas y de mantenimiento"
+    },
+    {
+      "id": "E050",
+      "tipo": "especifica",
+      "nombre": "Nexo operativo entre paciente, áreas internas y servicios de soporte",
+      "descripcion": "Capacidad para actuar como enlace efectivo entre el paciente internado y las distintas áreas operativas y de soporte (enfermería, administración, mantenimiento y servicios externos), detectando necesidades y gestionando respuestas oportunas"
+    },
+    {
+      "id": "E051",
+      "tipo": "especifica",
+      "nombre": "Toma de decisiones operativas con criterio institucional",
+      "descripcion": "Habilidad para tomar decisiones operativas alineadas a protocolos y lineamientos institucionales, evaluando impacto asistencial, administrativo y financiero, especialmente en ausencia de supervisión directa"
+    },
+    {
+      "id": "E052",
+      "tipo": "especifica",
+      "nombre": "Gestión de circuitos administrativos y financieros del paciente",
+      "descripcion": "Conocimiento y correcta ejecución de los circuitos administrativos y financieros vinculados a la atención del paciente (autorizaciones, cobros, registros y validaciones), minimizando errores, demoras y reprocesos"
+    },
+    {
+      "id": "E053",
+      "tipo": "especifica",
+      "nombre": "Compromiso ético, confiabilidad y representación institucional",
+      "descripcion": "Capacidad para actuar con criterio profesional, confidencialidad y respeto por las normas institucionales, sosteniendo una conducta confiable y alineada a los valores del hospital, incluso frente a situaciones de tensión, conflicto o presión externa"
+    },
+    {
+      "id": "E054",
+      "tipo": "especifica",
+      "nombre": "Comunicación empática y orientación al paciente y su familia",
+      "descripcion": "Habilidad para brindar información clara, precisa y oportuna a pacientes y familiares, acompañando procesos sensibles (altas sanatoriales, documentación de recién nacidos, trámites posteriores) con empatía, respeto y contención"
+    },
+    {
+      "id": "E055",
+      "tipo": "especifica",
+      "nombre": "Gestión administrativa, financiera y de autorizaciones con criterio",
+      "descripcion": "Conocimiento y correcta ejecución de procesos de cobranzas, autorizaciones y validaciones administrativas, tomando decisiones operativas cuando corresponde y derivando oportunamente los casos que requieren definición superior"
+    },
+    {
+      "id": "E056",
+      "tipo": "especifica",
+      "nombre": "Responsabilidad institucional, confiabilidad y criterio profesional",
+      "descripcion": "Nivel de compromiso, autonomía y responsabilidad en el manejo de información sensible, documentación crítica y situaciones que requieren criterio profesional, actuando siempre alineada a los valores y normas institucionales"
+    }
+  ],
+  "sectores": [
+    {
+      "id": "S01",
+      "nombre": "Enfermería",
+      "nombre_original": "ENFERMERIA",
+      "respuestas": 71
+    },
+    {
+      "id": "S02",
+      "nombre": "Limpieza",
+      "nombre_original": "LIMPIEZA",
+      "respuestas": 26
+    },
+    {
+      "id": "S03",
+      "nombre": "Mantenimiento",
+      "nombre_original": "MANTENIMIENTO",
+      "respuestas": 4
+    },
+    {
+      "id": "S04",
+      "nombre": "Quirófano",
+      "nombre_original": "QUIROFANO",
+      "respuestas": 11
+    },
+    {
+      "id": "S05",
+      "nombre": "Sistemas",
+      "nombre_original": "SISTEMAS",
+      "respuestas": 1
+    },
+    {
+      "id": "S06",
+      "nombre": "Facturación",
+      "nombre_original": "FACTURACIÓN",
+      "respuestas": 6
+    },
+    {
+      "id": "S07",
+      "nombre": "Enfermería - Auxiliar de transporte",
+      "nombre_original": "ENFERMERIA - AUXILIAR DE TRANSPORTE",
+      "respuestas": 3
+    },
+    {
+      "id": "S08",
+      "nombre": "Recepción / Cajero",
+      "nombre_original": "RECEPCIÓN / CAJERO",
+      "respuestas": 10
+    },
+    {
+      "id": "S09",
+      "nombre": "Auxiliar de servicios",
+      "nombre_original": "AUXILIAR DE SERVICIOS",
+      "respuestas": 1
+    }
+  ],
+  "puestos": [],
+  "sector_competencias": [
+    {
+      "sector_id": "S01",
+      "competencia_id": "E001",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S01",
+      "competencia_id": "E002",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S01",
+      "competencia_id": "E003",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S01",
+      "competencia_id": "E004",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S01",
+      "competencia_id": "E005",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S02",
+      "competencia_id": "E006",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S02",
+      "competencia_id": "E007",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S02",
+      "competencia_id": "E008",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S02",
+      "competencia_id": "E009",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S02",
+      "competencia_id": "E010",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S03",
+      "competencia_id": "E016",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S03",
+      "competencia_id": "E017",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S03",
+      "competencia_id": "E018",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S03",
+      "competencia_id": "E019",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S03",
+      "competencia_id": "E020",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S04",
+      "competencia_id": "E026",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S04",
+      "competencia_id": "E027",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S04",
+      "competencia_id": "E028",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S04",
+      "competencia_id": "E029",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S04",
+      "competencia_id": "E030",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S05",
+      "competencia_id": "E031",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S05",
+      "competencia_id": "E032",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S05",
+      "competencia_id": "E033",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S05",
+      "competencia_id": "E034",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S05",
+      "competencia_id": "E035",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S06",
+      "competencia_id": "E011",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S06",
+      "competencia_id": "E012",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S06",
+      "competencia_id": "E013",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S06",
+      "competencia_id": "E014",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S06",
+      "competencia_id": "E015",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S07",
+      "competencia_id": "E041",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S07",
+      "competencia_id": "E042",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S07",
+      "competencia_id": "E043",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S07",
+      "competencia_id": "E044",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S07",
+      "competencia_id": "E045",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S08",
+      "competencia_id": "E046",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S08",
+      "competencia_id": "E048",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S08",
+      "competencia_id": "E051",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S08",
+      "competencia_id": "E052",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S08",
+      "competencia_id": "E053",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S09",
+      "competencia_id": "E049",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S09",
+      "competencia_id": "E050",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S09",
+      "competencia_id": "E054",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S09",
+      "competencia_id": "E055",
+      "evidencia": "coincidencia de respuestas con columna J"
+    },
+    {
+      "sector_id": "S09",
+      "competencia_id": "E056",
+      "evidencia": "coincidencia de respuestas con columna J"
+    }
+  ],
+  "plantillas_evaluacion": [
+    {
+      "id": "P01",
+      "sector_id": "S01",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Enfermería",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    },
+    {
+      "id": "P02",
+      "sector_id": "S02",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Limpieza",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    },
+    {
+      "id": "P03",
+      "sector_id": "S03",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Mantenimiento",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    },
+    {
+      "id": "P04",
+      "sector_id": "S04",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Quirófano",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    },
+    {
+      "id": "P05",
+      "sector_id": "S05",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Sistemas",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    },
+    {
+      "id": "P06",
+      "sector_id": "S06",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Facturación",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    },
+    {
+      "id": "P07",
+      "sector_id": "S07",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Enfermería - Auxiliar de transporte",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    },
+    {
+      "id": "P08",
+      "sector_id": "S08",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Recepción / Cajero",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    },
+    {
+      "id": "P09",
+      "sector_id": "S09",
+      "puesto_id": null,
+      "nombre": "Autoevaluación 2025 - Auxiliar de servicios",
+      "version": 1,
+      "estado": "borrador",
+      "anio": 2025
+    }
+  ],
+  "plantilla_competencias": [
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "E001",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "E002",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "E003",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "E004",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P01",
+      "competencia_id": "E005",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "E006",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "E007",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "E008",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "E009",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P02",
+      "competencia_id": "E010",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "E016",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "E017",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "E018",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "E019",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P03",
+      "competencia_id": "E020",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "E026",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "E027",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "E028",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "E029",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P04",
+      "competencia_id": "E030",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "E031",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "E032",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "E033",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "E034",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P05",
+      "competencia_id": "E035",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "E011",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "E012",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "E013",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "E014",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P06",
+      "competencia_id": "E015",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "E041",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "E042",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "E043",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "E044",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P07",
+      "competencia_id": "E045",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "E046",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "E048",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "E051",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "E052",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P08",
+      "competencia_id": "E053",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "G001",
+      "orden": 1,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "G002",
+      "orden": 2,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "G003",
+      "orden": 3,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "G004",
+      "orden": 4,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "G005",
+      "orden": 5,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "E049",
+      "orden": 6,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "E050",
+      "orden": 7,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "E054",
+      "orden": 8,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "E055",
+      "orden": 9,
+      "peso": null,
+      "obligatorio": null
+    },
+    {
+      "plantilla_id": "P09",
+      "competencia_id": "E056",
+      "orden": 10,
+      "peso": null,
+      "obligatorio": null
+    }
+  ],
+  "origen_columnas": [
+    {
+      "competencia_id": "G001",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "E",
+      "encabezado_original": "Ética profesional: Demuestra altos estándares de conducta ética, actuando con integridad y transparencia en todas las acciones y decisiones, fomentando un entorno de confianza y respeto.",
+      "respuestas": 133,
+      "sectores_observados": {
+        "S01": 71,
+        "S02": 26,
+        "S03": 4,
+        "S04": 11,
+        "S05": 1,
+        "S06": 6,
+        "S07": 3,
+        "S08": 10,
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "G002",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "F",
+      "encabezado_original": "Trabajo en equipo colaborativo: Participa activamente en la colaboración con las diferentes áreas, promoviendo la sinergia grupal, la alineación y el cumplimiento de los objetivos comunes.",
+      "respuestas": 133,
+      "sectores_observados": {
+        "S01": 71,
+        "S02": 26,
+        "S03": 4,
+        "S04": 11,
+        "S05": 1,
+        "S06": 6,
+        "S07": 3,
+        "S08": 10,
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "G003",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "G",
+      "encabezado_original": "Compromiso con el propósito: Identifica los objetivos del Hospital, su vínculo entre el rol individual y la misión institucional.",
+      "respuestas": 133,
+      "sectores_observados": {
+        "S01": 71,
+        "S02": 26,
+        "S03": 4,
+        "S04": 11,
+        "S05": 1,
+        "S06": 6,
+        "S07": 3,
+        "S08": 10,
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "G004",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "H",
+      "encabezado_original": "Orientación al paciente/cliente: Identifica y satisface proactivamente las necesidades y expectativas de los pacientes y clientes, manteniendo un enfoque adaptativo y flexible para ofrecer un servicio de calidad.",
+      "respuestas": 133,
+      "sectores_observados": {
+        "S01": 71,
+        "S02": 26,
+        "S03": 4,
+        "S04": 11,
+        "S05": 1,
+        "S06": 6,
+        "S07": 3,
+        "S08": 10,
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "G005",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "I",
+      "encabezado_original": "Excelencia Operativa:  Se compromete con la mejora continua en los procesos, garantizando la calidad y excelencia en cada tarea y manteniendo altos estándares de servicio al paciente. Promueve una cultura de seguridad en el trabajo y el cumplimiento de normativas para proteger a todos los colaboradores y minimizar riesgos.",
+      "respuestas": 133,
+      "sectores_observados": {
+        "S01": 71,
+        "S02": 26,
+        "S03": 4,
+        "S04": 11,
+        "S05": 1,
+        "S06": 6,
+        "S07": 3,
+        "S08": 10,
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E001",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "K",
+      "encabezado_original": " [Conocimientos de técnicas de enfermería general.]",
+      "respuestas": 71,
+      "sectores_observados": {
+        "S01": 71
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E002",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "L",
+      "encabezado_original": " [Administración segura de medicación.]",
+      "respuestas": 71,
+      "sectores_observados": {
+        "S01": 71
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E003",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "M",
+      "encabezado_original": " [Protocolos de bioseguridad]",
+      "respuestas": 71,
+      "sectores_observados": {
+        "S01": 71
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E004",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "N",
+      "encabezado_original": " [Uso de equipamiento hospitalario.]",
+      "respuestas": 71,
+      "sectores_observados": {
+        "S01": 71
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E005",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "O",
+      "encabezado_original": " [Organización y priorización del trabajo.]",
+      "respuestas": 71,
+      "sectores_observados": {
+        "S01": 71
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E006",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "P",
+      "encabezado_original": " [Aplicación de protocolos de limpieza y desinfección hospitalaria.]",
+      "respuestas": 26,
+      "sectores_observados": {
+        "S02": 26
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E007",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "Q",
+      "encabezado_original": " [Conocimiento en uso y dilución de productos químicos.]",
+      "respuestas": 26,
+      "sectores_observados": {
+        "S02": 26
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E008",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "R",
+      "encabezado_original": " [Organización del trabajo y control de insumos.]",
+      "respuestas": 26,
+      "sectores_observados": {
+        "S02": 26
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E009",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "S",
+      "encabezado_original": " [Cumplimiento de normas de bioseguridad y seguridad ocupacional.]",
+      "respuestas": 26,
+      "sectores_observados": {
+        "S02": 26
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E010",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "T",
+      "encabezado_original": " [Comunicación efectiva con el paciente, colaboración inter e intrasectorial.]",
+      "respuestas": 26,
+      "sectores_observados": {
+        "S02": 26
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E011",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "U",
+      "encabezado_original": " [Interpretación de historias clínicas, nomencladores y prácticas.]",
+      "respuestas": 6,
+      "sectores_observados": {
+        "S06": 6
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E012",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "V",
+      "encabezado_original": " [Carga, auditoría y validación de prestaciones.]",
+      "respuestas": 5,
+      "sectores_observados": {
+        "S06": 5
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E013",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "W",
+      "encabezado_original": " [Manejo de sistemas de facturación y liquidación de obras sociales.]",
+      "respuestas": 6,
+      "sectores_observados": {
+        "S06": 6
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E014",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "X",
+      "encabezado_original": " [Control de documentación respaldatoria y seguimiento de rechazos.]",
+      "respuestas": 6,
+      "sectores_observados": {
+        "S06": 6
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E015",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "Y",
+      "encabezado_original": " [Dominio de circuitos administrativos y términos técnicos.]",
+      "respuestas": 6,
+      "sectores_observados": {
+        "S06": 6
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E016",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "Z",
+      "encabezado_original": " [Mantenimiento preventivo y correctivo de equipos e instalaciones.]",
+      "respuestas": 4,
+      "sectores_observados": {
+        "S03": 4
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E017",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AA",
+      "encabezado_original": " [Conocimientos técnicos en electricidad y plomería.]",
+      "respuestas": 4,
+      "sectores_observados": {
+        "S03": 4
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E018",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AB",
+      "encabezado_original": " [Uso seguro de herramientas y materiales.]",
+      "respuestas": 4,
+      "sectores_observados": {
+        "S03": 4
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E019",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AC",
+      "encabezado_original": " [Diagnóstico y resolución de fallas.]",
+      "respuestas": 4,
+      "sectores_observados": {
+        "S03": 4
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E020",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AD",
+      "encabezado_original": " [Cumplimiento de normas de seguridad e higiene laboral.]",
+      "respuestas": 4,
+      "sectores_observados": {
+        "S03": 4
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E021",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AE",
+      "encabezado_original": " [Gestión documental y registración administrativa: Capacidad para organizar, cargar y resguardar información y documentación administrativa con precisión, orden y criterios de trazabilidad.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "Administración (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E022",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AF",
+      "encabezado_original": " [Orientación al detalle y control de la información: Habilidad para revisar datos, detectar inconsistencias, asegurar exactitud en los registros e identificar desvíos sin necesidad de supervisión constante.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "Administración (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E023",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AG",
+      "encabezado_original": " [Comunicación, trato profesional y trabajo en equipo: Capacidad para interactuar con proveedores, bancos, áreas del hospital, pacientes internos y terceros con claridad, respeto y eficacia, transmitiendo información correcta y oportuna, y cooperando activamente con el resto del equipo para asegurar un flujo de trabajo coordinado y confiable.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "Administración (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E024",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AH",
+      "encabezado_original": " [Uso competente de sistemas administrativos y herramientas digitales: Dominio de plataformas de gestión, sistemas contables, planillas y herramientas informáticas para procesar y analizar información de manera eficiente.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "Administración (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E025",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AI",
+      "encabezado_original": " [Cumplimiento de procedimientos y estándares administrativos: Aptitud para aplicar políticas internas, normativa vigente y procesos establecidos, asegurando orden, transparencia y confiabilidad en las operaciones diarias.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "Administración (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E026",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AJ",
+      "encabezado_original": " [Conocimiento de normas de esterilización y bioseguridad quirúrgica.]",
+      "respuestas": 11,
+      "sectores_observados": {
+        "S04": 11
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E027",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AK",
+      "encabezado_original": " [Manejo técnico del instrumental y aparatología médica.]",
+      "respuestas": 11,
+      "sectores_observados": {
+        "S04": 11
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E028",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AL",
+      "encabezado_original": " [Coordinación con cirujanos y anestesistas en procedimientos quirúrgicos.]",
+      "respuestas": 11,
+      "sectores_observados": {
+        "S04": 11
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E029",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AM",
+      "encabezado_original": " [Registro y trazabilidad de materiales e insumos utilizados.]",
+      "respuestas": 10,
+      "sectores_observados": {
+        "S04": 10
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E030",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AN",
+      "encabezado_original": " [Cumplimiento de protocolos de seguridad del paciente.]",
+      "respuestas": 11,
+      "sectores_observados": {
+        "S04": 11
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E031",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AO",
+      "encabezado_original": " [Administración y mantenimiento de redes y servidores.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S05": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E032",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AP",
+      "encabezado_original": " [Gestión de soporte técnico y resolución de incidencias.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S05": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E033",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AQ",
+      "encabezado_original": " [Documentación técnica e inventario de infraestructura IT.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S05": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E034",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AR",
+      "encabezado_original": " [Conocimiento de sistemas de gestión hospitalaria y software institucional.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S05": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E035",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AS",
+      "encabezado_original": " [Seguridad informática y resguardo de datos.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S05": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E036",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AT",
+      "encabezado_original": " [Conocimientos sólidos en liquidación de sueldos y cargas sociales.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E037",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AU",
+      "encabezado_original": " [Dominio de sistemas de gestión de RRHH y Excel intermedio.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E038",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AV",
+      "encabezado_original": " [Interpretación de convenios colectivos y normativa laboral.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E039",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AW",
+      "encabezado_original": " [Gestión documental y manejo de legajos.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E040",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AX",
+      "encabezado_original": " [Capacidad de resolución de conflictos vinculados a la gestión salarial.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E041",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AY",
+      "encabezado_original": " [Conocimiento en técnicas de traslado y movilización segura de pacientes.]",
+      "respuestas": 3,
+      "sectores_observados": {
+        "S07": 3
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E042",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "AZ",
+      "encabezado_original": " [Aplicación de protocolos de bioseguridad y seguridad del paciente.]",
+      "respuestas": 3,
+      "sectores_observados": {
+        "S07": 3
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E043",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BA",
+      "encabezado_original": " [Capacidad de respuesta ante emergencias médicas.]",
+      "respuestas": 3,
+      "sectores_observados": {
+        "S07": 3
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E044",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BB",
+      "encabezado_original": " [Comunicación efectiva con enfermería y áreas asistenciales.]",
+      "respuestas": 3,
+      "sectores_observados": {
+        "S07": 3
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E045",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BC",
+      "encabezado_original": " [Organización y control de elementos de transporte hospitalario.]",
+      "respuestas": 3,
+      "sectores_observados": {
+        "S07": 3
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E046",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BD",
+      "encabezado_original": " [Gestión integral de la atención en contextos críticos: Capacidad para organizar, priorizar y resolver simultáneamente demandas asistenciales, administrativas y comunicacionales en situaciones de urgencia y alta presión, garantizando continuidad de la atención y seguridad del paciente.]",
+      "respuestas": 10,
+      "sectores_observados": {
+        "S08": 10
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E047",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BE",
+      "encabezado_original": " [Dominio de sistemas de gestión de RRHH y Excel avanzado.]",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E038",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BF",
+      "encabezado_original": " [Interpretación de convenios colectivos y normativa laboral.] 2",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E039",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BG",
+      "encabezado_original": " [Gestión documental y manejo de legajos.] 2",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E048",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BH",
+      "encabezado_original": " [Comunicación clínica–administrativa efectiva: Capacidad para comunicarse de manera clara, precisa y profesional con equipos médicos, áreas internas, pacientes y entidades externas, asegurando correcta transmisión de información crítica y continuidad asistencial.]",
+      "respuestas": 10,
+      "sectores_observados": {
+        "S08": 10
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E049",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BJ",
+      "encabezado_original": " [Gestión operativa integral del paciente internado: Capacidad para coordinar y ejecutar los procesos administrativos y operativos vinculados a la internación del paciente, asegurando continuidad, orden y cumplimiento de los circuitos institucionales durante toda la estadía, incluyendo la detección y canalización de necesidades operativas y de mantenimiento.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E047",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BK",
+      "encabezado_original": " [Dominio de sistemas de gestión de RRHH y Excel avanzado.] 2",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E038",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BL",
+      "encabezado_original": " [Interpretación de convenios colectivos y normativa laboral.] 3",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E039",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BM",
+      "encabezado_original": " [Gestión documental y manejo de legajos.] 3",
+      "respuestas": 0,
+      "sectores_observados": {},
+      "area_sugerida": "RR. HH. / Liquidación de sueldos (inferido por contenido)"
+    },
+    {
+      "competencia_id": "E050",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BN",
+      "encabezado_original": " [Nexo operativo entre paciente, áreas internas y servicios de soporte: Capacidad para actuar como enlace efectivo entre el paciente internado y las distintas áreas operativas y de soporte (enfermería, administración, mantenimiento y servicios externos), detectando necesidades y gestionando respuestas oportunas.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E051",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BP",
+      "encabezado_original": " [Toma de decisiones operativas con criterio institucional: Habilidad para tomar decisiones operativas alineadas a protocolos y lineamientos institucionales, evaluando impacto asistencial, administrativo y financiero, especialmente en ausencia de supervisión directa.]",
+      "respuestas": 10,
+      "sectores_observados": {
+        "S08": 10
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E052",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BQ",
+      "encabezado_original": " [Gestión de circuitos administrativos y financieros del paciente: Conocimiento y correcta ejecución de los circuitos administrativos y financieros vinculados a la atención del paciente (autorizaciones, cobros, registros y validaciones), minimizando errores, demoras y reprocesos.]",
+      "respuestas": 10,
+      "sectores_observados": {
+        "S08": 10
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E053",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BR",
+      "encabezado_original": " [Compromiso ético, confiabilidad y representación institucional: Capacidad para actuar con criterio profesional, confidencialidad y respeto por las normas institucionales, sosteniendo una conducta confiable y alineada a los valores del hospital, incluso frente a situaciones de tensión, conflicto o presión externa.]",
+      "respuestas": 10,
+      "sectores_observados": {
+        "S08": 10
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E054",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BS",
+      "encabezado_original": " [Comunicación empática y orientación al paciente y su familia: Habilidad para brindar información clara, precisa y oportuna a pacientes y familiares, acompañando procesos sensibles (altas sanatoriales, documentación de recién nacidos, trámites posteriores) con empatía, respeto y contención.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E055",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BT",
+      "encabezado_original": " [Gestión administrativa, financiera y de autorizaciones con criterio: Conocimiento y correcta ejecución de procesos de cobranzas, autorizaciones y validaciones administrativas, tomando decisiones operativas cuando corresponde y derivando oportunamente los casos que requieren definición superior.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S09": 1
+      },
+      "area_sugerida": null
+    },
+    {
+      "competencia_id": "E056",
+      "hoja": "Respuestas de formulario 1",
+      "columna": "BV",
+      "encabezado_original": " [Responsabilidad institucional, confiabilidad y criterio profesional: Nivel de compromiso, autonomía y responsabilidad en el manejo de información sensible, documentación crítica y situaciones que requieren criterio profesional, actuando siempre alineada a los valores y normas institucionales.]",
+      "respuestas": 1,
+      "sectores_observados": {
+        "S09": 1
+      },
+      "area_sugerida": null
+    }
+  ],
+  "columnas_excluidas_del_catalogo": [
+    {
+      "columna": "A",
+      "encabezado": "Marca temporal",
+      "respuestas": 133,
+      "motivo": "identificación"
+    },
+    {
+      "columna": "B",
+      "encabezado": "APELLIDO Y NOMBRE",
+      "respuestas": 133,
+      "motivo": "identificación"
+    },
+    {
+      "columna": "C",
+      "encabezado": "DNI (sin puntos)",
+      "respuestas": 142,
+      "motivo": "identificación"
+    },
+    {
+      "columna": "D",
+      "encabezado": "N° LEGAJO",
+      "respuestas": 133,
+      "motivo": "identificación"
+    },
+    {
+      "columna": "J",
+      "encabezado": "¿A QUE SECTOR PERTENECES?",
+      "respuestas": 133,
+      "motivo": "sector"
+    },
+    {
+      "columna": "BI",
+      "encabezado": "Columna 60",
+      "respuestas": 72,
+      "motivo": "campo sin significado definido; conservar aparte"
+    },
+    {
+      "columna": "BO",
+      "encabezado": " [Fila 2]",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "BU",
+      "encabezado": " [Fila 5]",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "BW",
+      "encabezado": " [Fila 6]",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "BX",
+      "encabezado": " []",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "BY",
+      "encabezado": " [Fila 7]",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "BZ",
+      "encabezado": " [Fila 3]",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "CA",
+      "encabezado": " [] 2",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "CB",
+      "encabezado": " [Fila 4]",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "CC",
+      "encabezado": " [Fila 6] 2",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "CD",
+      "encabezado": " [Fila 3] 2",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    },
+    {
+      "columna": "CE",
+      "encabezado": " [Fila 8]",
+      "respuestas": 0,
+      "motivo": "marcador vacío sin competencia"
+    }
+  ],
+  "duplicados_unificados": [
+    {
+      "competencia_id": "E038",
+      "columnas": [
+        "AV",
+        "BF",
+        "BL"
+      ]
+    },
+    {
+      "competencia_id": "E039",
+      "columnas": [
+        "AW",
+        "BG",
+        "BM"
+      ]
+    },
+    {
+      "competencia_id": "E047",
+      "columnas": [
+        "BE",
+        "BK"
+      ]
+    }
+  ],
+  "competencias_sin_sector_confirmado": [
+    "E021",
+    "E022",
+    "E023",
+    "E024",
+    "E025",
+    "E036",
+    "E037",
+    "E038",
+    "E039",
+    "E040",
+    "E047"
+  ],
+  "respuestas_faltantes": [
+    {
+      "fila": 115,
+      "columna": "V",
+      "sector_id": "S06",
+      "competencia_id": "E012"
+    },
+    {
+      "fila": 119,
+      "columna": "AM",
+      "sector_id": "S04",
+      "competencia_id": "E029"
+    }
+  ],
+  "escala_observada": [
+    "2. EN DESARROLLO",
+    "3. CUMPLE CON LO ESPERADO",
+    "4. SUPERA LAS EXPECTATIVAS"
+  ]
+}

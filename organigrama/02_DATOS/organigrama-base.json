@@ -1,0 +1,788 @@
+{
+  "version": 2,
+  "rootId": "directorio",
+  "nodes": [
+    {
+      "id": "directorio",
+      "title": "Directorio",
+      "person": "Carlos Gudiño · Jorge Gudiño",
+      "expanded": true
+    },
+    {
+      "id": "director-medico",
+      "title": "Director Médico",
+      "person": "Martín Baldi",
+      "expanded": false
+    },
+    {
+      "id": "secretaria-de-gerencia-y-direccion",
+      "title": "Secretaría de Gerencia y Dirección",
+      "person": "Florencia Raffo",
+      "expanded": false
+    },
+    {
+      "id": "comite-de-infectologia",
+      "title": "Comité de Infectología",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "auditoria-medica",
+      "title": "Auditoría Médica",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "coordinacion-guardia",
+      "title": "Coordinación Guardia",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "atencion-ambulatoria-guardia-pediatrica",
+      "title": "Atención Ambulatoria Guardia Pediátrica",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "atencion-ambulatoria-guardia-adultos",
+      "title": "Atención Ambulatoria Guardia Adultos",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "coordinacion-internacion-en-piso-clinica",
+      "title": "Coordinación Internación en Piso Clínica",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "internacion-en-piso-clinica-pediatrica",
+      "title": "Internación en Piso Clínica Pediátrica",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "internacion-en-piso-clinica-medica-adultos",
+      "title": "Internación en Piso Clínica Médica Adultos",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "coordinacion-terapia-intensiva",
+      "title": "Coordinación Terapia Intensiva",
+      "person": "Dr. Gual",
+      "expanded": false
+    },
+    {
+      "id": "uti-neo",
+      "title": "UTI NEO",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "uti-adultos",
+      "title": "UTI Adultos",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "uti-pediatrica",
+      "title": "UTI Pediátrica",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "coordinacion-de-diagnostico-por-imagenes",
+      "title": "Coordinación de Diagnóstico por Imágenes",
+      "person": "Carolina González",
+      "expanded": false
+    },
+    {
+      "id": "tecnicos-de-imagenes-rx-resonador-tomografo",
+      "title": "Técnicos de Imágenes (RX, Resonador, Tomógrafo)",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "jefatura-de-esterilizacion",
+      "title": "Jefatura de Esterilización",
+      "person": "Luis Mendez",
+      "expanded": false
+    },
+    {
+      "id": "tecnico-de-esterilizacion",
+      "title": "Técnico de Esterilización",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "jefatura-de-enfermeria",
+      "title": "Jefatura de Enfermería",
+      "person": "Paula Carrizo",
+      "expanded": false
+    },
+    {
+      "id": "coordinacion-de-enfermeria",
+      "title": "Coordinación de Enfermería",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "auxiliar-de-transporte",
+      "title": "Auxiliar de Transporte",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "enfermero",
+      "title": "Enfermero",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "jefatura-de-farmacia-y-compras",
+      "title": "Jefatura de Farmacia y Compras",
+      "person": "Virginia Ceretti",
+      "expanded": false
+    },
+    {
+      "id": "director-tecnico-de-farmacia-hospitalaria",
+      "title": "Director Técnico de Farmacia Hospitalaria",
+      "person": "Luis Mendez",
+      "expanded": false
+    },
+    {
+      "id": "tecnico-de-farmacia",
+      "title": "Técnico de Farmacia",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "stock-deposito",
+      "title": "Stock Depósito",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "jefatura-de-quirofano",
+      "title": "Jefatura de Quirófano",
+      "person": "Gloria de los Ángeles Fabián",
+      "expanded": false
+    },
+    {
+      "id": "responsable-de-quirofano",
+      "title": "Responsable de Quirófano",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "enfermero-2",
+      "title": "Enfermero",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "instrumentadores",
+      "title": "Instrumentadores",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "gerente-general",
+      "title": "Gerente General",
+      "person": "Mariano Cardoner",
+      "expanded": false
+    },
+    {
+      "id": "comite-de-rse",
+      "title": "Comité de RSE",
+      "person": "Beatriz Casermeiro",
+      "expanded": false
+    },
+    {
+      "id": "jefatura-de-recursos-humanos",
+      "title": "Jefatura de Recursos Humanos",
+      "person": "Francisco Fernández Ovide",
+      "expanded": false
+    },
+    {
+      "id": "analista-de-liquidacion-de-sueldos",
+      "title": "Analista de Liquidación de Sueldos",
+      "person": "Juan Soni",
+      "expanded": false
+    },
+    {
+      "id": "jefe-de-mantenimiento",
+      "title": "Jefe de Mantenimiento",
+      "person": "Federico Jacobacci",
+      "expanded": false
+    },
+    {
+      "id": "oficiales-de-mantenimiento",
+      "title": "Oficiales de Mantenimiento",
+      "person": "Héctor Luis Coria · Hernán Gonzalo López · Carlos Andrés Pantoja",
+      "expanded": false
+    },
+    {
+      "id": "jefe-de-sistemas",
+      "title": "Jefe de Sistemas",
+      "person": "Miguel Jiménez",
+      "expanded": false
+    },
+    {
+      "id": "auxiliar-de-sistemas",
+      "title": "Auxiliar de Sistemas",
+      "person": "Germán Reales",
+      "expanded": false
+    },
+    {
+      "id": "jefe-de-administracion",
+      "title": "Jefe de Administración",
+      "person": "Lucía Moyano",
+      "expanded": false
+    },
+    {
+      "id": "pagos-y-bancos",
+      "title": "Pagos y Bancos",
+      "person": "Patricia Muza",
+      "expanded": false
+    },
+    {
+      "id": "auxiliar-de-compras-y-liq-de-impuestos",
+      "title": "Auxiliar de compras y liq. de impuestos",
+      "person": "Analía Celeste González",
+      "expanded": false
+    },
+    {
+      "id": "contabilidad",
+      "title": "Contabilidad",
+      "person": "Barbara Salvador",
+      "expanded": false
+    },
+    {
+      "id": "archivo",
+      "title": "Archivo",
+      "person": "Noemí Farfán",
+      "expanded": false
+    },
+    {
+      "id": "cobranzas",
+      "title": "Cobranzas",
+      "person": "María Belén Albornoz",
+      "expanded": false
+    },
+    {
+      "id": "gestion-de-tramites",
+      "title": "Gestión de Trámites",
+      "person": "Juan Ojeda",
+      "expanded": false
+    },
+    {
+      "id": "tesoreria",
+      "title": "Tesorería",
+      "person": "Darlene Subirana",
+      "expanded": false
+    },
+    {
+      "id": "cadete",
+      "title": "Cadete",
+      "person": "Franco Emmanuel Gómez",
+      "expanded": false
+    },
+    {
+      "id": "cadete-2",
+      "title": "Cadete",
+      "person": "Marcio Rubén Rossi",
+      "expanded": false
+    },
+    {
+      "id": "jefatura-de-facturacion",
+      "title": "Jefatura de Facturación",
+      "person": "Natalia Bini",
+      "expanded": false
+    },
+    {
+      "id": "emision-de-ordenes",
+      "title": "Emisión de Órdenes",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "entrega-de-honorarios",
+      "title": "Entrega de Honorarios",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "facturacion",
+      "title": "Facturación",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "atencion-al-publico",
+      "title": "Atención al Público",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "programacion-de-cirugias",
+      "title": "Programación de Cirugías",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "coordinadora-de-servicios",
+      "title": "Coordinadora de Servicios",
+      "person": "Virginia Goytia",
+      "expanded": false
+    },
+    {
+      "id": "seguridad",
+      "title": "Seguridad",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "telefonista",
+      "title": "Telefonista",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "cajero",
+      "title": "Cajero",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "recepcionistas",
+      "title": "Recepcionistas",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "auxiliar-de-servicios",
+      "title": "Auxiliar de Servicios",
+      "person": "",
+      "expanded": false
+    },
+    {
+      "id": "supervisora-de-calidad-y-servicio-al-paciente",
+      "title": "Supervisora de Calidad y Servicio al Paciente",
+      "person": "Camila Cavanagh",
+      "expanded": false
+    },
+    {
+      "id": "auditoria-interna-sgc",
+      "title": "Auditoría Interna SGC",
+      "person": "Beatriz Casermeiro",
+      "expanded": false
+    },
+    {
+      "id": "coordinadora-de-limpieza",
+      "title": "Coordinadora de Limpieza",
+      "person": "Lilian Baez · Rosa Juarez",
+      "expanded": false
+    },
+    {
+      "id": "mucamos",
+      "title": "Mucamos",
+      "person": "",
+      "expanded": false
+    }
+  ],
+  "edges": [
+    {
+      "parentId": "directorio",
+      "childId": "director-medico",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "secretaria-de-gerencia-y-direccion",
+      "relation": "shared",
+      "order": 0
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "comite-de-infectologia",
+      "relation": "support",
+      "order": 1
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "auditoria-medica",
+      "relation": "support",
+      "order": 2
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "coordinacion-guardia",
+      "relation": "direct",
+      "order": 3
+    },
+    {
+      "parentId": "coordinacion-guardia",
+      "childId": "atencion-ambulatoria-guardia-pediatrica",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "coordinacion-guardia",
+      "childId": "atencion-ambulatoria-guardia-adultos",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "coordinacion-internacion-en-piso-clinica",
+      "relation": "direct",
+      "order": 4
+    },
+    {
+      "parentId": "coordinacion-internacion-en-piso-clinica",
+      "childId": "internacion-en-piso-clinica-pediatrica",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "coordinacion-internacion-en-piso-clinica",
+      "childId": "internacion-en-piso-clinica-medica-adultos",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "coordinacion-terapia-intensiva",
+      "relation": "direct",
+      "order": 5
+    },
+    {
+      "parentId": "coordinacion-terapia-intensiva",
+      "childId": "uti-neo",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "coordinacion-terapia-intensiva",
+      "childId": "uti-adultos",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "coordinacion-terapia-intensiva",
+      "childId": "uti-pediatrica",
+      "relation": "direct",
+      "order": 2
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "coordinacion-de-diagnostico-por-imagenes",
+      "relation": "direct",
+      "order": 6
+    },
+    {
+      "parentId": "coordinacion-de-diagnostico-por-imagenes",
+      "childId": "tecnicos-de-imagenes-rx-resonador-tomografo",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "jefatura-de-esterilizacion",
+      "relation": "direct",
+      "order": 7
+    },
+    {
+      "parentId": "jefatura-de-esterilizacion",
+      "childId": "tecnico-de-esterilizacion",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "jefatura-de-enfermeria",
+      "relation": "direct",
+      "order": 8
+    },
+    {
+      "parentId": "jefatura-de-enfermeria",
+      "childId": "coordinacion-de-enfermeria",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "coordinacion-de-enfermeria",
+      "childId": "auxiliar-de-transporte",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "coordinacion-de-enfermeria",
+      "childId": "enfermero",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "jefatura-de-farmacia-y-compras",
+      "relation": "direct",
+      "order": 9
+    },
+    {
+      "parentId": "jefatura-de-farmacia-y-compras",
+      "childId": "director-tecnico-de-farmacia-hospitalaria",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "jefatura-de-farmacia-y-compras",
+      "childId": "tecnico-de-farmacia",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "jefatura-de-farmacia-y-compras",
+      "childId": "stock-deposito",
+      "relation": "direct",
+      "order": 2
+    },
+    {
+      "parentId": "director-medico",
+      "childId": "jefatura-de-quirofano",
+      "relation": "direct",
+      "order": 10
+    },
+    {
+      "parentId": "jefatura-de-quirofano",
+      "childId": "responsable-de-quirofano",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "responsable-de-quirofano",
+      "childId": "enfermero-2",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "responsable-de-quirofano",
+      "childId": "instrumentadores",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "directorio",
+      "childId": "gerente-general",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "secretaria-de-gerencia-y-direccion",
+      "relation": "shared",
+      "order": 0
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "comite-de-rse",
+      "relation": "support",
+      "order": 1
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "jefatura-de-recursos-humanos",
+      "relation": "direct",
+      "order": 2
+    },
+    {
+      "parentId": "jefatura-de-recursos-humanos",
+      "childId": "analista-de-liquidacion-de-sueldos",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "jefe-de-mantenimiento",
+      "relation": "direct",
+      "order": 3
+    },
+    {
+      "parentId": "jefe-de-mantenimiento",
+      "childId": "oficiales-de-mantenimiento",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "jefe-de-sistemas",
+      "relation": "direct",
+      "order": 4
+    },
+    {
+      "parentId": "jefe-de-sistemas",
+      "childId": "auxiliar-de-sistemas",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "jefe-de-administracion",
+      "relation": "direct",
+      "order": 5
+    },
+    {
+      "parentId": "jefe-de-administracion",
+      "childId": "pagos-y-bancos",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "jefe-de-administracion",
+      "childId": "auxiliar-de-compras-y-liq-de-impuestos",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "jefe-de-administracion",
+      "childId": "contabilidad",
+      "relation": "direct",
+      "order": 2
+    },
+    {
+      "parentId": "jefe-de-administracion",
+      "childId": "archivo",
+      "relation": "direct",
+      "order": 3
+    },
+    {
+      "parentId": "jefe-de-administracion",
+      "childId": "cobranzas",
+      "relation": "direct",
+      "order": 4
+    },
+    {
+      "parentId": "jefe-de-administracion",
+      "childId": "gestion-de-tramites",
+      "relation": "direct",
+      "order": 5
+    },
+    {
+      "parentId": "jefe-de-administracion",
+      "childId": "tesoreria",
+      "relation": "direct",
+      "order": 6
+    },
+    {
+      "parentId": "tesoreria",
+      "childId": "cadete",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "tesoreria",
+      "childId": "cadete-2",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "jefatura-de-facturacion",
+      "relation": "direct",
+      "order": 6
+    },
+    {
+      "parentId": "jefatura-de-facturacion",
+      "childId": "emision-de-ordenes",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "jefatura-de-facturacion",
+      "childId": "entrega-de-honorarios",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "jefatura-de-facturacion",
+      "childId": "facturacion",
+      "relation": "direct",
+      "order": 2
+    },
+    {
+      "parentId": "jefatura-de-facturacion",
+      "childId": "atencion-al-publico",
+      "relation": "direct",
+      "order": 3
+    },
+    {
+      "parentId": "jefatura-de-facturacion",
+      "childId": "programacion-de-cirugias",
+      "relation": "direct",
+      "order": 4
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "coordinadora-de-servicios",
+      "relation": "direct",
+      "order": 7
+    },
+    {
+      "parentId": "coordinadora-de-servicios",
+      "childId": "seguridad",
+      "relation": "direct",
+      "order": 0
+    },
+    {
+      "parentId": "coordinadora-de-servicios",
+      "childId": "telefonista",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "coordinadora-de-servicios",
+      "childId": "cajero",
+      "relation": "direct",
+      "order": 2
+    },
+    {
+      "parentId": "coordinadora-de-servicios",
+      "childId": "recepcionistas",
+      "relation": "direct",
+      "order": 3
+    },
+    {
+      "parentId": "coordinadora-de-servicios",
+      "childId": "auxiliar-de-servicios",
+      "relation": "direct",
+      "order": 4
+    },
+    {
+      "parentId": "gerente-general",
+      "childId": "supervisora-de-calidad-y-servicio-al-paciente",
+      "relation": "direct",
+      "order": 8
+    },
+    {
+      "parentId": "supervisora-de-calidad-y-servicio-al-paciente",
+      "childId": "auditoria-interna-sgc",
+      "relation": "support",
+      "order": 0
+    },
+    {
+      "parentId": "supervisora-de-calidad-y-servicio-al-paciente",
+      "childId": "coordinadora-de-limpieza",
+      "relation": "direct",
+      "order": 1
+    },
+    {
+      "parentId": "coordinadora-de-limpieza",
+      "childId": "mucamos",
+      "relation": "direct",
+      "order": 0
+    }
+  ]
+}

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#075985">
+<title>Organigrama · Hospital Privado Tres Cerritos</title>
+<style>
+:root{
+  --navy:#075985;--navy-2:#0b4f73;--ink:#17334b;--muted:#627b8e;--teal:#008f82;
+  --teal-2:#00a680;--teal-soft:#e8f7f5;--sky:#eaf4fa;--line:#1f87cf;--panel:#fff;--bg:#f2f6f8;
+  --support:#8a6b35;--support-soft:#fff8e8;--shared:#7857a6;--shared-soft:#f4effb;
+  --danger:#b42318;--shadow:0 10px 30px rgba(23,51,75,.08);--radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--bg);font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid #21a8c4;outline-offset:2px}
+[hidden]{display:none!important}
+.topbar{height:6px;background:linear-gradient(90deg,var(--navy),var(--teal))}
+.site-header{background:#fff;border-bottom:1px solid #dbe7ed}
+.header-inner{max-width:1480px;margin:auto;padding:20px clamp(18px,4vw,52px);display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand-mark{width:46px;height:46px;border-radius:13px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800;letter-spacing:.02em;box-shadow:0 7px 18px rgba(7,89,133,.22)}
+.brand-text{min-width:0}.brand-text strong{display:block;font-size:17px;line-height:1.2}.brand-text span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid #d4e2e9;background:#f8fbfc;border-radius:999px;padding:7px 10px;color:#526f81;font-size:12px;font-weight:700;letter-spacing:.02em}
+.badge.primary{border-color:#bcded9;background:var(--teal-soft);color:#08756c}
+main{max-width:1480px;margin:auto;padding:28px clamp(14px,3.5vw,48px) 42px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:18px}
+.eyebrow{margin:0 0 7px;color:var(--teal);font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+h1{font-size:clamp(30px,4vw,48px);line-height:1.04;margin:0;letter-spacing:-.035em}
+.hero p{max-width:780px;margin:12px 0 0;color:var(--muted);font-size:16px}
+.stat{flex:0 0 auto;background:#fff;border:1px solid #d7e5eb;border-radius:14px;padding:13px 16px;box-shadow:var(--shadow);min-width:132px;text-align:center}
+.stat strong{display:block;font-size:25px;line-height:1;color:var(--navy)}.stat span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:5px;border-bottom:1px solid #ccdde5;margin-bottom:18px}
+.tab{border:0;background:transparent;color:#5a7486;font-weight:750;padding:12px 16px;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--navy);border-bottom-color:var(--navy)}
+.panel[hidden]{display:none!important}
+.view-picker-shell{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.view-picker-label{font-size:12px;color:#607989;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.view-picker{display:inline-flex;align-items:center;gap:4px;padding:4px;background:#e5eef2;border:1px solid #d0dfe6;border-radius:13px;max-width:100%;overflow:auto}
+.view-option{border:0;background:transparent;color:#587284;border-radius:9px;padding:9px 12px;font-weight:780;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+.view-option:hover{background:rgba(255,255,255,.62)}
+.view-option.active{background:#fff;color:var(--navy);box-shadow:0 3px 12px rgba(23,51,75,.11)}
+.view-option .view-icon{font-size:16px;line-height:1}
+.info-strip{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 14px;padding:13px 15px;background:#fff;border:1px solid #d7e4ea;border-radius:14px}
+.info-copy strong{display:block}.info-copy span{color:var(--muted);font-size:13px}
+.legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;color:#5b7485;font-size:12px}
+.legend-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.legend-line{width:24px;height:0;border-top:2px solid var(--line)}.legend-line.support{border-top-style:dashed;border-top-color:var(--support)}.legend-line.shared{border-top-style:dashed;border-top-color:var(--shared)}
+.toolbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px;background:rgba(242,246,248,.94);backdrop-filter:blur(10px);border:1px solid #d5e3e9;border-radius:15px 15px 0 0}
+.search-wrap{display:flex;align-items:center;gap:8px;flex:1 1 260px;min-width:220px;background:#fff;border:1px solid #cadbe3;border-radius:10px;padding:0 10px}
+.search-wrap svg{width:17px;color:#6c8798;flex:none}.search-wrap input{width:100%;border:0;background:transparent;padding:10px 0;outline:0;color:var(--ink)}
+.tool-button{border:1px solid #c8dae3;background:#fff;color:var(--navy);border-radius:10px;padding:9px 11px;font-weight:700;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.tool-button:hover{background:#f6fafc;border-color:#a8c4d1}.tool-button.icon{width:40px;padding:0}.tool-button.active{background:var(--navy);border-color:var(--navy);color:#fff}.tool-button:disabled{opacity:.45;cursor:not-allowed}
+.zoom-readout{min-width:52px;text-align:center;font-size:12px;color:#5c7586;font-weight:800}
+.chart-shell{background:#fff;border:1px solid #d5e3e9;border-top:0;border-radius:0 0 var(--radius) var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.diagram-viewport{height:min(72vh,820px);min-height:520px;overflow:auto;position:relative;background-color:#fbfdfe;background-image:radial-gradient(#d7e4ea 1px,transparent 1px);background-size:22px 22px;cursor:grab;overscroll-behavior:contain;scrollbar-color:#9bb5c2 transparent}
+.diagram-viewport.dragging{cursor:grabbing;user-select:none}
+.chart-stage,.tree-stage{position:relative;transition:width .15s ease,height .15s ease}
+.chart-canvas,.tree-canvas{position:absolute;left:0;top:0;transform-origin:0 0}
+.connector-layer,.node-layer{position:absolute;inset:0}.connector-layer{overflow:visible;pointer-events:none}.connector{fill:none;stroke:#91adbb;stroke-width:2}.connector.support{stroke:var(--support);stroke-dasharray:7 6}.connector.shared{stroke:var(--shared);stroke-dasharray:3 5;stroke-width:2.2}
+.org-card{position:absolute;width:270px;height:116px;border:1px solid #cbdde5;border-left:5px solid var(--navy);border-radius:14px;background:#fff;box-shadow:0 7px 20px rgba(23,51,75,.09);padding:13px 13px 12px 15px;display:flex;flex-direction:column;justify-content:space-between;transition:box-shadow .16s ease,transform .16s ease,border-color .16s ease}
+.org-card:hover{box-shadow:0 12px 28px rgba(23,51,75,.15);transform:translateY(-1px)}
+.org-card.root{background:linear-gradient(145deg,var(--navy),var(--navy-2));border-color:var(--navy);color:#fff;box-shadow:0 12px 28px rgba(7,89,133,.25)}
+.org-card.executive{border-left-color:var(--teal);background:linear-gradient(180deg,#fff,var(--teal-soft))}
+.org-card.support{border-style:dashed;border-left-color:var(--support);background:var(--support-soft)}
+.org-card.shared{border-style:dashed;border-left-color:var(--shared);background:var(--shared-soft)}
+.org-card.search-hit{outline:4px solid rgba(248,180,0,.42);outline-offset:3px}
+.card-top{display:flex;align-items:flex-start;gap:8px}.card-copy{min-width:0;flex:1}.role{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:820;line-height:1.22;font-size:14px;letter-spacing:-.01em}.person{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:6px;color:#5b7586;font-size:12.5px;line-height:1.25}.root .person{color:#dcecf4}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}.level-pill,.relation-pill{border-radius:999px;padding:3px 7px;font-size:10px;font-weight:800;letter-spacing:.035em;text-transform:uppercase}.level-pill{background:#edf4f7;color:#537184}.root .level-pill{background:rgba(255,255,255,.16);color:#fff}.relation-pill.support{background:#f1e3be;color:#79591f}.relation-pill.shared{background:#e8dbf7;color:#674591}
+.expand-toggle{border:0;border-radius:9px;background:#edf4f7;color:var(--navy);width:30px;height:30px;display:grid;place-items:center;flex:none;font-weight:900;line-height:1}.root .expand-toggle{background:rgba(255,255,255,.17);color:#fff}.expand-toggle:hover{filter:brightness(.96)}.child-count{font-size:10px;font-weight:800;color:#718898;white-space:nowrap}.root .child-count{color:#dcecf4}
+
+/* Vista vertical, similar a la primera version */
+.vertical-scroll{height:min(72vh,820px);min-height:520px;overflow:auto;padding:28px clamp(14px,3vw,38px);background:#f8fbfc}
+.vertical-tree,.vertical-tree ul{list-style:none;margin:0;padding:0}
+.vertical-tree li{min-width:0}
+.vertical-summary,.vertical-card{padding:14px 15px;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #d4e1e9;border-left:4px solid var(--navy);border-radius:10px;margin-bottom:10px;box-shadow:0 3px 10px rgba(23,51,75,.045)}
+.vertical-summary{cursor:pointer;list-style:none}.vertical-summary::-webkit-details-marker{display:none}
+.vertical-summary::before{content:'›';font-size:24px;line-height:1;color:var(--navy);width:14px;flex:none}.vertical-item details[open]>.vertical-summary::before{content:'⌄'}
+.vertical-copy{display:flex;flex-direction:column;gap:3px;min-width:0;overflow-wrap:anywhere;flex:1}.vertical-copy strong{font-size:14px}.vertical-copy span{font-size:13px;color:#526e81}.vertical-copy small{font-size:11px;color:#6f7f8b}
+.vertical-count{margin-left:auto;background:#edf3f7;color:#557285;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:800;flex:none}
+.vertical-item details>ul{padding-left:16px;margin-left:14px;border-left:1px solid #bfd1dc}
+.vertical-item.relation-support>.vertical-card,.vertical-item.relation-support>details>.vertical-summary{border-style:dashed;border-left-color:var(--support);background:var(--support-soft)}
+.vertical-item.relation-shared>.vertical-card,.vertical-item.relation-shared>details>.vertical-summary{border-style:dashed;border-left-color:var(--shared);background:var(--shared-soft)}
+.vertical-tree>.vertical-item>details>.vertical-summary{max-width:440px;margin:0 auto 26px;background:linear-gradient(145deg,var(--navy),var(--navy-2));border-color:var(--navy);color:#fff;box-shadow:0 10px 24px rgba(7,89,133,.2)}
+.vertical-tree>.vertical-item>details>.vertical-summary::before{color:#fff}.vertical-tree>.vertical-item>details>.vertical-summary .vertical-copy span{color:#e1eff6}.vertical-tree>.vertical-item>details>.vertical-summary .vertical-count{background:rgba(255,255,255,.17);color:#fff}
+.vertical-tree>.vertical-item>details>ul{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.vertical-tree>.vertical-item>details>ul>.vertical-item>details>.vertical-summary{background:#eaf6f6;border-top:4px solid var(--teal);border-left:1px solid #bfd8dc}
+.vertical-search-hit{outline:4px solid rgba(248,180,0,.4);outline-offset:2px}
+
+/* Vista arbol, compacta y de arriba hacia abajo */
+.tree-content{display:inline-block;min-width:max-content;padding:48px 50px 90px;transform-origin:0 0}
+.org-tree,.org-tree ul{display:flex;justify-content:center;position:relative;margin:0;padding:38px 0 0;list-style:none}
+.org-tree{padding-top:0}
+.org-tree li{position:relative;text-align:center;list-style:none;padding:38px 7px 0}
+.org-tree>li{padding-top:0}
+.org-tree li::before,.org-tree li::after{content:'';position:absolute;top:0;right:50%;border-top:2px solid var(--line);width:50%;height:38px}
+.org-tree li::after{right:auto;left:50%;border-left:2px solid var(--line)}
+.org-tree li:only-child::after,.org-tree li:only-child::before{display:none}
+.org-tree li:only-child{padding-top:0}
+.org-tree li:first-child::before,.org-tree li:last-child::after{border:0 none}
+.org-tree li:last-child::before{border-right:2px solid var(--line);border-radius:0 7px 0 0}
+.org-tree li:first-child::after{border-radius:7px 0 0 0}
+.org-tree ul::before{content:'';position:absolute;top:0;left:50%;border-left:2px solid var(--line);width:0;height:38px}
+.org-tree>li::before,.org-tree>li::after{display:none}
+.tree-li.relation-support::before,.tree-li.relation-support::after{border-top-style:dashed;border-top-color:var(--support)}
+.tree-li.relation-shared::before,.tree-li.relation-shared::after{border-top-style:dashed;border-top-color:var(--shared)}
+.tree-card{position:relative;width:154px;min-height:78px;padding:10px 10px 9px;border-radius:4px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;box-shadow:0 5px 12px rgba(8,72,111,.17);border:1px solid rgba(255,255,255,.48);transition:transform .15s ease,box-shadow .15s ease}
+.tree-card:hover{transform:translateY(-2px);box-shadow:0 9px 18px rgba(8,72,111,.24)}
+.tree-card.tone-blue{background:linear-gradient(180deg,#06659f,#07558a)}
+.tree-card.tone-green{background:linear-gradient(180deg,#00ad83,#009773)}
+.tree-card.root-card{width:176px;min-height:82px;background:linear-gradient(180deg,#075f9a,#064c7d)}
+.tree-card.relation-support{outline:2px dashed rgba(255,230,169,.9);outline-offset:2px}
+.tree-card.relation-shared{outline:2px dashed rgba(221,199,255,.95);outline-offset:2px}
+.tree-card.search-hit{outline:5px solid rgba(255,186,0,.62);outline-offset:3px}
+.tree-role{font-size:11px;font-weight:830;line-height:1.17;text-wrap:balance}.tree-person{font-size:9.5px;line-height:1.2;color:rgba(255,255,255,.92);text-wrap:balance}
+.tree-relation{font-size:8px;line-height:1;text-transform:uppercase;letter-spacing:.05em;padding:3px 5px;border-radius:999px;background:rgba(255,255,255,.18)}
+.tree-toggle{position:absolute;right:-7px;bottom:-7px;width:22px;height:22px;border:1px solid rgba(7,89,133,.35);border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:900;line-height:1;padding:0;box-shadow:0 2px 7px rgba(0,0,0,.15)}
+.tree-toggle:hover{background:#eaf6f6}
+
+/* Composicion institucional de la vista arbol */
+.tree-content{display:inline-block;position:relative;min-width:max-content;padding:34px 34px 70px;transform-origin:0 0}
+.institutional-connectors{position:absolute;inset:0;overflow:visible;pointer-events:none;z-index:0}
+.institutional-layout{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:34px;min-width:max-content}
+.inst-root-row,.inst-executive-row,.inst-branches-row,.inst-executive-group{display:flex;align-items:flex-start;justify-content:center}
+.inst-executive-row{gap:13px;align-items:center;min-height:88px}
+.inst-branches-row{gap:22px;align-items:flex-start}
+.inst-executive-group{gap:9px;align-items:flex-start}
+.inst-branch{display:flex;flex-direction:column;align-items:center;gap:25px;min-width:104px}
+.inst-node-wrap{display:flex;flex-direction:column;align-items:center;gap:24px;min-width:max-content}
+.inst-children{display:grid;justify-content:center;align-items:start;gap:27px 6px;min-width:max-content}
+.inst-card{position:relative;width:112px;min-height:72px;padding:8px 7px;border-radius:4px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;box-shadow:0 4px 10px rgba(8,72,111,.17);border:1px solid rgba(255,255,255,.55)}
+.inst-card.compact{width:94px;min-height:62px;padding:7px 5px}
+.inst-card.root{width:154px;min-height:78px;background:linear-gradient(180deg,#075f9a,#064c7d)}
+.inst-card.blue{background:linear-gradient(180deg,#06659f,#07558a)}
+.inst-card.green{background:linear-gradient(180deg,#00ad83,#009773)}
+.inst-card.relation-support{outline:2px dashed rgba(255,226,159,.95);outline-offset:2px}
+.inst-card.relation-shared{outline:2px dashed rgba(222,202,255,.98);outline-offset:2px}
+.inst-card.search-hit{outline:5px solid rgba(255,186,0,.7);outline-offset:3px}
+.inst-role{font-size:10.5px;font-weight:850;line-height:1.14;text-wrap:balance}
+.inst-card.compact .inst-role{font-size:9px}
+.inst-person{font-size:8.6px;line-height:1.17;color:rgba(255,255,255,.94);text-wrap:balance}
+.inst-card.compact .inst-person{font-size:7.8px}
+.inst-relation{font-size:7px;line-height:1;text-transform:uppercase;letter-spacing:.04em;padding:2px 4px;border-radius:999px;background:rgba(255,255,255,.19)}
+.inst-toggle{position:absolute;right:-7px;bottom:-7px;width:21px;height:21px;border:1px solid rgba(7,89,133,.35);border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:900;line-height:1;padding:0;box-shadow:0 2px 7px rgba(0,0,0,.15)}
+.inst-toggle:hover{background:#eaf6f6}
+.inst-path{fill:none;stroke:var(--line);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.inst-path.support{stroke:var(--support);stroke-dasharray:7 5}.inst-path.shared{stroke:var(--shared);stroke-dasharray:4 5}
+
+.chart-note{padding:11px 14px;border-top:1px solid #dfebf0;color:#6b8291;font-size:12px;background:#fff;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+.config-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;background:#fff;border:1px solid #d4e2e8;border-radius:15px;padding:18px;margin-bottom:14px}.config-intro h2{margin:0 0 5px;font-size:21px}.config-intro p{margin:0;color:var(--muted)}
+.config-actions{display:flex;gap:8px;flex-wrap:wrap}.danger{color:var(--danger)!important;border-color:#e8b8b2!important}.danger:hover{background:#fff5f4!important}
+.config-grid{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:14px;align-items:start}
+.config-list-panel,.editor-panel{background:#fff;border:1px solid #d4e2e8;border-radius:15px;box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:15px;border-bottom:1px solid #e2ebef}.panel-head h3{margin:0;font-size:16px}.panel-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.config-search{padding:12px;border-bottom:1px solid #e5edf1}.config-search input{width:100%;border:1px solid #c9dbe3;border-radius:10px;padding:10px 11px}
+.position-list{max-height:590px;overflow:auto;padding:7px}.position-item{width:100%;text-align:left;border:0;background:transparent;border-radius:10px;padding:10px 11px;color:var(--ink);display:flex;justify-content:space-between;gap:10px}.position-item:hover{background:#f2f7f9}.position-item.active{background:var(--sky);color:var(--navy)}.position-item strong{font-size:13px;display:block}.position-item span{display:block;font-size:11px;color:#6c8392;margin-top:2px}.position-item em{font-style:normal;font-size:10px;color:#718795;background:#edf3f6;border-radius:999px;padding:2px 6px;height:max-content}
+.editor-body{padding:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800;color:#4b687a}.field input,.field select{width:100%;border:1px solid #c7d9e2;border-radius:10px;padding:10px 11px;color:var(--ink);background:#fff}.field-help{font-size:11px;color:#738998}
+.dependencies{margin-top:18px;border-top:1px solid #e1eaee;padding-top:16px}.dependencies-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.dependencies-head h4{margin:0}.dependency-row{display:grid;grid-template-columns:minmax(0,1fr) 160px 40px;gap:8px;margin-bottom:8px}.dependency-row select{border:1px solid #c7d9e2;border-radius:9px;padding:9px;background:#fff}.dependency-row button{border:1px solid #e4c2bd;background:#fff;color:var(--danger);border-radius:9px}
+.editor-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #e1eaee;padding-top:16px;margin-top:18px}.save-state{font-size:12px;color:#69808f}
+.empty-editor{padding:50px 22px;text-align:center;color:var(--muted)}
+.toast{position:fixed;right:20px;bottom:20px;z-index:100;background:#17334b;color:#fff;border-radius:12px;padding:12px 15px;box-shadow:0 14px 35px rgba(0,0,0,.2);transform:translateY(20px);opacity:0;pointer-events:none;transition:.2s ease;max-width:min(420px,calc(100vw - 40px))}.toast.show{transform:none;opacity:1}.toast.error{background:#8d221a}
+@media(max-width:900px){.config-grid{grid-template-columns:1fr}.position-list{max-height:320px}.header-inner,.hero{align-items:flex-start}.hero{flex-direction:column}.stat{text-align:left}.info-strip{align-items:flex-start;flex-direction:column}.diagram-viewport,.vertical-scroll{height:68vh;min-height:480px}.vertical-tree>.vertical-item>details>ul{grid-template-columns:1fr}}
+@media(max-width:640px){.header-inner{padding:15px 14px;align-items:flex-start}.brand-mark{width:40px;height:40px}.header-badges{display:none}main{padding:21px 10px 30px}.hero{margin-bottom:14px}.hero p{font-size:14px}.stat{display:none}.tabs{overflow:auto}.tab{white-space:nowrap}.view-picker-shell{align-items:flex-start;flex-direction:column}.view-picker{width:100%}.toolbar{padding:8px}.tool-button .label{display:none}.search-wrap{flex-basis:100%}.diagram-viewport,.vertical-scroll{min-height:460px;height:66vh}.chart-note{font-size:11px}.config-intro{flex-direction:column}.config-actions{width:100%}.config-actions .tool-button{flex:1}.form-grid{grid-template-columns:1fr}.dependency-row{grid-template-columns:1fr 115px 38px}.editor-footer{align-items:stretch;flex-direction:column}.editor-footer .tool-button{width:100%}.tree-content{padding:38px 30px 70px}.tree-card{width:145px}}
+@media print{.topbar,.site-header,.tabs,.view-picker-shell,.toolbar,.chart-note,.config-intro{display:none!important}body,main{background:#fff;padding:0}.chart-shell{border:0;box-shadow:none}.diagram-viewport,.vertical-scroll{height:auto;overflow:visible;background:none}.chart-stage,.tree-stage{transform:none!important}.org-card,.tree-card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand"><div class="brand-mark" aria-hidden="true">HP</div><div class="brand-text"><strong>Hospital Privado Tres Cerritos</strong><span>Recursos Humanos · Organización institucional</span></div></div>
+    <div class="header-badges"><span class="badge primary">RECURSOS HUMANOS</span><span class="badge">Administración privada</span></div>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <div><p class="eyebrow">Nuestra organización</p><h1>Organigrama</h1><p>Consultá la misma estructura en tres formatos: horizontal por jerarquías, vertical desplegable o árbol institucional de arriba hacia abajo.</p></div>
+    <div class="stat"><strong id="positionCount">65</strong><span>posiciones únicas</span></div>
+  </section>
+  <nav class="tabs" aria-label="Secciones">
+    <button class="tab" id="tabChart" role="tab" aria-selected="true" aria-controls="panelChart">Organigrama</button>
+    <button class="tab" id="tabConfig" role="tab" aria-selected="false" aria-controls="panelConfig">Configuración</button>
+  </nav>
+
+  <section class="panel" id="panelChart" role="tabpanel" aria-labelledby="tabChart">
+    <div class="view-picker-shell">
+      <span class="view-picker-label">Tipo de vista</span>
+      <div class="view-picker" role="group" aria-label="Cambiar tipo de vista">
+        <button class="view-option active" data-view="horizontal"><span class="view-icon" aria-hidden="true">⇢</span>Vista horizontal por jerarquías</button>
+        <button class="view-option" data-view="vertical"><span class="view-icon" aria-hidden="true">↧</span>Vista vertical</button>
+        <button class="view-option" data-view="tree"><span class="view-icon" aria-hidden="true">⌘</span>Vista árbol</button>
+      </div>
+    </div>
+    <div class="info-strip">
+      <div class="info-copy"><strong id="viewTitle">Vista horizontal por jerarquías</strong><span id="viewDescription">Desplegá una posición para avanzar hacia el siguiente nivel. Arrastrá el fondo para recorrer el organigrama.</span></div>
+      <div class="legend" aria-label="Referencias"><span class="legend-item"><i class="legend-line"></i>Dependencia directa</span><span class="legend-item"><i class="legend-line support"></i>Apoyo / asesoramiento</span><span class="legend-item"><i class="legend-line shared"></i>Dependencia compartida</span></div>
+    </div>
+    <div class="toolbar" aria-label="Controles del organigrama">
+      <label class="search-wrap" aria-label="Buscar posición o persona">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.4-3.4"></path></svg>
+        <input id="chartSearch" type="search" placeholder="Buscar posición o persona…">
+      </label>
+      <button class="tool-button" id="expandAll" title="Desplegar toda la estructura"><span aria-hidden="true">＋</span><span class="label">Desplegar todo</span></button>
+      <button class="tool-button" id="collapseAll" title="Contraer la estructura"><span aria-hidden="true">−</span><span class="label">Contraer</span></button>
+      <button class="tool-button diagram-control" id="centerRoot" title="Centrar en Directorio"><span aria-hidden="true">◎</span><span class="label">Centrar</span></button>
+      <button class="tool-button icon diagram-control" id="zoomOut" aria-label="Alejar">−</button><span class="zoom-readout diagram-control" id="zoomReadout">100%</span><button class="tool-button icon diagram-control" id="zoomIn" aria-label="Acercar">＋</button>
+      <button class="tool-button diagram-control" id="fitWidth" title="Ajustar la vista"><span aria-hidden="true">↔</span><span class="label">Ajustar</span></button>
+    </div>
+    <div class="chart-shell">
+      <section class="org-surface" id="horizontalSurface">
+        <div class="diagram-viewport" id="chartViewport" tabindex="0" aria-label="Organigrama horizontal desplazable">
+          <div class="chart-stage" id="chartStage"><div class="chart-canvas" id="chartCanvas"><svg class="connector-layer" id="connectorLayer" aria-hidden="true"></svg><div class="node-layer" id="nodeLayer"></div></div></div>
+        </div>
+      </section>
+      <section class="org-surface" id="verticalSurface" hidden>
+        <div class="vertical-scroll" id="verticalScroll" tabindex="0" aria-label="Organigrama vertical desplegable"><div id="verticalTree"></div></div>
+      </section>
+      <section class="org-surface" id="treeSurface" hidden>
+        <div class="diagram-viewport" id="treeViewport" tabindex="0" aria-label="Organigrama en árbol desplazable">
+          <div class="tree-stage" id="treeStage"><div class="tree-canvas" id="treeCanvas"><div class="tree-content" id="treeContent"></div></div></div>
+        </div>
+      </section>
+      <div class="chart-note"><span><strong id="visibleCount">3</strong> posiciones visibles de <strong id="totalCount">65</strong>.</span><span id="viewTip">Consejo: usá Ctrl + rueda del mouse para acercar o alejar.</span></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panelConfig" role="tabpanel" aria-labelledby="tabConfig" hidden>
+    <div class="config-intro">
+      <div><h2>Configuración de la estructura</h2><p>Editá nombres, posiciones y dependencias. Los cambios se aplican automáticamente a las tres vistas.</p></div>
+      <div class="config-actions"><button class="tool-button" id="addPosition">＋ Nueva posición</button><button class="tool-button" id="exportHtml">Descargar copia HTML</button><button class="tool-button danger" id="resetData">Restablecer base</button></div>
+    </div>
+    <div class="config-grid">
+      <aside class="config-list-panel">
+        <div class="panel-head"><h3>Posiciones</h3><p>Seleccioná una posición para editarla.</p></div>
+        <div class="config-search"><input id="configSearch" type="search" placeholder="Buscar en la estructura…"></div>
+        <div class="position-list" id="positionList"></div>
+      </aside>
+      <section class="editor-panel" id="editorPanel"><div class="empty-editor">Seleccioná una posición para comenzar.</div></section>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script id="embedded-data" type="application/json">{"version":2,"rootId":"directorio","nodes":[{"id":"directorio","title":"Directorio","person":"Carlos Gudiño · Jorge Gudiño","expanded":true},{"id":"director-medico","title":"Director Médico","person":"Martín Baldi","expanded":false},{"id":"secretaria-de-gerencia-y-direccion","title":"Secretaría de Gerencia y Dirección","person":"Florencia Raffo","expanded":false},{"id":"comite-de-infectologia","title":"Comité de Infectología","person":"","expanded":false},{"id":"auditoria-medica","title":"Auditoría Médica","person":"","expanded":false},{"id":"coordinacion-guardia","title":"Coordinación Guardia","person":"","expanded":false},{"id":"atencion-ambulatoria-guardia-pediatrica","title":"Atención Ambulatoria Guardia Pediátrica","person":"","expanded":false},{"id":"atencion-ambulatoria-guardia-adultos","title":"Atención Ambulatoria Guardia Adultos","person":"","expanded":false},{"id":"coordinacion-internacion-en-piso-clinica","title":"Coordinación Internación en Piso Clínica","person":"","expanded":false},{"id":"internacion-en-piso-clinica-pediatrica","title":"Internación en Piso Clínica Pediátrica","person":"","expanded":false},{"id":"internacion-en-piso-clinica-medica-adultos","title":"Internación en Piso Clínica Médica Adultos","person":"","expanded":false},{"id":"coordinacion-terapia-intensiva","title":"Coordinación Terapia Intensiva","person":"Dr. Gual","expanded":false},{"id":"uti-neo","title":"UTI NEO","person":"","expanded":false},{"id":"uti-adultos","title":"UTI Adultos","person":"","expanded":false},{"id":"uti-pediatrica","title":"UTI Pediátrica","person":"","expanded":false},{"id":"coordinacion-de-diagnostico-por-imagenes","title":"Coordinación de Diagnóstico por Imágenes","person":"Carolina González","expanded":false},{"id":"tecnicos-de-imagenes-rx-resonador-tomografo","title":"Técnicos de Imágenes (RX, Resonador, Tomógrafo)","person":"","expanded":false},{"id":"jefatura-de-esterilizacion","title":"Jefatura de Esterilización","person":"Luis Mendez","expanded":false},{"id":"tecnico-de-esterilizacion","title":"Técnico de Esterilización","person":"","expanded":false},{"id":"jefatura-de-enfermeria","title":"Jefatura de Enfermería","person":"Paula Carrizo","expanded":false},{"id":"coordinacion-de-enfermeria","title":"Coordinación de Enfermería","person":"","expanded":false},{"id":"auxiliar-de-transporte","title":"Auxiliar de Transporte","person":"","expanded":false},{"id":"enfermero","title":"Enfermero","person":"","expanded":false},{"id":"jefatura-de-farmacia-y-compras","title":"Jefatura de Farmacia y Compras","person":"Virginia Ceretti","expanded":false},{"id":"director-tecnico-de-farmacia-hospitalaria","title":"Director Técnico de Farmacia Hospitalaria","person":"Luis Mendez","expanded":false},{"id":"tecnico-de-farmacia","title":"Técnico de Farmacia","person":"","expanded":false},{"id":"stock-deposito","title":"Stock Depósito","person":"","expanded":false},{"id":"jefatura-de-quirofano","title":"Jefatura de Quirófano","person":"Gloria de los Ángeles Fabián","expanded":false},{"id":"responsable-de-quirofano","title":"Responsable de Quirófano","person":"","expanded":false},{"id":"enfermero-2","title":"Enfermero","person":"","expanded":false},{"id":"instrumentadores","title":"Instrumentadores","person":"","expanded":false},{"id":"gerente-general","title":"Gerente General","person":"Mariano Cardoner","expanded":false},{"id":"comite-de-rse","title":"Comité de RSE","person":"Beatriz Casermeiro","expanded":false},{"id":"jefatura-de-recursos-humanos","title":"Jefatura de Recursos Humanos","person":"Francisco Fernández Ovide","expanded":false},{"id":"analista-de-liquidacion-de-sueldos","title":"Analista de Liquidación de Sueldos","person":"Juan Soni","expanded":false},{"id":"jefe-de-mantenimiento","title":"Jefe de Mantenimiento","person":"Federico Jacobacci","expanded":false},{"id":"oficiales-de-mantenimiento","title":"Oficiales de Mantenimiento","person":"Héctor Luis Coria · Hernán Gonzalo López · Carlos Andrés Pantoja","expanded":false},{"id":"jefe-de-sistemas","title":"Jefe de Sistemas","person":"Miguel Jiménez","expanded":false},{"id":"auxiliar-de-sistemas","title":"Auxiliar de Sistemas","person":"Germán Reales","expanded":false},{"id":"jefe-de-administracion","title":"Jefe de Administración","person":"Lucía Moyano","expanded":false},{"id":"pagos-y-bancos","title":"Pagos y Bancos","person":"Patricia Muza","expanded":false},{"id":"auxiliar-de-compras-y-liq-de-impuestos","title":"Auxiliar de compras y liq. de impuestos","person":"Analía Celeste González","expanded":false},{"id":"contabilidad","title":"Contabilidad","person":"Barbara Salvador","expanded":false},{"id":"archivo","title":"Archivo","person":"Noemí Farfán","expanded":false},{"id":"cobranzas","title":"Cobranzas","person":"María Belén Albornoz","expanded":false},{"id":"gestion-de-tramites","title":"Gestión de Trámites","person":"Juan Ojeda","expanded":false},{"id":"tesoreria","title":"Tesorería","person":"Darlene Subirana","expanded":false},{"id":"cadete","title":"Cadete","person":"Franco Emmanuel Gómez","expanded":false},{"id":"cadete-2","title":"Cadete","person":"Marcio Rubén Rossi","expanded":false},{"id":"jefatura-de-facturacion","title":"Jefatura de Facturación","person":"Natalia Bini","expanded":false},{"id":"emision-de-ordenes","title":"Emisión de Órdenes","person":"","expanded":false},{"id":"entrega-de-honorarios","title":"Entrega de Honorarios","person":"","expanded":false},{"id":"facturacion","title":"Facturación","person":"","expanded":false},{"id":"atencion-al-publico","title":"Atención al Público","person":"","expanded":false},{"id":"programacion-de-cirugias","title":"Programación de Cirugías","person":"","expanded":false},{"id":"coordinadora-de-servicios","title":"Coordinadora de Servicios","person":"Virginia Goytia","expanded":false},{"id":"seguridad","title":"Seguridad","person":"","expanded":false},{"id":"telefonista","title":"Telefonista","person":"","expanded":false},{"id":"cajero","title":"Cajero","person":"","expanded":false},{"id":"recepcionistas","title":"Recepcionistas","person":"","expanded":false},{"id":"auxiliar-de-servicios","title":"Auxiliar de Servicios","person":"","expanded":false},{"id":"supervisora-de-calidad-y-servicio-al-paciente","title":"Supervisora de Calidad y Servicio al Paciente","person":"Camila Cavanagh","expanded":false},{"id":"auditoria-interna-sgc","title":"Auditoría Interna SGC","person":"Beatriz Casermeiro","expanded":false},{"id":"coordinadora-de-limpieza","title":"Coordinadora de Limpieza","person":"Lilian Baez · Rosa Juarez","expanded":false},{"id":"mucamos","title":"Mucamos","person":"","expanded":false}],"edges":[{"parentId":"directorio","childId":"director-medico","relation":"direct","order":0},{"parentId":"director-medico","childId":"secretaria-de-gerencia-y-direccion","relation":"shared","order":0},{"parentId":"director-medico","childId":"comite-de-infectologia","relation":"support","order":1},{"parentId":"director-medico","childId":"auditoria-medica","relation":"support","order":2},{"parentId":"director-medico","childId":"coordinacion-guardia","relation":"direct","order":3},{"parentId":"coordinacion-guardia","childId":"atencion-ambulatoria-guardia-pediatrica","relation":"direct","order":0},{"parentId":"coordinacion-guardia","childId":"atencion-ambulatoria-guardia-adultos","relation":"direct","order":1},{"parentId":"director-medico","childId":"coordinacion-internacion-en-piso-clinica","relation":"direct","order":4},{"parentId":"coordinacion-internacion-en-piso-clinica","childId":"internacion-en-piso-clinica-pediatrica","relation":"direct","order":0},{"parentId":"coordinacion-internacion-en-piso-clinica","childId":"internacion-en-piso-clinica-medica-adultos","relation":"direct","order":1},{"parentId":"director-medico","childId":"coordinacion-terapia-intensiva","relation":"direct","order":5},{"parentId":"coordinacion-terapia-intensiva","childId":"uti-neo","relation":"direct","order":0},{"parentId":"coordinacion-terapia-intensiva","childId":"uti-adultos","relation":"direct","order":1},{"parentId":"coordinacion-terapia-intensiva","childId":"uti-pediatrica","relation":"direct","order":2},{"parentId":"director-medico","childId":"coordinacion-de-diagnostico-por-imagenes","relation":"direct","order":6},{"parentId":"coordinacion-de-diagnostico-por-imagenes","childId":"tecnicos-de-imagenes-rx-resonador-tomografo","relation":"direct","order":0},{"parentId":"director-medico","childId":"jefatura-de-esterilizacion","relation":"direct","order":7},{"parentId":"jefatura-de-esterilizacion","childId":"tecnico-de-esterilizacion","relation":"direct","order":0},{"parentId":"director-medico","childId":"jefatura-de-enfermeria","relation":"direct","order":8},{"parentId":"jefatura-de-enfermeria","childId":"coordinacion-de-enfermeria","relation":"direct","order":0},{"parentId":"coordinacion-de-enfermeria","childId":"auxiliar-de-transporte","relation":"direct","order":0},{"parentId":"coordinacion-de-enfermeria","childId":"enfermero","relation":"direct","order":1},{"parentId":"director-medico","childId":"jefatura-de-farmacia-y-compras","relation":"direct","order":9},{"parentId":"jefatura-de-farmacia-y-compras","childId":"director-tecnico-de-farmacia-hospitalaria","relation":"direct","order":0},{"parentId":"jefatura-de-farmacia-y-compras","childId":"tecnico-de-farmacia","relation":"direct","order":1},{"parentId":"jefatura-de-farmacia-y-compras","childId":"stock-deposito","relation":"direct","order":2},{"parentId":"director-medico","childId":"jefatura-de-quirofano","relation":"direct","order":10},{"parentId":"jefatura-de-quirofano","childId":"responsable-de-quirofano","relation":"direct","order":0},{"parentId":"responsable-de-quirofano","childId":"enfermero-2","relation":"direct","order":0},{"parentId":"responsable-de-quirofano","childId":"instrumentadores","relation":"direct","order":1},{"parentId":"directorio","childId":"gerente-general","relation":"direct","order":1},{"parentId":"gerente-general","childId":"secretaria-de-gerencia-y-direccion","relation":"shared","order":0},{"parentId":"gerente-general","childId":"comite-de-rse","relation":"support","order":1},{"parentId":"gerente-general","childId":"jefatura-de-recursos-humanos","relation":"direct","order":2},{"parentId":"jefatura-de-recursos-humanos","childId":"analista-de-liquidacion-de-sueldos","relation":"direct","order":0},{"parentId":"gerente-general","childId":"jefe-de-mantenimiento","relation":"direct","order":3},{"parentId":"jefe-de-mantenimiento","childId":"oficiales-de-mantenimiento","relation":"direct","order":0},{"parentId":"gerente-general","childId":"jefe-de-sistemas","relation":"direct","order":4},{"parentId":"jefe-de-sistemas","childId":"auxiliar-de-sistemas","relation":"direct","order":0},{"parentId":"gerente-general","childId":"jefe-de-administracion","relation":"direct","order":5},{"parentId":"jefe-de-administracion","childId":"pagos-y-bancos","relation":"direct","order":0},{"parentId":"jefe-de-administracion","childId":"auxiliar-de-compras-y-liq-de-impuestos","relation":"direct","order":1},{"parentId":"jefe-de-administracion","childId":"contabilidad","relation":"direct","order":2},{"parentId":"jefe-de-administracion","childId":"archivo","relation":"direct","order":3},{"parentId":"jefe-de-administracion","childId":"cobranzas","relation":"direct","order":4},{"parentId":"jefe-de-administracion","childId":"gestion-de-tramites","relation":"direct","order":5},{"parentId":"jefe-de-administracion","childId":"tesoreria","relation":"direct","order":6},{"parentId":"tesoreria","childId":"cadete","relation":"direct","order":0},{"parentId":"tesoreria","childId":"cadete-2","relation":"direct","order":1},{"parentId":"gerente-general","childId":"jefatura-de-facturacion","relation":"direct","order":6},{"parentId":"jefatura-de-facturacion","childId":"emision-de-ordenes","relation":"direct","order":0},{"parentId":"jefatura-de-facturacion","childId":"entrega-de-honorarios","relation":"direct","order":1},{"parentId":"jefatura-de-facturacion","childId":"facturacion","relation":"direct","order":2},{"parentId":"jefatura-de-facturacion","childId":"atencion-al-publico","relation":"direct","order":3},{"parentId":"jefatura-de-facturacion","childId":"programacion-de-cirugias","relation":"direct","order":4},{"parentId":"gerente-general","childId":"coordinadora-de-servicios","relation":"direct","order":7},{"parentId":"coordinadora-de-servicios","childId":"seguridad","relation":"direct","order":0},{"parentId":"coordinadora-de-servicios","childId":"telefonista","relation":"direct","order":1},{"parentId":"coordinadora-de-servicios","childId":"cajero","relation":"direct","order":2},{"parentId":"coordinadora-de-servicios","childId":"recepcionistas","relation":"direct","order":3},{"parentId":"coordinadora-de-servicios","childId":"auxiliar-de-servicios","relation":"direct","order":4},{"parentId":"gerente-general","childId":"supervisora-de-calidad-y-servicio-al-paciente","relation":"direct","order":8},{"parentId":"supervisora-de-calidad-y-servicio-al-paciente","childId":"auditoria-interna-sgc","relation":"support","order":0},{"parentId":"supervisora-de-calidad-y-servicio-al-paciente","childId":"coordinadora-de-limpieza","relation":"direct","order":1},{"parentId":"coordinadora-de-limpieza","childId":"mucamos","relation":"direct","order":0}]}</script>
+<script>
+(() => {
+'use strict';
+const STORAGE_KEY='hp3c-organigrama-horizontal-v2';
+const VIEW_STATE_KEY='hp3c-organigrama-multivista-state-v1';
+const ORIGINAL_DATA=JSON.parse(document.getElementById('embedded-data').textContent);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+let data=loadData();
+let selectedId=null;
+let searchTerm='';
+let currentView='horizontal';
+let horizontalLayout=null;
+let treeLayout=null;
+let zoomByView={horizontal:1,tree:1};
+let expandedByView={horizontal:new Set(),vertical:new Set(),tree:new Set()};
+
+function loadData(){
+  try{const saved=localStorage.getItem(STORAGE_KEY);if(saved){const parsed=JSON.parse(saved);if(parsed&&parsed.nodes&&parsed.edges)return parsed}}catch(e){console.warn('No se pudo recuperar la configuracion',e)}
+  return clone(ORIGINAL_DATA);
+}
+function nodeMap(){return new Map(data.nodes.map(n=>[n.id,n]))}
+function parentsOf(id){return data.edges.filter(e=>e.childId===id).sort((a,b)=>a.order-b.order)}
+function childrenOf(id){return data.edges.filter(e=>e.parentId===id).sort((a,b)=>a.order-b.order)}
+function relationLabel(rel){return rel==='support'?'Apoyo / asesoramiento':rel==='shared'?'Dependencia compartida':''}
+function sanitize(text=''){return String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function uniqueId(base){let id=base,i=2;while(data.nodes.some(n=>n.id===id))id=`${base}-${i++}`;return id}
+function showToast(message,error=false){const t=$('#toast');t.textContent=message;t.classList.toggle('error',error);t.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove('show'),2400)}
+function updateCounts(){const total=data.nodes.length;$('#positionCount').textContent=total;$('#totalCount').textContent=total}
+
+function initViewState(){
+  const parentIds=new Set(data.edges.map(e=>e.parentId));
+  const rootChildren=childrenOf(data.rootId).map(e=>e.childId);
+  expandedByView.horizontal=new Set(data.nodes.filter(n=>n.expanded).map(n=>n.id));
+  expandedByView.horizontal.add(data.rootId);
+  expandedByView.vertical=new Set([data.rootId,...rootChildren]);
+  expandedByView.tree=new Set([...parentIds,data.rootId]);
+  try{
+    const saved=JSON.parse(localStorage.getItem(VIEW_STATE_KEY)||'null');
+    if(saved){
+      if(['horizontal','vertical','tree'].includes(saved.currentView))currentView=saved.currentView;
+      if(saved.zoom)zoomByView={...zoomByView,...saved.zoom};
+      for(const view of ['horizontal','vertical','tree']){
+        if(Array.isArray(saved.expanded?.[view]))expandedByView[view]=new Set(saved.expanded[view].filter(id=>data.nodes.some(n=>n.id===id)));
+      }
+    }
+  }catch(e){console.warn('No se pudo recuperar el estado visual',e)}
+  const queryView=new URLSearchParams(location.search).get('view');
+  if(['horizontal','vertical','tree'].includes(queryView))currentView=queryView;
+  expandedByView.horizontal.add(data.rootId);expandedByView.vertical.add(data.rootId);expandedByView.tree.add(data.rootId);
+}
+function saveViewState(){
+  try{localStorage.setItem(VIEW_STATE_KEY,JSON.stringify({currentView,zoom:zoomByView,expanded:Object.fromEntries(Object.entries(expandedByView).map(([k,v])=>[k,[...v]]))}))}catch(e){console.warn('No se pudo guardar el estado visual',e)}
+}
+function reconcileViewState(){
+  const ids=new Set(data.nodes.map(n=>n.id));
+  for(const view of Object.keys(expandedByView))expandedByView[view]=new Set([...expandedByView[view]].filter(id=>ids.has(id)));
+  expandedByView.horizontal.add(data.rootId);expandedByView.vertical.add(data.rootId);expandedByView.tree.add(data.rootId);
+  for(const e of data.edges)if(childrenOf(e.parentId).length)expandedByView.tree.add(e.parentId);
+}
+function saveData(message='Cambios guardados'){
+  data.nodes.forEach(n=>n.expanded=expandedByView.horizontal.has(n.id));
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(e){console.warn('No se pudo guardar en el navegador',e)}
+  document.getElementById('embedded-data').textContent=JSON.stringify(data);
+  reconcileViewState();updateCounts();showToast(message);renderActiveView({preserveScroll:false});saveViewState();
+}
+
+function buildTree(view=currentView){
+  const nodes=nodeMap();let seq=0;
+  const walk=(nodeId,depth,path,edge=null,branch='root')=>{
+    if(path.includes(nodeId))return null;
+    const node=nodes.get(nodeId);if(!node)return null;
+    let nextBranch=branch;
+    if(depth===1){nextBranch=nodeId==='director-medico'?'medical':nodeId==='gerente-general'?'admin':nodeId}
+    const inst={instanceId:`i${seq++}`,nodeId,node,depth,edge,branch:nextBranch,children:[],span:0,x:0,y:0};
+    if(expandedByView[view].has(nodeId)){
+      for(const childEdge of childrenOf(nodeId)){
+        const child=walk(childEdge.childId,depth+1,[...path,nodeId],childEdge,nextBranch);
+        if(child)inst.children.push(child);
+      }
+    }
+    return inst;
+  };
+  return walk(data.rootId,0,[]);
+}
+function flattenTree(root){const out=[];const visit=n=>{if(!n)return;out.push(n);n.children.forEach(visit)};visit(root);return out}
+function hierarchyDepths(){const depth=new Map([[data.rootId,0]]),q=[data.rootId];while(q.length){const p=q.shift();for(const e of childrenOf(p)){const d=(depth.get(p)||0)+1;if(!depth.has(e.childId)||d<depth.get(e.childId)){depth.set(e.childId,d);q.push(e.childId)}}}return depth}
+
+function calculateHorizontalLayout(){
+  const root=buildTree('horizontal');const CARD_W=270,CARD_H=116,GAP_X=105,GAP_Y=24,PAD_X=80,PAD_Y=70;
+  const measure=n=>{if(!n.children.length){n.span=CARD_H;return n.span}const total=n.children.reduce((s,c)=>s+measure(c),0)+GAP_Y*(n.children.length-1);n.span=Math.max(CARD_H,total);return n.span};
+  measure(root);let maxDepth=0;
+  const place=(n,top)=>{maxDepth=Math.max(maxDepth,n.depth);n.x=PAD_X+n.depth*(CARD_W+GAP_X);n.y=top+(n.span-CARD_H)/2;let ct=top;for(const c of n.children){place(c,ct);ct+=c.span+GAP_Y}};
+  place(root,PAD_Y);return {root,instances:flattenTree(root),width:PAD_X*2+(maxDepth+1)*CARD_W+maxDepth*GAP_X,height:PAD_Y*2+root.span,CARD_W,CARD_H};
+}
+function renderHorizontal({preserveScroll=true}={}){
+  const vp=$('#chartViewport');const prev={left:vp.scrollLeft,top:vp.scrollTop};horizontalLayout=calculateHorizontalLayout();
+  const {instances,width,height,CARD_W,CARD_H}=horizontalLayout;const nodes=$('#nodeLayer'),svg=$('#connectorLayer'),canvas=$('#chartCanvas');
+  canvas.style.width=width+'px';canvas.style.height=height+'px';nodes.style.width=width+'px';nodes.style.height=height+'px';svg.setAttribute('width',width);svg.setAttribute('height',height);svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+  const term=searchTerm.trim().toLocaleLowerCase('es');
+  nodes.innerHTML=instances.map(inst=>{
+    const n=inst.node,count=childrenOf(n.id).length,rel=inst.edge?.relation||'direct';const hit=term&&(`${n.title} ${n.person||''}`).toLocaleLowerCase('es').includes(term);
+    const cls=['org-card',inst.depth===0?'root':'',inst.depth===1?'executive':'',rel==='support'?'support':'',rel==='shared'?'shared':''].filter(Boolean).join(' ');
+    const relPill=rel==='direct'?'':`<span class="relation-pill ${rel}">${rel==='support'?'Apoyo':'Compartida'}</span>`;
+    const open=expandedByView.horizontal.has(n.id);const toggle=count?`<button class="expand-toggle" data-toggle="${sanitize(n.id)}" aria-label="${open?'Contraer':'Desplegar'} ${sanitize(n.title)}" title="${open?'Contraer':'Desplegar'}">${open?'−':'+'}</button>`:'';
+    return `<article class="${cls}${hit?' search-hit':''}" data-node="${sanitize(n.id)}" style="left:${inst.x}px;top:${inst.y}px" tabindex="0"><div class="card-top"><div class="card-copy"><div class="role">${sanitize(n.title)}</div><div class="person">${sanitize(n.person||'Sin nombre indicado')}</div></div>${toggle}</div><div class="card-foot"><div style="display:flex;gap:5px;align-items:center"><span class="level-pill">Nivel ${inst.depth+1}</span>${relPill}</div>${count?`<span class="child-count">${count} ${count===1?'dependencia':'dependencias'}</span>`:''}</div></article>`;
+  }).join('');
+  const paths=[];for(const p of instances){for(const c of p.children){const x1=p.x+CARD_W,y1=p.y+CARD_H/2,x2=c.x,y2=c.y+CARD_H/2,dx=(x2-x1)*.48;paths.push(`<path class="connector ${c.edge?.relation||'direct'}" d="M ${x1} ${y1} C ${x1+dx} ${y1}, ${x2-dx} ${y2}, ${x2} ${y2}"/>`)}}svg.innerHTML=paths.join('');
+  applyZoom();$('#visibleCount').textContent=new Set(instances.map(i=>i.nodeId)).size;if(preserveScroll){vp.scrollLeft=prev.left;vp.scrollTop=prev.top}
+}
+
+function verticalNodeHtml(inst){
+  const n=inst.node,count=childrenOf(n.id).length,rel=inst.edge?.relation||'direct',open=expandedByView.vertical.has(n.id),term=searchTerm.trim().toLocaleLowerCase('es'),hit=term&&(`${n.title} ${n.person||''}`).toLocaleLowerCase('es').includes(term);
+  const relation=rel==='direct'?'':`<small>${sanitize(relationLabel(rel))}</small>`;const classes=`vertical-item relation-${rel}`;
+  if(!count)return `<li class="${classes}"><div class="vertical-card${hit?' vertical-search-hit':''}" data-node="${sanitize(n.id)}"><div class="vertical-copy"><strong>${sanitize(n.title)}</strong><span>${sanitize(n.person||'Sin nombre indicado')}</span>${relation}</div></div></li>`;
+  const children=inst.children.map(verticalNodeHtml).join('');
+  return `<li class="${classes}"><details data-details-node="${sanitize(n.id)}" ${open?'open':''}><summary class="vertical-summary${hit?' vertical-search-hit':''}" data-node="${sanitize(n.id)}"><div class="vertical-copy"><strong>${sanitize(n.title)}</strong><span>${sanitize(n.person||'Sin nombre indicado')}</span>${relation}</div><span class="vertical-count">${count}</span></summary><ul>${children}</ul></details></li>`;
+}
+function renderVertical(){
+  const root=buildTree('vertical');$('#verticalTree').innerHTML=`<ul class="vertical-tree">${verticalNodeHtml(root)}</ul>`;
+  $$('#verticalTree details').forEach(d=>d.addEventListener('toggle',()=>{const id=d.dataset.detailsNode;if(d.open)expandedByView.vertical.add(id);else expandedByView.vertical.delete(id);saveViewState();updateVerticalVisible()}));
+  requestAnimationFrame(updateVerticalVisible);
+}
+function updateVerticalVisible(){const nodes=$$('#verticalTree [data-node]').filter(el=>el.getClientRects().length>0);$('#visibleCount').textContent=new Set(nodes.map(el=>el.dataset.node)).size}
+
+function branchTone(branch,depth=1){if(branch==='medical')return depth%2===1?'green':'blue';if(branch==='admin')return depth%2===1?'blue':'green';return depth%2===1?'blue':'green'}
+function executiveBranch(id){return id==='director-medico'?'medical':id==='gerente-general'?'admin':id}
+function instCardHtml(node,{branch='admin',depth=1,relation='direct',kind='normal',compact=false}={}){
+  const count=childrenOf(node.id).length,open=expandedByView.tree.has(node.id),term=searchTerm.trim().toLocaleLowerCase('es'),hit=term&&(`${node.title} ${node.person||''}`).toLocaleLowerCase('es').includes(term);
+  const tone=kind==='root'?'root':branchTone(branch,depth);const relClass=relation!=='direct'?` relation-${relation}`:'';const relationTag=relation==='direct'?'':`<span class="inst-relation">${relation==='support'?'Apoyo':'Compartida'}</span>`;const toggle=count?`<button class="inst-toggle" data-toggle="${sanitize(node.id)}" aria-label="${open?'Contraer':'Desplegar'} ${sanitize(node.title)}">${open?'−':'+'}</button>`:'';
+  return `<div class="inst-card ${tone}${compact?' compact':''}${relClass}${hit?' search-hit':''}" data-node="${sanitize(node.id)}" tabindex="0"><div class="inst-role">${sanitize(node.title)}</div><div class="inst-person">${sanitize(node.person||'Sin nombre indicado')}</div>${relationTag}${toggle}</div>`;
+}
+function renderBranchNode(nodeId,branch,depth,edge,rendered){
+  const node=nodeMap().get(nodeId);if(!node||rendered.has(nodeId))return '';rendered.add(nodeId);const relation=edge?.relation||'direct';const directChildren=expandedByView.tree.has(nodeId)?childrenOf(nodeId):[];const count=directChildren.length;const cols=count<=1?1:count<=4?count:count<=8?3:4;
+  const children=directChildren.map(e=>renderBranchNode(e.childId,branch,depth+1,e,rendered)).filter(Boolean).join('');
+  return `<div class="inst-node-wrap">${instCardHtml(node,{branch,depth,relation,compact:depth>=3})}${children?`<div class="inst-children" style="grid-template-columns:repeat(${cols},max-content)">${children}</div>`:''}</div>`;
+}
+function executiveSequence(executiveEdges){
+  const execIds=executiveEdges.map(e=>e.childId);const lateralMap=new Map();
+  execIds.forEach((id,index)=>childrenOf(id).filter(e=>e.relation!=='direct').forEach(e=>{const item=lateralMap.get(e.childId)||{id:e.childId,parents:[],relations:[]};item.parents.push(index);item.relations.push(e.relation);lateralMap.set(e.childId,item)}));
+  const lateral=[...lateralMap.values()];const left=lateral.filter(x=>x.parents.length===1&&x.parents[0]===0&&x.relations[0]==='support');const shared=lateral.filter(x=>x.parents.length>1||x.relations.includes('shared'));const right=lateral.filter(x=>!left.includes(x)&&!shared.includes(x));const seq=[];
+  left.forEach(x=>seq.push({type:'lateral',...x}));if(executiveEdges[0])seq.push({type:'executive',edge:executiveEdges[0],id:executiveEdges[0].childId,index:0});shared.forEach(x=>seq.push({type:'lateral',...x}));if(executiveEdges[1])seq.push({type:'executive',edge:executiveEdges[1],id:executiveEdges[1].childId,index:1});right.forEach(x=>seq.push({type:'lateral',...x}));for(let i=2;i<executiveEdges.length;i++)seq.push({type:'executive',edge:executiveEdges[i],id:executiveEdges[i].childId,index:i});
+  return seq;
+}
+function drawInstitutionalConnectors(){
+  const content=$('#treeContent'),svg=$('#institutionalConnectors');if(!content||!svg)return;const base=content.getBoundingClientRect(),width=content.scrollWidth,height=content.scrollHeight;svg.setAttribute('width',width);svg.setAttribute('height',height);svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+  const paths=[];for(const edge of data.edges){const p=content.querySelector(`[data-node="${CSS.escape(edge.parentId)}"]`),c=content.querySelector(`[data-node="${CSS.escape(edge.childId)}"]`);if(!p||!c)continue;const pr=p.getBoundingClientRect(),cr=c.getBoundingClientRect();const px=(pr.left-base.left),py=(pr.top-base.top),cx=(cr.left-base.left),cy=(cr.top-base.top);const sameBand=Math.abs((py+pr.height/2)-(cy+cr.height/2))<52||cy<py+pr.height+10;let d='';
+    if(sameBand){const childRight=cx>px;const x1=childRight?px+pr.width:px,x2=childRight?cx:cx+cr.width,y1=py+pr.height/2,y2=cy+cr.height/2,mid=x1+(x2-x1)*.5;d=`M ${x1} ${y1} H ${mid} V ${y2} H ${x2}`}
+    else{const x1=px+pr.width/2,y1=py+pr.height,x2=cx+cr.width/2,y2=cy,mid=y1+Math.max(16,Math.min(62,(y2-y1)*.48));d=`M ${x1} ${y1} V ${mid} H ${x2} V ${y2}`}
+    paths.push(`<path class="inst-path ${edge.relation||'direct'}" d="${d}"/>`)}svg.innerHTML=paths.join('');
+}
+function renderTree({preserveScroll=true}={}){
+  const vp=$('#treeViewport'),prev={left:vp.scrollLeft,top:vp.scrollTop},nodes=nodeMap(),root=nodes.get(data.rootId),rendered=new Set([data.rootId]);const rootOpen=expandedByView.tree.has(data.rootId);const executiveEdges=rootOpen?childrenOf(data.rootId).filter(e=>e.relation==='direct'):[];const sequence=executiveSequence(executiveEdges);const execBranches=new Map();
+  executiveEdges.forEach(e=>{const branch=executiveBranch(e.childId);const branches=expandedByView.tree.has(e.childId)?childrenOf(e.childId).filter(x=>x.relation==='direct'):[];execBranches.set(e.childId,{branch,branches})});
+  const execHtml=rootOpen?sequence.map(item=>{const node=nodes.get(item.id);if(!node)return '';rendered.add(item.id);if(item.type==='executive'){const branch=executiveBranch(item.id);return instCardHtml(node,{branch,depth:1,relation:'direct'})}const parentIndex=item.parents[0]??1,branch=parentIndex===0?'medical':'admin',relation=item.relations.includes('shared')?'shared':'support';return instCardHtml(node,{branch,depth:1,relation,compact:true})}).join(''):'';
+  const groupsHtml=rootOpen?executiveEdges.map(e=>{const info=execBranches.get(e.childId);if(!info)return '';const branchNodes=info.branches.map(be=>{if(rendered.has(be.childId))return '';rendered.add(be.childId);const node=nodes.get(be.childId);if(!node)return '';const descendants=expandedByView.tree.has(be.childId)?childrenOf(be.childId).map(ce=>renderBranchNode(ce.childId,info.branch,3,ce,rendered)).filter(Boolean).join(''):'';const count=expandedByView.tree.has(be.childId)?childrenOf(be.childId).length:0,cols=count<=1?1:count<=4?count:count<=8?3:4;return `<div class="inst-branch">${instCardHtml(node,{branch:info.branch,depth:2,relation:be.relation})}${descendants?`<div class="inst-children" style="grid-template-columns:repeat(${cols},max-content)">${descendants}</div>`:''}</div>`}).join('');return `<div class="inst-executive-group" data-executive="${sanitize(e.childId)}">${branchNodes}</div>`}).join(''):'';
+  $('#treeCanvas').style.transform='scale(1)';$('#treeContent').innerHTML=`<svg class="institutional-connectors" id="institutionalConnectors" aria-hidden="true"></svg><div class="institutional-layout"><div class="inst-root-row">${instCardHtml(root,{kind:'root',depth:0})}</div>${execHtml?`<div class="inst-executive-row">${execHtml}</div>`:''}${groupsHtml?`<div class="inst-branches-row">${groupsHtml}</div>`:''}</div>`;
+  requestAnimationFrame(()=>{drawInstitutionalConnectors();const content=$('#treeContent'),rawWidth=content.scrollWidth,rawHeight=content.scrollHeight;treeLayout={width:rawWidth,height:rawHeight};$('#treeCanvas').style.width=rawWidth+'px';$('#treeCanvas').style.height=rawHeight+'px';applyZoom();if(preserveScroll){vp.scrollLeft=prev.left;vp.scrollTop=prev.top}$('#visibleCount').textContent=rendered.size});
+}
+
+function renderActiveView(options={}){
+  if(currentView==='horizontal')renderHorizontal(options);else if(currentView==='vertical')renderVertical();else renderTree(options);
+}
+function activeViewport(){return currentView==='horizontal'?$('#chartViewport'):currentView==='tree'?$('#treeViewport'):$('#verticalScroll')}
+function activeLayout(){return currentView==='horizontal'?horizontalLayout:treeLayout}
+function applyZoom(){
+  if(currentView==='vertical'){document.querySelectorAll('.diagram-control').forEach(el=>el.hidden=true);return}
+  document.querySelectorAll('.diagram-control').forEach(el=>el.hidden=false);const zoom=zoomByView[currentView];const layout=activeLayout();if(!layout)return;
+  const stage=currentView==='horizontal'?$('#chartStage'):$('#treeStage'),canvas=currentView==='horizontal'?$('#chartCanvas'):$('#treeCanvas');stage.style.width=(layout.width*zoom)+'px';stage.style.height=(layout.height*zoom)+'px';canvas.style.transform=`scale(${zoom})`;$('#zoomReadout').textContent=Math.round(zoom*100)+'%';
+}
+function setZoom(next,anchor=null){
+  if(currentView==='vertical')return;const vp=activeViewport(),old=zoomByView[currentView],min=currentView==='tree'?.12:.35,max=1.6;next=Math.max(min,Math.min(max,next));if(Math.abs(next-old)<.001)return;
+  const ax=anchor?.x??vp.clientWidth/2,ay=anchor?.y??vp.clientHeight/2,contentX=(vp.scrollLeft+ax)/old,contentY=(vp.scrollTop+ay)/old;zoomByView[currentView]=next;applyZoom();vp.scrollLeft=contentX*next-ax;vp.scrollTop=contentY*next-ay;saveViewState();
+}
+function centerOnNode(nodeId){
+  if(currentView==='vertical'){const el=$(`#verticalTree [data-node="${CSS.escape(nodeId)}"]`);el?.scrollIntoView({behavior:'smooth',block:'center'});return}
+  const vp=activeViewport(),zoom=zoomByView[currentView];if(currentView==='horizontal'){const inst=horizontalLayout?.instances.find(i=>i.nodeId===nodeId);if(!inst)return;vp.scrollTo({left:(inst.x+horizontalLayout.CARD_W/2)*zoom-vp.clientWidth/2,top:(inst.y+horizontalLayout.CARD_H/2)*zoom-vp.clientHeight/2,behavior:'smooth'});return}
+  const el=$(`#treeContent [data-node="${CSS.escape(nodeId)}"]`);if(!el)return;const contentRect=$('#treeContent').getBoundingClientRect(),elRect=el.getBoundingClientRect();const x=(elRect.left-contentRect.left)/zoom+elRect.width/(2*zoom),y=(elRect.top-contentRect.top)/zoom+elRect.height/(2*zoom);vp.scrollTo({left:x*zoom-vp.clientWidth/2,top:y*zoom-vp.clientHeight/2,behavior:'smooth'});
+}
+function fitView(){
+  if(currentView==='vertical')return;const vp=activeViewport(),layout=activeLayout();if(!layout)return;const min=currentView==='tree'?.32:.35,max=1.15;const next=Math.max(min,Math.min(max,(vp.clientWidth-34)/layout.width));zoomByView[currentView]=next;applyZoom();saveViewState();setTimeout(()=>centerOnNode(data.rootId),30);
+}
+function toggleNode(id){
+  const set=expandedByView[currentView];if(set.has(id))set.delete(id);else set.add(id);set.add(data.rootId);saveViewState();renderActiveView();setTimeout(()=>centerOnNode(id),80);
+}
+function setExpanded(mode){
+  const set=expandedByView[currentView];set.clear();set.add(data.rootId);if(mode==='all')for(const n of data.nodes)if(childrenOf(n.id).length)set.add(n.id);saveViewState();renderActiveView({preserveScroll:false});setTimeout(()=>currentView==='vertical'?null:mode==='all'?fitView():centerOnNode(data.rootId),100);
+}
+function expandAncestors(id,view=currentView,seen=new Set()){
+  if(seen.has(id))return;seen.add(id);for(const e of parentsOf(id)){expandedByView[view].add(e.parentId);expandAncestors(e.parentId,view,seen)}
+}
+function runSearch(){
+  searchTerm=$('#chartSearch').value.trim();if(!searchTerm){renderActiveView();return}const lower=searchTerm.toLocaleLowerCase('es');const found=data.nodes.find(n=>(`${n.title} ${n.person||''}`).toLocaleLowerCase('es').includes(lower));if(!found){showToast('No se encontraron coincidencias',true);return}
+  expandAncestors(found.id);renderActiveView({preserveScroll:false});setTimeout(()=>centerOnNode(found.id),140);
+}
+
+const viewMeta={
+  horizontal:{title:'Vista horizontal por jerarquías',description:'Desplegá una posición para avanzar hacia el siguiente nivel. Arrastrá el fondo para recorrer el organigrama.',tip:'Consejo: usá Ctrl + rueda del mouse para acercar o alejar.'},
+  vertical:{title:'Vista vertical',description:'Lectura secuencial por ramas, similar a la versión anterior. Desplegá cada área para ver sus dependencias.',tip:'Consejo: desplegá sólo las ramas que necesitás consultar.'},
+  tree:{title:'Vista árbol',description:'Organigrama institucional de arriba hacia abajo, con cajas compactas y conexiones jerárquicas como en la referencia.',tip:'Consejo: usá Ajustar para ver el árbol completo en pantalla.'}
+};
+function switchView(view,{initial=false}={}){
+  if(!['horizontal','vertical','tree'].includes(view))return;currentView=view;$$('.view-option').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  $('#horizontalSurface').hidden=view!=='horizontal';$('#verticalSurface').hidden=view!=='vertical';$('#treeSurface').hidden=view!=='tree';
+  $('#viewTitle').textContent=viewMeta[view].title;$('#viewDescription').textContent=viewMeta[view].description;$('#viewTip').textContent=viewMeta[view].tip;document.querySelectorAll('.diagram-control').forEach(el=>el.hidden=view==='vertical');
+  saveViewState();requestAnimationFrame(()=>{renderActiveView({preserveScroll:false});setTimeout(()=>{if(view==='tree')fitView();else if(view==='horizontal'&&!initial)centerOnNode(data.rootId)},120)});
+}
+
+function openTab(name){
+  const chart=name==='chart';$('#panelChart').hidden=!chart;$('#panelConfig').hidden=chart;$('#tabChart').setAttribute('aria-selected',String(chart));$('#tabConfig').setAttribute('aria-selected',String(!chart));
+  if(chart)requestAnimationFrame(()=>switchView(currentView,{initial:true}));else{renderPositionList();if(!selectedId)selectedId=data.rootId;renderEditor()}
+}
+function renderPositionList(){
+  const term=$('#configSearch').value.trim().toLocaleLowerCase('es'),depths=hierarchyDepths();const ordered=[...data.nodes].sort((a,b)=>(depths.get(a.id)??99)-(depths.get(b.id)??99)||a.title.localeCompare(b.title,'es'));
+  $('#positionList').innerHTML=ordered.filter(n=>(`${n.title} ${n.person||''}`).toLocaleLowerCase('es').includes(term)).map(n=>`<button class="position-item ${selectedId===n.id?'active':''}" data-select="${sanitize(n.id)}"><span><strong>${sanitize(n.title)}</strong><span>${sanitize(n.person||'Sin nombre indicado')}</span></span><em>N${(depths.get(n.id)??0)+1}</em></button>`).join('')||'<div class="empty-editor">No hay coincidencias.</div>';
+}
+function parentOptions(excludeId,selected){return data.nodes.filter(n=>n.id!==excludeId).sort((a,b)=>a.title.localeCompare(b.title,'es')).map(n=>`<option value="${sanitize(n.id)}" ${n.id===selected?'selected':''}>${sanitize(n.title)}</option>`).join('')}
+function renderEditor(){
+  const n=data.nodes.find(n=>n.id===selectedId);if(!n){$('#editorPanel').innerHTML='<div class="empty-editor">Seleccioná una posición para comenzar.</div>';return}const parentEdges=parentsOf(n.id);
+  $('#editorPanel').innerHTML=`<div class="panel-head"><h3>Editar posición</h3><p>Identificador interno: ${sanitize(n.id)}</p></div><div class="editor-body"><div class="form-grid"><div class="field full"><label for="editTitle">Nombre de la posición</label><input id="editTitle" value="${sanitize(n.title)}"></div><div class="field full"><label for="editPerson">Responsable/s</label><input id="editPerson" value="${sanitize(n.person||'')}" placeholder="Sin nombre indicado"><span class="field-help">Para más de una persona, separá los nombres con “·”.</span></div></div><div class="dependencies"><div class="dependencies-head"><div><h4>Dependencias jerárquicas</h4><div class="field-help">Una posición puede depender de más de un responsable.</div></div>${n.id===data.rootId?'':'<button class="tool-button" id="addDependency">＋ Agregar</button>'}</div><div id="dependencyRows">${n.id===data.rootId?'<div class="field-help">El Directorio es la raíz de la estructura.</div>':parentEdges.map((e,i)=>dependencyRowHtml(n,e,i)).join('')||'<div class="field-help">Sin dependencia asignada. Agregá al menos una.</div>'}</div></div><div class="editor-footer"><span class="save-state">Los cambios quedan guardados en este navegador.</span><div style="display:flex;gap:8px"><button class="tool-button danger" id="deletePosition" ${n.id===data.rootId?'disabled title="No se puede eliminar el Directorio"':''}>Eliminar</button><button class="tool-button active" id="savePosition">Guardar cambios</button></div></div></div>`;
+}
+function dependencyRowHtml(n,e,i){return `<div class="dependency-row" data-edge-index="${i}"><select class="dep-parent" aria-label="Posición superior">${parentOptions(n.id,e.parentId)}</select><select class="dep-relation" aria-label="Tipo de vínculo"><option value="direct" ${e.relation==='direct'?'selected':''}>Directa</option><option value="support" ${e.relation==='support'?'selected':''}>Apoyo</option><option value="shared" ${e.relation==='shared'?'selected':''}>Compartida</option></select><button class="remove-dependency" type="button" aria-label="Quitar dependencia">×</button></div>`}
+function addDependencyRow(){const n=data.nodes.find(n=>n.id===selectedId);if(!n)return;const wrap=$('#dependencyRows');if(wrap.querySelector('.field-help'))wrap.innerHTML='';const available=data.nodes.find(p=>p.id!==n.id&&!parentsOf(n.id).some(e=>e.parentId===p.id)&&!wouldCreateCycle(n.id,p.id));if(!available){showToast('No hay una dependencia válida disponible',true);return}wrap.insertAdjacentHTML('beforeend',dependencyRowHtml(n,{parentId:available.id,relation:'direct'},wrap.children.length))}
+function wouldCreateCycle(childId,parentId){if(childId===parentId)return true;const stack=[childId],seen=new Set();while(stack.length){const cur=stack.pop();if(cur===parentId)return true;if(seen.has(cur))continue;seen.add(cur);for(const e of childrenOf(cur))stack.push(e.childId)}return false}
+function collectEditorEdges(){const rows=$$('#dependencyRows .dependency-row'),seen=new Set(),out=[];for(let i=0;i<rows.length;i++){const parentId=rows[i].querySelector('.dep-parent').value,relation=rows[i].querySelector('.dep-relation').value;if(seen.has(parentId))throw new Error('La misma dependencia está repetida.');if(wouldCreateCycle(selectedId,parentId))throw new Error('La dependencia generaría un circuito en el organigrama.');seen.add(parentId);out.push({parentId,childId:selectedId,relation,order:i})}return out}
+function saveEditor(){const n=data.nodes.find(n=>n.id===selectedId);if(!n)return;const title=$('#editTitle').value.trim(),person=$('#editPerson').value.trim();if(!title){showToast('La posición debe tener un nombre',true);return}let newEdges=[];try{newEdges=n.id===data.rootId?[]:collectEditorEdges()}catch(err){showToast(err.message,true);return}if(n.id!==data.rootId&&!newEdges.length){showToast('Asigná al menos una dependencia jerárquica',true);return}n.title=title;n.person=person;data.edges=data.edges.filter(e=>e.childId!==n.id).concat(newEdges);saveData();renderPositionList();renderEditor()}
+function addPosition(){const baseParent=selectedId&&data.nodes.some(n=>n.id===selectedId)?selectedId:data.rootId,id=uniqueId('nueva-posicion');data.nodes.push({id,title:'Nueva posición',person:'',expanded:false});data.edges.push({parentId:baseParent,childId:id,relation:'direct',order:childrenOf(baseParent).length});selectedId=id;expandedByView.tree.add(baseParent);saveData('Nueva posición creada');renderPositionList();renderEditor();setTimeout(()=>$('#editTitle')?.select(),30)}
+function deletePosition(){const n=data.nodes.find(n=>n.id===selectedId);if(!n||n.id===data.rootId)return;const children=childrenOf(n.id);if(children.length){showToast('Primero reasigná las posiciones que dependen de ésta',true);return}if(!confirm(`¿Eliminar “${n.title}”?`))return;data.nodes=data.nodes.filter(x=>x.id!==n.id);data.edges=data.edges.filter(e=>e.parentId!==n.id&&e.childId!==n.id);selectedId=data.rootId;saveData('Posición eliminada');renderPositionList();renderEditor()}
+function resetData(){if(!confirm('¿Restablecer la estructura original? Se perderán los cambios guardados en este navegador.'))return;data=clone(ORIGINAL_DATA);try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(VIEW_STATE_KEY)}catch(e){console.warn('No se pudo limpiar el guardado local',e)}selectedId=data.rootId;initViewState();saveData('Estructura original restablecida');renderPositionList();renderEditor()}
+function exportHtml(){data.nodes.forEach(n=>n.expanded=expandedByView.horizontal.has(n.id));document.getElementById('embedded-data').textContent=JSON.stringify(data);const cloneDoc=document.documentElement.cloneNode(true),embedded=cloneDoc.querySelector('#embedded-data');embedded.textContent=JSON.stringify(data).replace(/<\//g,'<\\/');cloneDoc.querySelector('#panelChart').removeAttribute('hidden');cloneDoc.querySelector('#panelConfig').setAttribute('hidden','');cloneDoc.querySelector('#tabChart').setAttribute('aria-selected','true');cloneDoc.querySelector('#tabConfig').setAttribute('aria-selected','false');const blob=new Blob(['<!doctype html>\n'+cloneDoc.outerHTML],{type:'text/html;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='organigrama-hp3c-multivista.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('Copia HTML generada')}
+
+function setupPan(vp){let pan=null;vp.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('button,input,select,summary'))return;pan={x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop};vp.setPointerCapture(e.pointerId);vp.classList.add('dragging')});vp.addEventListener('pointermove',e=>{if(!pan)return;vp.scrollLeft=pan.left-(e.clientX-pan.x);vp.scrollTop=pan.top-(e.clientY-pan.y)});const stop=()=>{pan=null;vp.classList.remove('dragging')};vp.addEventListener('pointerup',stop);vp.addEventListener('pointercancel',stop);vp.addEventListener('wheel',e=>{if(e.ctrlKey&&currentView!=='vertical'){e.preventDefault();const r=vp.getBoundingClientRect();setZoom(zoomByView[currentView]+(e.deltaY<0?.1:-.1),{x:e.clientX-r.left,y:e.clientY-r.top})}},{passive:false})}
+
+$('#tabChart').addEventListener('click',()=>openTab('chart'));$('#tabConfig').addEventListener('click',()=>openTab('config'));
+$$('.view-option').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
+$('#expandAll').addEventListener('click',()=>setExpanded('all'));$('#collapseAll').addEventListener('click',()=>setExpanded('root'));$('#centerRoot').addEventListener('click',()=>centerOnNode(data.rootId));
+$('#zoomOut').addEventListener('click',()=>setZoom(zoomByView[currentView]-.1));$('#zoomIn').addEventListener('click',()=>setZoom(zoomByView[currentView]+.1));$('#fitWidth').addEventListener('click',fitView);
+$('#chartSearch').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch()});$('#chartSearch').addEventListener('input',e=>{searchTerm=e.target.value;if(!searchTerm)renderActiveView()});
+$('#nodeLayer').addEventListener('click',e=>{const b=e.target.closest('[data-toggle]');if(b)toggleNode(b.dataset.toggle)});$('#nodeLayer').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('.org-card')){e.preventDefault();const id=e.target.closest('.org-card').dataset.node;if(childrenOf(id).length)toggleNode(id)}});
+$('#treeContent').addEventListener('click',e=>{const b=e.target.closest('[data-toggle]');if(b){e.stopPropagation();toggleNode(b.dataset.toggle)}});$('#treeContent').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('.tree-card')){e.preventDefault();const id=e.target.closest('.tree-card').dataset.node;if(childrenOf(id).length)toggleNode(id)}});
+$('#configSearch').addEventListener('input',renderPositionList);$('#positionList').addEventListener('click',e=>{const b=e.target.closest('[data-select]');if(!b)return;selectedId=b.dataset.select;renderPositionList();renderEditor()});
+$('#addPosition').addEventListener('click',addPosition);$('#resetData').addEventListener('click',resetData);$('#exportHtml').addEventListener('click',exportHtml);
+$('#editorPanel').addEventListener('click',e=>{if(e.target.id==='addDependency')addDependencyRow();if(e.target.classList.contains('remove-dependency')){e.target.closest('.dependency-row').remove();if(!$('#dependencyRows').children.length)$('#dependencyRows').innerHTML='<div class="field-help">Sin dependencia asignada. Agregá al menos una.</div>'}if(e.target.id==='savePosition')saveEditor();if(e.target.id==='deletePosition')deletePosition()});
+setupPan($('#chartViewport'));setupPan($('#treeViewport'));
+window.addEventListener('resize',()=>{clearTimeout(window.__orgResize);window.__orgResize=setTimeout(()=>{if(currentView==='tree'){drawInstitutionalConnectors();applyZoom()}else if(currentView!=='vertical')applyZoom()},120)});
+
+initViewState();updateCounts();switchView(currentView,{initial:true});
+})();
+</script>
+</body>
+</html>

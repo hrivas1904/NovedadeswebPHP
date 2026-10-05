@@ -1,0 +1,59 @@
+{
+  "package": "organigrama-hp3c-codex-integration",
+  "source": "organigrama-hp3c-horizontal.html",
+  "positions": 65,
+  "relations": 65,
+  "rootId": "directorio",
+  "files": [
+    {
+      "path": "01_PROTOTIPO/organigrama-hp3c-multivista.html",
+      "size": 76800,
+      "sha256": "183b4ff036cb20b7be3a97012cede694a5c825312237c5721577da6a9bc32719"
+    },
+    {
+      "path": "02_DATOS/organigrama-base.json",
+      "size": 18871,
+      "sha256": "2b39e71dc77181ba0748cd7bf088dd99780ae3ad383cdd5bd5b9681e3f808feb"
+    },
+    {
+      "path": "03_REFERENCIAS/referencia-arbol-original.png",
+      "size": 1835352,
+      "sha256": "5627b533cd727c2363a4cc959b603704dee108a39145e3e57a019ad7feb8c404"
+    },
+    {
+      "path": "03_REFERENCIAS/vista-arbol.png",
+      "size": 187267,
+      "sha256": "5cc6c679af22320f063c813042172b6715097eabbb45785737beda4cc8813f69"
+    },
+    {
+      "path": "03_REFERENCIAS/vista-horizontal.png",
+      "size": 152925,
+      "sha256": "5b86a8c2cf3b9d2e106356c4b87074f4446402b1b3fc20b9583b40f6f862fabd"
+    },
+    {
+      "path": "03_REFERENCIAS/vista-vertical.png",
+      "size": 169613,
+      "sha256": "404237ab521d318346c091f3f83c82974a4bc92a531d49d50b1b0cfc9d2d7f4d"
+    },
+    {
+      "path": "CONTRATO_FUNCIONAL_Y_DATOS.md",
+      "size": 3774,
+      "sha256": "953c8d0d1316a8ac5471bff2981c54fbdc0c1d709b1452f3b48af4700b4cc2a4"
+    },
+    {
+      "path": "CRITERIOS_DE_ACEPTACION.md",
+      "size": 2151,
+      "sha256": "ab45f67d88466b37b8503c74eaf543016729b243f01672bdcd206346ca24df9e"
+    },
+    {
+      "path": "PROMPT_PARA_CODEX.md",
+      "size": 5010,
+      "sha256": "099e2dc0e204fdfdc1d8ac613b0c2ec77015ea25fc4d48b2525430d0b5dcfe30"
+    },
+    {
+      "path": "README_INTEGRACION.md",
+      "size": 2676,
+      "sha256": "948ec2c1b3ab05d8453438c75a08ffb1168571db725745cddfdb10cb5af9af5a"
+    }
+  ]
+}
