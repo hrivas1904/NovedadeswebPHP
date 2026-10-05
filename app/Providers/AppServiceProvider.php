@@ -45,6 +45,12 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Gate::define('acceder-recepcion', function ($user) {
+            $excluidos = [102, 123, 143, 166, 176];
+
+            if (in_array((int) $user->id, $excluidos, true)) {
+                return false;
+            }
+
             return (int) $user->area_id === 15 || $user->rol === 'Administrador/a';
         });
     }
