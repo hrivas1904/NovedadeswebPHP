@@ -20,4 +20,8 @@ Route::prefix('configuracion')->name('configuracion.')->group(function () {
     require __DIR__.'/config.php';
 });
 
+Route::prefix('recepcion')->name('recepcion.')->group(function () {
+    require __DIR__.'/recepcion.php';
+});
+
 require __DIR__.'/biblioteca.php';

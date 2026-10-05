@@ -331,6 +331,17 @@
                         </li>
                         @endif
 
+                        <!-- ===== SECCIÓN: RECECPIÓN ===== -->
+                        @if (Auth::user()->rol != 'Colaborador/a')
+                        <li class="nav-section-title section-administracion"><span class="section-dot"></span>Recepción</li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('recepcion.consentimientos.index') }}">
+                                <i class="fa-solid fa-file-circle-check"></i>
+                                <span class="link-text">Consentimiento pacientes</span>
+                            </a>
+                        </li>
+                        @endif
+                    
                         <!-- ===== SECCIÓN: AJUSTES ===== -->
                         @if (Auth::user()->rol === 'Administrador/a')
                         <li class="nav-section-title section-ajustes"><span class="section-dot"></span>USUARIOS Y PERMISOS</li>

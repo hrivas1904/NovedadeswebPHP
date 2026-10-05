@@ -23,21 +23,29 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('organigrama.ver', fn (User $user): bool => $user->estado === 'ACTIVO');
-        Gate::define('organigrama.editar', fn (User $user): bool => Gate::forUser($user)->allows('edd.administrar'));
+        Gate::define('organigrama.ver', fn(User $user): bool => $user->estado === 'ACTIVO');
+        Gate::define('organigrama.editar', fn(User $user): bool => Gate::forUser($user)->allows('edd.administrar'));
 
-        Gate::define('edd.acceder', fn (User $user): bool => $user->estado === 'ACTIVO');
+        Gate::define('edd.acceder', fn(User $user): bool => $user->estado === 'ACTIVO');
 
-        Gate::define('edd.administrar', fn (User $user): bool => $user->estado === 'ACTIVO' && $user->rol === 'Administrador/a'
+        Gate::define(
+            'edd.administrar',
+            fn(User $user): bool => $user->estado === 'ACTIVO' && $user->rol === 'Administrador/a'
         );
 
         // La función de evaluador surge también de una asignación explícita, sin
         // cambiar el rol global ni conceder acceso a la configuración de RRHH.
-        Gate::define('edd.evaluar', fn (User $user): bool => $user->estado === 'ACTIVO'
-            && (in_array($user->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2'], true)
-                || (Schema::hasTable('edd_asignaciones') && DB::table('edd_asignaciones as s')
-                    ->join('edd_participantes as p', 'p.id', '=', 's.participante_id')
-                    ->where('s.evaluador_user_id', $user->id)->where('s.current_slot', 1)->where('p.incluido', true)->exists()))
+        Gate::define(
+            'edd.evaluar',
+            fn(User $user): bool => $user->estado === 'ACTIVO'
+                && (in_array($user->rol, ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2'], true)
+                    || (Schema::hasTable('edd_asignaciones') && DB::table('edd_asignaciones as s')
+                        ->join('edd_participantes as p', 'p.id', '=', 's.participante_id')
+                        ->where('s.evaluador_user_id', $user->id)->where('s.current_slot', 1)->where('p.incluido', true)->exists()))
         );
+
+        Gate::define('acceder-recepcion', function ($user) {
+            return (int) $user->area_id === 15 || $user->rol === 'Administrador/a';
+        });
     }
 }
