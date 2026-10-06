@@ -62,7 +62,11 @@
                         <tr>
                             <th>Vto.</th>
                             <th>Proveedor</th>
+                            <th>N° Comp.</th>
+                            <th>Banco</th>
+                            <th>Operación</th>
                             <th>Concepto</th>
+                            <th>Sub-concepto</th>
                             <th class="text-end">Importe</th>
                         </tr>
                     </thead>
@@ -170,6 +174,7 @@
         recurrentesAplicar: @json(route('administracion.presupuestar.recurrentes.aplicar')),
     };
     const CONCEPTOS_CATALOGO = @json($conceptos);
+    const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
 </script>
 <script src="{{ asset('js/administracion/presupuestar/ivaGeclisa.js') }}"></script>
 <script src="{{ asset('js/administracion/presupuestar/pagosProveedores.js') }}"></script>

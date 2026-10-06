@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Support\ClasificadorOperacion;
+use App\Support\MotorClasificacion;
 use Carbon\Carbon;
 
 class PresupuestarController extends Controller
@@ -14,7 +15,15 @@ class PresupuestarController extends Controller
     {
         $conceptos = collect(DB::select('SELECT nombre FROM ff_conceptos WHERE activo=1 ORDER BY orden'))->pluck('nombre');
 
-        return view('administracion.presupuestar.presupuestar', compact('conceptos'));
+        $subconceptosPorConcepto = collect(DB::select('
+            SELECT c.nombre AS concepto, s.nombre AS subconcepto
+            FROM ff_subconceptos s
+            JOIN ff_conceptos c ON c.id = s.id_concepto
+            WHERE s.activo = 1
+            ORDER BY s.orden
+        '))->groupBy('concepto')->map(fn($g) => $g->pluck('subconcepto'));
+
+        return view('administracion.presupuestar.presupuestar', compact('conceptos', 'subconceptosPorConcepto'));
     }
 
     public function previewGeclisa(Request $request)
@@ -119,28 +128,40 @@ class PresupuestarController extends Controller
     public function confirmarFinnegans(Request $request)
     {
         $request->validate([
-            'rows'            => 'required|array|min:1',
-            'rows.*.fecha'    => 'required|date',
-            'rows.*.detalle'  => 'required|string',
-            'rows.*.concepto' => 'required|string',
-            'rows.*.importe'  => 'required|numeric',
+            'rows'               => 'required|array|min:1',
+            'rows.*.fecha'       => 'required|date',
+            'rows.*.detalle'     => 'required|string',
+            'rows.*.concepto'    => 'required|string',
+            'rows.*.subconcepto' => 'nullable|string',
+            'rows.*.operacion'   => 'required|string|in:INGRESOS,TRANSFERENCIAS,CHEQUES,EFECTIVO',
+            'rows.*.comprobante' => 'nullable|string',
+            'rows.*.importe'     => 'required|numeric',
         ]);
 
         $insertados = 0;
         foreach ($request->input('rows') as $r) {
-            DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
+            $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
                 $r['fecha'],
-                'MACRO',
-                $r['concepto'],       // editable por fila en el preview
-                'MEDICAMENTOS',       // fijo, igual que el artefacto original
+                'MACRO', // banco fijo, no editable desde el front
+                $r['concepto'],
+                $r['subconcepto'] ?? '',
                 $r['detalle'],
                 -abs((float) $r['importe']),
                 'PRESUPUESTO',
-                'TRANSFERENCIAS',
+                $r['operacion'],
                 '3 EGRESOS',
                 'FINNEGANS',
                 auth()->id(),
             ]);
+
+            $id = $resultado[0]->id;
+
+            if (!empty($r['comprobante'])) {
+                DB::statement('UPDATE ff_movimientos SET nro_comprobante = ? WHERE id = ?', [$r['comprobante'], $id]);
+            }
+
+            MotorClasificacion::aprender($r['detalle'], $r['concepto'], $r['subconcepto'] ?? '');
+
             $insertados++;
         }
 
@@ -159,9 +180,12 @@ class PresupuestarController extends Controller
             }
             return -1;
         };
-        $iImp   = $ix('pendiente');     // antes: $ix('importe')
+        $iImp   = $ix('pendiente');
         $iOrg   = $ix('organizacion');
-        $iFecha = $ix('f vto');         // antes: $ix('fechavto')
+        $iFecha = $ix('f vto');
+        $iComp  = $ix('comprobante');
+
+        $motor = new MotorClasificacion();
 
         $rows = [];
         for ($i = 1; $i < count($lines); $i++) {
@@ -177,11 +201,28 @@ class PresupuestarController extends Controller
             $imp = (float) $impRaw;
             if ($imp == 0) continue;
 
+            $detalle      = trim($c[$iOrg] ?? '');
+            $comprobante  = trim($c[$iComp] ?? '');
+            $importeFinal = -abs($imp);
+            $cuenta       = 'MACRO'; // default, editable en el preview
+            $seccion      = '3 EGRESOS';
+
+            $clasif = $motor->clasificar(
+                $detalle,
+                $detalle,
+                fn() => $motor->mapConcepto($detalle),
+                $importeFinal
+            );
+
             $rows[] = [
-                'fecha'    => $fecha,
-                'detalle'  => trim($c[$iOrg] ?? ''),
-                'concepto' => 'FARMACIA', // default, editable en el preview antes de confirmar
-                'importe'  => -abs($imp),
+                'fecha'       => $fecha,
+                'detalle'     => $detalle,
+                'comprobante' => $comprobante,
+                'concepto'    => $clasif['concepto'],
+                'subconcepto' => $clasif['subconcepto'],
+                'operacion'   => ClasificadorOperacion::resolver($cuenta, $clasif['concepto'], $seccion, $importeFinal),
+                'cuenta'      => $cuenta,
+                'importe'     => $importeFinal,
             ];
         }
         return $rows;
