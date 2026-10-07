@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/compras/{id}/facturas', [ComprasController::class, 'listarFacturas']);
     Route::post('/compras/{id}/factura', [ComprasController::class, 'subirFactura']);
     Route::delete('/compras/facturas/{id}', [ComprasController::class, 'eliminarFactura']);
+    Route::get('/compras/factura/{id}/descargar', [ComprasController::class, 'descargarFactura'])->name('compras.factura.descargar');
 
     //DASHBOARD
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');

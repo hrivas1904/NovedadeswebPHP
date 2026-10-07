@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\PedidoCompra;
 
 class ComprasController extends Controller
 {
@@ -840,5 +841,27 @@ class ComprasController extends Controller
                 'mensaje' => 'No se pudo eliminar la factura.'
             ], 500);
         }
+    }
+
+    public function descargarFactura($id)
+    {
+        $factura = DB::table('pedidos_compras_adjuntos')
+            ->where('pedido_compra_id', $id)
+            ->where('tipo', 'FACTURA')
+            ->orderByDesc('id')
+            ->first();
+
+        if (!$factura) {
+            abort(404, 'Factura no encontrada.');
+        }
+
+        if (!Storage::disk('public')->exists($factura->archivo)) {
+            abort(404, 'El archivo de la factura no existe.');
+        }
+
+        return Storage::disk('public')->download(
+            $factura->archivo,
+            $factura->nombre_original
+        );
     }
 }

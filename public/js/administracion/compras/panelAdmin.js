@@ -44,7 +44,7 @@ $("#tablaPedidosCompras").DataTable({
     scrollX: false,
     paging: false,
     searching: true,
-    autoWidth: false,
+    autoWidth: true,
     scrollCollapse: true,
     scrollY: getScrollY(),
     dom: "tir",
@@ -84,11 +84,26 @@ $("#tablaPedidosCompras").DataTable({
         { data: "estado" },
         {
             data: null,
-            orderable: false,
-            searchable: false,
             className: "text-center",
             render: function (data, type, row) {
-                return renderSeguimientoPedido(row);
+                if (data.tiene_factura) {
+                    return `
+                        <span class="badge bg-success">
+                            <a href="/administracion/compras/factura/${row.id}/descargar"
+                            class="text-white text-decoration-none"
+                            title="Factura disponible. Descargar."
+                            onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-file-arrow-down"></i> Factura
+                            </a>
+                        </span>
+                    `;
+                }
+
+                return `
+                    <span class="badge text-bg-secondary">
+                        Sin factura
+                    </span>
+                `;
             },
         },
         {
@@ -1117,149 +1132,3 @@ $("#btnAbrirModalNuevoPedido").on("click", function () {
     cargarProveedores($("#cmbProveedorModal"), $("#modalCargaPedido"));
     $("#modalCargaPedido").modal("show");
 });
-
-function renderSeguimientoPedido(pedido) {
-    const tieneProveedor =
-        pedido.proveedor_id !== null &&
-        pedido.proveedor_id !== undefined &&
-        pedido.proveedor_id !== "";
-
-    const tieneOrdenCompra = Number(pedido.tiene_orden_compra) === 1;
-    const tieneFactura = Number(pedido.tiene_factura) === 1;
-
-    // PEDIDO RECHAZADO
-    if (pedido.autorizacion === "RECHAZADA") {
-        return `
-            <span
-                class="badge bg-danger"
-                title="El pedido fue rechazado">
-                <i class="fa-solid fa-circle-xmark me-1"></i>
-                Rechazado
-            </span>
-        `;
-    }
-
-    // PEDIDO CANCELADO
-    if (pedido.estado === "CANCELADO") {
-        return `
-            <span
-                class="badge bg-secondary"
-                title="El pedido fue cancelado">
-                <i class="fa-solid fa-ban me-1"></i>
-                Cancelado
-            </span>
-        `;
-    }
-
-    // TODAVÍA ESTÁ EN PROCESO DE AUTORIZACIÓN
-    if (
-        pedido.autorizacion === "PENDIENTE" ||
-        pedido.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE"
-    ) {
-        return `
-            <span
-                class="badge bg-light text-dark border"
-                title="El pedido todavía se encuentra en proceso de autorización">
-                <i class="fa-regular fa-clock me-1"></i>
-                En autorización
-            </span>
-        `;
-    }
-
-    let proveedorHtml = "";
-    let ordenCompraHtml = "";
-    let facturaHtml = "";
-
-    // PROVEEDOR
-    if (tieneProveedor) {
-        proveedorHtml = `
-            <span
-                class="badge bg-success"
-                title="Proveedor asignado: ${pedido.proveedor ?? ""}">
-                <i class="fa-solid fa-check me-1"></i>
-                Proveedor
-            </span>
-        `;
-    } else {
-        proveedorHtml = `
-            <span
-                class="badge bg-warning text-dark"
-                title="Debe asignar un proveedor para poder generar la orden de compra">
-                <i class="fa-solid fa-triangle-exclamation me-1"></i>
-                Sin proveedor
-            </span>
-        `;
-    }
-
-    // ORDEN DE COMPRA
-    if (!tieneProveedor) {
-        ordenCompraHtml = `
-            <span
-                class="badge bg-secondary"
-                title="La orden de compra no está disponible porque el pedido no tiene proveedor">
-                <i class="fa-solid fa-lock me-1"></i>
-                OC
-            </span>
-        `;
-    } else if (tieneOrdenCompra) {
-        const cantidad = Number(pedido.cantidad_ordenes_compra ?? 0);
-
-        ordenCompraHtml = `
-            <span
-                class="badge bg-success"
-                title="Orden de compra disponible">
-                <i class="fa-solid fa-check me-1"></i>
-                OC${cantidad > 1 ? ` (${cantidad})` : ""}
-            </span>
-        `;
-    } else {
-        ordenCompraHtml = `
-            <span
-                class="badge bg-light text-dark border"
-                title="Orden de compra pendiente">
-                <i class="fa-regular fa-clock me-1"></i>
-                OC
-            </span>
-        `;
-    }
-
-    // FACTURA
-    if (tieneFactura) {
-        const cantidad = Number(pedido.cantidad_facturas ?? 0);
-
-        facturaHtml = `
-            <span
-                class="badge bg-success"
-                title="Factura disponible">
-                <i class="fa-solid fa-file-invoice-dollar me-1"></i>
-                Factura${cantidad > 1 ? ` (${cantidad})` : ""}
-            </span>
-        `;
-    } else if (!tieneOrdenCompra) {
-        facturaHtml = `
-            <span
-                class="badge bg-light text-secondary border"
-                title="La factura todavía no corresponde porque no se cargó la orden de compra">
-                <i class="fa-solid fa-minus me-1"></i>
-                Factura
-            </span>
-        `;
-    } else {
-        facturaHtml = `
-            <span
-                class="badge bg-light text-dark border"
-                title="Orden de compra disponible. Falta incorporar la factura">
-                <i class="fa-regular fa-clock me-1"></i>
-                Factura
-            </span>
-        `;
-    }
-
-    return `
-        <div class="d-flex align-items-center justify-content-center gap-1 flex-wrap">
-            ${proveedorHtml}
-            ${ordenCompraHtml}
-            ${facturaHtml}
-        </div>
-    `;
-}

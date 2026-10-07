@@ -87,10 +87,14 @@ function renderPreviewFinnegans() {
             "</td>" +
             '<td><input type="text" class="form-control form-control-sm input-comprobante-finnegans" data-idx="' +
             i +
-            '" value="" placeholder="N° comprobante"></td>' +
-            "<td>" +
-            r.cuenta +
-            "</td>" +
+            '" value="' +
+            escAttr(r.comprobante) +
+            '" placeholder="N° comprobante"></td>' +
+            '<td><select class="form-select form-select-sm select-cuenta-finnegans" data-idx="' +
+            i +
+            '">' +
+            optsCuenta(r.cuenta) +
+            "</select></td>" +
             '<td><select class="form-select form-select-sm select-operacion-finnegans" data-idx="' +
             i +
             '">' +
@@ -136,6 +140,20 @@ $(document).on("change", ".select-operacion-finnegans", function () {
     finnegansRows[$(this).data("idx")].operacion = $(this).val();
 });
 
+$(document).on("change", ".select-cuenta-finnegans", function () {
+    const idx = $(this).data("idx");
+    const cuenta = $(this).val();
+    finnegansRows[idx].cuenta = cuenta;
+
+    // Misma regla que ClasificadorOperacion::resolver (acá los importes siempre son negativos):
+    // CAJA => EFECTIVO, cualquier banco => TRANSFERENCIAS
+    finnegansRows[idx].operacion =
+        cuenta === "CAJA" ? "EFECTIVO" : "TRANSFERENCIAS";
+    $('.select-operacion-finnegans[data-idx="' + idx + '"]').val(
+        finnegansRows[idx].operacion,
+    );
+});
+
 $(document).on("input", ".input-comprobante-finnegans", function () {
     finnegansRows[$(this).data("idx")].comprobante = $(this).val();
 });
@@ -157,3 +175,25 @@ $("#btnConfirmarFinnegans").on("click", function () {
         },
     );
 });
+
+function optsCuenta(actual) {
+    let out = "";
+    CUENTAS_CATALOGO.forEach(function (c) {
+        out +=
+            '<option value="' +
+            c +
+            '"' +
+            (c === actual ? " selected" : "") +
+            ">" +
+            c +
+            "</option>";
+    });
+    return out;
+}
+
+function escAttr(s) {
+    return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;");
+}

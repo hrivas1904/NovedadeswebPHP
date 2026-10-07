@@ -185,7 +185,7 @@
                                 <th class="text-center">Adjuntos</th>
                                 <th class="text-center">AUTORIZACIÓN</th>
                                 <th class="text-center">ESTADO</th>
-                                <th class="text-center">SEGUIMIENTO</th>
+                                <th class="text-center">FACTURA</th>
                                 <th class="text-center" style="width: 40px;">
                                     <input type="checkbox" id="checkTodosPedidos" class="form-check-input">
                                 </th>

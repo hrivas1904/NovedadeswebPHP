@@ -14,6 +14,7 @@ class PresupuestarController extends Controller
     public function presupuestarView()
     {
         $conceptos = collect(DB::select('SELECT nombre FROM ff_conceptos WHERE activo=1 ORDER BY orden'))->pluck('nombre');
+        $cuentas = collect(DB::select('SELECT nombre FROM ff_cuentas WHERE activo = 1 ORDER BY orden'))->pluck('nombre');
 
         $subconceptosPorConcepto = collect(DB::select('
             SELECT c.nombre AS concepto, s.nombre AS subconcepto
@@ -23,7 +24,7 @@ class PresupuestarController extends Controller
             ORDER BY s.orden
         '))->groupBy('concepto')->map(fn($g) => $g->pluck('subconcepto'));
 
-        return view('administracion.presupuestar.presupuestar', compact('conceptos', 'subconceptosPorConcepto'));
+        return view('administracion.presupuestar.presupuestar', compact('conceptos', 'subconceptosPorConcepto', 'cuentas'));
     }
 
     public function previewGeclisa(Request $request)
@@ -131,6 +132,7 @@ class PresupuestarController extends Controller
             'rows'               => 'required|array|min:1',
             'rows.*.fecha'       => 'required|date',
             'rows.*.detalle'     => 'required|string',
+            'rows.*.cuenta'      => 'required|string|exists:ff_cuentas,nombre',
             'rows.*.concepto'    => 'required|string',
             'rows.*.subconcepto' => 'nullable|string',
             'rows.*.operacion'   => 'required|string|in:INGRESOS,TRANSFERENCIAS,CHEQUES,EFECTIVO',
@@ -142,7 +144,7 @@ class PresupuestarController extends Controller
         foreach ($request->input('rows') as $r) {
             $resultado = DB::select('CALL SP_FF_MOVIMIENTO_INSERTAR(?,?,?,?,?,?,?,?,?,?,?)', [
                 $r['fecha'],
-                'MACRO', // banco fijo, no editable desde el front
+                $r['cuenta'], // banco fijo, no editable desde el front
                 $r['concepto'],
                 $r['subconcepto'] ?? '',
                 $r['detalle'],
@@ -183,7 +185,8 @@ class PresupuestarController extends Controller
         $iImp   = $ix('pendiente');
         $iOrg   = $ix('organizacion');
         $iFecha = $ix('f vto');
-        $iComp  = $ix('comprobante');
+        $iComp = array_search('comprobante', $header, true);
+        if ($iComp === false) $iComp = -1;
 
         $motor = new MotorClasificacion();
 

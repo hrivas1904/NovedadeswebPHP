@@ -175,6 +175,7 @@
     };
     const CONCEPTOS_CATALOGO = @json($conceptos);
     const SUBCONCEPTOS_POR_CONCEPTO = @json($subconceptosPorConcepto);
+    const CUENTAS_CATALOGO = @json($cuentas);
 </script>
 <script src="{{ asset('js/administracion/presupuestar/ivaGeclisa.js') }}"></script>
 <script src="{{ asset('js/administracion/presupuestar/pagosProveedores.js') }}"></script>
