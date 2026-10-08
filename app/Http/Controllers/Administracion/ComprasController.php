@@ -727,7 +727,7 @@ class ComprasController extends Controller
 
     public function subirFactura(Request $request, $id)
     {
-        if (!in_array(Auth::id(), [1, 2, 5, 6])) {
+        if (!in_array(Auth::id(), [1, 2, 5, 6, 49, 217])) {
             return response()->json([
                 'success' => false,
                 'mensaje' => 'No tenés permisos para esta acción.'
@@ -797,7 +797,7 @@ class ComprasController extends Controller
 
     public function eliminarFactura($id)
     {
-        if (!in_array(Auth::id(), [1, 2, 5, 6])) {
+        if (!in_array(Auth::id(), [1, 2, 5, 6, 49, 217])) {
             return response()->json([
                 'success' => false,
                 'mensaje' => 'No tenés permisos para esta acción.'

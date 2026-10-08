@@ -1343,31 +1343,31 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-6 col-lg-2">
                                 <label class="text-muted">Fecha</label>
-                                <input type="date" class="form-control" name="fecha" id="inputFecha" readonly>
+                                <input type="date" class="form-control" name="fechaPrest" id="inputFechaPrest" readonly>
                             </div>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <label class="text-muted">Legajo</label>
-                                <input type="text" class="form-control" name="legajo" id="inputLegajo" readonly required>
+                                <input type="text" class="form-control" name="legajoPrest" id="inputLegajoPrest" readonly required>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
                                 <label class="text-muted">Colaborador</label>
-                                <input type="text" class="form-control" name="colaborador" id="inputColaborador" readonly>
+                                <input type="text" class="form-control" name="colaboradorPrest" id="inputColaboradorPrest" readonly>
                             </div>
                             <div class="col-12 col-md-6 col-lg-3">
                                 <label class="text-muted">Monto préstamo</label>
-                                <input type="text" class="form-control" name="monto" id="inputMonto" min="0.01" step="0.01" required>
+                                <input type="text" class="form-control" name="montoPrest" id="inputMontoPrest" min="0.01" step="0.01" required>
                             </div>
                             <div class="col-12 col-md-6 col-lg-2">
                                 <label class="text-muted">Cuotas</label>
-                                <input type="number" class="form-control" name="cuotas" id="inputCuotas" min="1" step="1" required>
+                                <input type="number" class="form-control" name="cuotasPrest" id="inputCuotasPrest" min="1" step="1" required>
                             </div>
                             <div class="col-12 col-md-6 col-lg-3">
                                 <label class="text-muted">Monto cuotas</label>
-                                <input type="text" class="form-control" name="montoCuotas" id="inputMontoCuotas" required>
+                                <input type="text" class="form-control" name="montoCuotasPrest" id="inputMontoCuotasPrest" required>
                             </div>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <label class="text-muted">Inicio descuento</label>
-                                <input type="month" class="form-control" name="mesDescuento" id="inputMesDescuento">
+                                <input type="month" class="form-control" name="mesDescuentoPrest" id="inputMesDescuentoPrest">
                             </div>
                         </div>
                         <label class="text-muted fw-bold">NOVEDADES A GENERAR AUTOMÁTICAMENTE</label>
