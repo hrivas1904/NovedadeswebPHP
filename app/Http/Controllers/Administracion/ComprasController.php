@@ -138,40 +138,57 @@ class ComprasController extends Controller
 
     public function actualizarPedido(Request $request, $id)
     {
-        $request->validate([
-            'prioridad'                   => ['required', 'in:BAJA,MEDIA,URGENTE'],
-            'centro_costo_id'             => ['nullable', 'integer', 'exists:centros_costo,id'],
-            'proveedor_id'                => ['nullable', 'integer', 'exists:proveedores,id'],
-            'descripcion'                 => ['nullable', 'string'],
+        $validated = $request->validate([
+            'prioridad'                  => ['required', 'in:BAJA,MEDIA,URGENTE'],
+            'centro_costo_id'            => ['nullable', 'integer', 'exists:centros_costo,id'],
+            'proveedor_id'               => ['nullable', 'integer', 'exists:proveedores,id'],
+            'moneda'                     => ['nullable', 'string'],
+            'descripcion'                => ['nullable', 'string'],
 
-            'detalle'                     => ['required', 'array', 'min:1'],
-            'detalle.*.id'                => ['nullable', 'integer'],
-            'detalle.*.producto_id'       => ['required', 'integer', 'exists:productos,id'],
-            'detalle.*.cantidad'          => ['required', 'numeric', 'min:0.01'],
-            'detalle.*.precio'            => ['nullable', 'numeric', 'min:0'],
-            'detalle.*.descripcion_item'  => ['nullable', 'string'],
+            'detalle'                    => ['required', 'array', 'min:1'],
+            'detalle.*.id'               => ['nullable', 'integer'],
+            'detalle.*.producto_id'      => ['required', 'integer', 'exists:productos,id'],
+            'detalle.*.cantidad'         => ['required', 'numeric', 'min:0.01'],
+            'detalle.*.precio'           => ['nullable', 'numeric', 'min:0'],
+            'detalle.*.descripcion_item' => ['nullable', 'string'],
+
+            // NUEVO: productos eliminados
+            'eliminados'                 => ['nullable', 'array'],
+            'eliminados.*'               => ['integer', 'distinct'],
         ]);
 
         DB::beginTransaction();
 
         try {
 
-            // CABECERA
+            // 1. ACTUALIZAR CABECERA
             DB::statement(
                 "CALL SP_ACTUALIZAR_PEDIDO_COMPRA(?,?,?,?,?,?,?)",
                 [
                     $id,
-                    strtoupper($request->prioridad),
-                    $request->centro_costo_id ?: null,
-                    $request->proveedor_id ?: null,
-                    $request->moneda,
-                    $request->descripcion,
+                    strtoupper($validated['prioridad']),
+                    $validated['centro_costo_id'] ?? null,
+                    $validated['proveedor_id'] ?? null,
+                    $validated['moneda'] ?? null,
+                    $validated['descripcion'] ?? null,
                     Auth::id(),
                 ]
             );
 
-            // DETALLE
-            foreach ($request->detalle as $item) {
+            // 2. ELIMINAR PRODUCTOS QUITADOS
+            $eliminados = $validated['eliminados'] ?? [];
+
+            if (!empty($eliminados)) {
+                DB::table('detalle_pedidos_compras')
+                    ->where('pedido_compra_id', $id)
+                    ->whereIn('id', $eliminados)
+                    ->delete();
+            }
+
+            // 3. ACTUALIZAR O INSERTAR DETALLE
+            foreach ($validated['detalle'] as $item) {
+
+                $precio = $item['precio'] ?? null;
 
                 if (!empty($item['id'])) {
 
@@ -182,7 +199,7 @@ class ComprasController extends Controller
                             $item['id'],
                             $item['producto_id'],
                             $item['cantidad'],
-                            $item['precio'] !== '' ? $item['precio'] : null,
+                            $precio,
                             $item['descripcion_item'] ?? null,
                         ]
                     );
@@ -195,7 +212,7 @@ class ComprasController extends Controller
                             $id,
                             $item['producto_id'],
                             $item['cantidad'],
-                            $item['precio'] !== '' ? $item['precio'] : null,
+                            $precio,
                             $item['descripcion_item'] ?? null,
                         ]
                     );

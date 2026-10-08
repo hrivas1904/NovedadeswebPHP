@@ -408,13 +408,13 @@
                 <button type="button" class="btn btn-primary d-none" id="btnRegenerarExcelFinnegans">
                     Regenerar Excel
                 </button>
+                @endif
                 <button type="button" class="btn btn-secondary" id="btnHabilitarEdicionPedido">
                     Editar
                 </button>
                 <button type="button" class="btn btn-primary d-none" id="btnGuardarCambiosPedidos">
                     Guardar cambios
-                </button>
-                @endif
+                </button>                
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Cerrar
                 </button>

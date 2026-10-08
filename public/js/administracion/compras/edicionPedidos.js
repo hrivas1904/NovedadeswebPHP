@@ -39,6 +39,9 @@ $("#btnGuardarCambiosPedidos").on("click", function () {
 
     const detalle = leerDetallePedido();
 
+    console.log("DETALLES ACTUALES:", detalle);
+    console.log("DETALLES ELIMINADOS:", DETALLES_ELIMINADOS);
+
     $.ajax({
         url: `/administracion/compras/pedidos/${pedidoId}/actualizar`,
         type: "PUT",
@@ -263,3 +266,65 @@ function leerDetallePedido() {
 
     return detalle;
 }
+
+$(document).on("click", "#btnAgregarProductoDetalle", function () {
+    const indice = Date.now();
+
+    const descripcionGeneral = $("#verDescripcion").val()?.trim() ?? "";
+
+    const fila = $(`
+        <tr data-detalle-id="">
+            <td>
+                <select
+                    id="productoDetalle_${indice}"
+                    class="form-control selector-producto">
+                </select>
+            </td>
+
+            <td>
+                <input
+                    type="text"
+                    class="form-control input-descripcion"
+                    value="">
+            </td>
+
+            <td class="text-center">
+                <input
+                    type="number"
+                    class="form-control input-cantidad"
+                    value="1"
+                    min="0"
+                    step="1">
+            </td>
+
+            <td class="text-end">
+                <input
+                    type="text"
+                    class="form-control text-end input-precio"
+                    value="">
+            </td>
+
+            <td class="text-center campoDeleteTabla">
+                <button
+                    type="button"
+                    class="btn btn-sm btnEliminarProducto"
+                    style="color:var(--color-accent-red);">
+
+                    <i class="fs-5 fa-regular fa-trash-can"></i>
+                </button>
+            </td>
+        </tr>
+    `);
+
+    $("#detalleProductosBody").append(fila);
+
+    // Replicamos la descripción general del pedido
+    fila.find(".input-descripcion").val(descripcionGeneral);
+
+    // Inicializamos Select2 de productos
+    inicializarSelectProducto(
+        fila.find(".selector-producto"),
+        $("#modalDetallePedido"),
+        null,
+    );
+});

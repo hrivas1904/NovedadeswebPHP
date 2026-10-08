@@ -100,9 +100,7 @@ $("#tablaPedidosCompras").DataTable({
                 }
 
                 return `
-                    <span class="badge text-bg-secondary">
-                        Sin factura
-                    </span>
+                    
                 `;
             },
         },
