@@ -465,6 +465,14 @@ $(document).ready(function () {
                                     style='color: var(--color-accent-red)'>
                                     <i class="fs-5 fa-regular fa-trash-can"></i>
                                 </button>
+                                <button 
+                                    class="btn btn-Prestamo"
+                                    data-id="${data.LEGAJO}"
+                                    title='Préstamo'
+                                    data-nombre="${data.COLABORADOR}"
+                                    style='color: var(--color-accent-green)'>
+                                    <i class="fs-5 fa-solid fa-file-invoice-dollar"></i>
+                                </button>
                             `;
                         }
 
@@ -567,8 +575,111 @@ $(document).ready(function () {
             console.log("Id recibido: " + legajoColaborador);
             editEmpleados(legajoColaborador, nombre);
         });
+
+        $(document).on("click", ".btn-Prestamo", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const legajoColaborador = $(this).data("id");
+            const nombre = $(this).data("nombre");
+            console.log("Id recibido: " + legajoColaborador);
+            modalRegistrarPrestamo(legajoColaborador, nombre);
+        });
     }
 });
+
+//Prestamos
+function modalRegistrarPrestamo(idColab, nombreColab) {
+    const modalPrestamo = $("#modalPrestamo");
+
+    $("#formPrestamo")[0].reset();
+
+    const fechaActual = new Date();
+    const fechaLocal = [
+        fechaActual.getFullYear(),
+        String(fechaActual.getMonth() + 1).padStart(2, "0"),
+        String(fechaActual.getDate()).padStart(2, "0"),
+    ].join("-");
+
+    $("#inputFecha").val(fechaLocal);
+    $("#inputLegajo").val(idColab);
+    $("#inputColaborador").val(nombreColab);
+    $("#inputMesDescuento").val(fechaLocal.substring(0, 7));
+
+    $("#tbDetallePrestamo tbody").empty();
+
+    modalPrestamo.modal("show");
+}
+
+$("#inputMonto, #inputCuotas, #inputMesDescuento").on(
+    "input change",
+    function () {
+        generarDetallePrestamo();
+    },
+);
+
+function generarDetallePrestamo() {
+    const monto = Number($("#inputMonto").val());
+    const cuotas = Number($("#inputCuotas").val());
+    const mesInicio = $("#inputMesDescuento").val();
+
+    const tbody = $("#tbDetallePrestamo tbody");
+    tbody.empty();
+
+    $("#inputMontoCuotas").val("");
+
+    if (
+        !Number.isFinite(monto) ||
+        monto <= 0 ||
+        !Number.isInteger(cuotas) ||
+        cuotas <= 0 ||
+        !mesInicio
+    ) {
+        return;
+    }
+
+    // Trabajamos en centavos para evitar errores de redondeo.
+    const totalCentavos = Math.round(monto * 100);
+    const cuotaBase = Math.floor(totalCentavos / cuotas);
+    const resto = totalCentavos - cuotaBase * cuotas;
+
+    const [anio, mes] = mesInicio.split("-").map(Number);
+
+    const formatearImporte = (valor) =>
+        valor.toLocaleString("es-AR", {
+            style: "currency",
+            currency: "ARS",
+        });
+
+    $("#inputMontoCuotas").val(formatearImporte(cuotaBase / 100));
+
+    for (let i = 0; i < cuotas; i++) {
+        const fecha = new Date(anio, mes - 1 + i, 1);
+
+        const periodo = [
+            fecha.getFullYear(),
+            String(fecha.getMonth() + 1).padStart(2, "0"),
+            "01",
+        ].join("-");
+
+        // La última cuota absorbe los centavos restantes.
+        const importeCentavos = cuotaBase + (i === cuotas - 1 ? resto : 0);
+
+        const detalle = `Préstamo - Cuota ${i + 1}/${cuotas}`;
+
+        const fila = $("<tr>");
+
+        $("<td>").text("PRÉSTAMO").appendTo(fila);
+        $("<td>").text("A DEFINIR").appendTo(fila);
+        $("<td>").text(periodo).appendTo(fila);
+        $("<td>").text(detalle).appendTo(fila);
+        $("<td>")
+            .addClass("text-end fw-semibold")
+            .text(formatearImporte(importeCentavos / 100))
+            .appendTo(fila);
+
+        tbody.append(fila);
+    }
+}
 
 //SELECTORES CATEGORÍAS Y ROLES
 function cargarCategorias() {

@@ -95,7 +95,7 @@
 
                         @if (Auth::user()->rol === 'Administrador/a')
                         <button type="button" class="btn btn-primary" onclick="abrirModal()">
-                            
+
                             Nuevo Colaborador
                         </button>
                         @endif
@@ -105,7 +105,7 @@
                             <!-- SOLO DESKTOP -->
                             <button type="button" id="btnExportExcel"
                                 class="btn btn-primary d-none d-md-inline-flex align-items-center">
-                                
+
                                 Exportar nómina
                             </button>
 
@@ -1324,6 +1324,73 @@
                 </button>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPrestamo" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content p-2">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa-solid fa-file-invoice-dollar me-2"></i> Registrar préstamo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#modalPrestamo"></button>
+            </div>
+            <form id="formPrestamo">
+                <div class="modal-body">
+                    <div class="d-flex flex-column gap-3">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6 col-lg-2">
+                                <label class="text-muted">Fecha</label>
+                                <input type="date" class="form-control" name="fecha" id="inputFecha" readonly>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <label class="text-muted">Legajo</label>
+                                <input type="text" class="form-control" name="legajo" id="inputLegajo" readonly required>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <label class="text-muted">Colaborador</label>
+                                <input type="text" class="form-control" name="colaborador" id="inputColaborador" readonly>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <label class="text-muted">Monto préstamo</label>
+                                <input type="text" class="form-control" name="monto" id="inputMonto" min="0.01" step="0.01" required>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-2">
+                                <label class="text-muted">Cuotas</label>
+                                <input type="number" class="form-control" name="cuotas" id="inputCuotas" min="1" step="1" required>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <label class="text-muted">Monto cuotas</label>
+                                <input type="text" class="form-control" name="montoCuotas" id="inputMontoCuotas" required>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <label class="text-muted">Inicio descuento</label>
+                                <input type="month" class="form-control" name="mesDescuento" id="inputMesDescuento">
+                            </div>
+                        </div>
+                        <label class="text-muted fw-bold">NOVEDADES A GENERAR AUTOMÁTICAMENTE</label>
+                        <table id="tbDetallePrestamo" class="table">
+                            <thead>
+                                <tr>
+                                    <th>NOVEDAD</th>
+                                    <th>CODIGO</th>
+                                    <th>FECHA APLICACIÓN</th>
+                                    <th>DETALLE</th>
+                                    <th>IMPORTE</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary" id="btnRegistrarPrestamo">Registrar préstamo</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

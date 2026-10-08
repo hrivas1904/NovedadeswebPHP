@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Log;
 
 class CopagosController extends Controller
 {
+    private const CONC_CAJA_COPAGO = 'FACTURACION COPAGO (EXENTO)';
+    private const CONC_CAJA_MEDICAMENTOS = ''; // completar con el conccaja_nombre real
+    private const PORC_MEDICAMENTOS = 0.75;
+
     private array $meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
     // ---------- vista ----------
@@ -183,98 +187,69 @@ class CopagosController extends Controller
      * RECORRER DIRECTAMENTE EL EXCEL
      */
         $filas = [];
+        $filasMed = [];
+        $concMed = self::CONC_CAJA_MEDICAMENTOS !== ''
+            ? $this->normalizarNombre(self::CONC_CAJA_MEDICAMENTOS)
+            : null;
 
         $ultimaFila = $sheet->getHighestDataRow();
 
         for ($r = 2; $r <= $ultimaFila; $r++) {
+            $conc = $this->normalizarNombre($sheet->getCell([$idx['conccaja_nombre'], $r])->getValue());
 
-            $conc = $sheet
-                ->getCell([$idx['conccaja_nombre'], $r])
-                ->getValue();
+            $esCopago = $conc === self::CONC_CAJA_COPAGO;
+            $esMed = $concMed !== null && $conc === $concMed;
+            if (!$esCopago && !$esMed) continue;
 
-            if (
-                $this->normalizarNombre($conc)
-                !== 'FACTURACION COPAGO (EXENTO)'
-            ) {
-                continue;
-            }
+            if (!empty($sheet->getCell([$idx['mve_anulado'], $r])->getValue())) continue;
 
-            $anulado = $sheet
-                ->getCell([$idx['mve_anulado'], $r])
-                ->getValue();
+            $nombre = $sheet->getCell([$idx['me_ape'], $r])->getValue();
+            if (!$nombre) continue;
 
-            if (!empty($anulado)) {
-                continue;
-            }
-
-            $nombre = $sheet
-                ->getCell([$idx['me_ape'], $r])
-                ->getValue();
-
-            if (!$nombre) {
-                continue;
-            }
-
-            $celdaFecha = $sheet->getCell([
-                $idx['me_fecha'],
-                $r
-            ]);
-
+            $celdaFecha = $sheet->getCell([$idx['me_fecha'], $r]);
             $fecha = $celdaFecha->getValue();
-
-            if (
-                $fecha !== null &&
-                Date::isDateTime($celdaFecha)
-            ) {
+            if ($fecha !== null && Date::isDateTime($celdaFecha)) {
                 $fecha = Date::excelToDateTimeObject($fecha);
             }
 
-            $importe = $sheet
-                ->getCell([$idx['imp'], $r])
-                ->getValue();
-
-            $osplan = $sheet
-                ->getCell([$idx['osplan'], $r])
-                ->getValue();
-
-            $filas[] = [
+            $fila = [
                 'fecha' => $this->parsearFecha($fecha),
                 'nombre' => (string) $nombre,
                 'nombre_norm' => $this->normalizarNombre($nombre),
-
-                // IMPORTANTE: importe, NO imp
-                'importe' => $this->parseNumeroArg($importe),
-
-                'osplan' => $osplan,
+                'importe' => $this->parseNumeroArg($sheet->getCell([$idx['imp'], $r])->getValue()),
+                'osplan' => $sheet->getCell([$idx['osplan'], $r])->getValue(),
             ];
-        }
 
-        if (!$filas) {
-            return response()->json([
-                'message' =>
-                'No se encontraron pagos de "Facturación Copago (exento)".'
-            ], 422);
+            if ($esCopago) $filas[] = $fila;
+            else $filasMed[] = $fila;
         }
-
-        DB::statement(
-            'CALL SP_COPAGOS_CAJA_CARGAR(?, ?, ?)',
-            [
-                json_encode(
-                    $filas,
-                    JSON_UNESCAPED_UNICODE
-                ),
-                $archivo->getClientOriginalName(),
-                auth()->id(),
-            ]
-        );
 
         $spreadsheet->disconnectWorksheets();
         unset($spreadsheet);
 
-        return response()->json([
-            'message' => count($filas) . ' pagos cargados.',
-            'filas' => count($filas)
-        ]);
+        if (!$filas && !$filasMed) {
+            return response()->json(['message' => 'No se encontraron pagos de copago ni de medicamentos.'], 422);
+        }
+
+        if ($filas) {
+            DB::statement('CALL SP_COPAGOS_CAJA_CARGAR(?, ?, ?)', [
+                json_encode($filas, JSON_UNESCAPED_UNICODE),
+                $archivo->getClientOriginalName(),
+                auth()->id(),
+            ]);
+        }
+
+        if ($concMed !== null) {
+            DB::statement('CALL SP_COPAGOS_CAJA_MED_CARGAR(?, ?)', [
+                json_encode($filasMed, JSON_UNESCAPED_UNICODE),
+                auth()->id(),
+            ]);
+        }
+
+        $mensaje = count($filas) . ' pagos de copago';
+        if ($concMed !== null) $mensaje .= ' y ' . count($filasMed) . ' de medicamentos';
+
+        return response()->json(['message' => $mensaje . ' cargados.']);
     }
 
     public function listarCaja()
@@ -295,58 +270,146 @@ class CopagosController extends Controller
     {
         $liqRows = DB::select('CALL SP_COPAGOS_LIQUIDACION_LISTAR()');
         $cajaRows = DB::select('CALL SP_COPAGOS_CAJA_LISTAR()');
+        $medRows = DB::select('CALL SP_COPAGOS_MEDICAMENTOS_LISTAR()');
+        $cajaMedRows = DB::select('CALL SP_COPAGOS_CAJA_MED_LISTAR()');
         $notas = collect(DB::select('CALL SP_COPAGOS_NOTAS_LISTAR()'))->keyBy('nombre_norm');
 
-        $cajaConPalabras = array_map(
-            fn($c) => ['row' => $c, 'words' => array_flip(explode(' ', $c->nombre_norm))],
-            $cajaRows
-        );
+        $cajaIdx = $this->indexarPorPalabras($cajaRows);
+        $cajaMedIdx = $this->indexarPorPalabras($cajaMedRows);
 
         $porNombre = [];
         foreach ($liqRows as $r) $porNombre[$r->nombre_norm][] = $r;
 
-        $telefonos = $this->buscarTelefonos(array_keys($porNombre));
+        // La deuda de medicamentos se asocia al paciente de la liquidación si es la misma persona
+        $medPorNombre = [];
+        foreach ($medRows as $m) {
+            $clave = $this->buscarMismaPersona($m->nombre_norm, array_keys($porNombre)) ?? $m->nombre_norm;
+            $medPorNombre[$clave][] = $m;
+        }
+
+        $nombres = array_values(array_unique(array_merge(array_keys($porNombre), array_keys($medPorNombre))));
+        $telefonos = $this->buscarTelefonos($nombres);
 
         $pacientes = [];
-        foreach ($porNombre as $nombreNorm => $filas) {
-            $liqWords = array_flip(explode(' ', $nombreNorm));
-            $totalLiq = array_sum(array_map(fn($f) => (float) $f->total, $filas));
-
-            $matched = array_values(array_filter($cajaConPalabras, function ($c) use ($liqWords) {
-                foreach ($liqWords as $w => $_) if (!isset($c['words'][$w])) return false;
-                return true;
-            }));
-
-            $totalCobrado = array_sum(array_map(fn($m) => (float) $m['row']->importe, $matched));
-            $diferencia = round($totalLiq - $totalCobrado, 2);
+        foreach ($nombres as $nombreNorm) {
+            $filas = $porNombre[$nombreNorm] ?? [];
+            $meds = $medPorNombre[$nombreNorm] ?? [];
             $nota = $notas->get($nombreNorm);
+            $resuelto = (bool) ($nota->resuelto ?? false);
+
+            // ---- copago ----
+            $totalLiq = array_sum(array_map(fn($f) => (float) $f->total, $filas));
+            $pagos = $filas ? $this->pagosDe($nombreNorm, $cajaIdx) : [];
+            $totalCobrado = array_sum(array_map(fn($p) => (float) $p['row']->importe, $pagos));
+            $diferencia = round($totalLiq - $totalCobrado, 2);
+
+            if ($resuelto && $nota->cobrado_manual !== null) {
+                $totalCobrado = (float) $nota->cobrado_manual;
+                $diferencia = round(max(0, $totalLiq - $totalCobrado), 2);
+            }
+            $estado = $filas ? $this->estadoCobro($diferencia, $totalCobrado) : 'SIN COPAGO';
+
+            // ---- medicamentos ----
+            $deudaMed = round(array_sum(array_map(fn($m) => (float) $m->importe_deuda, $meds)) * self::PORC_MEDICAMENTOS, 2);
+            $pagosMed = $meds ? $this->pagosDe($nombreNorm, $cajaMedIdx) : [];
+            $cobradoMed = array_sum(array_map(fn($p) => (float) $p['row']->importe, $pagosMed));
+            $diferenciaMed = round($deudaMed - $cobradoMed, 2);
+
+            if ($resuelto && $nota->cobrado_med_manual !== null) {
+                $cobradoMed = (float) $nota->cobrado_med_manual;
+                $diferenciaMed = round(max(0, $deudaMed - $cobradoMed), 2);
+            }
+            $estadoMed = $meds ? $this->estadoCobro($diferenciaMed, $cobradoMed) : 'SIN DEUDA';
+
+            $impagos = ['NO COBRADO', 'COBRO PARCIAL'];
 
             $pacientes[] = [
                 'nombreNorm' => $nombreNorm,
-                'nombreDisplay' => $filas[0]->nombre,
+                'nombreDisplay' => $filas[0]->nombre ?? $meds[0]->nombre,
                 'telefono' => $telefonos[$nombreNorm] ?? null,
                 'fins' => array_map(fn($f) => $f->fin, $filas),
                 'periodos' => array_values(array_unique(array_map(fn($f) => $f->periodo, $filas))),
                 'totalLiquidado' => round($totalLiq, 2),
                 'totalCobrado' => round($totalCobrado, 2),
                 'diferencia' => $diferencia,
-                'estado' => $diferencia <= 1000 ? 'COBRADO' : ($totalCobrado == 0.0 ? 'NO COBRADO' : 'COBRO PARCIAL'),
+                'estado' => $estado,
+                'deudaMed' => $deudaMed,
+                'cobradoMed' => round($cobradoMed, 2),
+                'diferenciaMed' => $diferenciaMed,
+                'estadoMed' => $estadoMed,
+                'pendiente' => !$resuelto && (in_array($estado, $impagos, true) || in_array($estadoMed, $impagos, true)),
                 'nota' => $nota->nota ?? null,
-                'resuelto' => (bool) ($nota->resuelto ?? false),
-                'pagos' => array_map(fn($m) => [
-                    'fecha' => $m['row']->fecha,
-                    'nombre' => $m['row']->nombre,
-                    'importe' => (float) $m['row']->importe,
-                ], $matched),
+                'resuelto' => $resuelto,
+                'pagos' => $this->formatearPagos($pagos),
+                'pagosMed' => $this->formatearPagos($pagosMed),
             ];
         }
 
         usort(
             $pacientes,
-            fn($a, $b) => $b['diferencia'] <=> $a['diferencia']
+            fn($a, $b) => ($b['diferencia'] + $b['diferenciaMed']) <=> ($a['diferencia'] + $a['diferenciaMed'])
         );
 
         return $pacientes;
+    }
+
+    private function indexarPorPalabras(array $rows): array
+    {
+        return array_map(
+            fn($c) => ['row' => $c, 'words' => array_flip(explode(' ', $c->nombre_norm))],
+            $rows
+        );
+    }
+
+    private function pagosDe(string $nombreNorm, array $indexados): array
+    {
+        $palabras = explode(' ', $nombreNorm);
+
+        return array_values(array_filter($indexados, function ($c) use ($palabras) {
+            foreach ($palabras as $w) if (!isset($c['words'][$w])) return false;
+            return true;
+        }));
+    }
+
+    private function formatearPagos(array $pagos): array
+    {
+        return array_map(fn($p) => [
+            'fecha' => $p['row']->fecha,
+            'nombre' => $p['row']->nombre,
+            'importe' => (float) $p['row']->importe,
+        ], $pagos);
+    }
+
+    private function estadoCobro(float $diferencia, float $cobrado): string
+    {
+        if ($diferencia <= 1000) return 'COBRADO';
+        return $cobrado == 0.0 ? 'NO COBRADO' : 'COBRO PARCIAL';
+    }
+
+    // Mismo criterio que el cruce con caja: todas las palabras de un nombre están en el otro.
+    // Solo asocia si hay un único candidato, para no mezclar pacientes.
+    private function buscarMismaPersona(string $nombreNorm, array $candidatos): ?string
+    {
+        if (in_array($nombreNorm, $candidatos, true)) return $nombreNorm;
+
+        $a = array_flip(explode(' ', $nombreNorm));
+        $encontrados = [];
+
+        foreach ($candidatos as $c) {
+            $b = array_flip(explode(' ', $c));
+            if (!array_diff_key($a, $b) || !array_diff_key($b, $a)) $encontrados[] = $c;
+        }
+
+        return count($encontrados) === 1 ? $encontrados[0] : null;
+    }
+
+    private function parseImporte($valor): float
+    {
+        if (is_int($valor) || is_float($valor)) return (float) $valor;
+        $s = trim((string) $valor);
+        // "340089.35" (punto decimal, como viene en el CSV)
+        if (preg_match('/^-?\d+\.\d{1,2}$/', $s)) return (float) $s;
+        return $this->parseNumeroArg($s);
     }
 
     public function guardarSnapshot(Request $request)
@@ -413,12 +476,16 @@ class CopagosController extends Controller
     {
         $data = $request->validate([
             'nombre_norm' => 'required|string|max:150',
-            'resuelto' => 'required|boolean',
+            'resuelto'    => 'required|boolean',
+            'total'       => 'nullable|numeric|min:0',
+            'total_med'   => 'nullable|numeric|min:0',
         ]);
 
-        DB::statement('CALL SP_COPAGOS_RESUELTO_MARCAR(?, ?, ?)', [
+        DB::statement('CALL SP_COPAGOS_RESUELTO_MARCAR(?, ?, ?, ?, ?)', [
             $data['nombre_norm'],
             $data['resuelto'] ? 1 : 0,
+            $data['resuelto'] ? ($data['total'] ?? 0) : null,
+            $data['resuelto'] ? ($data['total_med'] ?? 0) : null,
             auth()->id(),
         ]);
 
@@ -605,6 +672,98 @@ class CopagosController extends Controller
         }
 
         return $telefonos;
+    }
+
+    // ---------- medicamentes ----------
+    public function cargarMedicamentos(Request $request)
+    {
+        $request->validate(['archivo' => 'required|file|mimes:xlsx,xls,csv,txt']);
+        $archivo = $request->file('archivo');
+        $ruta = $archivo->getRealPath();
+
+        try {
+            $reader = strtolower($archivo->getClientOriginalExtension()) === 'csv'
+                ? IOFactory::createReader('Csv')
+                : IOFactory::createReaderForFile($ruta);
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($ruta);
+        } catch (\Throwable $e) {
+            Log::error('Error leyendo listado de medicamentos: ' . $e->getMessage());
+            return response()->json(['message' => 'No se pudo leer el archivo.'], 422);
+        }
+
+        $grid = $this->hojaAGrid($spreadsheet->getSheet(0));
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+
+        $col = null;
+        $headerRow = null;
+        foreach (array_slice($grid, 0, 5, true) as $r => $row) {
+            $h = array_map(fn($v) => $this->normalizarNombre((string) $v), $row);
+            $requeridos = ['APELLIDO', 'NOMBRE', 'OBRA SOCIAL', 'IMPORTE DEUDA'];
+            if (!array_diff($requeridos, $h)) {
+                $headerRow = $r;
+                $col = array_flip($h);
+                break;
+            }
+        }
+
+        if ($headerRow === null) {
+            return response()->json([
+                'message' => 'No encontré las columnas Apellido, Nombre, Obra social e Importe deuda.'
+            ], 422);
+        }
+
+        $filas = [];
+        $excluidos = 0;
+
+        foreach ($grid as $r => $row) {
+            if ($r <= $headerRow) continue;
+
+            $apellido = trim((string) ($row[$col['APELLIDO']] ?? ''));
+            $nombre = trim((string) ($row[$col['NOMBRE']] ?? ''));
+            if ($apellido === '' && $nombre === '') continue;
+
+            if ($this->normalizarNombre((string) ($row[$col['OBRA SOCIAL']] ?? '')) !== 'IPS') {
+                $excluidos++;
+                continue;
+            }
+
+            $dniRaw = isset($col['NRO. DOCUMENTO']) ? ($row[$col['NRO. DOCUMENTO']] ?? null) : null;
+            $dni = is_numeric($dniRaw) ? (string) (int) $dniRaw : preg_replace('/\D/', '', (string) $dniRaw);
+
+            $completo = trim($apellido . ' ' . $nombre);
+
+            $filas[] = [
+                'tipo_doc' => isset($col['TIPO DOCUMENTO']) ? (string) ($row[$col['TIPO DOCUMENTO']] ?? '') : null,
+                'dni' => $dni !== '' ? $dni : null,
+                'nombre' => $completo,
+                'nombre_norm' => $this->normalizarNombre($completo),
+                'obra_social' => 'IPS',
+                'importe_deuda' => $this->parseImporte($row[$col['IMPORTE DEUDA']] ?? null),
+                'fecha_alta' => isset($col['FECHA ALTA']) ? $this->parsearFecha($row[$col['FECHA ALTA']] ?? null) : null,
+            ];
+        }
+
+        if (!$filas) {
+            return response()->json(['message' => 'No se encontraron deudas de IPS en el archivo.'], 422);
+        }
+
+        DB::statement('CALL SP_COPAGOS_MEDICAMENTOS_CARGAR(?, ?)', [
+            json_encode($filas, JSON_UNESCAPED_UNICODE),
+            auth()->id(),
+        ]);
+
+        DB::statement('CALL SP_COPAGOS_CARGA_REGISTRAR(?, ?, ?, ?)', [
+            'medicamentos',
+            $archivo->getClientOriginalName(),
+            count($filas),
+            auth()->id(),
+        ]);
+
+        return response()->json([
+            'message' => count($filas) . ' deudas cargadas' . ($excluidos ? " ({$excluidos} excluidas por no ser IPS)." : '.'),
+        ]);
     }
 
     // ---------- helpers ----------

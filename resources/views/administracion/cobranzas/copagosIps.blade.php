@@ -7,7 +7,7 @@
 <h3 class="tituloVista mb-1">REPORTE DE DEUDA POR COPAGO IPS</h3>
 <small class="text-muted">Liquidación IPS (HAD's) cruzada contra cobranzas por caja, concepto "Facturación Copago (exento)".</small>
 
-<div class="row g-3 mt-3 mb-2">
+<div class="row g-3 mt-1 mb-2">
     <div class="col-12 col-lg-4">
         <div class="card p-3">
             <div class="d-flex flex-column gap-3">
@@ -54,32 +54,32 @@
 
 <div class="row g-3 mb-3 d-none" id="kpisCruce">
     <div class="col-6 col-lg-3">
-        <div class="card p-3">
-            <label class="text-muted mb-1">Total liquidado IPS</label>
+        <div class="card p-2 text-center">
+            <label class="text-muted mb-1 fw-bold   ">Total liquidado IPS</label>
             <div class="fs-4 fw-bold" id="kpiLiquidado">$0</div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="card p-3">
-            <label class="text-muted mb-1">Total identificado cobrado</label>
+        <div class="card p-2 text-center">
+            <label class="text-muted mb-1 fw-bold">Total identificado cobrado</label>
             <div class="fs-4 fw-bold" id="kpiCobrado" style="color: var(--color-accent-green);">$0</div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="card p-3">
-            <label class="text-muted mb-1">Diferencia (a verificar)</label>
+        <div class="card p-2 text-center">
+            <label class="text-muted mb-1 fw-bold">Diferencia (a verificar)</label>
             <div class="fs-4 fw-bold text-danger" id="kpiDiferencia">$0</div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="card p-3">
-            <label class="text-muted mb-1">Pacientes pendientes</label>
+        <div class="card p-2 text-center">
+            <label class="text-muted mb-1 fw-bold">Pacientes pendientes</label>
             <div class="fs-4 fw-bold" id="kpiPendientes">0</div>
         </div>
     </div>
 </div>
 
-<div class="card p-3 mb-3">
+<div class="card p-3 mb-3 d-none">
     <div class="d-flex align-items-center flex-wrap gap-3">
 
         <label class="mb-0 text-muted">
@@ -122,54 +122,32 @@
     <button
         type="button"
         class="btn btn-outline-secondary btn-sm btnFiltroCopago"
-        data-filtro="NO COBRADO">
-        No cobrado
-    </button>
-
-    <button
-        type="button"
-        class="btn btn-outline-secondary btn-sm btnFiltroCopago"
-        data-filtro="COBRO PARCIAL">
-        Cobro parcial
-    </button>
-
-    <button
-        type="button"
-        class="btn btn-outline-secondary btn-sm btnFiltroCopago"
         data-filtro="COBRADO">
         Cobrado
     </button>
 
-    <button
-        type="button"
-        class="btn btn-outline-secondary btn-sm btnFiltroCopago"
-        data-filtro="RESUELTOS">
-        Resueltos
-    </button>
-
-    <span class="small text-muted ms-auto" id="contadorCruce"></span>
+    <span class="small text-muted ms-auto d-none" id="contadorCruce"></span>
 </div>
 
-<div class="card p-3">
-    <div class="table-responsive">
-        <table id="tablaCruce" class="table table-hover align-middle w-100">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Paciente</th>
-                    <th>FIN</th>
-                    <th>Teléfono</th>
-                    <th>Período(s)</th>
-                    <th class="text-end">Liquidado</th>
-                    <th class="text-end">Cobrado</th>
-                    <th class="text-end">Diferencia</th>
-                    <th>Estado</th>
-                    <th>Nota</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+<div class="card p-1">
+    <table id="tablaCruce" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Paciente</th>
+                <th>FIN</th>
+                <th>Teléfono</th>
+                <th>Período(s)</th>
+                <th class="text-end">Liquidado</th>
+                <th class="text-end">Cobrado</th>
+                <th class="text-end">Diferencia</th>
+                <th class="text-end">Medicamentos</th>
+                <th>Estado</th>
+                <th>Nota</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </div>
 
 @endsection
