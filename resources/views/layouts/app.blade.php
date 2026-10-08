@@ -332,7 +332,7 @@
                         @endif
 
                         <!-- ===== SECCIÓN: RECECPIÓN ===== -->
-                        @if (Auth::user()->rol != 'Colaborador/a')
+                        @can('acceder-recepcion')
                         <li class="nav-section-title section-administracion"><span class="section-dot"></span>Recepción</li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('recepcion.consentimientos.index') }}">
@@ -340,8 +340,8 @@
                                 <span class="link-text">Consentimiento pacientes</span>
                             </a>
                         </li>
-                        @endif
-                    
+                        @endcan
+
                         <!-- ===== SECCIÓN: AJUSTES ===== -->
                         @if (Auth::user()->rol === 'Administrador/a')
                         <li class="nav-section-title section-ajustes"><span class="section-dot"></span>USUARIOS Y PERMISOS</li>

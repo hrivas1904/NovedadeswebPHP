@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Recepcion;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Smalot\PdfParser\Parser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -101,7 +102,7 @@ class ConsentimientosController extends Controller
         ]);
 
         return response()->json([
-            'data' => DB::select('CALL SP_CONS_LISTAR(?, ?)', [$request->desde, $request->hasta]),
+            'data' => DB::select('CALL SP_CONS_LISTAR(?, ?, ?)', [$request->desde, $request->hasta, $request->obra_social]),
         ]);
     }
 
@@ -121,5 +122,18 @@ class ConsentimientosController extends Controller
         ])[0];
 
         return response()->json(['ok' => true, 'data' => $r]);
+    }
+
+    public function obtenerObrasSociales()
+    {
+        try {
+            $obrasSociales = DB::select('select distinct(obra_social) from consentimientos order by obra_social asc;');
+            return response()->json($obrasSociales);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
                 return false;
             }
 
-            return (int) $user->area_id === 15 || $user->rol === 'Administrador/a';
+            return (int) $user->area_id === 15 || $user->rol === 'Administrador/a' || in_array((int) $user->id, [14, 202], true);
         });
     }
 }

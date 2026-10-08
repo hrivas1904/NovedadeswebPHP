@@ -10,5 +10,6 @@ Route::middleware(['auth', 'can:acceder-recepcion'])->group(function () {
         Route::get('/listar',    [ConsentimientosController::class, 'listarAtenciones'])->name('listar');
         Route::post('/importar', [ConsentimientosController::class, 'importarAtenciones'])->name('importar');
         Route::post('/marcar',   [ConsentimientosController::class, 'marcarAtencion'])->name('marcar');
+        Route::get('/obtenerObrasSociales',   [ConsentimientosController::class, 'obtenerObrasSociales']);
     });
 });

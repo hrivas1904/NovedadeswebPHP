@@ -1,6 +1,10 @@
 let tablaConsentimientos = null;
 let filtroEstado = "todos";
 
+$(document).ready(function () {
+    cargarObrasSociales();
+});
+
 const CAMPOS_CONSENTIMIENTO = {
     firmado_pac: "Firmado por paciente",
     firmado_med: "Firmado por médico",
@@ -37,6 +41,7 @@ $(document).ready(function () {
             data: function (d) {
                 d.desde = $("#fechaDesde").val() || null;
                 d.hasta = $("#fechaHasta").val() || null;
+                d.obra_social = $("#selectorObraSocial").val() || null;
             },
             dataSrc: "data",
         },
@@ -79,7 +84,7 @@ $(document).ready(function () {
                 render: (v, t, row) => renderCheck(row, "subido"),
             },
         ],
-        order: [], // respeta el orden del SP: sin firma del paciente primero
+        order: [],
         scrollX: false,
         scrollY: "60vh",
         scrollCollapse: true,
@@ -95,9 +100,12 @@ $(document).ready(function () {
         actualizarTotales(json ? json.data : []);
     });
 
-    $("#fechaDesde, #fechaHasta").on("change", function () {
-        tablaConsentimientos.ajax.reload();
-    });
+    $("#fechaDesde, #fechaHasta, #selectorObraSocial").on(
+        "change",
+        function () {
+            tablaConsentimientos.ajax.reload();
+        },
+    );
 
     $("#inputFileConsentimientos").on("change", function () {
         const archivo = this.files[0];
@@ -122,7 +130,7 @@ $(document).ready(function () {
     });
 });
 
-if (filtroEstado !== 'todos') tablaConsentimientos.draw(false);
+if (filtroEstado !== "todos") tablaConsentimientos.draw(false);
 
 /* ---------------- Render ---------------- */
 
@@ -278,13 +286,54 @@ function fechaISO(d) {
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
-$('#btnLimpiarFiltros').on('click', function () {
-    $('#fechaDesde, #fechaHasta').val('');
+$("#btnLimpiarFiltros").on("click", function () {
+    $("#fechaDesde, #fechaHasta").val("");
 
-    filtroEstado = 'todos';
-    $('#filtroEstado button').removeClass('active');
-    $('#filtroEstado button[data-estado="todos"]').addClass('active');
+    filtroEstado = "todos";
+    $("#filtroEstado button").removeClass("active");
+    $('#filtroEstado button[data-estado="todos"]').addClass("active");
 
-    tablaConsentimientos.search('');      // también limpia el buscador de DataTables
-    tablaConsentimientos.ajax.reload();   // recarga sin fechas: trae todo
+    tablaConsentimientos.search(""); // también limpia el buscador de DataTables
+    tablaConsentimientos.ajax.reload(); // recarga sin fechas: trae todo
 });
+
+function cargarObrasSociales() {
+    const selector = $("#selectorObraSocial");
+
+    $.ajax({
+        url: "/recepcion/consentimientos/obtenerObrasSociales",
+        type: "GET",
+        dataType: "json",
+        beforeSend: function () {
+            selector.html(
+                '<option value="">Cargando obras sociales...</option>',
+            );
+            selector.prop("disabled", true);
+        },
+        success: function (response) {
+            selector.empty();
+            selector.append('<option value="">Seleccione obra social</option>');
+
+            response.forEach(function (item) {
+                if (item.obra_social) {
+                    selector.append(
+                        $("<option>", {
+                            value: item.obra_social,
+                            text: item.obra_social,
+                        }),
+                    );
+                }
+            });
+        },
+        error: function (xhr) {
+            console.error("Error al cargar obras sociales:", xhr.responseText);
+
+            selector.html(
+                '<option value="">Error al cargar obras sociales</option>',
+            );
+        },
+        complete: function () {
+            selector.prop("disabled", false);
+        },
+    });
+}
