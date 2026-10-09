@@ -101,12 +101,10 @@ function obtenerFeriados() {
 
                 htmlProximo = `
                     <div class="card border-0 shadow-sm mb-2"
-                        style="background:#f7fffd;border-left:5px solid #1DAC8A;">
+                        style="background:#f7fffd;border-left:5px solid #00558C;">
 
                         <div class="card-body p-3">
-
                             <div class="d-flex justify-content-between align-items-start">
-
                                 <div>
                                     ${badge}
                                     <h6 class="fw-bold mt-2 mb-1"
@@ -114,10 +112,9 @@ function obtenerFeriados() {
                                         ${proximoEvento.tituloEvento}
                                     </h6>
                                 </div>
-                                <div
-                                    style="
+                                <div style="
                                         width:65px;
-                                        background:#1DAC8A;
+                                        background:#00558C;
                                         color:white;
                                         border-radius:10px;
                                     "
@@ -152,17 +149,42 @@ function obtenerFeriados() {
                     USER_ROLE === "Administrador/a" ||
                     USER_ROLE === "Supervisor/a Calidad"
                         ? `
-                            <button
-                                class="btn text-muted btnEditarEvento"
-                                data-id="${evento.idEvento}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                            </button>
+                            <div class="dropdown">
+                                <button
+                                    class="btn btn-sm btn-light border-0 text-muted"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    aria-label="Opciones del evento">
 
-                            <button
-                                class="btn text-muted btnEliminarEvento"
-                                data-id="${evento.idEvento}">
-                                <i class="fa-regular fa-trash-can"></i>
-                            </button>
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item btnEditarEvento"
+                                            data-id="${evento.idEvento}">
+
+                                            <i class="fa-regular fa-pen-to-square me-2"></i>
+                                            Editar
+                                        </button>
+                                    </li>
+
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item text-danger btnEliminarEvento"
+                                            data-id="${evento.idEvento}">
+
+                                            <i class="fa-regular fa-trash-can me-2"></i>
+                                            Eliminar
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         `
                         : "";
 
@@ -173,46 +195,34 @@ function obtenerFeriados() {
                         ${destacado ? "evento-destacado" : ""}">
 
                         <div>
-
-                            <div
-                                style="
-                                    width:60px;
-                                    background:#1DAC8A;
-                                    color:white;
-                                "
-                                class="rounded-2 d-flex flex-column justify-content-center align-items-center py-2">
-
-                                <h2 class="fw-bolder mb-0">
+                            <div class="feriado-date-box">
+                                <span class="feriado-date-day">
                                     ${obtenerDia(evento.fechaEvento)}
-                                </h2>
+                                </span>
 
-                                <h6 class="mb-0">
+                                <span class="feriado-date-month">
                                     ${obtenerMes(evento.fechaEvento)}
-                                </h6>
-
+                                </span>
                             </div>
-
                         </div>
 
-                        <div class="flex-grow-1">
+                        <div class="flex-grow-1 min-width-0">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1"
+                                        style="color:var(--color-default)">
+                                        ${evento.tituloEvento}
+                                    </h6>
 
-                            <h6 class="fw-bold"
-                                style="color:var(--color-default)">
-                                ${evento.tituloEvento}
-                            </h6>
-
-                            ${
-                                evento.descripcionEvento
-                                    ? `<small class="text-muted">${evento.descripcionEvento}</small>`
-                                    : ""
-                            }
-
-                            <div class="mt-1">
+                                    ${
+                                        evento.descripcionEvento
+                                            ? `<small class="text-muted">${evento.descripcionEvento}</small>`
+                                            : ""
+                                    }
+                                </div>
                                 ${botonesAdmin}
                             </div>
-
                         </div>
-
                     </div>
                 `;
             });

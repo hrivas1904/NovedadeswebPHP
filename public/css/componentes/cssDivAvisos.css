@@ -5,22 +5,54 @@
 
 #listaNotificaciones .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.card-header-fixed{
+.card-header-fixed {
     height: 100%;
 }
 
-.contenedor-scroll{
+.contenedor-scroll {
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-.scroll-admin{
-    height: 57vh;
+.scroll-admin {
+    height: 62vh;
 }
 
-.scroll-user{
-    height: 75vh;
+.scroll-user {
+    height: 80vh;
+}
+
+.feriado-date-box {
+    width: 60px;
+    min-width: 60px;
+    height: 64px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #eef3f8;
+    border: 1px solid #e3eaf1;
+    border-radius: 8px;
+
+    transition: background-color 0.2s ease;
+}
+
+.feriado-date-day {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #183b56;
+}
+
+.feriado-date-month {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #587089;
+    text-transform: uppercase;
 }
