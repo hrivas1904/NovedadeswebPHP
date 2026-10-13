@@ -154,6 +154,9 @@
 
 @push('scripts')
 <script>
+    window.PUEDE_EDITAR_NOMBRE_COPAGO = @json($puedeEditarNombre);
+</script>
+<script>
     window.COPAGOS_IPS_ROUTES = {
         cargarLiquidacion: "{{ route('administracion.cargarLiquidacion') }}",
         cargarCaja: "{{ route('administracion.cargarCaja') }}",
@@ -163,6 +166,7 @@
         guardarNota: "{{ route('administracion.guardarNota') }}",
         marcarResuelto: "{{ route('administracion.marcarResuelto') }}",
         guardarSnapshot: "{{ route('administracion.guardarSnapshot') }}",
+        corregirNombre: "{{ route('administracion.corregirNombre') }}",
     };
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>

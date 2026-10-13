@@ -22,7 +22,9 @@ class CopagosController extends Controller
 
     public function vistaCopagos()
     {
-        return view('administracion.cobranzas.copagosIps');
+        return view('administracion.cobranzas.copagosIps', [
+            'puedeEditarNombre' => $this->puedeEditarNombre(),
+        ]);
     }
 
     // ---------- liquidación IPS ----------
@@ -273,6 +275,9 @@ class CopagosController extends Controller
         $medRows = DB::select('CALL SP_COPAGOS_MEDICAMENTOS_LISTAR()');
         $cajaMedRows = DB::select('CALL SP_COPAGOS_CAJA_MED_LISTAR()');
         $notas = collect(DB::select('CALL SP_COPAGOS_NOTAS_LISTAR()'))->keyBy('nombre_norm');
+        $correcciones = collect(DB::select('CALL SP_COPAGOS_NOMBRES_CORREGIDOS_LISTAR()'))->keyBy('nombre_norm');
+
+        $nombreBusqueda = fn($n) => $correcciones->get($n)->nombre_corregido_norm ?? $n;
 
         $cajaIdx = $this->indexarPorPalabras($cajaRows);
         $cajaMedIdx = $this->indexarPorPalabras($cajaMedRows);
@@ -280,26 +285,37 @@ class CopagosController extends Controller
         $porNombre = [];
         foreach ($liqRows as $r) $porNombre[$r->nombre_norm][] = $r;
 
+        // nombre de búsqueda (corregido o no) => clave original de la liquidación
+        $busquedaAOriginal = [];
+        foreach (array_keys($porNombre) as $n) $busquedaAOriginal[$nombreBusqueda($n)] = $n;
+
         // La deuda de medicamentos se asocia al paciente de la liquidación si es la misma persona
         $medPorNombre = [];
         foreach ($medRows as $m) {
-            $clave = $this->buscarMismaPersona($m->nombre_norm, array_keys($porNombre)) ?? $m->nombre_norm;
+            $match = $this->buscarMismaPersona($m->nombre_norm, array_keys($busquedaAOriginal));
+            $clave = $match !== null ? $busquedaAOriginal[$match] : $m->nombre_norm;
             $medPorNombre[$clave][] = $m;
         }
 
         $nombres = array_values(array_unique(array_merge(array_keys($porNombre), array_keys($medPorNombre))));
-        $telefonos = $this->buscarTelefonos($nombres);
+        $telefonos = $this->buscarTelefonos(array_values(array_unique(array_map($nombreBusqueda, $nombres))));
 
+        $impagos = ['NO COBRADO', 'COBRO PARCIAL'];
         $pacientes = [];
+
         foreach ($nombres as $nombreNorm) {
             $filas = $porNombre[$nombreNorm] ?? [];
             $meds = $medPorNombre[$nombreNorm] ?? [];
             $nota = $notas->get($nombreNorm);
             $resuelto = (bool) ($nota->resuelto ?? false);
 
+            $corr = $correcciones->get($nombreNorm);
+            $busqueda = $nombreBusqueda($nombreNorm);
+            $nombreOriginal = $filas[0]->nombre ?? $meds[0]->nombre;
+
             // ---- copago ----
             $totalLiq = array_sum(array_map(fn($f) => (float) $f->total, $filas));
-            $pagos = $filas ? $this->pagosDe($nombreNorm, $cajaIdx) : [];
+            $pagos = $filas ? $this->pagosDe($busqueda, $cajaIdx) : [];
             $totalCobrado = array_sum(array_map(fn($p) => (float) $p['row']->importe, $pagos));
             $diferencia = round($totalLiq - $totalCobrado, 2);
 
@@ -311,7 +327,7 @@ class CopagosController extends Controller
 
             // ---- medicamentos ----
             $deudaMed = round(array_sum(array_map(fn($m) => (float) $m->importe_deuda, $meds)) * self::PORC_MEDICAMENTOS, 2);
-            $pagosMed = $meds ? $this->pagosDe($nombreNorm, $cajaMedIdx) : [];
+            $pagosMed = $meds ? $this->pagosDe($busqueda, $cajaMedIdx) : [];
             $cobradoMed = array_sum(array_map(fn($p) => (float) $p['row']->importe, $pagosMed));
             $diferenciaMed = round($deudaMed - $cobradoMed, 2);
 
@@ -321,12 +337,12 @@ class CopagosController extends Controller
             }
             $estadoMed = $meds ? $this->estadoCobro($diferenciaMed, $cobradoMed) : 'SIN DEUDA';
 
-            $impagos = ['NO COBRADO', 'COBRO PARCIAL'];
-
             $pacientes[] = [
                 'nombreNorm' => $nombreNorm,
-                'nombreDisplay' => $filas[0]->nombre ?? $meds[0]->nombre,
-                'telefono' => $telefonos[$nombreNorm] ?? null,
+                'nombreDisplay' => $corr->nombre_corregido ?? $nombreOriginal,
+                'nombreOriginal' => $nombreOriginal,
+                'nombreCorregido' => (bool) $corr,
+                'telefono' => $telefonos[$busqueda] ?? null,
                 'fins' => array_map(fn($f) => $f->fin, $filas),
                 'periodos' => array_values(array_unique(array_map(fn($f) => $f->periodo, $filas))),
                 'totalLiquidado' => round($totalLiq, 2),
@@ -870,5 +886,33 @@ class CopagosController extends Controller
             if ($d !== false) return $d->format('Y-m-d');
         }
         return null;
+    }
+
+    public function corregirNombre(Request $request)
+    {
+        abort_unless($this->puedeEditarNombre(), 403);
+
+        $data = $request->validate([
+            'nombre_norm' => 'required|string|max:150',
+            'nombre'      => 'nullable|string|max:150',
+        ]);
+
+        $nombre = trim(preg_replace('/\s+/', ' ', $data['nombre'] ?? ''));
+
+        DB::statement('CALL SP_COPAGOS_NOMBRE_CORREGIR(?, ?, ?, ?)', [
+            $data['nombre_norm'],
+            $nombre,
+            $this->normalizarNombre($nombre),
+            auth()->id(),
+        ]);
+
+        return response()->json([
+            'message' => $nombre === '' ? 'Se restauró el nombre original.' : 'Nombre actualizado.',
+        ]);
+    }
+
+    public function puedeEditarNombre(): bool
+    {
+        return in_array(auth()->id(), [1, 2, 5, 6]); // + ID de la aux en PRODUCCIÓN
     }
 }

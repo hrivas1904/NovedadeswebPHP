@@ -157,4 +157,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/copagos/pacientes', [CopagosController::class, 'cargarPacientes'])->name('cargarPacientes');
     Route::post('/copagos/pacientes/pdf', [CopagosController::class, 'cargarPacientesPdf'])->name('cargarPacientesPdf');
     Route::post('/copagos/snapshot', [CopagosController::class, 'guardarSnapshot'])->name('guardarSnapshot');
+    Route::post('/nombre', [CopagosController::class, 'corregirNombre'])->name('corregirNombre');
 });
