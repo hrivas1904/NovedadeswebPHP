@@ -422,22 +422,9 @@ function cargarNotificaciones() {
 
                     contenedor.append(`
                         <div class="card mb-3 p-3 d-flex flex-row align-items-start gap-3" style="border-radius: 12px;">
-
-                            <!-- Icono -->
-                            <div class="icon-box d-flex align-items-center justify-content-center" style="
-                                width: 50px;
-                                height: 50px;
-                                border-radius: 50%;
-                                background: rgba(0, 145, 213, 0.1);
-                                color: var(--color-second);
-                                flex-shrink: 0;
-                            ">
-                                <i class="fa-solid fa-bullhorn"></i>
-                            </div>
-
                             <!-- Contenido -->
                             <div class="flex-grow-1">
-
+                            
                                 <div class="d-flex justify-content-between align-items-center">
                                     <small class="text-muted">
                                         <i class="fa-regular fa-user"></i> Publicado por <strong>${n.name}</strong>

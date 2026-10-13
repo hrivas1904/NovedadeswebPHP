@@ -55,11 +55,10 @@
                 <div class="card-header" style="cursor: pointer;" id="divHeaderPublicarAviso">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-start gap-3">
-                            <div class="icon-box" style="background: var(--color-default); color: var(--bg-card);">
-                                <i class="fa-solid fa-pen"></i>
-                            </div>
                             <div>
-                                <h3 id="lblTituloFormularioAviso" class="tituloVista mb-0">Publicar nuevo aviso</h3>
+                                <h3 id="lblTituloFormularioAviso" class="tituloVista mb-0 gap-3">
+                                    <span class="fs-5"><i class="fa-regular fa-pen-to-square"></i></span> Publicar nuevo aviso
+                                </h3>
                                 <p id="lblSubtituloFormularioAviso" class="mb-0 text-muted">Escribí el asunto y el contenido del aviso.</p>
                             </div>
                         </div>
