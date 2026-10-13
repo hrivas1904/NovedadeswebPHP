@@ -24,11 +24,15 @@ $(document).ready(function () {
 
 function formatMoney(n) {
     n = Number(n) || 0;
-    return (n < 0 ? "-$" : "$") + Math.abs(Math.round(n)).toLocaleString("es-AR");
+    return (
+        (n < 0 ? "-$" : "$") + Math.abs(Math.round(n)).toLocaleString("es-AR")
+    );
 }
 
 function escapeHtml(value) {
-    return $("<div>").text(value ?? "").html();
+    return $("<div>")
+        .text(value ?? "")
+        .html();
 }
 
 function mostrarExito(mensaje) {
@@ -44,7 +48,9 @@ function mostrarError(err, textoPorDefecto) {
     Swal.fire({
         icon: "error",
         title: "Error",
-        text: (err && err.responseJSON && err.responseJSON.message) || textoPorDefecto,
+        text:
+            (err && err.responseJSON && err.responseJSON.message) ||
+            textoPorDefecto,
     });
 }
 
@@ -95,7 +101,13 @@ function renderDiferencia(data, type) {
     if (type !== "display") return valor;
 
     const clase = valor > 1000 ? "text-danger" : "text-success";
-    return '<span class="' + clase + ' fw-semibold">' + formatMoney(valor) + "</span>";
+    return (
+        '<span class="' +
+        clase +
+        ' fw-semibold">' +
+        formatMoney(valor) +
+        "</span>"
+    );
 }
 
 function renderEstado(estado, type, row) {
@@ -109,12 +121,19 @@ function renderEstado(estado, type, row) {
     const badge = badges[estado] ?? "secondary";
 
     return (
-        '<span class="badge bg-' + badge + '">' + escapeHtml(estado) + "</span>" +
+        '<span class="badge bg-' +
+        badge +
+        '">' +
+        escapeHtml(estado) +
+        "</span>" +
         '<div class="form-check form-check-inline ms-2 align-middle">' +
-            '<input class="form-check-input" type="checkbox" ' +
-                'data-resuelto="' + escapeHtml(row.nombreNorm) + '" ' +
-                (row.resuelto ? "checked" : "") + ">" +
-            '<label class="form-check-label small text-muted">Resuelto</label>' +
+        '<input class="form-check-input" type="checkbox" ' +
+        'data-resuelto="' +
+        escapeHtml(row.nombreNorm) +
+        '" ' +
+        (row.resuelto ? "checked" : "") +
+        ">" +
+        '<label class="form-check-label small text-muted">Resuelto</label>' +
         "</div>"
     );
 }
@@ -124,9 +143,13 @@ function renderNota(nota, type, row) {
 
     return (
         '<input type="text" class="form-control form-control-sm" ' +
-            'data-nota="' + escapeHtml(row.nombreNorm) + '" ' +
-            'value="' + escapeHtml(nota ?? "") + '" ' +
-            'placeholder="Agregar nota…">'
+        'data-nota="' +
+        escapeHtml(row.nombreNorm) +
+        '" ' +
+        'value="' +
+        escapeHtml(nota ?? "") +
+        '" ' +
+        'placeholder="Agregar nota…">'
     );
 }
 
@@ -183,13 +206,25 @@ function inicializarTablaCruce() {
                 className: "dt-control text-center",
                 defaultContent: '<i class="fa-solid fa-chevron-down"></i>',
             },
-            { data: "nombreDisplay", render: renderTexto },
+            { data: "nombreDisplay", render: renderNombre, width: "15%" },
             { data: "fins", render: renderLista },
             { data: "telefono", render: renderTelefono },
             { data: "periodos", render: renderLista },
-            { data: "totalLiquidado", className: "text-end", render: renderMoneda },
-            { data: "totalCobrado", className: "text-end", render: renderMoneda },
-            { data: "diferencia", className: "text-end", render: renderDiferencia },
+            {
+                data: "totalLiquidado",
+                className: "text-end",
+                render: renderMoneda,
+            },
+            {
+                data: "totalCobrado",
+                className: "text-end",
+                render: renderMoneda,
+            },
+            {
+                data: "diferencia",
+                className: "text-end",
+                render: renderDiferencia,
+            },
             {
                 // Reservada para deuda de medicamentos (punto 3)
                 data: null,
@@ -276,9 +311,7 @@ $(document).on("click", ".btnFiltroCopago", function () {
         .removeClass("btn-dark active")
         .addClass("btn-outline-secondary");
 
-    $(this)
-        .removeClass("btn-outline-secondary")
-        .addClass("btn-dark active");
+    $(this).removeClass("btn-outline-secondary").addClass("btn-dark active");
 
     tablaCruce.draw();
 });
@@ -307,16 +340,22 @@ function renderDetallePagos(paciente) {
 
     let html =
         '<table class="table table-sm mb-0">' +
-            "<thead><tr>" +
-                "<th>Fecha</th><th>Nombre en caja</th><th class=\"text-end\">Importe</th>" +
-            "</tr></thead><tbody>";
+        "<thead><tr>" +
+        '<th>Fecha</th><th>Nombre en caja</th><th class="text-end">Importe</th>' +
+        "</tr></thead><tbody>";
 
     paciente.pagos.forEach(function (pg) {
         html +=
             "<tr>" +
-                "<td>" + escapeHtml(pg.fecha ?? "") + "</td>" +
-                "<td>" + escapeHtml(pg.nombre ?? "") + "</td>" +
-                '<td class="text-end">' + formatMoney(pg.importe) + "</td>" +
+            "<td>" +
+            escapeHtml(pg.fecha ?? "") +
+            "</td>" +
+            "<td>" +
+            escapeHtml(pg.nombre ?? "") +
+            "</td>" +
+            '<td class="text-end">' +
+            formatMoney(pg.importe) +
+            "</td>" +
             "</tr>";
     });
 
@@ -366,6 +405,30 @@ $(document).on("change", "#tablaCruce input[data-resuelto]", function () {
     });
 });
 
+$(document).on("change", "#tablaCruce input[data-nombre]", function () {
+    const input = $(this);
+    const nuevo = input.val().trim();
+
+    if (nuevo === String(input.data("valor"))) return;
+
+    $.ajax({
+        url: COPAGOS_IPS_ROUTES.corregirNombre,
+        method: "POST",
+        data: {
+            nombre_norm: input.data("nombre"),
+            nombre: nuevo,
+        },
+        success: function (res) {
+            mostrarExito(res.message);
+            tablaCruce.ajax.reload(null, false);
+        },
+        error: function (err) {
+            input.val(input.data("valor"));
+            mostrarError(err, "No se pudo actualizar el nombre.");
+        },
+    });
+});
+
 /* =========================================================
    EVENTOS: CARGA DE ARCHIVOS
    ========================================================= */
@@ -375,7 +438,11 @@ $(document).on("change", "#inputFileLiqIps", function () {
 });
 
 $(document).on("change", "#inputFileComprobantes", function () {
-    subirArchivoCopagos(this, COPAGOS_IPS_ROUTES.cargarCaja, "Procesando comprobantes de caja");
+    subirArchivoCopagos(
+        this,
+        COPAGOS_IPS_ROUTES.cargarCaja,
+        "Procesando comprobantes de caja",
+    );
 });
 
 $(document).on("change", "#inputFilePacientes", function () {
@@ -394,7 +461,11 @@ $(document).on("change", "#inputFilePacientes", function () {
             enviarPacientesPdf(input, archivo.name, filas);
         })
         .catch(function (e) {
-            Swal.fire({ icon: "error", title: "Error", text: e.message || "No se pudo leer el PDF." });
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: e.message || "No se pudo leer el PDF.",
+            });
             $(input).val("");
         });
 });
@@ -503,7 +574,9 @@ async function parsePatientListPDF(file) {
             byY.get(y).push(item);
         });
 
-        const ys = Array.from(byY.keys()).sort(function (a, b) { return b - a; });
+        const ys = Array.from(byY.keys()).sort(function (a, b) {
+            return b - a;
+        });
 
         ys.forEach(function (y) {
             const items = byY.get(y).sort(function (a, b) {
@@ -514,7 +587,8 @@ async function parsePatientListPDF(file) {
             let lastEndX = null;
 
             items.forEach(function (it) {
-                if (lastEndX !== null && it.transform[4] - lastEndX > 4) text += " ";
+                if (lastEndX !== null && it.transform[4] - lastEndX > 4)
+                    text += " ";
                 text += it.str;
                 lastEndX = it.transform[4] + (it.width || 0);
             });
@@ -524,7 +598,9 @@ async function parsePatientListPDF(file) {
     }
 
     if (!lines.length) {
-        throw new Error("No pude extraer texto del PDF (¿es un PDF escaneado como imagen?).");
+        throw new Error(
+            "No pude extraer texto del PDF (¿es un PDF escaneado como imagen?).",
+        );
     }
 
     const dniRe = /D\.?N\.?I\.?\s*[:\-]?\s*([0-9]{6,10})/i;
@@ -552,7 +628,9 @@ async function parsePatientListPDF(file) {
         const nameLine = rec.lines[0];
         const dniMatch = nameLine.match(dniRe);
         const nameIdx = nameLine.search(/D\.?N\.?I\./i);
-        const nombre = (nameIdx > -1 ? nameLine.slice(0, nameIdx) : nameLine).trim();
+        const nombre = (
+            nameIdx > -1 ? nameLine.slice(0, nameIdx) : nameLine
+        ).trim();
 
         if (!nombre) return;
 
@@ -560,9 +638,10 @@ async function parsePatientListPDF(file) {
         if (dniMatch) combined = combined.replace(dniMatch[0], " ");
 
         const phoneMatches = combined.match(/\d{6,10}/g);
-        const telefono = phoneMatches && phoneMatches.length
-            ? phoneMatches[phoneMatches.length - 1]
-            : null;
+        const telefono =
+            phoneMatches && phoneMatches.length
+                ? phoneMatches[phoneMatches.length - 1]
+                : null;
 
         if (!telefono) return;
 
@@ -574,8 +653,51 @@ async function parsePatientListPDF(file) {
     });
 
     if (!rows.length) {
-        throw new Error("Encontré registros con D.N.I. pero ninguno con teléfono reconocible.");
+        throw new Error(
+            "Encontré registros con D.N.I. pero ninguno con teléfono reconocible.",
+        );
     }
 
     return rows;
 }
+
+function renderNombre(data, type, row) {
+    if (type !== "display") return data ?? "";
+
+    const original = row.nombreCorregido
+        ? '<div class="small text-muted">Original: ' +
+          escapeHtml(row.nombreOriginal) +
+          "</div>"
+        : "";
+
+    if (!window.PUEDE_EDITAR_NOMBRE_COPAGO) {
+        return escapeHtml(data) + original;
+    }
+
+    return (
+        '<input type="text" class="form-control form-control-sm" ' +
+        'data-nombre="' +
+        escapeHtml(row.nombreNorm) +
+        '" ' +
+        'data-valor="' +
+        escapeHtml(data) +
+        '" ' +
+        'value="' +
+        escapeHtml(data) +
+        '" ' +
+        'title="Dejar vacío para volver al nombre original">' +
+        original
+    );
+}
+
+// Enter en los inputs de la tabla: confirma el valor sin enviar ningún formulario
+$(document).on(
+    "keydown",
+    "#tablaCruce input[data-nombre], #tablaCruce input[data-nota]",
+    function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            $(this).blur();
+        }
+    },
+);
