@@ -1,0 +1,97 @@
+.legajo-foto-container {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+}
+
+.legajo-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #E8F2F9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.legajo-avatar i {
+    font-size: 38px;
+    color: #075789;
+}
+
+.legajo-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.legajo-foto-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: #075789;
+    color: white;
+
+    border: 2px solid white;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.legajo-foto-btn:hover {
+    background: #102A43;
+}
+
+/* BREADCRUMBS HP3C V2 */
+
+.hp3c-breadcrumb {
+    margin-bottom: 12px;
+}
+
+.hp3c-breadcrumb .breadcrumb {
+    --bs-breadcrumb-divider: "›";
+
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.hp3c-breadcrumb .breadcrumb-item a {
+    color: #64748B;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.hp3c-breadcrumb .breadcrumb-item a:hover {
+    color: #075789;
+}
+
+.hp3c-breadcrumb .breadcrumb-item.active {
+    color: #102A43;
+    font-weight: 600;
+}
+
+.hp3c-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    color: #94A3B8;
+}
+
+.hp3c-breadcrumb i {
+    font-size: 11px;
+}

@@ -179,10 +179,10 @@ function cargarMiLegajo() {
         success: function (response) {
             if (response.success) {
                 const d = response.data;
-
-                $("#inputLegajo").val(d.LEGAJO);
-                $("#inputNombre").val(d.COLABORADOR);
-                $("#inputEstado").val(d.ESTADO);
+                cargarFotoLegajo();
+                $("#lblLegajoColab").text(d.LEGAJO);
+                $("#lblNombreColab").text(d.COLABORADOR);
+                $("#lblEstadoColab").text(d.ESTADO);
                 $("#inputDni").val(d.DNI);
                 $("#inputCuil").val(d.CUIL);
                 $("#inputFechaNacimiento").val(
@@ -243,7 +243,7 @@ function cargarMiLegajo() {
                 $("#madreColaboradorEdit").val(d.MADRE);
 
                 cargarHijoColab(d.LEGAJO);
-    
+
                 console.log("RESPONSE COMPLETA:", response);
             } else {
                 Swal.fire("Error", response.mensaje, "error");
@@ -353,6 +353,165 @@ function cargarReqSeleccionados(legajo) {
                     $("#inputReqOtro").val(r.observ);
                 }
             });
+        },
+    });
+}
+
+$("#inputFotoLegajo").on("change", function () {
+    const archivo = this.files[0];
+
+    if (!archivo) return;
+
+    const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+
+    if (!tiposPermitidos.includes(archivo.type)) {
+        Swal.fire("Error", "Seleccioná una imagen válida.", "error");
+        this.value = "";
+        return;
+    }
+
+    if (archivo.size > 2 * 1024 * 1024) {
+        Swal.fire("Error", "La imagen no puede superar los 2 MB.", "error");
+        this.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        $("#previewFotoLegajo")
+            .attr("src", e.target.result)
+            .removeClass("d-none");
+
+        $("#iconoFotoLegajo").addClass("d-none");
+    };
+
+    reader.readAsDataURL(archivo);
+});
+
+function actualizarFotoLegajo() {
+    const input = document.getElementById("inputFotoLegajo");
+    const archivo = input.files[0];
+
+    if (!archivo) return;
+
+    const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+
+    if (!tiposPermitidos.includes(archivo.type)) {
+        Swal.fire({
+            title: "Formato no permitido",
+            text: "Seleccioná una imagen JPG, PNG o WebP.",
+            icon: "warning",
+        });
+
+        input.value = "";
+        return;
+    }
+
+    if (archivo.size > 2 * 1024 * 1024) {
+        Swal.fire({
+            title: "Imagen demasiado grande",
+            text: "La fotografía no puede superar los 2 MB.",
+            icon: "warning",
+        });
+
+        input.value = "";
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("foto", archivo);
+
+    formData.append("_token", $('meta[name="csrf-token"]').attr("content"));
+
+    $.ajax({
+        url: "/rrhh/mi-legajo/foto/actualizar",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        beforeSend: function () {
+            $(input).prop("disabled", true);
+        },
+
+        success: function (res) {
+            if (!res.success) {
+                Swal.fire({
+                    title: "Error",
+                    text: res.mensaje,
+                    icon: "error",
+                });
+                return;
+            }
+
+            // Actualizar fotografía del perfil
+            $("#previewFotoLegajo")
+                .attr("src", res.foto_url)
+                .removeClass("d-none");
+
+            $("#iconoFotoLegajo").addClass("d-none");
+
+            Swal.fire({
+                title: "Operación exitosa!",
+                text: res.mensaje,
+                icon: "success",
+                timer: 1800,
+                showConfirmButton: false,
+            });
+        },
+
+        error: function (xhr) {
+            const mensaje =
+                xhr.responseJSON?.errors?.foto?.[0] ||
+                xhr.responseJSON?.mensaje ||
+                "No se pudo actualizar la fotografía.";
+
+            Swal.fire({
+                title: "Error",
+                text: mensaje,
+                icon: "error",
+            });
+        },
+
+        complete: function () {
+            $(input).prop("disabled", false);
+            input.value = "";
+        },
+    });
+}
+
+$("#inputFotoLegajo").on("change", function () {
+    actualizarFotoLegajo();
+});
+
+function cargarFotoLegajo() {
+    $.ajax({
+        url: "/rrhh/mi-legajo/foto",
+        type: "GET",
+
+        success: function (res) {
+            if (!res.success) return;
+
+            if (res.foto_url) {
+                $("#previewFotoLegajo")
+                    .attr("src", res.foto_url)
+                    .removeClass("d-none");
+
+                $("#iconoFotoLegajo").addClass("d-none");
+            } else {
+                $("#previewFotoLegajo").removeAttr("src").addClass("d-none");
+
+                $("#iconoFotoLegajo").removeClass("d-none");
+            }
+        },
+
+        error: function (xhr) {
+            console.error(
+                "Error al obtener fotografía del legajo:",
+                xhr.responseText,
+            );
         },
     });
 }

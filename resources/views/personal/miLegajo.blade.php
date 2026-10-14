@@ -3,13 +3,65 @@
 @section('title', 'Mi Legajo')
 
 @section('content')
-<div class="container-fluid" id="legajoColaborador">
+<div id="legajoColaborador" class="d-flex flex-column gap-3">
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <h3 class="tituloVista mb-0">MI LEGAJO</h3>
+    <nav aria-label="breadcrumb" class="hp3c-breadcrumb">
+        <ol class="breadcrumb mb-0">
+
+            <li class="breadcrumb-item">
+                <a href="{{ url('/') }}">
+                    <i class="fa-solid fa-house me-1"></i>
+                    Inicio
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                Recursos Humanos
+            </li>
+            <li class="breadcrumb-item">
+                Colaboradores
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Mi legajo
+            </li>
+
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h3 class="tituloVista mb-0">Mi legajo</h3>
         <button class="btn btn-primary" type="submit" form="formAltaColaborador">
             <i class="fa-solid fa-floppy-disk me-1"></i> Guardar cambios
         </button>
+    </div>
+
+    <div class="card p-3">
+        <div class="d-flex gap-3">
+            <div class="legajo-foto-container">
+                <div class="legajo-avatar">
+                    <img id="previewFotoLegajo"
+                        class="d-none"
+                        alt="Foto del colaborador">
+                    <i id="iconoFotoLegajo"
+                        class="fa-solid fa-user"></i>
+                </div>
+                <label for="inputFotoLegajo"
+                    class="legajo-foto-btn"
+                    title="Cambiar foto de perfil">
+                    <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file"
+                    id="inputFotoLegajo"
+                    name="foto"
+                    accept="image/jpeg,image/png,image/webp"
+                    class="visually-hidden">
+            </div>
+            <div class="d-flex flex-column">
+                <h5 class="fw-bold" style="color: var(--color-default);" id="lblNombreColab">-</h5>
+                <h6 class="text-muted">Legajo N° <span class="fw-bold" id="lblLegajoColab">-</span></h6>
+                <h6 class="text-muted" id="lblEstadoColab">-</h6>
+                <small class="text-muted">Hacé clic en la cámara para cambiar la foto.</small>
+            </div>
+        </div>
     </div>
 
     <form id="formAltaColaborador">
@@ -17,36 +69,22 @@
         <div class="card-body">
             <div class="row g-4 mb-4">
                 <div class="col-lg-6">
-                    <div class="section-divider mb-3">
-                        <span>Datos Personales</span>
-                    </div>
-                    <div class="empleado-box p-3">
+                    <div class="card p-3">
                         <div class="row g-3">
-                            <div class="col-lg-3">
-                                <label class="form-label">Legajo</label>
-                                <input type="text" id="inputLegajo" class="form-control" readonly>
-                            </div>
-                            <div class="col-lg-7">
-                                <label class="form-label">Apellido y Nombre</label>
-                                <input type="text" id="inputNombre" class="form-control" readonly>
-                            </div>
-                            <div class="col-lg-2">
-                                <label class="form-label">Estado</label>
-                                <input type="text" id="inputEstado" class="form-control" readonly>
-                            </div>
-                            <div class="col-lg-3">
+                            <h6 class="fw-bold text-muted">Datos personales</h6>
+                            <div class="col-lg-6">
                                 <label class="form-label">DNI</label>
                                 <input type="text" id="inputDni" class="form-control" readonly>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-lg-6">
                                 <label class="form-label">CUIL</label>
                                 <input type="text" id="inputCuil" class="form-control" readonly>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-lg-6">
                                 <label class="form-label">Fecha nacimiento</label>
                                 <input type="text" id="inputFechaNacimiento" class="form-control" readonly>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-lg-6">
                                 <label class="form-label">Edad</label>
                                 <input type="text" id="inputEdad" class="form-control" readonly>
                             </div>
@@ -55,11 +93,9 @@
                 </div>
 
                 <div class="col-lg-6">
-                    <div class="section-divider mb-3">
-                        <span>Datos de Contacto</span>
-                    </div>
-                    <div class="empleado-box p-3">
+                    <div class="card p-3">
                         <div class="row g-3">
+                            <h6 class="fw-bold text-muted">Datos de contacto</h6>
                             <div class="col-lg-7">
                                 <label class="form-label">Correo electrónico</label>
                                 <input type="text" id="inputEmail" name="correo" class="form-control">
@@ -85,16 +121,16 @@
 
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="section-divider mb-3">
-                        <span>Requerimientos alimentarios</span>
-                    </div>
-                    <div class="empleado-box p-3">
-                        <i class="fa-solid fa-circle-info text-primary" style="cursor: pointer;"
-                            data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="Si no tiene ningún requerimiento específico, no
-                                    seleccione nada. Si no encuentra un requerimiento específico,
-                                    seleccione Otro y complete Observaciones">
-                        </i>
+                    <div class="card p-3 gap-3">
+                        <div class="d-flex align-items-start gap-3">
+                            <h6 class="fw-bold text-muted">Requerimientos alimentarios</h6>
+                            <i class="fa-solid fa-circle-info text-primary" style="cursor: pointer;"
+                                data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="Si no tiene ningún requerimiento específico, no
+                                        seleccione nada. Si no encuentra un requerimiento específico,
+                                        seleccione Otro y complete Observaciones">
+                            </i>
+                        </div>
                         <div class=" row g-1">
                             <div class="row g-1" id="contenedorRequerimientos"></div>
                             <div class="row mt-3" id="rowObservacionReq" style="display:none;">
@@ -110,50 +146,42 @@
             </div>
 
             <div class="row mb-4">
-                <div class="col-12">
-                    <div class="section-divider mb-3">
-                        <span>Contactos de emergencia</span>
-                    </div>
-                    <div class="row g-4">
-                        <div class="col-lg-6 col-12 p-2">
-                            <div class="card p-2">
-                                <h6 class="mb-3 text-muted">Contacto de emergencia 1</h6>
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label class="form-label">Nombre</label>
-                                        <input id="personaEmergencia1Edit" name="personaEmerg1" class="form-control">
-                                    </div>
-                                    <div class="col-lg-6 col-12">
-                                        <label class="form-label">Teléfono</label>
-                                        <input id="contactoEmergencia1Edit" name="telefEmerg1" class="form-control" type="number">
-                                    </div>
-                                    <div class="col-lg-6 col-12">
-                                        <label class="form-label">Parentesco</label>
-                                        <input id="parentescoEmergencia1Edit" name="parentesco1" class="form-control">
-                                    </div>
-                                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="card p-3">
+                        <h6 class="mb-3 fw-bold text-muted">Contacto de emergencia 1</h6>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Nombre</label>
+                                <input id="personaEmergencia1Edit" name="personaEmerg1" class="form-control">
+                            </div>
+                            <div class="col-lg-6 col-12">
+                                <label class="form-label">Teléfono</label>
+                                <input id="contactoEmergencia1Edit" name="telefEmerg1" class="form-control" type="number">
+                            </div>
+                            <div class="col-lg-6 col-12">
+                                <label class="form-label">Parentesco</label>
+                                <input id="parentescoEmergencia1Edit" name="parentesco1" class="form-control">
                             </div>
                         </div>
+                    </div>
+                </div>
 
-
-                        <div class="col-lg-6 col-12 p-2">
-                            <div class="card p-2">
-                                <h6 class="mb-3 text-muted">Contacto de emergencia 1</h6>
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label class="form-label">Nombre</label>
-                                        <input id="personaEmergencia2Edit" name="personaEmerg2" class="form-control">
-                                    </div>
-                                    <div class="col-lg-6 col-12">
-                                        <label class="form-label">Teléfono</label>
-                                        <input id="contactoEmergencia2Edit" name="telefEmerg2" class="form-control"
-                                            type="number">
-                                    </div>
-                                    <div class="col-lg-6 col-12">
-                                        <label class="form-label">Parentesco</label>
-                                        <input id="parentescoEmergencia2Edit" name="parentesco2" class="form-control">
-                                    </div>
-                                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="card p-3">
+                        <h6 class="mb-3 fw-bold text-muted">Contacto de emergencia 2</h6>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Nombre</label>
+                                <input id="personaEmergencia2Edit" name="personaEmerg2" class="form-control">
+                            </div>
+                            <div class="col-lg-6 col-12">
+                                <label class="form-label">Teléfono</label>
+                                <input id="contactoEmergencia2Edit" name="telefEmerg2" class="form-control"
+                                    type="number">
+                            </div>
+                            <div class="col-lg-6 col-12">
+                                <label class="form-label">Parentesco</label>
+                                <input id="parentescoEmergencia2Edit" name="parentesco2" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -162,11 +190,9 @@
 
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="section-divider mb-3">
-                        <span>Grupo familiar</span>
-                    </div>
-                    <div class="empleado-box p-3">
+                    <div class="card p-3 gap-3">
                         <div class="row g-3">
+                            <h6 class="fw-bold text-muted">Grupo familiar</h6>
                             <div class="col-lg-2">
                                 <label class="form-label">Padre</label>
                                 <input id="padreColaboradorEdit" name="padre" class="form-control">
@@ -182,10 +208,8 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="row g-3">
-                            <div id="divHijosEdit" class="row g-3" hidden>
+                        <div id="divHijosEdit" class="row g-3" hidden>
 
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -193,11 +217,9 @@
 
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="section-divider mb-3">
-                        <span>Datos Socioeconómicos</span>
-                    </div>
-                    <div class="empleado-box p-3">
+                    <div class="card p-3">
                         <div class="row g-3">
+                            <h6 class="fw-bold text-muted">Datos socioeconómicos</h6>
                             <div class="col-lg-3">
                                 <label class="form-label">Estado civil</label>
                                 <select id="inputEstadoCivil" name="estadoCivil" class="form-select">
@@ -245,11 +267,9 @@
 
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="section-divider mb-3">
-                        <span>Datos Laborales</span>
-                    </div>
-                    <div class="empleado-box p-3">
+                    <div class="card p-3">
                         <div class="row g-3">
+                            <h6 class="fw-bold text-muted">Datos laborales</h6>
                             <div class="col-lg-2">
                                 <label class="form-label">Tipo de contrato</label>
                                 <input type="text" id="inputTipoContrato" class="form-control" readonly>

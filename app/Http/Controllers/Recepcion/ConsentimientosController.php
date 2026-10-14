@@ -16,6 +16,17 @@ class ConsentimientosController extends Controller
         return view('recepcion.consentimientos');
     }
 
+    private function extraerFechasIngreso(array &$cur, string $l): void
+    {
+        preg_match_all('/\d{2}\/\d{2}\/\d{4}/', $l, $f);
+        preg_match_all('/(?<!\d)\d{2}:\d{2}(?!\d)/', $l, $h);
+        $cur['fecha']        = $f[0][0] ?? null;
+        $cur['hora']         = $h[0][0] ?? null;
+        $cur['egreso_fecha'] = $f[0][1] ?? null;
+        $cur['egreso_hora']  = $h[0][1] ?? null;
+        $cur['egreso_real']  = stripos($l, 'Fec. Egreso') !== false;
+    }
+
     private function parsearListadoInternado(string $texto): array
     {
         $out = [];
@@ -38,15 +49,22 @@ class ConsentimientosController extends Controller
                 continue;
             }
 
-            if (!empty($cur['paciente']) && preg_match('/N[º°o]\s*:\s*(\d{6,8})\b/u', $l, $m)) {
-                preg_match_all('/\d{2}\/\d{2}\/\d{4}/', $l, $f);
-                preg_match_all('/\b\d{2}:\d{2}\b/', $l, $h);
-                $cur['atencion']     = $m[1];
-                $cur['fecha']        = $f[0][0] ?? null;
-                $cur['hora']         = $h[0][0] ?? null;
-                $cur['egreso_fecha'] = $f[0][1] ?? null;
-                $cur['egreso_hora']  = $h[0][1] ?? null;
-                $cur['egreso_real']  = stripos($l, 'Fec. Egreso') !== false;
+            // (?!\d) en vez de \b: tolera "Nº: 898490Fec:..." pegado
+            if (
+                !empty($cur['paciente']) && empty($cur['atencion'])
+                && preg_match('/N[º°o]\s*:\s*(\d{6,8})(?!\d)/u', $l, $m)
+            ) {
+                $cur['atencion'] = $m[1];
+                $this->extraerFechasIngreso($cur, $l);
+                continue;
+            }
+
+            // "Fec:" en la línea siguiente al Nº
+            if (
+                !empty($cur['atencion']) && empty($cur['fecha'])
+                && preg_match('/Fec[.:]/u', $l) && preg_match('/\d{2}\/\d{2}\/\d{4}/', $l)
+            ) {
+                $this->extraerFechasIngreso($cur, $l);
                 continue;
             }
 
@@ -58,11 +76,13 @@ class ConsentimientosController extends Controller
                 $cur = [];
                 continue;
             }
+
             if ($ultimo !== null && preg_match('/Tipo Alta:\s*(.*)$/u', $l, $m)) {
                 $out[$ultimo]['tipo_alta'] = trim($m[1]) ?: null;
                 $ultimo = null;
             }
         }
+
         return $out;
     }
 
@@ -73,7 +93,7 @@ class ConsentimientosController extends Controller
         $texto = (new Parser())->parseFile($request->file('archivo')->getRealPath())->getText();
         $atenciones = $this->parsearListadoInternado($texto);
 
-        $enPdf = preg_match_all('/N[º°o]\s*:\s*\d{6,8}\b/u', $texto);
+        $enPdf = preg_match_all('/N[º°o]\s*:\s*\d{6,8}(?!\d)/u', $texto);
         if (!$atenciones) {
             return response()->json(['ok' => false, 'mensaje' => 'No se encontraron atenciones. Verificá que sea el listado de internado de Geclisa.'], 422);
         }
@@ -91,7 +111,27 @@ class ConsentimientosController extends Controller
             'leidas'     => $r->leidas,
             'insertadas' => $r->insertadas,
             'omitidas'   => $r->omitidas,
+            'completadas'      => $r->completadas,
+            'nuevas_sin_fecha' => $r->nuevas_sin_fecha,
         ]);
+    }
+
+    public function editarIngreso(Request $request)
+    {
+        $v = $request->validate([
+            'atencion' => 'required|string|max:10',
+            'fecha'    => 'required|date_format:Y-m-d|before_or_equal:today',
+            'hora'     => 'nullable|date_format:H:i',
+        ]);
+
+        $r = DB::select('CALL SP_CONS_EDITAR_INGRESO(?, ?, ?, ?)', [
+            $v['atencion'],
+            $v['fecha'],
+            $v['hora'] ?? null,
+            auth()->id(),
+        ])[0];
+
+        return response()->json(['ok' => true, 'data' => $r]);
     }
 
     public function listarAtenciones(Request $request)
