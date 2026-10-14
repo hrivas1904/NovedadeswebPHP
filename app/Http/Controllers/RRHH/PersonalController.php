@@ -889,22 +889,41 @@ class PersonalController extends Controller
 
     public function agregarFamiliares(Request $request)
     {
-        try {
-            $legajo = $request->legajo;
-            $nombre = $request->nombre;
-            $parentesco = 'HIJO/A';
-            $dni = $request->dni;
-            $fechaNacimiento = $request->fechaNacimiento;
+        $datos = $request->validate([
+            'legajo' => ['required', 'integer', 'exists:empleados,LEGAJO'],
+            'nombre' => ['required', 'string', 'max:250'],
+            'dni' => ['required', 'string', 'max:25'],
+            'fechaNacimiento' => ['required', 'date'],
+        ]);
 
-            DB::statement("CALL SP_INSERTAR_FAMILIAR(?,?,?,?,?)", [$legajo, $nombre, $parentesco, $dni, $fechaNacimiento]);
+        try {
+
+            DB::statement(
+                "CALL SP_INSERTAR_FAMILIAR(?,?,?,?,?)",
+                [
+                    $datos['legajo'],
+                    $datos['nombre'],
+                    'HIJO/A',
+                    $datos['dni'],
+                    $datos['fechaNacimiento']
+                ]
+            );
 
             return response()->json([
-                'success' => true
+                'success' => true,
+                'mensaje' => 'Familiar registrado correctamente.'
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+
+            \Log::error('Error al registrar familiar', [
+                'legajo' => $request->legajo,
+                'usuario_id' => auth()->id(),
+                'error' => $e->getMessage()
+            ]);
+
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'mensaje' => 'No se pudo registrar el familiar.'
             ], 500);
         }
     }
