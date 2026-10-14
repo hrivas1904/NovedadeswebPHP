@@ -12,7 +12,7 @@ use App\Http\Controllers\RRHH\CronogramaController;
 use App\Http\Controllers\RRHH\ZktecoController;
 use App\Http\Controllers\RRHH\MedicosController;
 use App\Http\Controllers\RRHH\EddController;
-
+use Faker\Provider\Person;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'can:organigrama.ver'])->prefix('organigrama')->name('organigrama.')->group(function () {
@@ -148,6 +148,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/actualizarMiLegajo', [PersonalController::class, 'actualizarMiLegajo'])
         ->middleware('auth');
+
+    Route::post('/mi-legajo/foto/actualizar', [PersonalController::class, 'actualizarFotoLegajo'])->name('miLegajo.actualizarFoto');
+
+    Route::get('/mi-legajo/foto',[PersonalController::class, 'obtenerFotoLegajo']);
 
     Route::post('/personal/{legajo}/actualizar', [PersonalController::class, 'actualizarLegajoColaborador']);
 

@@ -151,7 +151,7 @@ class PersonalController extends Controller
             // Keep the existing endpoint and response keys for both employee forms.
             $roles = DB::table('categ_empleados')->where('ID_CATEG', $id)->exists()
                 ? DB::table('rol_empleados')->orderBy('NOMBRE')->orderBy('ID_ROL')
-                    ->get(['ID_ROL as id_rol', 'NOMBRE as nombre'])
+                ->get(['ID_ROL as id_rol', 'NOMBRE as nombre'])
                 : collect();
 
             return response()->json($roles);
@@ -1382,6 +1382,110 @@ class PersonalController extends Controller
         }
     }
 
+    public function actualizarFotoLegajo(Request $request)
+    {
+        $request->validate([
+            'foto' => [
+                'required',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048'
+            ]
+        ]);
+
+        $legajo = Auth::user()->legajo;
+        $rutaNueva = null;
+
+        // Obtener empleado y fotografía actual
+        $empleado = DB::table('empleados')
+            ->where('LEGAJO', $legajo)
+            ->first(['url_foto_legajo']);
+
+        if (!$empleado) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No se encontró el legajo del colaborador.'
+            ], 404);
+        }
+
+        try {
+
+            // Guardar nueva fotografía
+            $rutaNueva = $request->file('foto')
+                ->store('legajos/fotos', 'public');
+
+            if (!$rutaNueva) {
+                throw new \RuntimeException(
+                    'No se pudo almacenar la fotografía.'
+                );
+            }
+
+            // Actualizar únicamente la ruta de la fotografía
+            DB::table('empleados')
+                ->where('LEGAJO', $legajo)
+                ->update([
+                    'url_foto_legajo' => $rutaNueva
+                ]);
+        } catch (\Throwable $e) {
+
+            // Si falla la actualización, eliminar archivo nuevo
+            if ($rutaNueva) {
+                Storage::disk('public')->delete($rutaNueva);
+            }
+
+            Log::error('Error al actualizar foto de legajo', [
+                'legajo' => $legajo,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No se pudo actualizar la fotografía.'
+            ], 500);
+        }
+
+        // Eliminar fotografía anterior después de actualizar la BD
+        if (
+            $empleado->url_foto_legajo &&
+            $empleado->url_foto_legajo !== $rutaNueva &&
+            str_starts_with(
+                $empleado->url_foto_legajo,
+                'legajos/fotos/'
+            )
+        ) {
+            try {
+                Storage::disk('public')
+                    ->delete($empleado->url_foto_legajo);
+            } catch (\Throwable $e) {
+                Log::warning('No se pudo eliminar la fotografía anterior', [
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Fotografía actualizada correctamente.',
+            'foto_url' => Storage::disk('public')->url($rutaNueva)
+        ]);
+    }
+
+    public function obtenerFotoLegajo()
+    {
+        $legajo = Auth::user()->legajo;
+
+        $ruta = DB::table('empleados')
+            ->where('LEGAJO', $legajo)
+            ->value('url_foto_legajo');
+
+        return response()->json([
+            'success' => true,
+            'foto_url' => $ruta
+                ? Storage::disk('public')->url($ruta)
+                : null
+        ]);
+    }
+
     public function actualizarLegajoColaborador(Request $request, $legajo)
     {
 
@@ -1561,7 +1665,7 @@ class PersonalController extends Controller
         try {
 
             $legajo = $request->legajo;
-            $id=Auth::user()->id;
+            $id = Auth::user()->id;
 
             DB::statement('CALL SP_BAJA_USUARIO(?,?, @p_mensaje)', [$legajo, $id]);
 

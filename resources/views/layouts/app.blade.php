@@ -43,6 +43,7 @@
     <link rel="stylesheet" href="{{ asset('css/ayuda.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssDashboardCalidad.css') }}">
     <link rel="stylesheet" href="{{ asset('css/componentes/cssFormFloating.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/componentes/cssPerfilLegajo.css') }}">
 </head>
 
 <body>
