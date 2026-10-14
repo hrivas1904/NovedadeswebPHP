@@ -121,7 +121,8 @@
     const RECEPCION_ROUTES = {
         listarAtenciones: "{{ route('recepcion.consentimientos.listar') }}",
         importarAtenciones: "{{ route('recepcion.consentimientos.importar') }}",
-        marcarAtencion: "{{ route('recepcion.consentimientos.marcar') }}"
+        marcarAtencion: "{{ route('recepcion.consentimientos.marcar') }}",
+        editarIngreso: "{{ route('recepcion.consentimientos.editarIngreso') }}",
     };
     const USUARIO_NOMBRE = @json(data_get(Auth::user(), 'name'));
 </script>

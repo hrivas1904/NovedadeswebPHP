@@ -11,5 +11,6 @@ Route::middleware(['auth', 'can:acceder-recepcion'])->group(function () {
         Route::post('/importar', [ConsentimientosController::class, 'importarAtenciones'])->name('importar');
         Route::post('/marcar',   [ConsentimientosController::class, 'marcarAtencion'])->name('marcar');
         Route::get('/obtenerObrasSociales',   [ConsentimientosController::class, 'obtenerObrasSociales']);
+        Route::post('/editar-ingreso', [ConsentimientosController::class, 'editarIngreso'])->name('editarIngreso');
     });
 });

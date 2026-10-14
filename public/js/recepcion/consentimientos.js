@@ -58,7 +58,11 @@ $(document).ready(function () {
                 render: DataTable.render.text(),
                 className: "text-start",
             },
-            { data: "fecha_ingreso", className: "text-start" },
+            {
+                data: "fecha_ingreso",
+                render: (v, t, row) =>
+                    t === "display" ? renderIngreso(row) : v || "",
+            },
             { data: "hora_ingreso", className: "text-start" },
             {
                 data: "medico",
@@ -253,28 +257,64 @@ function importarArchivo(archivo) {
         contentType: false,
     })
         .done(function (r) {
-            let html =
-                `<b>${r.insertadas}</b> atenciones nuevas` +
-                (r.omitidas
-                    ? `<br>${r.omitidas} ya estaban cargadas y se omitieron`
-                    : "");
+            // MySQL puede devolver los conteos como string: normalizar antes de comparar
+            const enPdf = Number(r.en_pdf) || 0;
+            const leidas = Number(r.leidas) || 0;
+            const insertadas = Number(r.insertadas) || 0;
+            const omitidas = Number(r.omitidas) || 0;
+            const completadas = Number(r.completadas) || 0;
+            const nuevasSinFecha = Number(r.nuevas_sin_fecha) || 0;
+
+            const lineas = [`<b>${insertadas}</b> atenciones nuevas`];
             let icono = "success";
 
-            if (r.en_pdf !== r.leidas) {
-                icono = "warning";
-                html += `<br><br>El PDF tiene <b>${r.en_pdf}</b> atenciones pero se pudieron leer <b>${r.leidas}</b>.
-                         Revisá las faltantes a mano.`;
+            if (omitidas) {
+                lineas.push(
+                    `${omitidas} ya estaban cargadas` +
+                        (completadas
+                            ? ` (a ${completadas} se les completaron datos que faltaban)`
+                            : " y se omitieron"),
+                );
             }
 
-            Swal.fire({ title: archivo.name, html: html, icon: icono });
-            tablaConsentimientos.ajax.reload();
+            const avisos = [];
+
+            if (enPdf !== leidas) {
+                avisos.push(
+                    `El PDF tiene <b>${enPdf}</b> atenciones pero se pudieron leer <b>${leidas}</b>. Revisá las faltantes a mano.`,
+                );
+            }
+
+            if (nuevasSinFecha) {
+                avisos.push(
+                    `<b>${nuevasSinFecha}</b> atenciones nuevas quedaron sin fecha u hora de ingreso. Cargalas con el lápiz de la columna Fecha.`,
+                );
+            }
+
+            if (avisos.length) icono = "warning";
+
+            Swal.fire({
+                title: $("<div>").text(archivo.name).html(),
+                html:
+                    lineas.join("<br>") +
+                    (avisos.length ? "<hr>" + avisos.join("<br><br>") : ""),
+                icon: icono,
+            });
+
+            tablaConsentimientos.ajax.reload(null, false);
         })
         .fail(function (xhr) {
             const r = xhr.responseJSON || {};
-            const msg =
+            let msg =
                 r.mensaje ||
                 (r.errors && r.errors.archivo && r.errors.archivo[0]) ||
                 "No se pudo procesar el archivo.";
+
+            if (xhr.status === 413)
+                msg = "El archivo es demasiado grande para subirlo.";
+            if (xhr.status === 419)
+                msg = "La sesión expiró. Recargá la página e intentá de nuevo.";
+
             Swal.fire("Error al importar", msg, "error");
         });
 }
@@ -337,3 +377,74 @@ function cargarObrasSociales() {
         },
     });
 }
+
+function renderIngreso(row) {
+    const btn = `<button type="button" class="btn btn-sm p-0 ms-2 btn-editar-ingreso"
+                    data-atencion="${row.atencion}" title="Editar fecha y hora de ingreso">
+                    <i class="fa-regular fa-pen-to-square"></i>`;
+    return row.fecha_ingreso
+        ? `${row.fecha_ingreso}${btn}`
+        : `<span class="badge text-bg-warning">Sin fecha</span>${btn}`;
+}
+
+function ddmmaaaaAISO(f) {
+    if (!f) return "";
+    const [d, m, a] = f.split("/");
+    return `${a}-${m}-${d}`;
+}
+
+function editarIngreso(btn) {
+    const tr = $(btn).closest("tr")[0];
+    const fila = tablaConsentimientos.row(tr);
+    const row = fila.data();
+
+    Swal.fire({
+        title: `Atención ${row.atencion}`,
+        html: `
+            <div class="text-start small text-muted mb-3">${$("<div>").text(row.paciente).html()}</div>
+            <div class="d-flex gap-2">
+                <div class="flex-fill text-start">
+                    <label for="swFecha" class="form-label small fw-bold">Fecha de ingreso</label>
+                    <input type="date" id="swFecha" class="form-control" value="${ddmmaaaaAISO(row.fecha_ingreso)}" max="${fechaISO(new Date())}">
+                </div>
+                <div class="flex-fill text-start">
+                    <label for="swHora" class="form-label small fw-bold">Hora</label>
+                    <input type="time" id="swHora" class="form-control" value="${row.hora_ingreso || ""}">
+                </div>
+            </div>`,
+        showCancelButton: true,
+        confirmButtonText: "Guardar",
+        cancelButtonText: "Cancelar",
+        focusConfirm: false,
+        preConfirm: () => {
+            const fecha = $("#swFecha").val();
+            if (!fecha) {
+                Swal.showValidationMessage("Ingresá la fecha de ingreso");
+                return false;
+            }
+            return $.post(RECEPCION_ROUTES.editarIngreso, {
+                atencion: String(row.atencion),
+                fecha: fecha,
+                hora: $("#swHora").val() || null,
+            }).catch((xhr) => {
+                Swal.showValidationMessage(
+                    xhr.responseJSON?.message || "No se pudo guardar",
+                );
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+    }).then((res) => {
+        if (!res.isConfirmed || !res.value) return;
+        fila.data(Object.assign({}, row, res.value.data));
+        Swal.fire({
+            icon: "success",
+            title: "Guardado",
+            timer: 1200,
+            showConfirmButton: false,
+        });
+    });
+}
+
+$(document).on("click", "#tbConsentimientos .btn-editar-ingreso", function () {
+    editarIngreso(this);
+});
