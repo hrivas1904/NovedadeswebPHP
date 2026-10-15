@@ -33,18 +33,19 @@ $("#tablaPedidosCompras").DataTable({
                 getAutorizacionesSeleccionadas().join(",") || null;
             d.desde = $("#filtroDesde").val();
             d.hasta = $("#filtroHasta").val();
+            d.tieneFactura = $("#filtroFactura").val();
         },
     },
     order: [[0, "desc"]],
     destroy: true,
-    responsive: true,
+    responsive: false,
     language: {
         url: "/js/es-ES.json",
     },
     scrollX: false,
     paging: false,
     searching: true,
-    autoWidth: true,
+    autoWidth: false,
     scrollCollapse: true,
     scrollY: getScrollY(),
     dom: "tir",
@@ -65,7 +66,7 @@ $("#tablaPedidosCompras").DataTable({
     columns: [
         {
             data: "fecha",
-            width: "5%",
+            width: "6%",
             render: function (data, type, row) {
                 if (type === "sort" || type === "type") {
                     return data;
@@ -73,32 +74,39 @@ $("#tablaPedidosCompras").DataTable({
                 return formatearFechaArgentina(data);
             },
         },
-        { data: "prioridad" },
-        { data: "solicitante" },
-        { data: "sector" },
-        { data: "proveedor" },
-        { data: "descripcion", className: "align-middle" },
-        { data: "lineas", visible: false },
-        { data: "adjuntos", visible: false },
-        { data: "autorizacion" },
-        { data: "estado" },
+        { data: "prioridad", width: "7%" },
+        { data: "solicitante", width: "10%" },
+        { data: "sector", width: "9%" },
+        { data: "proveedor", width: "12%" },
+        { data: "descripcion", className: "align-middle", width: "24%" },
+        { data: "autorizacion", width: "11%" },
+        { data: "estado", width: "8%" },
         {
             data: null,
+            width: "7%",
             className: "text-center",
             render: function (data, type, row) {
+                let label = null;
+                if (data.factura_descargada === 0) {
+                    label = `
+                        <span class="badge bg-primary">Nuevo</span>
+                    `;
+                } else {
+                    label = ``;
+                }
                 if (data.tiene_factura) {
                     return `
                         <span class="badge bg-success">
                             <a href="/administracion/compras/factura/${row.id}/descargar"
-                            class="text-white text-decoration-none"
+                            class="text-white text-decoration-none btnFactura"
                             title="Factura disponible. Descargar."
                             onclick="event.stopPropagation();">
                                 <i class="fa-solid fa-file-arrow-down"></i> Factura
                             </a>
                         </span>
+                        ${label}
                     `;
                 }
-
                 return `
                     
                 `;
@@ -106,6 +114,7 @@ $("#tablaPedidosCompras").DataTable({
         },
         {
             data: null,
+            width: "5%",
             orderable: false,
             searchable: false,
             className: "text-center",
@@ -186,6 +195,63 @@ $("#tablaPedidosCompras").DataTable({
     ],
 });
 
+$(document).on("click", ".btnFactura", async function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const url = $(this).attr("href");
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Error al descargar la factura");
+        }
+
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const disposition = response.headers.get("Content-Disposition") || "";
+        const filenameUTF8 = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+        const filenameNormal = disposition.match(/filename="?([^";]+)"?/i);
+
+        let nombreArchivo = "factura.pdf";
+
+        if (filenameUTF8) {
+            nombreArchivo = decodeURIComponent(filenameUTF8[1]);
+        } else if (filenameNormal) {
+            nombreArchivo = filenameNormal[1];
+        }
+
+        const enlace = document.createElement("a");
+        enlace.href = blobUrl;
+        enlace.download = nombreArchivo;
+
+        document.body.appendChild(enlace);
+        enlace.click();
+        enlace.remove();
+
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+
+        // Refrescar DataTable
+        const tabla = $("#tablaPedidosCompras").DataTable();
+
+        tabla.ajax.reload(null, false);
+    } catch (error) {
+        console.error("Error descargando factura:", error);
+
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo descargar la factura.",
+        });
+    }
+});
+
+$(window).on("resize", () =>
+    $("#tablaPedidosCompras").DataTable().columns.adjust(),
+);
+
 let PEDIDO_RECHAZO_ID = null;
 
 $(document).on("click", ".btnRechazar", function () {
@@ -256,7 +322,7 @@ $(document).on(
     },
 );
 
-$("#filtroDesde, #filtroHasta").on("change", function () {
+$("#filtroDesde, #filtroHasta, #filtroFactura").on("change", function () {
     $("#tablaPedidosCompras").DataTable().ajax.reload();
 });
 
@@ -265,7 +331,7 @@ $("#btn-limpiar-filtros").on("click", function () {
         "checked",
         false,
     );
-    $("#filtroDesde, #filtroHasta").val(null);
+    $("#filtroDesde, #filtroHasta, #filtroFactura").val(null);
     $("#tablaPedidosCompras").DataTable().ajax.reload();
 });
 

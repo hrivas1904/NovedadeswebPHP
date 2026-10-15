@@ -245,7 +245,7 @@ class ComprasController extends Controller
         ]);
 
         $data = DB::select(
-            "CALL SP_LISTAR_PEDIDOS_COMPRAS(?,?,?,?,?,?)",
+            "CALL SP_LISTAR_PEDIDOS_COMPRAS(?,?,?,?,?,?,?)",
             [
                 Auth::id(),
                 $request->prioridades ?: null,
@@ -253,6 +253,7 @@ class ComprasController extends Controller
                 $request->autorizaciones ?: null,
                 $request->desde ?: null,
                 $request->hasta ?: null,
+                $request->tieneFactura ?: null,
             ]
         );
 
@@ -862,6 +863,7 @@ class ComprasController extends Controller
 
     public function descargarFactura($id)
     {
+        // Buscar la última factura asociada al pedido
         $factura = DB::table('pedidos_compras_adjuntos')
             ->where('pedido_compra_id', $id)
             ->where('tipo', 'FACTURA')
@@ -869,16 +871,28 @@ class ComprasController extends Controller
             ->first();
 
         if (!$factura) {
-            abort(404, 'Factura no encontrada.');
+            abort(404, 'No se encontró ninguna factura para este pedido.');
         }
 
+        // Verificar que el archivo exista
         if (!Storage::disk('public')->exists($factura->archivo)) {
             abort(404, 'El archivo de la factura no existe.');
         }
 
-        return Storage::disk('public')->download(
+        // Preparar la descarga
+        $descarga = Storage::disk('public')->download(
             $factura->archivo,
             $factura->nombre_original
         );
+
+        // Marcar la factura como descargada
+        DB::table('pedidos_compras_adjuntos')
+            ->where('id', $factura->id)
+            ->where('tipo', 'FACTURA')
+            ->update([
+                'descargada' => 1
+            ]);
+
+        return $descarga;
     }
 }

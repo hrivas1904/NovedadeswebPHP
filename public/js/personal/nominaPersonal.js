@@ -429,7 +429,12 @@ $(document).ready(function () {
                 { data: "DNI", width: "5%", className: "text-start" },
                 { data: "AREA", width: "auto", className: "text-start" },
                 { data: "CATEGORIA", width: "auto", className: "text-start" },
-                { data: "CONVENIO", width: "auto", className: "text-start" },
+                {
+                    data: "CONVENIO",
+                    width: "auto",
+                    className: "text-start",
+                    visible: false,
+                },
                 {
                     data: "ESTADO",
                     width: "3%",

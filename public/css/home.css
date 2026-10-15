@@ -507,3 +507,17 @@ body[data-theme="dark"] {
 #contenedorGrilla.pincel-modo {
     user-select: none;
 }
+
+/* Aplica también a la tabla clonada del header que genera scrollY */
+#tablaPedidosCompras_wrapper table {
+    table-layout: fixed;
+    width: 100% !important;
+}
+
+#tablaPedidosCompras_wrapper th,
+#tablaPedidosCompras_wrapper td {
+    white-space: normal;
+    overflow-wrap: anywhere; /* corta palabras largas sin espacios */
+    word-break: break-word;
+    vertical-align: middle;
+}

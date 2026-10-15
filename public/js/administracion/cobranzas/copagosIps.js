@@ -185,7 +185,7 @@ function inicializarTablaCruce() {
         },
         layout: {
             topStart: "pageLength",
-            topEnd: { buttons: [botonExcelCruce()] },
+            topEnd: ["search", { buttons: [botonExcelCruce()] }],
             bottomStart: "info",
             bottomEnd: "paging",
         },
@@ -240,6 +240,7 @@ function inicializarTablaCruce() {
         drawCallback: function () {
             actualizarContadorCruce();
         },
+        searching: true,
     });
 }
 
