@@ -36,16 +36,15 @@
 
 <div class="row d-flex justify-content-start align-items-start">
     <div class="col-2 d-none d-xl-block">
-        <div class="card">
-            <div class="card-header">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column gap-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
                         Filtros
                     </h5>
                     <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
                 </div>
-            </div>
-            <div class="card-body d-flex flex-column gap-3">
+
                 @if (Auth::user()->rol === 'Administrador/a' || Auth::user()->rol === 'Colaborador/a L2')
                 <div class="filtro-box">
                     <div class="filtro-header" id="toggleAreas">
@@ -79,37 +78,24 @@
                     </div>
                     <div class="filtro-body" id="listaEstados">
                         <label class="filtro-item">
-                            <input
-                                type="radio"
-                                name="estado"
-                                class="radio-estado"
-                                value="">
+                            <input type="radio" name="estado" class="radio-estado" value="">
                             TODOS
                         </label>
 
                         <label class="filtro-item">
-                            <input
-                                type="radio"
-                                name="estado"
-                                class="radio-estado"
-                                value="ACTIVO"
-                                checked>
+                            <input type="radio" name="estado" class="radio-estado" value="ACTIVO" checked>
                             ACTIVOS
                         </label>
 
                         <label class="filtro-item">
-                            <input
-                                type="radio"
-                                name="estado"
-                                class="radio-estado"
-                                value="DE BAJA">
+                            <input type="radio" name="estado" class="radio-estado" value="DE BAJA">
                             DE BAJA
                         </label>
                     </div>
                 </div>
                 <div class="col-12">
-                    <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
-                        Limpiar filtros
+                    <button type="button" id="btn-limpiar-filtros" class="btn btn-outline-secondary w-100">
+                        <i class="fa-solid fa-arrows-rotate"></i> Limpiar filtros
                     </button>
                 </div>
             </div>
@@ -1347,7 +1333,7 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-6 col-lg-2">
                                 <label class="text-muted">Fecha</label>
-                                <input type="date" class="form-control" name="fechaPrest" id="inputFechaPrest" readonly>
+                                <input type="date" class="form-control" name="fechaPrest" id="inputFechaPrest" required>
                             </div>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <label class="text-muted">Legajo</label>
@@ -1411,6 +1397,7 @@
 <script src="{{ asset('js/personal/administrarCuentas.js') }}"></script>
 <script src="{{ asset('js/personal/scriptComun.js') }}"></script>
 <script src="{{ asset('js/personal/editColaborador.js') }}"></script>
+<script src="{{ asset('js/personal/prestamos.js') }}"></script>
 <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
 <script src="{{ asset('js/personal/generarConstanciaPdf.js') }}"></script>
 
