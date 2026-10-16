@@ -205,7 +205,7 @@ function cargarHoy(mes) {
             $("#totalEgrExecHoy").text(
                 fmtPesosCompacto(sumaImporte(data.exec_egr)),
             );
-            $("#bodyEgrExecHoy").html(tablaMovimientos(data.exec_egr));
+            $("#bodyEgrExecHoy").html(tablaEgresosEjecutados(data.exec_egr));
         } else {
             $("#seccionEjecutadoHoy").hide();
         }
@@ -213,46 +213,59 @@ function cargarHoy(mes) {
 }
 
 function tablaEgresosEjecutados(rows) {
-    if (!rows || rows.length === 0)
-        return '<label class="text-muted">Sin registros.</label>';
+    const esCheque = function (r) {
+        return String(r.operacion || "")
+            .toUpperCase()
+            .startsWith("CHEQUE");
+    };
 
-    const ordenadas = rows.slice().sort(function (a, b) {
-        const chA = a.operacion === "CHEQUES" ? 0 : 1;
-        const chB = b.operacion === "CHEQUES" ? 0 : 1;
-        if (chA !== chB) return chA - chB;
-        return Math.abs(Number(b.importe)) - Math.abs(Number(a.importe));
+    // Agrupa por sub-concepto + si es cheque o no
+    const grupos = {};
+    (rows || []).forEach(function (r) {
+        const sub =
+            r.subconcepto && r.subconcepto.trim() !== ""
+                ? r.subconcepto
+                : "(sin sub-concepto)";
+        const cheque = esCheque(r);
+        const key = sub + "||" + (cheque ? "1" : "0");
+        if (!grupos[key])
+            grupos[key] = { subconcepto: sub, cheque: cheque, importe: 0 };
+        grupos[key].importe += Number(r.importe || 0);
     });
+
+    const lista = Object.keys(grupos)
+        .map(function (k) {
+            return grupos[k];
+        })
+        .sort(function (a, b) {
+            if (a.cheque !== b.cheque) return a.cheque ? -1 : 1; // cheques primero
+            return Math.abs(b.importe) - Math.abs(a.importe);
+        });
+
+    if (lista.length === 0)
+        return '<label class="text-muted">Sin registros.</label>';
 
     let html =
         '<div class="table-responsive"><table class="table table-sm mb-0">' +
-        '<thead><tr><th>Sub-concepto</th><th>Detalle</th><th>Banco</th><th>Operación</th><th class="text-end">Importe</th></tr></thead><tbody>';
+        '<thead><tr><th>Sub-concepto</th><th class="text-end">Importe</th></tr></thead><tbody>';
 
-    ordenadas.forEach(function (r) {
-        const esCheque = r.operacion === "CHEQUES";
-        const operacion = esCheque
-            ? '<span class="badge bg-warning text-dark">CHEQUE</span>'
-            : '<span class="text-muted">' + escHtml(r.operacion) + "</span>";
-
+    lista.forEach(function (r) {
+        const color = Number(r.importe) >= 0 ? "text-success" : "text-danger";
         html +=
             "<tr" +
-            (esCheque ? ' class="table-warning"' : "") +
+            (r.cheque ? ' class=""' : "") +
             ">" +
             "<td>" +
             escHtml(r.subconcepto) +
+            (r.cheque
+                ? ' <span class="badge bg-primary text-white ms-1">CHEQUE</span>'
+                : "") +
             "</td>" +
-            "<td>" +
-            escHtml(r.detalle) +
-            "</td>" +
-            "<td>" +
-            escHtml(r.banco) +
-            "</td>" +
-            "<td>" +
-            operacion +
-            "</td>" +
-            '<td class="text-end fw-bold text-danger">' +
+            '<td class="text-end fw-bold ' +
+            color +
+            '">' +
             fmtPesos(r.importe) +
-            "</td>" +
-            "</tr>";
+            "</td></tr>";
     });
 
     return html + "</tbody></table></div>";

@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class NovedadesController extends Controller
@@ -1060,5 +1061,130 @@ class NovedadesController extends Controller
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             ]
         );
+    }
+
+    public function registrarPrestamo(Request $request)
+    {
+        $request->validate([
+            'legajo' => ['required', 'integer'],
+            'monto' => ['required', 'numeric', 'min:0.01'],
+            'cuotas' => ['required', 'integer', 'min:1'],
+            'fecha_inicio' => ['required', 'date'],
+        ]);
+
+        try {
+
+            DB::statement("SET @idPrestamo = NULL");
+
+            DB::transaction(function () use ($request) {
+
+                $idUser = Auth::id();
+
+                $legajo = $request->legajo;
+                $monto = $request->monto;
+                $cantidadCuotas = (int) $request->cuotas;
+
+                $fechaInicio = Carbon::parse(
+                    $request->fecha_inicio
+                )->startOfMonth();
+
+                // 1. REGISTRAR CABECERA
+
+                DB::statement(
+                    "CALL SP_REGISTRAR_PRESTAMO(?, ?, ?, ?, ?, @idPrestamo)",
+                    [
+                        $idUser,
+                        $legajo,
+                        $monto,
+                        $cantidadCuotas,
+                        $fechaInicio->format('Y-m-d')
+                    ]
+                );
+
+                // 2. RECUPERAR ID DEL PRÉSTAMO
+
+                $resultado = DB::selectOne(
+                    "SELECT @idPrestamo AS idPrestamo",
+                    [],
+                    false
+                );
+
+                $idPrestamo = $resultado->idPrestamo ?? null;
+
+                // DEPURACIÓN
+                \Log::info("ID del préstamo generado:", [
+                    'idPrestamo' => $idPrestamo
+                ]);
+
+                if (empty($idPrestamo)) {
+                    throw new \Exception(
+                        "No se pudo recuperar el ID del préstamo registrado."
+                    );
+                }
+
+                // 3. CALCULAR IMPORTES EN CENTAVOS
+
+                $totalCentavos = (int) round(
+                    (float) $monto * 100
+                );
+
+                $cuotaBase = intdiv(
+                    $totalCentavos,
+                    $cantidadCuotas
+                );
+
+                $diferencia = $totalCentavos % $cantidadCuotas;
+
+                if ($cuotaBase <= 0) {
+                    throw new Exception("El importe de las cuotas debe ser mayor a cero");
+                }
+
+                // 4. GENERAR CUOTAS
+
+                for ($i = 1; $i <= $cantidadCuotas; $i++) {
+
+                    $periodo = $fechaInicio->copy()
+                        ->addMonths($i - 1);
+
+                    $importeCentavos = $cuotaBase;
+
+                    // Ajustar diferencia en última cuota
+                    if ($i === $cantidadCuotas) {
+                        $importeCentavos += $diferencia;
+                    }
+
+                    $importeCuota = number_format(
+                        $importeCentavos / 100,
+                        2,
+                        '.',
+                        ''
+                    );
+
+                    DB::statement(
+                        "CALL SP_REGISTRAR_CUOTAS_PRESTAMO(?, ?, ?, ?, ?, ?)",
+                        [
+                            $idUser,
+                            $idPrestamo,
+                            $i,
+                            $periodo->format('Y-m-d'),
+                            $importeCuota,
+                            $legajo
+                        ]
+                    );
+                }
+            });
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Préstamo registrado correctamente'
+            ]);
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Error al registrar el préstamo',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -151,7 +151,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/mi-legajo/foto/actualizar', [PersonalController::class, 'actualizarFotoLegajo'])->name('miLegajo.actualizarFoto');
 
-    Route::get('/mi-legajo/foto',[PersonalController::class, 'obtenerFotoLegajo']);
+    Route::get('/mi-legajo/foto', [PersonalController::class, 'obtenerFotoLegajo']);
 
     Route::post('/personal/{legajo}/actualizar', [PersonalController::class, 'actualizarLegajoColaborador']);
 
@@ -273,6 +273,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/novedades/editar', [NovedadesController::class, 'editarConceptoNovedad'])
         ->name('novedades.editarConceptoNovedad');
+
+    Route::post('/registrarPrestamo', [NovedadesController::class, 'registrarPrestamo']);
 
     //cronograma
     Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);

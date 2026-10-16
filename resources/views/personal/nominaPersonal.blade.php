@@ -1245,7 +1245,7 @@
                 <h5 class="modal-title" id="tituloBajaColab">
                     <i class="fa-solid fa-plus me-2"></i> Dar de baja colaborador
                 </h5>
-                <button type="button" class="btn-close" onclick="cerrarModalBaja()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
@@ -1306,7 +1306,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="cerrarModalBaja()">Cancelar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="submit" class="btn btn-primary" form="formBajaColaborador"
                     id="btnBajaColaborador">
                     <i class="fa-solid fa-floppy-disk me-1"></i>
@@ -1353,11 +1353,11 @@
                             </div>
                             <div class="col-12 col-md-6 col-lg-3">
                                 <label class="text-muted">Monto cuotas</label>
-                                <input type="text" class="form-control" name="montoCuotasPrest" id="inputMontoCuotasPrest" required>
+                                <input type="text" class="form-control" name="montoCuotasPrest" id="inputMontoCuotasPrest" required readonly>
                             </div>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <label class="text-muted">Inicio descuento</label>
-                                <input type="month" class="form-control" name="mesDescuentoPrest" id="inputMesDescuentoPrest">
+                                <input type="month" class="form-control" name="mesDescuentoPrest" id="inputMesDescuentoPrest" required>
                             </div>
                         </div>
                         <label class="text-muted fw-bold">NOVEDADES A GENERAR AUTOMÁTICAMENTE</label>

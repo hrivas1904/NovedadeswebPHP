@@ -1,4 +1,6 @@
 (function () {
+    const HONO_CONCEPTO_DEFAULT = "HONORARIOS MEDICOS";
+    const HONO_SUBCONCEPTO_DEFAULT = "GUARDIAS";
     // =====================================================================
     // conciliacionMacro.js -- version con DataTables
     // Para Nacion/Francés 986/Francés 1001: duplicar y cambiar SOLO la
@@ -1067,6 +1069,23 @@
             $("#previewPagosWrapperHono").hide();
             return;
         }
+
+        resultadosPagosHono.forEach(function (res) {
+            if (res._defaultAplicado) return;
+            if (
+                res.matches.length === 0 &&
+                CONCEPTOS_CATALOGO.indexOf(HONO_CONCEPTO_DEFAULT) !== -1
+            ) {
+                const subs =
+                    SUBCONCEPTOS_POR_CONCEPTO[HONO_CONCEPTO_DEFAULT] || [];
+                res.concepto = HONO_CONCEPTO_DEFAULT;
+                res.subconcepto =
+                    subs.indexOf(HONO_SUBCONCEPTO_DEFAULT) !== -1
+                        ? HONO_SUBCONCEPTO_DEFAULT
+                        : subs[0] || "";
+            }
+            res._defaultAplicado = true;
+        });
 
         let optsConcepto = "";
         CONCEPTOS_CATALOGO.forEach(function (c) {

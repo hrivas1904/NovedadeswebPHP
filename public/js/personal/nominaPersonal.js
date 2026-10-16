@@ -450,57 +450,94 @@ $(document).ready(function () {
                 {
                     data: null,
                     className: "text-center acciones-nowrap",
-                    width: "10%",
+                    width: "5%",
                     orderable: false,
                     render: function (data) {
-                        let botones = `
-                            
-                        `;
+                        let opciones = "";
+
+                        const esAdmin = USER_ROLE === "Administrador/a";
+
+                        const esCoordinador = [
+                            "Administrador/a",
+                            "Coordinador/a",
+                            "Coordinador/a L2",
+                        ].includes(USER_ROLE);
+
+                        // SOLO COLABORADORES ACTIVOS
+                        if (data.ESTADO !== "ACTIVO") {
+                            return `<span class="text-muted">—</span>`;
+                        }
 
                         // SOLO ADMIN
-                        if (
-                            USER_ROLE === "Administrador/a" &&
-                            data.ESTADO === "ACTIVO"
-                        ) {
-                            botones += `
-                                <button 
-                                    class="btn btn-DarBaja"
-                                    data-id="${data.LEGAJO}"
-                                    title='Dar de baja'
-                                    data-nombre="${data.COLABORADOR}"
-                                    style='color: var(--color-accent-red)'>
-                                    <i class="fs-5 fa-regular fa-trash-can"></i>
-                                </button>
-                                <button 
-                                    class="btn btn-Prestamo"
-                                    data-id="${data.LEGAJO}"
-                                    title='Préstamo'
-                                    data-nombre="${data.COLABORADOR}"
-                                    style='color: var(--color-accent-green)'>
-                                    <i class="fs-5 fa-solid fa-file-invoice-dollar"></i>
-                                </button>
+                        if (esAdmin) {
+                            opciones += `
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item btn-Prestamo"
+                                        data-id="${data.LEGAJO}"
+                                        data-nombre="${data.COLABORADOR}">
+                                        <i class="fa-solid fa-file-invoice-dollar me-2"
+                                        style="color: var(--color-accent-green)"></i>
+                                        Registrar préstamo
+                                    </button>
+                                </li>
+
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item btn-DarBaja"
+                                        data-id="${data.LEGAJO}"
+                                        data-nombre="${data.COLABORADOR}">
+                                        <i class="fa-regular fa-trash-can me-2"
+                                        style="color: var(--color-accent-red)"></i>
+                                        Dar de baja
+                                    </button>
+                                </li>
                             `;
                         }
 
-                        // ADMIN + COORDINADOR
-                        if (
-                            (USER_ROLE === "Administrador/a" ||
-                                USER_ROLE === "Coordinador/a" ||
-                                USER_ROLE === "Coordinador/a L2") &&
-                            data.ESTADO === "ACTIVO"
-                        ) {
-                            botones += `
-                            <button 
-                                class="btn btn-RegNovedad"
-                                title='Cargar novedad'
-                                data-id="${data.LEGAJO}"
-                                style='color: var(--color-default)'>
-                                <i class="fs-5 fa-solid fa-floppy-disk"></i>
-                            </button>
-                        `;
+                        // ADMIN + COORDINADORES
+                        if (esCoordinador) {
+                            opciones += `
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item btn-RegNovedad"
+                                        data-id="${data.LEGAJO}">
+                                        <i class="fa-solid fa-floppy-disk me-2"
+                                        style="color: var(--color-default)"></i>
+                                        Cargar novedad
+                                    </button>
+                                </li>
+                            `;
                         }
 
-                        return botones;
+                        if (!opciones.trim()) {
+                            return `<span class="text-muted">—</span>`;
+                        }
+
+                        return `
+                            <div class="dropdown d-inline-block">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-acciones"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    title="Acciones"
+                                    aria-label="Mostrar acciones">
+
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    ${opciones}
+                                </ul>
+
+                            </div>
+                        `;
                     },
                 },
             ],
@@ -546,7 +583,12 @@ $(document).ready(function () {
             tablaPersonal.search("").draw();
         });
 
-        $(document).on("click", "#tb_personal tbody tr", function () {
+        $(document).on("click", "#tb_personal tbody tr", function (event) {
+            if ($(event.target).closest(".dropdown").length) {
+                return;
+            }
+            event.preventDefault();
+            event.stopPropagation();
             const tabla = $("#tb_personal").DataTable();
             const data = tabla.row(this).data();
             if (!data) return;
