@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/homeAnalisisView', [AnalisisController::class, 'homeAnalisisView'])->name('homeAnalisisView');
     Route::get('/flujoFondosView', [AnalisisController::class, 'flujoFondosView'])->name('flujoFondosView');
     Route::get('/comparativaView', [AnalisisController::class, 'comparativaView'])->name('comparativaView');
+    Route::get('/comparativoSeis/detalle', [AnalisisController::class, 'comparativoSeisDetalle'])->name('comparativoSeis.detalle');
     Route::get('/presupuestadoView', [AnalisisController::class, 'presupuestadoView'])->name('presupuestadoView');
     Route::get('/resumenAnualView', [AnalisisController::class, 'resumenAnualView'])->name('resumenAnualView');
     Route::get('/comparativaPresupuestoView', [AnalisisController::class, 'comparativaPresupuestoView'])->name('comparativaPresupuestoView');

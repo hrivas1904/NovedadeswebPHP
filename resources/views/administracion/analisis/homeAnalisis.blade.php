@@ -72,5 +72,13 @@
 </script>
 <script src="{{ asset('js/administracion/analisis/resumenAnual.js') }}"></script>
 
+<script>
+    const COMPARATIVO_ROUTES = {
+        detalle: @json(route('administracion.comparativoSeis.detalle'))
+    };
+</script>
+
+<script src="{{ asset('js/administracion/analisis/comparativoSeis.js') }}"></script>
+
 <script src="/js/administracion/analisis/homeAnalisis.js"></script>
 @endpush

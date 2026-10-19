@@ -3,43 +3,45 @@
 @section('title', 'Registro de Novedades')
 
 @section('content')
-<h3 class="tituloVista mb-3">
-    MÉDICOS
-</h3>
+<nav aria-label="breadcrumb" class="hp3c-breadcrumb">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="{{ url('/') }}">
+                <i class="fa-solid fa-house me-1"></i>Inicio
+            </a>
+        </li>
+        <li class="breadcrumb-item">Recursos Humanos</li>
+        <li class="breadcrumb-item">Colaboradores</li>
+        <li class="breadcrumb-item active" aria-current="page">Médicos</li>
+    </ol>
+</nav>
 
-<div class="row g-3">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-9">
-                        <div class="input-group">
-                            <input class="form-control" id="buscadorMedicos" type="text" placeholder="Buscar médico...">
-                            <button type="button" id="btnLimpiarBuscadorMedico" class="btn btn-secondary">
-                                <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <button type="button" id="btnModalNuevoMedico" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalNuevoMedico">Nuevo médico</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <table id="tbMedicos" class="table table-striped table-hover align-middle table-header-hp3c">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>MÉDICO</th>
-                            <th>MP</th>
-                            <th>DNI</th>
-                            <th>SERVICIO</th>
-                            <th>CONTACTO</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+<div class="d-flex justify-content-between align-items-start">
+    <h3 class="tituloVista mb-3">Médicos</h3>
+    <button type="button" id="btnModalNuevoMedico" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoMedico">Nuevo médico</button>
+</div>
+
+<div class="input-group mb-3">
+    <input class="form-control" id="buscadorMedicos" type="text" placeholder="Buscar médico...">
+    <button type="button" id="btnLimpiarBuscadorMedico" class="btn btn-secondary">
+        <i class="fa-regular fa-trash-can"></i>
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table id="tbMedicos" class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>MÉDICO</th>
+                    <th>MP</th>
+                    <th>DNI</th>
+                    <th>SERVICIO</th>
+                    <th>CONTACTO</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
 @endsection

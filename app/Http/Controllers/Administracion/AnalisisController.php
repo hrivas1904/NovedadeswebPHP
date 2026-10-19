@@ -93,6 +93,7 @@ class AnalisisController extends Controller
                         $primero = $porConcepto->first();
                         $porPeriodo = $porConcepto->keyBy('periodo');
                         return [
+                            'concepto' => $primero['concepto'],
                             'label'   => $primero['label'],
                             'orden'   => $primero['orden'],
                             'valores' => $periodos->map(
@@ -246,5 +247,25 @@ class AnalisisController extends Controller
             'periodoLabels' => $periodoLabels,
             'resumen'       => $periodos->map(fn($p) => $resumenPorPeriodo->get($p))->values(),
         ])->with('detalle', $detalle);
+    }
+
+    public function comparativoSeisDetalle(Request $request)
+    {
+        $data = $request->validate([
+            'concepto' => 'required|string',
+            'periodo'  => ['required', 'regex:/^\d{4}-\d{2}$/'],
+        ]);
+
+        $rows = DB::table('ff_movimientos as m')
+            ->join('ff_conceptos as k', 'k.id', '=', 'm.id_concepto')
+            ->where('k.nombre', $data['concepto'])
+            ->where('m.periodo', $data['periodo'])
+            ->where('m.ejecucion', 'EJECUTADO')
+            ->whereNull('m.deleted_at')
+            ->orderBy('m.fecha')
+            ->select(['m.fecha', 'm.subconcepto', 'm.detalle', 'm.importe'])
+            ->get();
+
+        return response()->json($rows);
     }
 }
