@@ -15,6 +15,13 @@
     let tablaConciliacion = null;
     let restaurandoScroll = false;
 
+    function normalizarSubconcepto(fila) {
+        const lista = SUBCONCEPTOS_POR_CONCEPTO[fila.concepto] || [];
+        if (lista.indexOf(fila.subconcepto) !== -1) return false;
+        fila.subconcepto = lista[0] || "";
+        return true; // true = se tuvo que ajustar (conviene que el usuario lo revise)
+    }
+
     function fmtPesos(v) {
         const n = Number(v || 0);
         const signo = n < 0 ? "-" : "";
@@ -671,6 +678,7 @@
         }
 
         filasExtracto.forEach(function (r, i) {
+            const ajustado = normalizarSubconcepto(r);
             let optsFila = opts.replace(
                 'value="' + r.concepto + '"',
                 'value="' + r.concepto + '" selected',
@@ -706,9 +714,15 @@
                 '">' +
                 optsFila +
                 "</select></td>" +
-                '<td><select class="form-select form-select-sm select-subconcepto-extracto" data-idx="' +
+                '<td><select class="form-select form-select-sm select-subconcepto-extracto' +
+                (ajustado ? " border-warning" : "") +
+                '" data-idx="' +
                 i +
-                '">' +
+                '"' +
+                (ajustado
+                    ? ' title="El sub-concepto sugerido no corresponde a este concepto. Revisalo."'
+                    : "") +
+                ">" +
                 optsSubconcepto(r.concepto, r.subconcepto) +
                 "</select></td>" +
                 '<td><input type="text" class="form-control form-control-sm input-detalle-extracto" data-idx="' +

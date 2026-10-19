@@ -30,7 +30,7 @@
                 </td>
             </tr>
 
-            @forelse($detalle->get('PAGOS_OPERATIVOS', []) as $fila)
+            @forelse($detalle->get('INGRESOS', []) as $fila)
             <tr class="fila-detalle-concepto" style="cursor:pointer;" data-concepto="{{ $fila['concepto'] }}">
                 <td style="padding-left:20px;">{{ $fila['label'] }}</td>
                 <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
@@ -141,7 +141,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        Detalle de movimientos <span id="nombreConcepto">-</span> // <span id="mesVista">-$_COOKIE</span>
+                        Detalle de movimientos <span id="nombreConcepto">-</span> // <span id="mesVista">-</span>
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
