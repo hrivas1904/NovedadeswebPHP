@@ -127,13 +127,13 @@
                         @endif
                     </div>
                 </div>
+                @if (Auth::user()->rol === 'Administrador/a')
                 <div class="d-flex justify-content-between align-items-center gap-3">
                     <div class="d-flex align-items-center gap-3">
                         <label class="text-muted">
                             <span id="cantidadSeleccionados">0</span>
                             solicitudes seleccionadas
                         </label>
-                        @if (Auth::user()->rol === 'Administrador/a')
                         <button type="button" id="btnDepositarAdelantos" class="btn btn-sm btn-secondary">
                             Depositar
                         </button>
@@ -143,12 +143,12 @@
                         <button type="button" id="btnRechazarAdelantos" class="btn btn-sm btn-outline-danger">
                             Rechazar
                         </button>
-                        @endif
                     </div>
                     <button class="btn text-muted d-none" id="btnCancelarSeleccion">
                         <i class="fa-solid fa-xmark"></i> Cancelar seleccción
                     </button>
                 </div>
+                @endif
                 <div class="table-responsive table-card">
                     <table id="tb_solicitudes" class="table table-striped table-hover align-middle">
                         <thead class="thead-dark">
@@ -209,51 +209,51 @@
 
             <div class="modal-body">
                 <form id="formCargaSolicitud">
-
-                    <div class="section-divider mb-3">
-                        <span>Información general</span>
-                    </div>
-
-                    <div class="empleado-box p-3 mb-4">
-                        <div class="row g-3">
-                            <div class="col-lg-3 col-md-4 col-sm-12">
-                                <label class="form-label">Fecha de registro</label>
-                                <input type="text" class="form-control" name="fechaRegistro"
-                                    value="{{ now()->format('d-m-Y') }}" readonly>
-                            </div>
-                            <input type="hidden" class="form-control" value="{{ Auth::user()->name }}"
-                                name="registrante" readonly>
-                            <input type="hidden" class="form-control" name="legajo" id="inputLegajo" required
-                                value="{{ auth()->user()->legajo }}" readonly>
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <label class="form-label">Tipo de solicitud</label>
-                                <input class="form-control" name="tipoSolicitud" required readonly
-                                    value="Adelanto de Sueldo"></input>
+                    <div class="d-flex flex-column gap-3">
+                        <div class="card p-3">
+                            <div class="d-flex flex-column gap-3">
+                                <label class="fw-bold text-muted">
+                                    Información general
+                                </label>
+                                <div class="row g-3">
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <label class="form-label">Fecha de registro</label>
+                                        <input type="text" class="form-control" name="fechaRegistro"
+                                            value="{{ now()->format('d-m-Y') }}" readonly>
+                                    </div>
+                                    <input type="hidden" class="form-control" value="{{ Auth::user()->name }}"
+                                        name="registrante" readonly>
+                                    <input type="hidden" class="form-control" name="legajo" id="inputLegajo" required
+                                        value="{{ auth()->user()->legajo }}" readonly>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <label class="form-label">Tipo de solicitud</label>
+                                        <input class="form-control" name="tipoSolicitud" required readonly
+                                            value="Adelanto de Sueldo"></input>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="section-divider mb-3">
-                        <span>Datos de la solicitud</span>
-                    </div>
-
-                    <div class="empleado-box p-3">
-                        <div class="row g-3">
-
-                            <div class="col-lg-3 col-md-3 col-sm-12">
-                                <label class="form-label">Monto</label>
-                                <input class="form-control" id="inputMonto" style="text-align: end;"
-                                    required></input>
-                                <input class="form-control" id="inputMontoEnviar" name="monto" hidden
-                                    required></input>
-                            </div>
-                            <div class="col-lg-9 col-md-9 col-sm-12">
-                                <label class="form-label">Descripción del monto</label>
-                                <input class="form-control" id="inputDescripMonto" readonly></input>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12">
-                                <label class="form-label">Observaciones</label>
-                                <input class="form-control" id="inputTipo" name="observ"></input>
+                        <div class="card p-3">
+                            <div class="d-flex flex-column gap-3">
+                                <label class="fw-bold text-muted">
+                                    Datos de la solicitud
+                                </label>
+                                <div class="row g-3">
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <label class="form-label">Monto</label>
+                                        <input class="form-control" id="inputMonto" style="text-align: end;" required></input>
+                                        <input class="form-control" id="inputMontoEnviar" name="monto" hidden required></input>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-12">
+                                        <label class="form-label">Descripción del monto</label>
+                                        <input class="form-control" id="inputDescripMonto" readonly></input>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <label class="form-label">Observaciones</label>
+                                        <input class="form-control" id="inputTipo" name="observ"></input>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1032,22 +1032,60 @@ class PersonalController extends Controller
 
     public function registrarSolicitud(Request $request)
     {
+        $request->validate([
+            'legajo' => ['required', 'integer'],
+        ]);
+
+        $tipoSolicitud = $request->tipoSolicitud;
+        $legajo = $request->legajo;
+        $registrante = $request->registrante;
+        $observ = $request->observ;
+        $monto = $request->monto;
+
         try {
 
+            // VERIFICAR SI TIENE PRÉSTAMO ACTIVO
+            $resultado = DB::selectOne(
+                "SELECT EXISTS(
+                SELECT 1
+                FROM prestamos
+                WHERE legajo = ?
+                AND estado = 1
+            ) AS tiene_prestamo",
+                [$legajo]
+            );
+
+            $tiene_prestamo = (int) $resultado->tiene_prestamo;
+
+            // SI TIENE PRÉSTAMO ACTIVO, NO PERMITIR REGISTRO
+            if ($tiene_prestamo === 1) {
+
+                return response()->json([
+                    'ok' => false,
+                    'mensaje' => 'El colaborador ya tiene un préstamo activo.'
+                ], 409);
+            }
+
+            // REGISTRAR SOLICITUD
             DB::statement(
                 "CALL SP_REGISTRAR_SOLICITUD(?, ?, ?, ?, ?, @p_mensaje)",
                 [
-                    $request->tipoSolicitud,
-                    $request->legajo,
-                    $request->registrante,
-                    $request->observ,
-                    $request->monto
+                    $tipoSolicitud,
+                    $legajo,
+                    $registrante,
+                    $observ,
+                    $monto
                 ]
             );
 
-            $mensaje = DB::selectOne("SELECT @p_mensaje as mensaje");
+            $mensaje = DB::selectOne(
+                "SELECT @p_mensaje AS mensaje",
+                [],
+                false
+            );
 
-            $ok = $mensaje->mensaje === 'Solicitud registrada correctamente';
+            $ok = $mensaje->mensaje ===
+                'Solicitud registrada correctamente';
 
             return response()->json([
                 'ok' => $ok,

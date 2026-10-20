@@ -104,14 +104,7 @@ $("#inputMonto").on("input", function () {
 
     if (isNaN(valor)) return;
 
-    if (valor > 300000) {
-        Swal.fire({
-            text: "El monto no puede ser superior a $300.000",
-            icon: "warning",
-            title: "Atención",
-        });
-        $(this).val(300000);
-    } else if (valor < 0) {
+    if (valor < 0) {
         $(this).val(0);
         Swal.fire({
             text: "El monto no puede ser negativo",
@@ -338,13 +331,20 @@ $("#formCargaSolicitud").on("submit", function (e) {
                 });
             }
         },
-        error: function () {
+        error: function (xhr) {
+            const mensaje =
+                xhr.responseJSON?.mensaje ||
+                xhr.responseJSON?.message ||
+                "Ocurrió un error al registrar la solicitud.";
+
             Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Error del servidor",
+                icon: xhr.status === 409 ? "warning" : "error",
+                title: xhr.status === 409 ? "Solicitud no permitida" : "Error",
+                text: mensaje,
                 confirmButtonColor: "#00b18d",
             });
+
+            console.error("Error al registrar solicitud:", xhr.responseJSON);
         },
     });
 });
@@ -557,7 +557,7 @@ $(document).ready(function () {
                 },
                 {
                     data: "fecha",
-                    width: "6%",
+                    width: "10%",
                     className: "text-start",
                     render: function (data) {
                         return formatearFechaHora(data);
@@ -674,14 +674,17 @@ $(document).ready(function () {
 
     let searchTimeout;
     $(document).off("keyup.searchSolicitudes", "#inputSearchSolicitudes");
-    $(document).on("keyup.searchSolicitudes", "#inputSearchSolicitudes", function () {
-        clearTimeout(searchTimeout);
-        const valor = this.value;
-        searchTimeout = setTimeout(() => {
-            tablaSolicitudes.search(valor).draw();
-        }, 300);
-    });
-
+    $(document).on(
+        "keyup.searchSolicitudes",
+        "#inputSearchSolicitudes",
+        function () {
+            clearTimeout(searchTimeout);
+            const valor = this.value;
+            searchTimeout = setTimeout(() => {
+                tablaSolicitudes.search(valor).draw();
+            }, 300);
+        },
+    );
 });
 
 $(document).off("click.exportExcel", "#btnExportarExcel");
@@ -859,3 +862,5 @@ $(document).on("click", "#btnRechazarAdelantos", function (event) {
         }
     });
 });
+
+$("#inputMaximoDisponible").ready(function () {});
