@@ -1,3 +1,13 @@
+<style>
+    .celda-detalle-comparativo:hover {
+        background: #e8f4fd;
+    }
+</style>
+
+@php
+    $fmt = fn($n, $dec = 0) => ($n < 0 ? '-' : '') . '$ ' . number_format(abs($n), $dec, ',', '.');
+@endphp
+
 <div class="card p-0" style="overflow:hidden;">
     <div style="overflow-x:auto;">
         <table class="table table-sm mb-0" style="border-collapse: collapse; min-width:600px;">
@@ -31,7 +41,13 @@
                 <tr style="border-bottom:1px solid #dee2e6;">
                     <td style="padding:5px 10px 5px 20px;">{{ $fila['label'] }}</td>
                     @foreach($fila['valores'] as $v)
-                    <td class="text-end" style="padding:5px 10px;">$ {{ number_format(abs($v), 0, ',', '.') }}</td>
+                    @php $per = $periodos->get($loop->index); @endphp
+                    <td class="text-end {{ $v != 0 ? 'celda-detalle-comparativo' : '' }}"
+                        style="padding:5px 10px;{{ $v != 0 ? ' cursor:pointer;' : '' }}"
+                        data-concepto="{{ $fila['concepto'] }}"
+                        data-label="{{ $fila['label'] }}"
+                        data-periodo="{{ $per }}"
+                        data-ejecucion="PRESUPUESTO">$ {{ $fmt($v) }}</td>
                     @endforeach
                 </tr>
                 @empty
@@ -56,7 +72,13 @@
                 <tr style="border-bottom:1px solid #dee2e6;">
                     <td style="padding:5px 10px 5px 20px;">{{ $fila['label'] }}</td>
                     @foreach($fila['valores'] as $v)
-                    <td class="text-end" style="padding:5px 10px;">$ {{ number_format(abs($v), 0, ',', '.') }}</td>
+                    @php $per = $periodos->get($loop->index); @endphp
+                    <td class="text-end {{ $v != 0 ? 'celda-detalle-comparativo' : '' }}"
+                        style="padding:5px 10px;{{ $v != 0 ? ' cursor:pointer;' : '' }}"
+                        data-concepto="{{ $fila['concepto'] }}"
+                        data-label="{{ $fila['label'] }}"
+                        data-periodo="{{ $per }}"
+                        data-ejecucion="PRESUPUESTO">$ {{ $fmt($v) }}</td>
                     @endforeach
                 </tr>
                 @empty
@@ -67,7 +89,7 @@
                 <tr style="border-top:2px solid #dc3545;">
                     <td class="fw-bold" style="padding:7px 10px; color:#dc3545;">TOTAL PAGOS OPERATIVOS</td>
                     @foreach($resumen as $r)
-                    <td class="text-end fw-bold" style="padding:7px 10px; color:#dc3545;">$ {{ number_format(abs($r['total_pagos_operativos']), 0, ',', '.') }}</td>
+                    <td class="text-end fw-bold" style="padding:7px 10px; color:#dc3545;">$ {{ $fmt($r['total_pagos_operativos']) }}</td>
                     @endforeach
                 </tr>
 
@@ -97,7 +119,13 @@
                 <tr style="border-bottom:1px solid #dee2e6;">
                     <td style="padding:5px 10px 5px 20px;">{{ $fila['label'] }}</td>
                     @foreach($fila['valores'] as $v)
-                    <td class="text-end" style="padding:5px 10px;">$ {{ number_format(abs($v), 0, ',', '.') }}</td>
+                    @php $per = $periodos->get($loop->index); @endphp
+                    <td class="text-end {{ $v != 0 ? 'celda-detalle-comparativo' : '' }}"
+                        style="padding:5px 10px;{{ $v != 0 ? ' cursor:pointer;' : '' }}"
+                        data-concepto="{{ $fila['concepto'] }}"
+                        data-label="{{ $fila['label'] }}"
+                        data-periodo="{{ $per }}"
+                        data-ejecucion="PRESUPUESTO">$ {{ $fmt($v) }}</td>
                     @endforeach
                 </tr>
                 @empty
@@ -108,7 +136,7 @@
                 <tr style="border-top:2px solid #dc3545;">
                     <td class="fw-bold" style="padding:7px 10px; color:#dc3545;">TOTAL USO DE FONDOS</td>
                     @foreach($resumen as $r)
-                    <td class="text-end fw-bold" style="padding:7px 10px; color:#dc3545;">$ {{ number_format(abs($r['total_uso_fondos']), 0, ',', '.') }}</td>
+                    <td class="text-end fw-bold" style="padding:7px 10px; color:#dc3545;">$ {{ $fmt($r['total_uso_fondos']) }}</td>
                     @endforeach
                 </tr>
 
@@ -130,5 +158,38 @@
 
             </tbody>
         </table>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDetalleComparativo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title mb-0" id="compNombreConcepto"></h5>
+                    <small class="text-muted" id="compMesVista"></small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div style="max-height:60vh; overflow-y:auto;">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead style="position:sticky; top:0; background:#fff; z-index:1;">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Sub-concepto</th>
+                                <th>Detalle</th>
+                                <th class="text-end">Importe</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compBodyDetalle"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <span class="fw-semibold">Total</span>
+                <span class="fw-bold fs-5" id="compTotalDetalle"></span>
+            </div>
+        </div>
     </div>
 </div>

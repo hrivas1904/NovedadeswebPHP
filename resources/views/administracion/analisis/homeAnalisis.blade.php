@@ -80,5 +80,12 @@
 
 <script src="{{ asset('js/administracion/analisis/comparativoSeis.js') }}"></script>
 
+<script>
+    const COMPARATIVO_DIARIO_ROUTES = {
+        detalle: @json(route('administracion.comparativoDiario.detalle'))
+    };
+</script>
+<script src="{{ asset('js/administracion/analisis/comparativoDiario.js') }}"></script>
+
 <script src="/js/administracion/analisis/homeAnalisis.js"></script>
 @endpush

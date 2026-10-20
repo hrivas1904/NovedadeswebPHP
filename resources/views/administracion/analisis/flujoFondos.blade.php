@@ -2,6 +2,10 @@
     <input type="month" id="mesFlujoFondos" class="form-control form-control-sm" style="width:150px;" value="{{ $mes }}">
 </div>
 
+@php
+    $fmt = fn($n, $dec = 0) => ($n < 0 ? '-' : '') . '$ ' . number_format(abs($n), $dec, ',', '.');
+@endphp
+
 <div class="card p-0" id="cardFlujoFondos" data-mes="{{ $mes }}" style="overflow:hidden;">
 
     <div class="d-flex justify-content-between align-items-center px-3 py-2 text-white"
@@ -20,7 +24,7 @@
 
             <tr style="background:#F0F7FF; border-bottom:1px solid #dee2e6;">
                 <td class="fw-semibold" style="color:#1B2A4A;">SALDO DE INICIO</td>
-                <td class="text-end fw-bold" style="color:#1B2A4A;">$ {{ number_format($resumen['saldo_inicio'], 2, ',', '.') }}</td>
+                <td class="text-end fw-bold" style="color:#1B2A4A;">$ {{ $fmt($resumen['saldo_inicio'], 2) }}</td>
                 <td></td>
             </tr>
 
@@ -44,7 +48,7 @@
 
             <tr style="border-top:1px solid var(--color-accent-green); background-color: var(--color-accent-green);">
                 <td class="fw-bold">TOTAL INGRESOS</td>
-                <td class="text-end fw-bold">$ {{ number_format($resumen['total_ingresos'], 2, ',', '.') }}</td>
+                <td class="text-end fw-bold">$ {{ $fmt($resumen['total_ingresos'], 2) }}</td>
                 <td></td>
             </tr>
 
@@ -61,7 +65,7 @@
             @forelse($detalle->get('PAGOS_OPERATIVOS', []) as $fila)
             <tr class="fila-detalle-concepto" style="cursor:pointer;" data-concepto="{{ $fila['concepto'] }}">
                 <td style="padding-left:20px;">{{ $fila['label'] }}</td>
-                <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
+                <td class="text-end">$ {{ $fmt($fila['importe_neto'], 2) }}</td>
                 <td class="text-end text-muted">{{ number_format($fila['pct'], 2, ',', '.') }}%</td>
             </tr>
             @empty
@@ -72,7 +76,7 @@
 
             <tr style="border-top:1px solid #dee2e6;">
                 <td class="fw-bold">TOTAL PAGOS OPERATIVOS</td>
-                <td class="text-end fw-bold">$ {{ number_format(abs($resumen['total_pagos_operativos']), 2, ',', '.') }}</td>
+                <td class="text-end fw-bold">$ {{ $fmt($resumen['total_pagos_operativos'], 2) }}</td>
                 <td></td>
             </tr>
 
@@ -101,7 +105,7 @@
             @forelse($detalle->get('USO_FONDOS', []) as $fila)
             <tr class="fila-detalle-concepto" style="cursor:pointer;" data-concepto="{{ $fila['concepto'] }}">
                 <td style="padding-left:20px;">{{ $fila['label'] }}</td>
-                <td class="text-end">$ {{ number_format(abs($fila['importe_neto']), 2, ',', '.') }}</td>
+                <td class="text-end">$ {{ $fmt($fila['importe_neto'], 2) }}</td>
                 <td class="text-end text-muted">{{ number_format($fila['pct'], 2, ',', '.') }}%</td>
             </tr>
             @empty

@@ -1,7 +1,8 @@
 $(document).on('click', '.celda-detalle-comparativo', function () {
-    const concepto = $(this).data('concepto');
-    const label    = $(this).data('label');
-    const periodo  = $(this).data('periodo');          // 'YYYY-MM'
+    const concepto  = $(this).data('concepto');
+    const label     = $(this).data('label');
+    const periodo   = $(this).data('periodo');                       // 'YYYY-MM'
+    const ejecucion = $(this).data('ejecucion') || 'EJECUTADO';
 
     const fmt = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
     const esc = function (s) {
@@ -12,12 +13,15 @@ $(document).on('click', '.celda-detalle-comparativo', function () {
     const mesTxt = new Date(y, m - 1, 1).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
 
     $('#compNombreConcepto').text(label);
-    $('#compMesVista').text(mesTxt.charAt(0).toUpperCase() + mesTxt.slice(1));
+    $('#compMesVista').text(
+        mesTxt.charAt(0).toUpperCase() + mesTxt.slice(1) +
+        (ejecucion === 'PRESUPUESTO' ? ' · Presupuestado' : '')
+    );
     $('#compBodyDetalle').html('<tr><td colspan="4" class="text-center text-muted py-3">Cargando...</td></tr>');
     $('#compTotalDetalle').text('');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalleComparativo')).show();
 
-    $.get(COMPARATIVO_ROUTES.detalle, { concepto: concepto, periodo: periodo }, function (resp) {
+    $.get(COMPARATIVO_ROUTES.detalle, { concepto: concepto, periodo: periodo, ejecucion: ejecucion }, function (resp) {
         const rows = Array.isArray(resp) ? resp : (resp.data || resp.rows || []);
         if (!rows.length) {
             $('#compBodyDetalle').html('<tr><td colspan="4" class="text-center text-muted py-3">Sin movimientos.</td></tr>');
@@ -37,7 +41,8 @@ $(document).on('click', '.celda-detalle-comparativo', function () {
         });
         $('#compBodyDetalle').html(html);
         $('#compTotalDetalle').text(fmt.format(total)).toggleClass('text-danger', total < 0).toggleClass('text-success', total >= 0);
-    }).fail(function () {
-        $('#compBodyDetalle').html('<tr><td colspan="4" class="text-center text-danger py-3">No se pudo cargar el detalle.</td></tr>');
+    }).fail(function (xhr) {
+        console.log('DETALLE ERROR', xhr.status, xhr.responseText);
+        $('#compBodyDetalle').html('<tr><td colspan="4" class="text-center text-danger py-3">No se pudo cargar el detalle (' + xhr.status + ').</td></tr>');
     });
 });

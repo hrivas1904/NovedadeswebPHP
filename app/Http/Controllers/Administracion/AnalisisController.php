@@ -186,6 +186,7 @@ class AnalisisController extends Controller
                         $primero = $porConcepto->first();
                         $porPeriodo = $porConcepto->keyBy('periodo');
                         return [
+                            'concepto' => $primero['concepto'],
                             'label'   => $primero['label'],
                             'orden'   => $primero['orden'],
                             'valores' => $periodos->map(
@@ -231,6 +232,7 @@ class AnalisisController extends Controller
                         $primero = $porConcepto->first();
                         $porPeriodo = $porConcepto->keyBy('periodo');
                         return [
+                            'concepto' => $primero['concepto'],
                             'label'   => $primero['label'],
                             'orden'   => $primero['orden'],
                             'valores' => $periodos->map(
@@ -252,18 +254,40 @@ class AnalisisController extends Controller
     public function comparativoSeisDetalle(Request $request)
     {
         $data = $request->validate([
-            'concepto' => 'required|string',
-            'periodo'  => ['required', 'regex:/^\d{4}-\d{2}$/'],
+            'concepto'  => 'required|string',
+            'periodo'   => ['required', 'regex:/^\d{4}-\d{2}$/'],
+            'ejecucion' => 'nullable|in:EJECUTADO,PRESUPUESTO',
         ]);
 
         $rows = DB::table('ff_movimientos as m')
             ->join('ff_conceptos as k', 'k.id', '=', 'm.id_concepto')
             ->where('k.nombre', $data['concepto'])
             ->where('m.periodo', $data['periodo'])
-            ->where('m.ejecucion', 'EJECUTADO')
+            ->where('m.ejecucion', $data['ejecucion'] ?? 'EJECUTADO')
             ->whereNull('m.deleted_at')
             ->orderBy('m.fecha')
             ->select(['m.fecha', 'm.subconcepto', 'm.detalle', 'm.importe'])
+            ->get();
+
+        return response()->json($rows);
+    }
+
+    public function comparativoDiarioDetalle(Request $request)
+    {
+        $data = $request->validate([
+            'concepto' => 'required|string',
+            'fecha'    => 'required|date_format:Y-m-d',
+        ]);
+
+        $rows = DB::table('ff_movimientos as m')
+            ->join('ff_conceptos as k', 'k.id', '=', 'm.id_concepto')
+            ->join('ff_cuentas as c', 'c.id', '=', 'm.id_cuenta')
+            ->where('k.nombre', $data['concepto'])
+            ->where('m.fecha', $data['fecha'])
+            ->where('m.ejecucion', 'PRESUPUESTO')
+            ->whereNull('m.deleted_at')
+            ->orderBy('m.importe')
+            ->select(['c.nombre as banco', 'm.subconcepto', 'm.detalle', 'm.importe'])
             ->get();
 
         return response()->json($rows);

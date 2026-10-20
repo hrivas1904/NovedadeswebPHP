@@ -4,6 +4,10 @@
     }
 </style>
 
+@php
+    $fmt = fn($n, $dec = 0) => ($n < 0 ? '-' : '') . '$ ' . number_format(abs($n), $dec, ',', '.');
+@endphp
+
 <div class="card p-0" style="overflow:hidden;">
     <div style="overflow-x:auto;">
         <table class="table table-sm mb-0" style="border-collapse: collapse; min-width:600px;">
@@ -42,7 +46,7 @@
                         style="padding:5px 10px;{{ $v != 0 ? ' cursor:pointer;' : '' }}"
                         data-concepto="{{ $fila['concepto'] }}"
                         data-label="{{ $fila['label'] }}"
-                        data-periodo="{{ $per }}">$ {{ number_format(abs($v), 0, ',', '.') }}</td>
+                        data-periodo="{{ $per }}">$ {{ $fmt($v) }}</td>
                     @endforeach
                 </tr>
                 @empty
@@ -72,7 +76,7 @@
                         style="padding:5px 10px;{{ $v != 0 ? ' cursor:pointer;' : '' }}"
                         data-concepto="{{ $fila['concepto'] }}"
                         data-label="{{ $fila['label'] }}"
-                        data-periodo="{{ $per }}">$ {{ number_format(abs($v), 0, ',', '.') }}</td>
+                        data-periodo="{{ $per }}">$ {{ $fmt($v) }}</td>
                     @endforeach
                 </tr>
                 @empty
@@ -83,7 +87,7 @@
                 <tr style="border-top:2px solid #dc3545;">
                     <td class="fw-bold" style="padding:7px 10px; color:#dc3545;">TOTAL PAGOS OPERATIVOS</td>
                     @foreach($resumen as $r)
-                    <td class="text-end fw-bold" style="padding:7px 10px; color:#dc3545;">$ {{ number_format(abs($r['total_pagos_operativos']), 0, ',', '.') }}</td>
+                    <td class="text-end fw-bold" style="padding:7px 10px; color:#dc3545;">$ {{ $fmt($r['total_pagos_operativos']) }}</td>
                     @endforeach
                 </tr>
 
@@ -118,7 +122,7 @@
                         style="padding:5px 10px;{{ $v != 0 ? ' cursor:pointer;' : '' }}"
                         data-concepto="{{ $fila['concepto'] }}"
                         data-label="{{ $fila['label'] }}"
-                        data-periodo="{{ $per }}">$ {{ number_format(abs($v), 0, ',', '.') }}</td>
+                        data-periodo="{{ $per }}">$ {{ $fmt($v) }}</td>
                     @endforeach
                 </tr>
                 @empty
@@ -129,7 +133,7 @@
                 <tr style="border-top:2px solid #dc3545;">
                     <td class="fw-bold" style="padding:7px 10px; color:#dc3545;">TOTAL USO DE FONDOS</td>
                     @foreach($resumen as $r)
-                    <td class="text-end fw-bold" style="padding:7px 10px; color:#dc3545;">$ {{ number_format(abs($r['total_uso_fondos']), 0, ',', '.') }}</td>
+                    <td class="text-end fw-bold" style="padding:7px 10px; color:#dc3545;">$ {{ $fmt($r['total_uso_fondos']) }}</td>
                     @endforeach
                 </tr>
 
