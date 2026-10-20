@@ -1,30 +1,38 @@
 @extends('layouts.app')
 
-@section('title', 'Solicitudes')
+@section('title', 'Adelantos de sueldo')
 
 @section('content')
+<nav aria-label="breadcrumb" class="hp3c-breadcrumb">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="{{ url('/') }}">
+                <i class="fa-solid fa-house me-1"></i>Inicio
+            </a>
+        </li>
+        <li class="breadcrumb-item">Recursos Humanos</li>
+        <li class="breadcrumb-item">Novedades</li>
+        <li class="breadcrumb-item active" aria-current="page">Adelantos de sueldo</li>
+    </ol>
+</nav>
 
-<div class="text-start mb-2">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <div>
-            <h3 class="tituloVista mb-0">ADELANTOS DE SUELDOS</h3>
-            <p class="mb-0 text-muted">Registro de solicitudes de adelanto de sueldo.</p>
-        </div>
-    </div>
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h3 class="tituloVista mb-0">Adelantos de sueldos</h3>
+    <button type="button" id="btnAbrirModalSolicitud" class="btn btn-primary">
+        Nueva solicitud
+    </button>
 </div>
 
 <div class="row d-flex justify-content-start align-items-start">
     <div class="col-2 d-none d-xl-block">
         <div class="card">
-            <div class="card-header">
+            <div class="card-body d-flex flex-column gap-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
                         Filtros
                     </h5>
                     <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
                 </div>
-            </div>
-            <div class="card-body d-flex flex-column gap-3">
 
                 <div class="filtro-box">
                     <div class="filtro-header" id="toggleEstado">
@@ -78,7 +86,8 @@
                 </div>
                 @endif
                 <div class="col-12">
-                    <button id="btnLimpiarFiltros" class="btn btn-secondary w-100">
+                    <button id="btnLimpiarFiltros" class="btn btn-outline-secondary w-100">
+                        <i class="fa-solid fa-rotate"></i>
                         Limpiar filtros
                     </button>
                 </div>
@@ -87,86 +96,96 @@
     </div>
 
     <div class="col-12 col-xl-10 col-xxl-10">
-        <div class="card">
-            <div class="card-header">
-                <div class="row d-flex align-items-end">
-                    <div class="col-6 col-sm-6 col-lg-4 col-xl-2 mb-1">
-                        <button type="button" id="btnAbrirModalSolicitud" class="btn btn-primary w-100">
-                            Nueva solicitud
+        <div class="card p-3">
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="d-flex gap-3">
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">
+                                <i class="fa-regular fa-calendar"></i>
+                            </span>
+                            <input type="text" id="fechaDesde" class="form-control" placeholder="Desde">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">
+                                <i class="fa-regular fa-calendar"></i>
+                            </span>
+                            <input type="text" id="fechaHasta" class="form-control" placeholder="Hasta">
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <input type="text" class="form-control" placeholder="Buscar solicitudes..." id="inputSearchSolicitudes">
+                        </div>
+                        @if (Auth::user()->rol === 'Administrador/a')
+                        <button type="button" id="btnExportarExcel" class="btn btn-outline-primary" data-url="{{ route('rrhh.solicitudes.exportarExcel') }}">
+                            <i class="fa-solid fa-download"></i> Exportar
                         </button>
-                    </div>
-
-                    <div class="col-6 col-sm-6 col-lg-4 col-xl-1 d-none d-md-block mb-1">
-                        <input type="text" id="fechaDesde" class="form-control w-100" placeholder="Desde">
-                    </div>
-
-                    <div class="col-6 col-sm-6 col-lg-4 col-xl-1 d-none d-md-block mb-1">
-                        <input type="text" id="fechaHasta" class="form-control w-100" placeholder="Hasta">
-                    </div>
-
-                    @if (Auth::user()->rol === 'Administrador/a')
-                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 mb-1">
-                        <button type="button" id="btnDepositarAdelantos" class="btn btn-primary w-100">
-                            Depositar
-                        </button>
-                    </div>
-                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 mb-1">
-                        <button type="button" id="btnAprobarSolicitudes" class="btn btn-primary w-100">
-                            Aprobar
-                        </button>
-                    </div>
-                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 mb-1">
-                        <button type="button" id="btnRechazarAdelantos" class="btn btn-danger w-100">
-                            Rechazar
-                        </button>
-                    </div>
-                    <div class="col-3 col-sm-3 col-lg-2 col-xl-1 mb-1">
-                        <button type="button" id="btnExportarExcel" class="btn btn-primary w-100" data-url="{{ route('rrhh.solicitudes.exportarExcel') }}">
-                            Exportar
-                        </button>
-                    </div>                    
-                    @endif
-                    <div class="col-6 col-sm-6 col-lg-2 col-xl-4 mb-1">
-                        <input type="text" class="form-control" placeholder="Buscar..." id="inputSearchSolicitudes">
+                        @endif
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <table id="tb_solicitudes" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>N°</th>
-                            <th>FECHA</th>
-                            <th>LEGAJO</th>
-                            <th>CUIL</th>
-                            <th>COLABORADOR</th>
-                            <th>ÁREA</th>
-                            <th>CUENTA</th>
-                            <th>CBU</th>
-                            <th>IMPORTE</th>
-                            <th>IMPORTE</th>
-                            <th>COMPROBANTE</th>
-                            <th>BANCO</th>
-                            <th>OBSERVACIONES</th>
-                            <th>ESTADO</th>
-                            <th class="text-end">
-                                <div class="d-flex align-items-start justify-content-center gap-2">
-                                    <input type="checkbox" class="form-check-input" id="checkAll">
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    @if (Auth::user()->rol === 'Administrador/a')
-                    <tfoot>
-                        <tr>
-                            <th colspan="8" style="text-align:right">Importe total:</th>
-                            <th id="total_adelanto_display"></th>
-                            <th colspan="5"></th>
-                        </tr>
-                    </tfoot>
-                    @endif
-                </table>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <label class="text-muted">
+                            <span id="cantidadSeleccionados">0</span>
+                            solicitudes seleccionadas
+                        </label>
+                        @if (Auth::user()->rol === 'Administrador/a')
+                        <button type="button" id="btnDepositarAdelantos" class="btn btn-sm btn-secondary">
+                            Depositar
+                        </button>
+                        <button type="button" id="btnAprobarSolicitudes" class="btn btn-sm btn-outline-primary">
+                            Aprobar
+                        </button>
+                        <button type="button" id="btnRechazarAdelantos" class="btn btn-sm btn-outline-danger">
+                            Rechazar
+                        </button>
+                        @endif
+                    </div>
+                    <button class="btn text-muted d-none" id="btnCancelarSeleccion">
+                        <i class="fa-solid fa-xmark"></i> Cancelar seleccción
+                    </button>
+                </div>
+                <div class="table-responsive table-card">
+                    <table id="tb_solicitudes" class="table table-striped table-hover align-middle">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>N°</th>
+                                <th>FECHA</th>
+                                <th>LEGAJO</th>
+                                <th>CUIL</th>
+                                <th>COLABORADOR</th>
+                                <th>ÁREA</th>
+                                <th>CUENTA</th>
+                                <th>CBU</th>
+                                <th>IMPORTE</th>
+                                <th>IMPORTE</th>
+                                <th>COMPROBANTE</th>
+                                <th>BANCO</th>
+                                <th>OBSERVACIONES</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">
+                                    <div class="d-flex align-items-start justify-content-center gap-2">
+                                        <input type="checkbox" class="form-check-input" id="checkAll">
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        @if (Auth::user()->rol === 'Administrador/a')
+                        <tfoot>
+                            <tr>
+                                <th colspan="8" style="text-align:right">Importe total:</th>
+                                <th id="total_adelanto_display"></th>
+                                <th colspan="5"></th>
+                            </tr>
+                        </tfoot>
+                        @endif
+                    </table>
+                </div>
             </div>
         </div>
     </div>
