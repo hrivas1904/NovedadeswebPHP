@@ -121,19 +121,6 @@
                             <input type="text" class="form-control" placeholder="Buscar solicitudes..." id="inputSearchSolicitudes">
                         </div>
                         @if (Auth::user()->rol === 'Administrador/a')
-                        <button type="button" id="btnExportarExcel" class="btn btn-outline-primary" data-url="{{ route('rrhh.solicitudes.exportarExcel') }}">
-                            <i class="fa-solid fa-download"></i> Exportar
-                        </button>
-                        @endif
-                    </div>
-                </div>
-                @if (Auth::user()->rol === 'Administrador/a')
-                <div class="d-flex justify-content-between align-items-center gap-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <label class="text-muted">
-                            <span id="cantidadSeleccionados">0</span>
-                            solicitudes seleccionadas
-                        </label>
                         <button type="button" id="btnDepositarAdelantos" class="btn btn-sm btn-secondary">
                             Depositar
                         </button>
@@ -143,12 +130,12 @@
                         <button type="button" id="btnRechazarAdelantos" class="btn btn-sm btn-outline-danger">
                             Rechazar
                         </button>
+                        <button type="button" id="btnExportarExcel" class="btn btn-outline-primary" data-url="{{ route('rrhh.solicitudes.exportarExcel') }}">
+                            <i class="fa-solid fa-download"></i> Exportar
+                        </button>
+                        @endif
                     </div>
-                    <button class="btn text-muted d-none" id="btnCancelarSeleccion">
-                        <i class="fa-solid fa-xmark"></i> Cancelar seleccción
-                    </button>
                 </div>
-                @endif
                 <div class="table-responsive table-card">
                     <table id="tb_solicitudes" class="table table-striped table-hover align-middle">
                         <thead class="thead-dark">
