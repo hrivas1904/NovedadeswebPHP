@@ -199,8 +199,8 @@ $(document).ready(function () {
             },
             autoWidth: false,
             dom: "<'d-top d-flex flex-column flex-md-row align-items-md-center gap-2 mt-1 mx-1' \
-                    <'d-flex flex-column flex-sm-row gap-2'B> \
-                    <'ms-md-auto mt-2 mt-md-0'f> \
+                    <'d-flex flex-column flex-sm-row gap-2'> \
+                    <'ms-md-auto mt-2 mt-md-0'> \
                 > \
                 <'my-2'rt> \
                 <'d-bottom d-flex justify-content-center'i>",

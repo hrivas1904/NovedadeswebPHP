@@ -3,148 +3,158 @@
 @section('title', 'Registro de Novedades')
 
 @section('content')
-    <div class="text-start mb-2">
-        <div class="d-flex align-items-center justify-content-between">
-            <div>
-                <h3 class="tituloVista mb-0">REGISTRO DE NOVEDADES MENSUALES</h3>
-                <p class="mb-0 text-muted">Carga de novedades próximas a liquidar.</p>
+<nav aria-label="breadcrumb" class="hp3c-breadcrumb">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="{{ url('/') }}">
+                <i class="fa-solid fa-house me-1"></i>Inicio
+            </a>
+        </li>
+        <li class="breadcrumb-item">Recursos Humanos</li>
+        <li class="breadcrumb-item">Novedades</li>
+        <li class="breadcrumb-item active" aria-current="page">Novedades mensuales</li>
+    </ol>
+</nav>
+
+<div class="text-start mb-2">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <h3 class="tituloVista mb-0">Registro de novedades</h3>
+            <p class="mb-0 text-muted">Carga de novedades próximas a liquidar.</p>
+        </div>
+        @if (Auth::user()->rol == 'Administrador/a' ||
+        Auth::user()->rol == 'Coordinador/a' ||
+        Auth::user()->rol == 'Coordinador/a L2')
+        <button type="button" id="btnCargaMasiva" class="btn btn-primary">
+            Carga masiva
+        </button>
+        @endif
+    </div>
+</div>
+
+<div class="row d-flex justify-content-start align-items-start">
+    <div class="col-2 d-none d-xl-block">
+        <div class="card">
+            <div class="card-body d-flex flex-column gap-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
+                        Filtros
+                    </h5>
+                    <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
+                </div>
+                @if (Auth::user()->rol === 'Administrador/a' || Auth::user()->rol === 'Colaborador/a L2')
+                <div class="filtro-box">
+                    <div class="filtro-header" id="toggleAreas">
+                        <span>Áreas</span>
+                        <i class="fa fa-chevron-down"></i>
+                    </div>
+                    <div class="filtro-body d-none" id="listaAreas">
+                    </div>
+                </div>
+                @endif
+                <div class="filtro-box">
+                    <div class="filtro-header" id="toggleNov">
+                        <span>Novedades</span>
+                        <i class="fa fa-chevron-down"></i>
+                    </div>
+                    <div class="filtro-body d-none" id="listaNov">
+                    </div>
+                </div>
+                @if (Auth::user()->rol == 'Administrador/a')
+                <div class="filtro-box">
+                    <div class="filtro-header" id="toggleFinnegans">
+                        <span>Tipos</span>
+                        <i class="fa fa-chevron-down"></i>
+                    </div>
+                    <div class="filtro-body d-none" id="listaFinnegas">
+                        <label class="filtro-item">
+                            <input type="checkbox" class="check-Finnegans" value="0">
+                            Informativas
+                        </label>
+                        <label class="filtro-item">
+                            <input type="checkbox" class="check-Finnegans" value="1">
+                            Para Finnegans
+                        </label>
+                    </div>
+                </div>
+                @endif
+                <div class="col-12">
+                    <button type="button" id="btn-limpiar-filtros" class="btn btn-outline-secondary w-100">
+                        <i class="fa-solid fa-arrows-rotate"></i> Limpiar filtros
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row d-flex justify-content-start align-items-start">
-        <div class="col-2 d-none d-xl-block">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
-                            Filtros
-                        </h5>
-                        <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
-                    </div>
-                </div>
-                <div class="card-body d-flex flex-column gap-3">
-                    @if (Auth::user()->rol === 'Administrador/a' || Auth::user()->rol === 'Colaborador/a L2')
-                    <div class="filtro-box">
-                        <div class="filtro-header" id="toggleAreas">
-                            <span>Áreas</span>
-                            <i class="fa fa-chevron-down"></i>
+    <div class="col-12 col-xl-10">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-regular fa-calendar"></i></span>
+                            <input id="filtroDesde" class="form-control" type="text" placeholder="Desde">
                         </div>
-                        <div class="filtro-body d-none" id="listaAreas">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-regular fa-calendar"></i></span>
+                            <input id="filtroHasta" class="form-control" type="text" placeholder="Hasta">
                         </div>
-                    </div>
-                    @endif
-                    <div class="filtro-box">
-                        <div class="filtro-header" id="toggleNov">
-                            <span>Novedades</span>
-                            <i class="fa fa-chevron-down"></i>
-                        </div>
-                        <div class="filtro-body d-none" id="listaNov">
-                        </div>
-                    </div>
-                    @if (Auth::user()->rol == 'Administrador/a')
-                    <div class="filtro-box">
-                        <div class="filtro-header" id="toggleFinnegans">
-                            <span>Tipos</span>
-                            <i class="fa fa-chevron-down"></i>
-                        </div>
-                        <div class="filtro-body d-none" id="listaFinnegas">
-                            <label class="filtro-item">
-                                <input type="checkbox" class="check-Finnegans" value="0">
-                                Informativas
-                            </label>
-                            <label class="filtro-item">
-                                <input type="checkbox" class="check-Finnegans" value="1">
-                                Para Finnegans
-                            </label>
-                        </div>
-                    </div>
-                    @endif
-                    <div class="col-12">
-                        <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
-                            Limpiar filtros
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-xl-10">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-6 col-md-3 col-lg-1">
-                            <input id="filtroDesde" class="form-control" type="text" placeholder="Desde" required>
-                        </div>
-                        <div class="col-6 col-md-3 col-lg-1">
-                            <input id="filtroHasta" class="form-control" type="text" placeholder="Hasta" required>
-                        </div>
-                        @if (Auth::user()->rol == 'Administrador/a' ||
-                        Auth::user()->rol == 'Coordinador/a' ||
-                        Auth::user()->rol == 'Coordinador/a L2')
-                        <div class="col-6 col-md-3 col-lg-2">
-                            <button type="button" id="btnCargaMasiva" class="btn btn-primary w-100">
-                                Carga masiva
-                            </button>
-                        </div>
-                        @endif
-                        @if (Auth::user()->rol == 'Administrador/a')
-                        <div class="col-6 col-md-3 col-lg-1">
-                            <button type="button" id="btnLiquidarNovedadesSelec" class="btn btn-primary w-100">
-                                Liquidar
-                            </button>
-                        </div>
-                        <div class="col-6 col-md-3 col-lg-1">
-                            <button type="button" id="btnExportExcel" class="btn btn-primary w-100">
-                                Exportar
-                            </button>
-                        </div>
-                        @endif
-                         <div class="col-12 col-md-6 col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
                             <input type="text" id="searchRegistro" class="form-control" placeholder="Buscar registro...">
                         </div>
+                        @if (Auth::user()->rol == 'Administrador/a')
+                        <button type="button" id="btnLiquidarNovedadesSelec" class="btn btn-secondary">
+                            Liquidar
+                        </button>
+                        <button type="button" id="btnExportExcel" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-download"></i>Exportar
+                        </button>
+                        @endif
                     </div>
-                </div>                
-                <div class="card-body">
-                    <table id="tb_control" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
-                        <thead>
-                            <tr>
-                                <th>N°</th>
-                                <th>FECHA</th>
-                                <th>AREA</th>
-                                <th>REGISTRANTE</th>
-                                <th>COLABORADOR</th>
-                                <th>NOVEDAD</th>
-                                <th>DESDE</th>
-                                <th>HASTA</th>
-                                <th>VALOR</th>
-                                <th class="text-end">
-                                    <div class="d-flex align-items-start justify-content-center gap-2">
-                                        <span>ACCIONES</span>
-                                        @if (Auth::user()->rol === 'Administrador/a')
-                                        <input type="checkbox" class="form-check-input" id="checkAll">
-                                        @endif
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-card">
+                        <table id="tb_control" class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th>N°</th>
+                                    <th>FECHA</th>
+                                    <th>AREA</th>
+                                    <th>REGISTRANTE</th>
+                                    <th>COLABORADOR</th>
+                                    <th>NOVEDAD</th>
+                                    <th>VALOR</th>
+                                    <th>DESDE</th>
+                                    <th>HASTA</th>                                    
+                                    <th class="text-end">
+                                        <div class="d-flex align-items-start justify-content-center gap-2">
+                                            <span>ACCIONES</span>
+                                            @if (Auth::user()->rol === 'Administrador/a')
+                                            <input type="checkbox" class="form-check-input" id="checkAll">
+                                            @endif
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @push('modals')
-<div class="modal fade" id="modalDetalleNovedad" tabindex="-1" aria-labelledby="staticBackdropLabel"
-    aria-hidden="true" data-bs-backdrop="static">
-
+<div class="modal fade" id="modalDetalleNovedad" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content p-1">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="tituloLegajo">
-                    <i class="fa-solid fa-id-card me-2"></i> Detalle de Novedad
+                    Detalle de novedad
                 </h5>
                 <button type="button" class="btn-close" onclick="cerrarModalDetalleNovedad()"></button>
             </div>
@@ -154,10 +164,8 @@
                     @csrf
                     <div class="row g-4 mb-4">
                         <div class="col-lg-12">
-                            <div class="section-divider mb-3">
-                                <span>Información general</span>
-                            </div>
-                            <div class="empleado-box p-3">
+                            <div class="card p-3">
+                                <label class="fw-bold text-muted mb-3">Información general</label>
                                 <div class="row g-3">
                                     <div class="col-lg-3">
                                         <label class="form-label">Registro N°</label>
@@ -177,10 +185,8 @@
                         </div>
 
                         <div class="col-lg-12">
-                            <div class="section-divider mb-3">
-                                <span>Datos Personales</span>
-                            </div>
-                            <div class="empleado-box p-3">
+                            <div class="card p-3">
+                                <label class="fw-bold text-muted mb-3">Datos personal</label>
                                 <div class="row g-3">
                                     <div class="col-lg-1">
                                         <label class="form-label">Legajo</label>
@@ -207,31 +213,25 @@
                         </div>
 
                         <div class="col-12">
-                            <div class="section-divider mb-3">
-                                <span>Información de la novedad</span>
-                            </div>
-                            <div class="empleado-box p-3">
+                            <div class="card p-3">
+                                <label class="fw-bold text-muted mb-3">Información de la novedad</label>
                                 <div class="row g-3">
                                     <div class="col-lg-2">
                                         <label class="form-label">Fecha aplicación</label>
-                                        <input type="date" id="inputFechaAplicacion" class="form-control editable"
-                                            readonly>
+                                        <input type="date" id="inputFechaAplicacion" class="form-control editable" readonly>
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Fecha desde</label>
-                                        <input type="date" id="inputFechaDesde" name="fechaDesde"
-                                            class="form-control editable" readonly>
+                                        <input type="date" id="inputFechaDesde" name="fechaDesde" class="form-control editable" readonly>
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">Fecha hasta</label>
-                                        <input type="date" id="inputFechaHasta" name="fechaHasta"
-                                            class="form-control editable" readonly>
+                                        <input type="date" id="inputFechaHasta" name="fechaHasta" class="form-control editable" readonly>
                                     </div>
                                     <div class="col-lg-3">
                                         <label class="form-label">Valor</label>
                                         <input type="text" class="d-none" id="tipoValor"></input>
-                                        <input type="text" id="inputValor" name="duracion"
-                                            class="form-control editable" readonly>
+                                        <input type="text" id="inputValor" name="duracion" class="form-control editable" readonly>
                                     </div>
                                     <div class="col-lg-3">
                                         <label class="form-label">Código</label>
@@ -316,7 +316,7 @@
 
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="fa-solid fa-id-card me-2"></i> Formulario de carga masiva de novedades de sueldo
+                    <i class="fa-solid fa-id-card me-2"></i> Carga masiva de novedades de sueldo
                 </h5>
                 <button type="button" class="btn-close" onclick="cerrarModalCargaMasiva()"></button>
             </div>

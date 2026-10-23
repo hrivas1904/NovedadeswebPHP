@@ -3,39 +3,56 @@
 @section('title', 'Mis Novedades')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <div>
-            <h3 class="tituloVista mb-0">MIS NOVEDADES</h3>
-            <p class="mb-0 text-muted">En esta sección se encuentran sus novedades mensuales.</p>
-        </div>
+<nav aria-label="breadcrumb" class="hp3c-breadcrumb">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="{{ url('/') }}">
+                <i class="fa-solid fa-house me-1"></i>Inicio
+            </a>
+        </li>
+        <li class="breadcrumb-item">Recursos Humanos</li>
+        <li class="breadcrumb-item">Colaboradores</li>
+        <li class="breadcrumb-item active" aria-current="page">Mis novedades</li>
+    </ol>
+</nav>
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h3 class="tituloVista mb-0">Mis novedades</h3>
+        <p class="mb-0 text-muted">En esta sección se encuentran sus novedades mensuales.</p>
     </div>
+</div>
 
-    <div class="card" style="border-radius:15px;">
-        <div class="card-header">
-            <div class="row align-items-end g-3">
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <input type="text" id="filtroDesde" class="form-control mx-1" placeholder="Desde" />
-                </div>
-
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <input type="text" id="filtroHasta" class="form-control mx-1" placeholder="Hasta" />
-                </div>
-
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto d-none d-md-block">
-                    <select id="idNovedad" name="idNovedad" class="form-select js-select-novedadFiltro w-100">
-                    </select>
-                </div>
-
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4 col-xl-auto">
-                    <button type="button" id="btnLimpiarFiltros" class="btn btn-secondary w-100">
-                        Limpiar filtros
-                    </button>
-                </div>
+<div class="card p-2">
+    <div class="d-flex flex-column gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="input-group filtro-fecha">
+                <span class="input-group-text">
+                    <i class="fa-regular fa-calendar"></i>
+                </span>
+                <input type="text" id="filtroDesde" class="form-control" placeholder="Desde" aria-label="Fecha desde">
             </div>
+
+            <div class="input-group filtro-fecha">
+                <span class="input-group-text">
+                    <i class="fa-regular fa-calendar"></i>
+                </span>
+
+                <input type="text" id="filtroHasta" class="form-control" placeholder="Hasta" aria-label="Fecha hasta">
+            </div>
+
+            <div class="d-none">
+                <select id="idNovedad" name="idNovedad" class="form-select js-select-novedadFiltro">
+                </select>
+            </div>
+
+            <button type="button" id="btnLimpiarFiltros" class="btn btn-outline-secondary text-nowrap">
+                <i class="fa-solid fa-arrows-rotate me-2"></i> Limpiar filtros
+            </button>
+
         </div>
-        <div class="card-body">
-            <table id="tb_control" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
+        <div class="table-responsive table-card">
+            <table id="tb_control" class="table table-striped align-middle nowrap">
                 <thead>
                     <tr>
                         <th>N°</th>

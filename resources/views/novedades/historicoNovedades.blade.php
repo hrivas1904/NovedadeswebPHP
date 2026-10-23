@@ -4,10 +4,23 @@
 
 @section('content')
 
+<nav aria-label="breadcrumb" class="hp3c-breadcrumb">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="{{ url('/') }}">
+                <i class="fa-solid fa-house me-1"></i>Inicio
+            </a>
+        </li>
+        <li class="breadcrumb-item">Recursos Humanos</li>
+        <li class="breadcrumb-item">Novedades</li>
+        <li class="breadcrumb-item active" aria-current="page">Histórico novedades</li>
+    </ol>
+</nav>
+
 <div class="text-start mb-2">
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div>
-            <h3 class="tituloVista mb-0">REGISTRO HISTÓRICO DE NOVEDADES MENSUALES</h3>
+            <h3 class="tituloVista mb-0">Registro histórico de novedades mensuales</h3>
             <p class="mb-0 text-muted">Registro de novedades ya liquidadas.</p>
         </div>
     </div>
@@ -16,15 +29,13 @@
 <div class="row d-flex justify-content-start align-items-start">
     <div class="col-2 d-none d-xl-block">
         <div class="card">
-            <div class="card-header">
+            <div class="card-body d-flex flex-column gap-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
                         Filtros
                     </h5>
                     <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
                 </div>
-            </div>
-            <div class="card-body d-flex flex-column gap-3">
                 @if (Auth::user()->rol === 'Administrador/a' || Auth::user()->rol === 'Colaborador/a L2')
                 <div class="filtro-box">
                     <div class="filtro-header" id="toggleAreas">
@@ -62,8 +73,8 @@
                 </div>
                 @endif
                 <div class="col-12">
-                    <button type="button" id="btn-limpiar-filtros" class="btn btn-secondary w-100">
-                        Limpiar filtros
+                    <button type="button" id="btn-limpiar-filtros" class="btn btn-outline-secondary w-100">
+                        <i class="fa-solid fa-arrows-rotate"></i>Limpiar filtros
                     </button>
                 </div>
             </div>
@@ -74,51 +85,68 @@
             <div class="card-header">
                 <div class="row align-items-end g-3">
                     <div class="col-6 col-lg-2">
-                        <input type="text" id="filtroDesde" class="form-control" placeholder="Desde" />
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fa-regular fa-calendar"></i>
+                            </span>
+                            <input type="text" id="filtroDesde" class="form-control" placeholder="Desde" />
+                        </div>                        
                     </div>
-
                     <div class="col-6 col-lg-2">
-                        <input type="text" id="filtroHasta" class="form-control" placeholder="Hasta" />
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fa-regular fa-calendar"></i>
+                            </span>
+                            <input type="text" id="filtroHasta" class="form-control" placeholder="Hasta" />
+                        </div>                        
                     </div>
 
                     <div class="col-6 col-lg-6">
-                        <input type="text" id="searchRegistro" class="form-control" placeholder="Buscar registro...">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <input type="text" id="searchRegistro" class="form-control" placeholder="Buscar registro...">
+                        </div>
+                        
                     </div>
 
                     @if (Auth::user()->rol == 'Administrador/a')
                     <div class="col-6 col-lg-2">
-                        <button type="button" id="btnExportExcelHist" class="btn btn-primary w-100">
-                            Exportar
+                        <button type="button" id="btnExportExcelHist" class="btn btn-outline-primary w-100">
+                            <i class="fa-solid fa-download"></i> Exportar
                         </button>
                     </div>
-                    @endif                    
+                    @endif
                 </div>
             </div>
             <div class="card-body">
-                <table id="tb_control" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
-                    <thead>
-                        <tr>
-                            <th>N°</th>
-                            <th>FECHA</th>
-                            <th>AREA</th>
-                            <th>REGISTRANTE</th>
-                            <th>COLABORADOR</th>
-                            <th>CODIGO</th>
-                            <th>NOVEDAD</th>
-                            <th>DESDE</th>
-                            <th>HASTA</th>
-                            <th>VALOR</th>
-                            <th>DESCRIPCION</th>
-                            <th>ACCIONES</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="d-flex flex-column gap-3">
+                    <div class="table-card">
+                        <table id="tb_control" class="table table-striped table-hover nowrap">
+                            <thead>
+                                <tr>
+                                    <th>N°</th>
+                                    <th>FECHA</th>
+                                    <th>AREA</th>
+                                    <th>REGISTRANTE</th>
+                                    <th>COLABORADOR</th>
+                                    <th>CODIGO</th>
+                                    <th>NOVEDAD</th>
+                                    <th>DESDE</th>
+                                    <th>HASTA</th>
+                                    <th>VALOR</th>
+                                    <th>DESCRIPCION</th>
+                                    <th>ACCIONES</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-
 @endsection
 
 @push('modals')
@@ -130,7 +158,7 @@
 
             <div class="modal-header">
                 <h5 class="modal-title" id="tituloLegajo">
-                    <i class="fa-solid fa-id-card me-2"></i> Detalle de Novedad
+                    Detalle de novedad
                 </h5>
                 <button type="button" class="btn-close" onclick="cerrarModalDetalleNovedad()"></button>
             </div>
@@ -140,10 +168,8 @@
                     @csrf
                     <div class="row g-4 mb-4">
                         <div class="col-lg-12">
-                            <div class="section-divider mb-3">
-                                <span>Información general</span>
-                            </div>
-                            <div class="empleado-box p-3">
+                            <div class="card p-3">
+                                <label class="fw-bold text-muted mb-3">Información general</label>
                                 <div class="row g-3">
                                     <div class="col-lg-3">
                                         <label class="form-label">Registro N°</label>
@@ -163,10 +189,8 @@
                         </div>
 
                         <div class="col-lg-12">
-                            <div class="section-divider mb-3">
-                                <span>Datos Personales</span>
-                            </div>
-                            <div class="empleado-box p-3">
+                            <div class="card p-3">
+                                <label class="fw-bold text-muted mb-3">Datos personales</label>
                                 <div class="row g-3">
                                     <div class="col-lg-1">
                                         <label class="form-label">Legajo</label>
@@ -193,10 +217,8 @@
                         </div>
 
                         <div class="col-12">
-                            <div class="section-divider mb-3">
-                                <span>Información de la novedad</span>
-                            </div>
                             <div class="empleado-box p-3">
+                                <label class="fw-bold text-muted mb-3">Información de la novedad</label>
                                 <div class="row g-3">
                                     <div class="col-lg-2">
                                         <label class="form-label">Fecha aplicación</label>
