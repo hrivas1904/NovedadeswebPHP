@@ -99,8 +99,7 @@ $("#tablaPedidosCompras").DataTable({
                         <span class="badge bg-success">
                             <a href="/administracion/compras/factura/${row.id}/descargar"
                             class="text-white text-decoration-none btnFactura"
-                            title="Factura disponible. Descargar."
-                            onclick="event.stopPropagation();">
+                            title="Factura disponible. Descargar.">
                                 <i class="fa-solid fa-file-arrow-down"></i> Factura
                             </a>
                         </span>
@@ -338,6 +337,7 @@ $("#btn-limpiar-filtros").on("click", function () {
 $("#tablaPedidosCompras tbody").on("click", "tr", function (e) {
     if ($(e.target).closest("button").length) return;
     if ($(e.target).closest("input").length) return;
+    if ($(e.target).closest("a").length) return;
     let tabla = $("#tablaPedidosCompras").DataTable();
     let data = tabla.row(this).data();
     verPedido(data.id);
@@ -630,6 +630,7 @@ function verPedido(id) {
 
             cargarAdjuntosPedido(id);
             cargarOrdenesCompra(id);
+            cargarRemitos(id);
             cargarFacturas(id);
             cargarObservaciones(id);
             $("#modalDetallePedido").modal("show");
@@ -1178,6 +1179,239 @@ $(document).on("click", ".btnEliminarFactura", function (e) {
                 });
 
                 cargarFacturas(pedidoId);
+            },
+
+            error: function (xhr) {
+                Swal.fire({
+                    icon: "error",
+                    title: "No se pudo eliminar",
+                    text: xhr.responseJSON?.mensaje ?? "Ocurrió un error.",
+                });
+            },
+        });
+    });
+});
+
+$(document).on("click", "#btnSubirRemito", function () {
+    const pedidoId = $("#modalDetallePedido").data("pedido-id");
+
+    const input = $("#inputRemito")[0];
+    const archivo = input.files[0];
+
+    if (!pedidoId) {
+        Swal.fire("Atención", "No se pudo identificar el pedido.", "warning");
+        return;
+    }
+
+    if (!archivo) {
+        Swal.fire("Atención", "Seleccione un archivo.", "warning");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("archivo", archivo);
+
+    $.ajax({
+        url: `/administracion/compras/${pedidoId}/remito`,
+        type: "POST",
+
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        beforeSend: function () {
+            $("#btnSubirRemito").prop("disabled", true).html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Subiendo...
+                `);
+        },
+
+        success: function (response) {
+            $("#inputRemito").val("");
+
+            Swal.fire({
+                icon: "success",
+                title: "Remito adjunto",
+                text: response.mensaje ?? "Remito adjuntado correctamente.",
+                timer: 1800,
+                showConfirmButton: false,
+            });
+
+            cargarRemitos(pedidoId);
+        },
+
+        error: function (xhr) {
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo subir el remito",
+                text:
+                    xhr.responseJSON?.message ??
+                    xhr.responseJSON?.mensaje ??
+                    "Ocurrió un error.",
+            });
+        },
+
+        complete: function () {
+            $("#btnSubirRemito").prop("disabled", false).html(`
+                    <i class="fa-solid fa-upload me-2"></i>
+                    Subir archivo
+                `);
+        },
+    });
+});
+
+function cargarRemitos(pedidoId) {
+    const contenedor = $("#listaRemitosAdjuntos");
+
+    contenedor.empty();
+
+    contenedor.html(`
+        <div class="text-muted small">
+            Cargando remitos...
+        </div>
+    `);
+
+    $.ajax({
+        url: `/administracion/compras/${pedidoId}/remitos`,
+        type: "GET",
+
+        success: function (remitos) {
+            const pedidoActual = $("#modalDetallePedido").data("pedido-id");
+
+            if (parseInt(pedidoActual) !== parseInt(pedidoId)) {
+                return;
+            }
+
+            contenedor.empty();
+
+            if (!remitos.length) {
+                contenedor.html(`
+                    <div class="text-muted small">
+                        No hay remitos asociados.
+                    </div>
+                `);
+
+                return;
+            }
+
+            remitos.forEach(function (remito) {
+                contenedor.append(`
+                    <div class="d-flex justify-content-between align-items-center
+                                border rounded p-2 mb-2">
+
+                        <div class="d-flex align-items-center gap-2 overflow-hidden">
+
+                            <i class="fa-solid fa-file-signature text-primary"></i>
+
+                            <a
+                                href="/storage/${remito.archivo}"
+                                target="_blank"
+                                class="text-decoration-none text-truncate"
+                                title="${remito.nombre_original}"
+                            >
+                                ${remito.nombre_original}
+                            </a>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger btnEliminarRemito"
+                            data-id="${remito.id}"
+                            title="Eliminar remito"
+                        >
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </div>
+                `);
+            });
+        },
+
+        error: function () {
+            const pedidoActual = $("#modalDetallePedido").data("pedido-id");
+
+            if (parseInt(pedidoActual) !== parseInt(pedidoId)) {
+                return;
+            }
+
+            contenedor.html(`
+                <div class="text-danger small">
+                    No se pudieron cargar los remitos.
+                </div>
+            `);
+        },
+    });
+}
+
+$(document).on("click", ".btnEliminarRemito", function (e) {
+    e.stopPropagation();
+
+    const remitoId = $(this).data("id");
+    const pedidoId = $("#modalDetallePedido").data("pedido-id");
+
+    if (!remitoId || !pedidoId) {
+        Swal.fire(
+            "Atención",
+            "No se pudo identificar el remito o el pedido.",
+            "warning",
+        );
+
+        return;
+    }
+
+    Swal.fire({
+        title: "¿Eliminar remito?",
+        text: "El archivo será eliminado permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        customClass: {
+            confirmButton: "btn btn-danger me-2",
+            cancelButton: "btn btn-secondary",
+        },
+        buttonsStyling: false,
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        $.ajax({
+            url: `/administracion/compras/remitos/${remitoId}`,
+            type: "DELETE",
+
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+
+            beforeSend: function () {
+                Swal.fire({
+                    title: "Eliminando...",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+            },
+
+            success: function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Remito eliminado",
+                    text: response.mensaje ?? "Remito eliminado correctamente.",
+                    timer: 1800,
+                    showConfirmButton: false,
+                });
+
+                cargarRemitos(pedidoId);
             },
 
             error: function (xhr) {

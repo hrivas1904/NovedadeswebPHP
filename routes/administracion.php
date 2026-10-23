@@ -45,6 +45,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/compras/{id}/factura', [ComprasController::class, 'subirFactura']);
     Route::delete('/compras/facturas/{id}', [ComprasController::class, 'eliminarFactura']);
     Route::get('/compras/factura/{id}/descargar', [ComprasController::class, 'descargarFactura'])->name('compras.factura.descargar');
+    Route::post('/compras/{id}/remito',[ComprasController::class, 'subirRemito']);
+    Route::get('/compras/{id}/remitos',[ComprasController::class, 'listarRemitos']);
+    Route::delete('/compras/remitos/{id}',[ComprasController::class, 'eliminarRemito']);
 
     //DASHBOARD
     Route::get('/homeView', [DashboardController::class, 'homeView'])->name('homeViewFinance');

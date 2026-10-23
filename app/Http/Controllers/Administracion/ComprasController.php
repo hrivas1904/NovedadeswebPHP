@@ -895,4 +895,104 @@ class ComprasController extends Controller
 
         return $descarga;
     }
+
+    public function subirRemito(Request $request, $id)
+    {
+        $pedido = DB::table('pedidos_compras')
+            ->where('id', $id)
+            ->first();
+
+        if (!$pedido) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Pedido no encontrado.'
+            ], 404);
+        }
+
+        $request->validate([
+            'archivo' => [
+                'required',
+                'file',
+                'max:3072',
+                'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'
+            ],
+        ]);
+
+        $archivo = $request->file('archivo');
+
+        $path = $archivo->store(
+            'pedidos_compras/' . $id,
+            'public'
+        );
+
+        DB::statement(
+            "CALL SP_GUARDAR_ADJUNTO_PEDIDO_COMPRA(?,?,?,?)",
+            [
+                $id,
+                $path,
+                $archivo->getClientOriginalName(),
+                'REMITO'
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Remito adjuntado correctamente.'
+        ]);
+    }
+
+    public function listarRemitos($id)
+{
+    $remitos = DB::table('pedidos_compras_adjuntos')
+        ->where('pedido_compra_id', $id)
+        ->where('tipo', 'REMITO')
+        ->orderByDesc('created_at')
+        ->get();
+
+    return response()->json($remitos);
+}
+
+public function eliminarRemito($id)
+{
+    $remito = DB::table('pedidos_compras_adjuntos')
+        ->where('id', $id)
+        ->where('tipo', 'REMITO')
+        ->first();
+
+    if (!$remito) {
+        return response()->json([
+            'success' => false,
+            'mensaje' => 'Remito no encontrado.'
+        ], 404);
+    }
+
+    try {
+
+        if (
+            $remito->archivo &&
+            Storage::disk('public')->exists($remito->archivo)
+        ) {
+            Storage::disk('public')->delete($remito->archivo);
+        }
+
+        DB::table('pedidos_compras_adjuntos')
+            ->where('id', $id)
+            ->where('tipo', 'REMITO')
+            ->delete();
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Remito eliminado correctamente.'
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'success' => false,
+            'mensaje' => 'No se pudo eliminar el remito.'
+        ], 500);
+    }
+}
+
+
 }

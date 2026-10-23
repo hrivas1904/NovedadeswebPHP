@@ -377,6 +377,26 @@
                 </div>
 
                 <h6 class="fw-bold mb-3 mt-4">
+                    Remitos/s asociado/s
+                </h6>
+
+                <div class="row g-2 align-items-end mb-3" id="divRemitosAdjuntos">
+                    <div class="col-12 col-md-9">
+                        <input type="file" class="form-control" id="inputRemito" accept=".pdf,.jpg,.jpeg,.png,.webp,.xlsx,.xls,.doc,.docx">
+                    </div>
+
+                    <div class="col-12 col-md-3 d-grid">
+                        <button type="button" class="btn btn-primary" id="btnSubirRemito">
+                            <i class="fa-solid fa-upload me-2"></i>
+                            Subir archivo
+                        </button>
+                    </div>
+                </div>
+
+                <div id="listaRemitosAdjuntos" class="d-flex flex-column gap-2">
+                </div>
+
+                <h6 class="fw-bold mb-3 mt-4">
                     Factura/s asociada/s
                 </h6>
 
