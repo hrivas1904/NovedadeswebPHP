@@ -19,18 +19,28 @@
 
 <h3 class="tituloVista mb-3">Posición</h3>
 
-<div class="card p-1">
-    <div class="d-flex my-2 gap-3 align-items-end">
-        <label class="fw-bolder h5" style="color: var(--color-default); font-size: 1.1rem;">Posición Disponible</label>
-        <input class="form-control flex-grow-0" type="date" style="width: 180px;">
-        <button type="button" class="btn btn-outline-secondary btn-sm">
-            <i class="bx bx-cloud-download"></i> Hoy
-        </button>
-        <label class="h6 text-muted" id="lblDiaDetallado">Lunes 06 De Julio de 2026</label>
+<div class="card px-3 py-1">
+    <div class="d-flex justify-content-between aling-items-center">
+        <div class="d-flex my-2 gap-3 align-items-center">
+            <label class="fw-bolder h5" style="color: var(--color-default); font-size: 1.1rem;">Posición Disponible</label>
+            <input class="form-control flex-grow-0" type="date" style="width: 180px;">
+            <button type="button" class="btn btn-sm btn-secondary">
+                <i class="fa-solid fa-calendar-day"></i> Hoy
+            </button>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="d-flex flex-column">
+                <label class="fw-bold" id="lblDiaDetallado">-</label>
+                <label class="text-muted d-none">
+                    Última actualización:
+                    <span class="lblFechaUltActualización">-</span>
+                </label>
+            </div>
+        </div>
     </div>
 </div>
 
-<label class="fw-bolder text-muted mb-2" style="font-size:0.8rem;">CUENTAS BANCARIAS</label>
+<label class="fw-bolder text-muted mb-2 mt-4" style="font-size:0.8rem;">CUENTAS BANCARIAS</label>
 
 <div class="row d-flex">
     <div class="col-12 col-md-6 col-lg-3">

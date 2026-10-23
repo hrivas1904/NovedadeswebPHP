@@ -3,208 +3,251 @@
 @section('title', 'Pedidos de compras')
 
 @section('content')
-<div class="d-flex align-items-center gap-3">
-    <div>
-        <h3 class="tituloVista mb-2">GESTIÓN DE PEDIDOS DE COMPRAS</h3>
-    </div>
+<nav aria-label="breadcrumb" class="hp3c-breadcrumb">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="{{ url('/') }}">
+                <i class="fa-solid fa-house me-1"></i>
+                Inicio
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            Administración
+        </li>
+        <li class="breadcrumb-item">
+            Gestión de compras
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Pedidos de compra
+        </li>
+    </ol>
+</nav>
+
+<div class="d-flex align-items-center gap-3 justify-content-between mb-3">
+    <h3 class="tituloVista mb-2">Gestión de pedidos de compras</h3>
+    <button type="button" class="btn btn-primary" id="btnAbrirModalNuevoPedido">
+        Nuevo pedido
+    </button>
 </div>
-<div class="d-flex flex-column gap-1">
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
-                    Filtros
-                </h5>
-                <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
-            </div>
-        </div>
-        <div class="card-body">
 
-            <!-- PRIMERA FILA: FILTROS -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="d-flex align-items-center gap-4 flex-wrap">
+<div class="row d-flex justify-content-start align-items-start">
+    <div class="col-2 d-none d-xl-block">
+        <div class="card">
+            <div class="card-body d-flex flex-column gap-3">
+                <!-- ENCABEZADO -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold" style="color: var(--title-color);">
+                        Filtros
+                    </h5>
+                    <i class="fa-solid fa-sliders" style="color: var(--color-default);"></i>
+                </div>
 
-                        <!-- PRIORIDAD -->
-                        <div class="d-flex align-items-center gap-3">
-                            <label class="fw-bold">Prioridad</label>
+                <!-- PRIORIDADES -->
+                <div class="filtro-box">
+                    <div class="filtro-header" id="togglePrioridad">
+                        <span>Prioridad</span>
+                        <i class="fa fa-chevron-down"></i>
+                    </div>
 
-                            <div class="form-check">
-                                <input class="form-check-input check-Prioridades"
-                                    type="checkbox" value="URGENTE" id="prioridadUrgente">
-                                <label class="form-check-label" for="prioridadUrgente">
-                                    URGENTE
-                                </label>
-                            </div>
+                    <div class="filtro-body d-none" id="listaPrioridades">
 
-                            <div class="form-check">
-                                <input class="form-check-input check-Prioridades"
-                                    type="checkbox" value="ALTA" id="prioridadAlta">
-                                <label class="form-check-label" for="prioridadAlta">
-                                    ALTA
-                                </label>
-                            </div>
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Prioridades"
+                                value="URGENTE"
+                                id="prioridadUrgente">
+                            URGENTE
+                        </label>
 
-                            <div class="form-check">
-                                <input class="form-check-input check-Prioridades"
-                                    type="checkbox" value="NORMAL" id="prioridadNormal">
-                                <label class="form-check-label" for="prioridadNormal">
-                                    NORMAL
-                                </label>
-                            </div>
-                        </div>
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Prioridades"
+                                value="ALTA"
+                                id="prioridadAlta">
+                            ALTA
+                        </label>
 
-                        <!-- AUTORIZACIÓN -->
-                        <div class="d-flex align-items-center gap-3">
-                            <label class="fw-bold">Autorización</label>
-
-                            <div class="form-check">
-                                <input class="form-check-input check-Autorizacion"
-                                    type="checkbox" value="APROBADA" id="autorizacionAprobada">
-                                <label class="form-check-label" for="autorizacionAprobada">
-                                    APROBADA
-                                </label>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input check-Autorizacion"
-                                    type="checkbox" value="PENDIENTE" id="autorizacionPendiente">
-                                <label class="form-check-label" for="autorizacionPendiente">
-                                    PENDIENTE
-                                </label>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input check-Autorizacion"
-                                    type="checkbox" value="RECHAZADA" id="autorizacionRechazada">
-                                <label class="form-check-label" for="autorizacionRechazada">
-                                    RECHAZADA
-                                </label>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input check-Autorizacion"
-                                    type="checkbox" value="REQUIERE AUTORIZACIÓN GERENTE"
-                                    id="autorizacionGerente">
-                                <label class="form-check-label" for="autorizacionGerente">
-                                    REQUIERE GERENTE
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- ESTADO -->
-                        <div class="d-flex align-items-center gap-3">
-                            <label class="fw-bold">Estado</label>
-
-                            <div class="form-check">
-                                <input class="form-check-input check-Estados"
-                                    type="checkbox" value="PENDIENTE" id="estadoPendiente">
-                                <label class="form-check-label" for="estadoPendiente">
-                                    PENDIENTE
-                                </label>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input check-Estados"
-                                    type="checkbox" value="ENVIADO" id="estadoEnviado">
-                                <label class="form-check-label" for="estadoEnviado">
-                                    ENVIADO
-                                </label>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input check-Estados"
-                                    type="checkbox" value="GENERADO" id="estadoGenerado">
-                                <label class="form-check-label" for="estadoGenerado">
-                                    GENERADO
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- FACTURA -->
-                        <div class="d-flex align-items-center gap-3">
-                            <label class="fw-bold" for="filtroFactura">Factura</label>
-
-                            <select class="form-select" id="filtroFactura">
-                                <option value="">Todas</option>
-                                <option value="1">Con factura</option>
-                                <option value="0">Sin factura</option>
-                            </select>
-                        </div>
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Prioridades"
+                                value="NORMAL"
+                                id="prioridadNormal">
+                            NORMAL
+                        </label>
 
                     </div>
                 </div>
-            </div>
 
-            <!-- SEGUNDA FILA: BOTÓN -->
-            <div class="row mt-3">
-                <div class="col-12 d-flex justify-content-end">
+                <!-- AUTORIZACIÓN -->
+                <div class="filtro-box">
+                    <div class="filtro-header" id="toggleAutorizacion">
+                        <span>Autorización</span>
+                        <i class="fa fa-chevron-down"></i>
+                    </div>
+
+                    <div class="filtro-body d-none" id="listaAutorizacion">
+
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Autorizacion"
+                                value="APROBADA"
+                                id="autorizacionAprobada">
+                            APROBADA
+                        </label>
+
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Autorizacion"
+                                value="PENDIENTE"
+                                id="autorizacionPendiente">
+                            PENDIENTE
+                        </label>
+
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Autorizacion"
+                                value="RECHAZADA"
+                                id="autorizacionRechazada">
+                            RECHAZADA
+                        </label>
+
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Autorizacion"
+                                value="REQUIERE AUTORIZACIÓN GERENTE"
+                                id="autorizacionGerente">
+                            REQUIERE GERENTE
+                        </label>
+
+                    </div>
+                </div>
+
+                <!-- ESTADOS -->
+                <div class="filtro-box">
+                    <div class="filtro-header" id="toggleEstado">
+                        <span>Estado</span>
+                        <i class="fa fa-chevron-up"></i>
+                    </div>
+
+                    <div class="filtro-body" id="listaEstados">
+
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Estados"
+                                value="PENDIENTE"
+                                id="estadoPendiente">
+                            PENDIENTE
+                        </label>
+
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Estados"
+                                value="ENVIADO"
+                                id="estadoEnviado">
+                            ENVIADO
+                        </label>
+
+                        <label class="filtro-item">
+                            <input type="checkbox"
+                                class="form-check-input check-Estados"
+                                value="GENERADO"
+                                id="estadoGenerado">
+                            GENERADO
+                        </label>
+
+                    </div>
+                </div>
+
+                <!-- FACTURA -->
+                <div class="filtro-box">
+                    <div class="filtro-header" id="toggleFacturas">
+                        <span>Factura</span>
+                        <i class="fa fa-chevron-down"></i>
+                    </div>
+
+                    <div class="filtro-body d-none" id="listaFacturas">
+
+                        <select class="form-select" id="filtroFactura">
+                            <option value="">Todas</option>
+                            <option value="1">Con factura</option>
+                            <option value="0">Sin factura</option>
+                        </select>
+
+                    </div>
+                </div>
+
+                <!-- LIMPIAR FILTROS -->
+                <div class="col-12">
                     <button type="button"
-                        class="btn btn-sm btn-secondary"
-                        id="btn-limpiar-filtros">
+                        id="btn-limpiar-filtros"
+                        class="btn btn-outline-secondary w-100">
+                        <i class="fa-solid fa-arrows-rotate"></i>
                         Limpiar filtros
                     </button>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div class="row d-flex g-2">
-                <div class="col-6 col-sm-12 col-md-6 col-lg-2">
-                    <input id="filtroDesde" class="form-control" type="date" placeholder="Desde" required>
-                </div>
+    <div class="col-12 col-xl-10 col-xxl-10">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-column gap-3">
 
-                <div class="col-6 col-sm-12 col-md-6 col-lg-2">
-                    <input id="filtroHasta" class="form-control" type="date" placeholder="Hasta" required>
-                </div>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-6 col-md-3 col-xl-2">
+                            <input id="filtroDesde" class="form-control" type="date">
+                        </div>
 
-                <div class="col-6 col-sm-12 col-md-6 col-lg-4">
-                    <input type="text" id="buscarPedido" class="form-control w-100" placeholder="Buscar..." oninput="filtrarPedidos()">
-                </div>
+                        <div class="col-6 col-md-3 col-xl-2">
+                            <input id="filtroHasta" class="form-control" type="date">
+                        </div>
 
-                <div class="col-6 col-sm-12 col-md-6 col-lg-2">
-                    <button type="button" class="btn btn-primary w-100" id="btnAbrirModalNuevoPedido">
-                        Nuevo pedido
-                    </button>
-                </div>
+                        <div class="col-12 col-md-6 col-xl">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </span>
+                                <input type="text" id="buscarPedido" class="form-control" placeholder="Buscar..." oninput="filtrarPedidos()">
+                            </div>
+                        </div>
 
-                @if (in_array(Auth::id(), [1,2,5,6,15,49]))
-                <div class="col-6 col-sm-12 col-md-6 col-lg-2">
-                    <button type="button" class="btn btn-primary w-100" onclick="exportarExcel()">
-                        Exportar a Excel
-                    </button>
-                </div>
-                @endif
+                        @if (in_array(Auth::id(), [1,2,5,6,15,49]))
+                        <div class="col-12 col-md-auto">
+                            <button type="button" class="btn btn-outline-primary w-100" onclick="exportarExcel()">
+                                <i class="fa-solid fa-download me-2"></i>
+                                Exportar excel
+                            </button>
+                        </div>
+                        @endif
 
+                    </div>
+
+                    <div class="table-responsive table-card">
+                        <table id="tablaPedidosCompras" class="table table-striped nowrap">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>FECHA</th>
+                                    <th>PRIORIDAD</th>
+                                    <th>SOLICITANTE</th>
+                                    <th>SECTOR</th>
+                                    <th>PROVEEDOR</th>
+                                    <th>DESCRIPCIÓN</th>
+                                    <th class="text-center">AUTORIZACIÓN</th>
+                                    <th class="text-center">ESTADO</th>
+                                    <th class="text-center">FACTURA</th>
+                                    <th class="text-center" style="width: 40px;">
+                                        <input type="checkbox" id="checkTodosPedidos" class="form-check-input">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="tablaPedidosCompras" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
-                    <thead class="table-light">
-                        <tr>
-                            <th>FECHA</th>
-                            <th>PRIORIDAD</th>
-                            <th>SOLICITANTE</th>
-                            <th>SECTOR</th>
-                            <th>PROVEEDOR</th>
-                            <th>DESCRIPCIÓN</th>
-                            <th class="text-center">AUTORIZACIÓN</th>
-                            <th class="text-center">ESTADO</th>
-                            <th class="text-center">FACTURA</th>
-                            <th class="text-center" style="width: 40px;">
-                                <input type="checkbox" id="checkTodosPedidos" class="form-check-input">
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-
         </div>
     </div>
 </div>
@@ -735,7 +778,7 @@
 @php
 $userId = Auth::id();
 $puedeAutorizarPedidos = in_array($userId, [1, 2, 5, 6, 15, 49, 217]);
-$puedeAprobarGerencia = in_array($userId, [1, 5]);
+$puedeAprobarGerencia = in_array($userId, [5]);
 @endphp
 
 @push('scripts')

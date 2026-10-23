@@ -10,6 +10,10 @@ $("#toggleEstado").on("click", function () {
     $("#listaEstados").toggleClass("d-none");
 });
 
+$("#toggleFacturas").on("click", function () {
+    $("#listaFacturas").toggleClass("d-none");
+});
+
 function getPrioridadesSeleccionadas() {
     return $(".check-Prioridades:checked")
         .map(function () {

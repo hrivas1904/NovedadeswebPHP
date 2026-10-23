@@ -76,7 +76,7 @@ $("#tablaPedidosCompras").DataTable({
         },
         { data: "prioridad", width: "7%" },
         { data: "solicitante", width: "10%" },
-        { data: "sector", width: "9%" },
+        { data: "sector", width: "9%", visible: false },
         { data: "proveedor", width: "12%" },
         { data: "descripcion", className: "align-middle", width: "24%" },
         { data: "autorizacion", width: "11%" },
@@ -110,14 +110,16 @@ $("#tablaPedidosCompras").DataTable({
                     
                 `;
             },
-        },
+        },        
         {
             data: null,
             width: "5%",
             orderable: false,
             searchable: false,
-            className: "text-center",
+            className: "text-center acciones-nowrap",
+
             render: function (data) {
+
                 if (!PUEDE_AUTORIZAR_PEDIDOS) {
                     return "";
                 }
@@ -128,58 +130,66 @@ $("#tablaPedidosCompras").DataTable({
 
                 const ES_GERENTE = PUEDE_APROBAR_GERENCIA;
 
+                let acciones = "";
+
+                // AUTORIZACIÓN PENDIENTE
                 if (data.autorizacion === "PENDIENTE") {
+
                     if (ES_GERENTE) {
                         return "";
                     }
 
-                    return `
-                        <button
-                            class="btn btn-sm btnAutorizar"
-                            data-id="${data.id}"
-                            style="color:var(--color-accent-green)"
-                            title="Aprobar pedido">
+                    acciones = `
+                        <li>
+                            <button type="button"
+                                class="dropdown-item btnAutorizar"
+                                data-id="${data.id}">
+                                <i class="fa-regular fa-square-check me-2 text-success"></i>
+                                Aprobar pedido
+                            </button>
+                        </li>
 
-                            <i class="fs-5 fa-regular fa-square-check"></i>
-                        </button>
-
-                        <button
-                            class="btn btn-sm btnRechazar"
-                            data-id="${data.id}"
-                            style="color:var(--color-accent-red)"
-                            title="Rechazar pedido">
-
-                            <i class="fs-5 fa-regular fa-circle-xmark"></i>
-                        </button>
+                        <li>
+                            <button type="button"
+                                class="dropdown-item btnRechazar"
+                                data-id="${data.id}">
+                                <i class="fa-regular fa-circle-xmark me-2 text-danger"></i>
+                                Rechazar pedido
+                            </button>
+                        </li>
                     `;
                 }
 
-                if (
+                // AUTORIZACIÓN DE GERENCIA
+                else if (
                     data.autorizacion === "REQUIERE AUTORIZACIÓN GERENTE" &&
                     ES_GERENTE
                 ) {
-                    return `
-                        <button
-                            class="btn btn-sm btnAutorizarGerente"
-                            data-id="${data.id}"
-                            style="color:var(--color-accent-green)"
-                            title="Autorizar como gerente">
 
-                            <i class="fs-5 fa-regular fa-square-check"></i>
-                        </button>
+                    acciones = `
+                        <li>
+                            <button type="button"
+                                class="dropdown-item btnAutorizarGerente"
+                                data-id="${data.id}">
+                                <i class="fa-regular fa-square-check me-2 text-success"></i>
+                                Autorizar como gerente
+                            </button>
+                        </li>
 
-                        <button
-                            class="btn btn-sm btnRechazar"
-                            data-id="${data.id}"
-                            style="color:var(--color-accent-red)"
-                            title="Rechazar pedido">
-
-                            <i class="fs-5 fa-regular fa-circle-xmark"></i>
-                        </button>
+                        <li>
+                            <button type="button"
+                                class="dropdown-item btnRechazar"
+                                data-id="${data.id}">
+                                <i class="fa-regular fa-circle-xmark me-2 text-danger"></i>
+                                Rechazar pedido
+                            </button>
+                        </li>
                     `;
                 }
 
-                if (data.autorizacion === "APROBADA") {
+                // PEDIDO APROBADO
+                else if (data.autorizacion === "APROBADA") {
+
                     return `
                         <input
                             type="checkbox"
@@ -188,8 +198,33 @@ $("#tablaPedidosCompras").DataTable({
                     `;
                 }
 
-                return "";
-            },
+                // SIN ACCIONES DISPONIBLES
+                if (!acciones) {
+                    return "";
+                }
+
+                // MENÚ DE TRES PUNTOS
+                return `
+                    <div class="dropdown d-inline-block">
+
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary border-0 btn-menu-pedido"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            title="Opciones del pedido">
+
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            ${acciones}
+                        </ul>
+
+                    </div>
+                `;
+            }
         },
     ],
 });

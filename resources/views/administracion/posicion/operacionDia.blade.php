@@ -3,7 +3,21 @@
 @section('title', 'Gestión Financiera')
 
 @section('content')
-<h3 class="tituloVista mb-3">HOY</h3>
+
+<nav aria-label="breadcrumb" class="hp3c-breadcrumb">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="{{ url('/') }}">
+                <i class="fa-solid fa-house me-1"></i>Inicio
+            </a>
+        </li>
+        <li class="breadcrumb-item">Administración</li>
+        <li class="breadcrumb-item">Gestión financiera</li>
+        <li class="breadcrumb-item active" aria-current="page">Hoy</li>
+    </ol>
+</nav>
+
+<h3 class="tituloVista mb-3">Hoy</h3>
 
 <label class="fw-bolder text-muted mb-2" style="font-size:0.8rem;">PRESUPUESTO HOY - TOTALIZADOR</label>
 
