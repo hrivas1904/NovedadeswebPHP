@@ -1,3 +1,5 @@
+const esMovil = window.matchMedia("(max-width: 767.98px)").matches;
+
 $(function () {
     filtrarPedidos();
 });
@@ -42,12 +44,12 @@ $("#tablaPedidosCompras").DataTable({
     language: {
         url: "/js/es-ES.json",
     },
-    scrollX: false,
+    scrollX: true,
     paging: false,
     searching: true,
     autoWidth: false,
     scrollCollapse: true,
-    scrollY: getScrollY(),
+    scrollY: esMovil ? "" : getScrollY(),
     dom: "tir",
     columnDefs: [
         {
