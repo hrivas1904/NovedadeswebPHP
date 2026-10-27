@@ -13,6 +13,9 @@ use App\Http\Controllers\Administracion\ConciliacionesController;
 use App\Http\Controllers\Administracion\CopagosController;
 
 Route::middleware(['auth'])->group(function () {
+    //DOLARAPI.COM
+    Route::get('/obtenerValorDolarOficial', [ComprasController::class, 'obtenerValorDolarOficial']);
+
     //COMPRAS
     Route::get('/pedidosComprasView', [ComprasController::class, 'pedidosComprasView'])->name('pedidosComprasView');
     Route::get('/panelAdminView', [ComprasController::class, 'panelAdminView'])->name('panelAdminView');
