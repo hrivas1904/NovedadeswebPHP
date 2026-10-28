@@ -162,7 +162,7 @@ function filtrarCruce(settings, data, dataIndex, paciente) {
 
     switch (filtroCruce) {
         case "PENDIENTES":
-            return paciente.estado !== "COBRADO" && !paciente.resuelto;
+            return Boolean(paciente.pendiente);
         case "RESUELTOS":
             return Boolean(paciente.resuelto);
         case "NO COBRADO":
@@ -286,7 +286,7 @@ function actualizarKpis(pacientes) {
     pacientes.forEach(function (p) {
         totalLiquidado += Number(p.totalLiquidado || 0);
         totalCobrado += Number(p.totalCobrado || 0);
-        if (p.estado !== "COBRADO" && !p.resuelto) pendientes++;
+        if (p.pendiente) pendientes++;
     });
 
     $("#kpiLiquidado").text(formatMoney(totalLiquidado));

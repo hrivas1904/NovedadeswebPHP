@@ -353,7 +353,7 @@ class CopagosController extends Controller
                 'cobradoMed' => round($cobradoMed, 2),
                 'diferenciaMed' => $diferenciaMed,
                 'estadoMed' => $estadoMed,
-                'pendiente' => !$resuelto && (in_array($estado, $impagos, true) || in_array($estadoMed, $impagos, true)),
+                'pendiente' => in_array($estado, $impagos, true) || in_array($estadoMed, $impagos, true),
                 'nota' => $nota->nota ?? null,
                 'resuelto' => $resuelto,
                 'pagos' => $this->formatearPagos($pagos),
