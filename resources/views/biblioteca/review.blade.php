@@ -1,6 +1,6 @@
 @extends('biblioteca.layout')
 @section('library')
-<div class="bib-page-heading"><div><h2>Revisar descriptivo</h2><p>{{ $entry['title'] }} · Versión {{ $entry['version']['number'] }}</p></div><a class="btn btn-outline-primary" href="{{ route('biblioteca.show',['document'=>$entry['document']['id'],'version'=>$entry['version']['id']]) }}">Consultar contenido</a></div>
+<div class="bib-page-heading"><div><h2>Revisar descriptivo</h2><p>{{ $entry['title'] }} · {{ $entry['versionLabel'] }}</p></div><a class="btn btn-outline-primary" href="{{ route('biblioteca.show',['document'=>$entry['document']['id'],'version'=>$entry['version']['id']]) }}">Consultar contenido</a></div>
 <div class="bib-callout"><div><strong>1. Confirmá nombre y área. 2. Revisá el contenido. 3. Elegí la acción.</strong><p>Guardar conserva el avance. Validar confirma la revisión. Validar y publicar convierte esta versión en vigente y conserva la anterior en el historial.</p></div></div>
 <form id="bib-review" data-url="{{ route('biblioteca.review.save',$entry['version']['id']) }}">
 @csrf<input type="hidden" name="revision" value="{{ $entry['version']['revision'] }}"><input type="hidden" name="documentRevision" value="{{ $entry['document']['revision'] }}">

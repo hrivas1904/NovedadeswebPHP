@@ -362,34 +362,70 @@
         return toolbar;
     }
     function richEditorFor(control){return $(control).closest('.bib-editor-block,.bib-manual-section').find('.bib-rich-editor')[0];}
-    function blockElement(original){
-        const b=clone(original), root=$('<div>',{class:'bib-editor-block'}).data('block',b), tools=$('<div>',{class:'bib-block-tools'}).appendTo(root);
-        if(b.kind==='paragraph'){
-            const select=$('<select>',{class:'form-select form-select-sm','aria-label':'Formato del bloque'}).attr('data-block-format','1');
-            [['paragraph','Párrafo'],['bullet','Viñeta'],['numbered','Numeración'],['heading','Subtítulo']].forEach(([value,label])=>select.append($('<option>',{value,text:label})));
-            select.val(b.heading?'heading':b.list?(b.list.format==='decimal'?'numbered':'bullet'):'paragraph').appendTo(tools);
-        }else $('<strong>').text(b.kind==='table'?'Tabla conservada':'Contenido de imagen').appendTo(tools);
-        if(b.kind!=='paragraph')tools.append($('<button>',{type:'button',class:'btn btn-sm btn-outline-secondary',text:'😊 Emojis','aria-label':'Agregar emoji'}).attr('data-emoji-picker','1'));
-        tools.append(smallButton('↑','up','Subir bloque'),smallButton('↓','down','Bajar bloque'),smallButton('Quitar','remove','Quitar bloque'));
-        if(b.kind==='table'){
-            const table=$('<table>',{class:'table bib-editor-table'}),body=$('<tbody>').appendTo(table);
-            (b.rows||[]).forEach((row,ri)=>{const tr=$('<tr>').appendTo(body);row.cells.forEach((cell,ci)=>$('<td>').attr('colspan',cell.colspan).append($('<textarea>',{class:'form-control','aria-label':`Fila ${ri+1}, columna ${ci+1}`}).val(cell.text).attr({'data-cell-row':ri,'data-cell-column':ci})).appendTo(tr));});
-            $('<div>',{class:'bib-table-wrap'}).append(table).appendTo(root);
-        }else if(b.kind==='paragraph'){
-            root.attr('data-format',tools.find('[data-block-format]').val());
-            const html=b.html??$('<div>').text(b.text).html().replace(/\n/g,'<br>');
-            root.append(richTools(true),$('<div>',{class:'bib-rich-editor bib-job-rich-editor',contenteditable:'true',role:'textbox','aria-multiline':'true','aria-label':'Contenido del bloque'}).attr('data-block-rich','1').html(html));
-        }else $('<textarea>',{class:'form-control','aria-label':'Contenido del bloque'}).attr('data-block-text','1').val(b.text).appendTo(root);
+    function sectionMarkup(blocks, bullets=false) {
+        const root=document.createElement('div');let lists=[];
+        blocks.forEach(b=>{
+            if(b.kind==='table'){
+                lists=[];
+                const table=document.createElement('table');table.dataset.bibSource=b.id;
+                const body=table.createTBody();
+                (b.rows||[]).forEach(row=>{
+                    const tr=body.insertRow();
+                    row.cells.forEach(cell=>{
+                        const td=tr.insertCell();td.colSpan=cell.colspan||1;
+                        td.append(...sectionMarkup(cell.blocks?.length?cell.blocks:[paragraph(cell.text||'')]).childNodes);
+                    });
+                });
+                root.append(table);return;
+            }
+            const isList=b.kind==='paragraph'&&!b.heading&&(b.list||bullets);
+            let node;
+            if(isList){
+                const kind=b.list?.format==='decimal'?'ol':'ul',level=Math.min(12,Math.max(0,b.list?.level||0));
+                lists=lists.slice(0,level+1);
+                for(let depth=0;depth<=level;depth++){
+                    const tag=depth===level?kind:'ul';
+                    if(!lists[depth]||(depth===level&&lists[depth].tagName.toLowerCase()!==tag)){
+                        const list=document.createElement(tag);list.dataset.bibLevel=depth;
+                        if(tag==='ol')list.start=b.list?.start||1;
+                        if(depth===0)root.append(list);
+                        else{
+                            let parent=lists[depth-1].lastElementChild;
+                            if(!parent){parent=document.createElement('li');parent.style.listStyle='none';lists[depth-1].append(parent);}
+                            parent.append(list);
+                        }
+                        lists[depth]=list;
+                    }
+                }
+                node=document.createElement('li');
+                if(kind==='ol'&&b.list?.start)node.value=b.list.start;
+                lists[level].append(node);
+            }else{
+                lists=[];node=document.createElement(b.heading?'h4':'div');root.append(node);
+            }
+            node.dataset.bibSource=b.id;
+            if(b.kind==='image')node.dataset.bibKind='image';
+            if(b.html!==undefined)node.innerHTML=b.html;
+            else node.innerHTML=$('<div>').text(b.text).html().replace(/\r?\n/g,'<br>');
+        });
         return root;
     }
-    function groupEditor(blocks){const list=$('<div>',{class:'bib-blocks'});blocks.forEach(b=>list.append(blockElement(b)));return list;}
-    function groupControls(){return $('<div>',{class:'bib-actions'}).append(smallButton('+ Agregar texto','add-block'),smallButton('+ Agregar tabla','add-table'));}
+
+    function groupEditor(blocks,label='Contenido de la sección',bullets=false){
+        const list=$('<div>',{class:'bib-blocks'});
+        const root=$('<div>',{class:'bib-editor-block bib-section-editor'});
+        const editor=$('<div>',{class:'bib-rich-editor bib-job-section-editor',contenteditable:'true',role:'textbox','aria-multiline':'true','aria-label':label}).attr('data-section-rich','1');
+        editor.append(sectionMarkup(blocks,bullets).childNodes);
+        list.data('original-blocks',clone(blocks)).data('original-html',editor.html());
+        root.append(richTools(),editor);list.append(root);return list;
+    }
+
     function renderJob(){
         const groups=$('#bib-job-groups').empty();
         Object.entries(config.groups).forEach(([key,label])=>{
             const section=$('<section>',{class:'bib-section'}).attr('data-group',key).append($('<h3>').text(label));
             const body=$('<div>',{class:'bib-reading'}).appendTo(section);
-            body.append(groupEditor(content.groups[key]||[]),groupControls());
+            body.append(groupEditor(content.groups[key]||[],label,['generic','specific','commitment'].includes(key)));
             if(key==='generic')body.append($('<small>',{class:'text-muted',text:'Propuesta inicial: podés editar, agregar o quitar competencias para este puesto.'}));
             groups.append(section);
         });
@@ -398,17 +434,87 @@
     function additionalElement(s){
         const section=$('<div>',{class:'bib-additional-section'}).data('section',clone(s));
         const heading=$('<div>',{class:'bib-block-tools'}).append($('<input>',{class:'form-control','aria-label':'Título de sección adicional'}).attr('data-section-title','1').val(s.title),smallButton('Quitar sección','remove-section'));
-        return section.append(heading,groupEditor(s.blocks),groupControls());
+        return section.append(heading,groupEditor(s.blocks,s.title||'Contenido de la sección adicional'));
     }
-    function collectBlocks(list){let nextNumber=1;return list.children('.bib-editor-block').map(function(){
-        const root=$(this),b=clone(root.data('block'));
-        if(b.kind==='table'){
-            root.find('textarea[data-cell-row]').each(function(){const cell=b.rows[Number($(this).attr('data-cell-row'))].cells[Number($(this).attr('data-cell-column'))];if(cell.text!==this.value){cell.text=this.value;cell.blocks=[paragraph(this.value)];}});
-            b.text=b.rows.map(r=>r.cells.map(c=>c.text).join(' | ')).join('\n');
-        }else{if(b.kind==='paragraph'){const editor=root.find('[data-block-rich]')[0];b.html=editor.innerHTML;b.text=editor.innerText;const format=root.find('[data-block-format]').val();delete b.list;delete b.heading;if(format==='heading')b.heading=true;if(['bullet','numbered'].includes(format))b.list={id:'editor',level:0,format:format==='numbered'?'decimal':'bullet',start:1};}else b.text=root.find('[data-block-text]').val();}
-        if(b.list?.format==='decimal')b.list.start=nextNumber++;else nextNumber=1;
-        return b;
-    }).get();}
+    function collectBlocks(list){
+        const editor=list.find('[data-section-rich]')[0],original=list.data('original-blocks')||[];
+        // Opening a section or editing another field must not rewrite its stored blocks.
+        if(editor.innerHTML===list.data('original-html'))return clone(original);
+        const originals=new Map(),seen=new Set(),nodeIds=list.data('node-ids')||new WeakMap();
+        list.data('node-ids',nodeIds);
+        function index(blocks){blocks.forEach(b=>{originals.set(b.id,b);if(b.kind==='table')(b.rows||[]).forEach(r=>r.cells.forEach(c=>index(c.blocks||[])));});}
+        index(original);
+        function identity(node,kind){
+            const id=nodeIds.get(node)||node?.dataset?.bibSource,available=id&&!seen.has(id),old=available?originals.get(id):null;
+            const b=old?.kind===kind?clone(old):{id:available?id:uuid(),kind,text:''};
+            seen.add(b.id);nodeIds.set(node,b.id);
+            if(node.dataset)node.dataset.bibSource=b.id;
+            return b;
+        }
+        function textOf(html){
+            const box=document.createElement('div');box.innerHTML=html;
+            box.querySelectorAll('br').forEach(br=>br.replaceWith('\n'));
+            box.querySelectorAll('p,div,li,h1,h2,h3,h4,h5,h6').forEach(node=>node.append('\n'));
+            return box.textContent.replace(/\n+$/,'');
+        }
+        function cleanHtml(node){
+            const copy=node.cloneNode(true);
+            copy.querySelectorAll('[data-bib-source],[data-bib-kind],[data-bib-level]').forEach(el=>{el.removeAttribute('data-bib-source');el.removeAttribute('data-bib-kind');el.removeAttribute('data-bib-level');});
+            return copy.innerHTML;
+        }
+        function read(container){
+            const result=[];let inline=document.createElement('div'),inlineAnchor=null;
+            function flush(){
+                if(inline.textContent.trim()||inline.querySelector('br'))push(inline,null,1,0,inlineAnchor);
+                inline=document.createElement('div');inlineAnchor=null;
+            }
+            function push(node,format=null,start=1,level=0,anchor=node){
+                const kind=node.dataset?.bibKind==='image'?'image':'paragraph',b=identity(anchor||node,kind);
+                b.text=textOf(cleanHtml(node));
+                if(kind==='image'){result.push(b);return;}
+                b.html=cleanHtml(node);delete b.list;delete b.heading;
+                if(/^H[1-6]$/.test(node.tagName))b.heading=true;
+                if(format)b.list={id:'editor',level,format,start};
+                if(node.tagName==='BLOCKQUOTE')b.html='<blockquote>'+b.html+'</blockquote>';
+                // Empty HTML is retained as a deliberate paragraph break, not a list item.
+                if(b.text.trim()||node.querySelector('br,hr')||b.html.trim())result.push(b);
+            }
+            Array.from(container.childNodes).forEach(node=>{
+                if(node.nodeType===Node.TEXT_NODE){inlineAnchor=inlineAnchor||node;inline.append(node.cloneNode(true));return;}
+                if(node.nodeType!==Node.ELEMENT_NODE)return;
+                const tag=node.tagName;
+                if(!['DIV','P','H1','H2','H3','H4','H5','H6','UL','OL','TABLE','BLOCKQUOTE','HR'].includes(tag)){inlineAnchor=inlineAnchor||node;inline.append(node.cloneNode(true));return;}
+                flush();
+                if(tag==='UL'||tag==='OL'){
+                    function readList(list,level){
+                        let number=Math.max(1,Number(list.getAttribute('start'))||1);
+                        Array.from(list.children).forEach(li=>{
+                            if(li.tagName!=='LI'){result.push(...read(li));return;}
+                            const value=Number(li.getAttribute('value'));if(value>0)number=value;
+                            const copy=li.cloneNode(true),nested=Array.from(li.children).filter(el=>['UL','OL'].includes(el.tagName));
+                            Array.from(copy.children).filter(el=>['UL','OL'].includes(el.tagName)).forEach(el=>el.remove());
+                            push(copy,list.tagName==='OL'?'decimal':'bullet',number++,level,li);
+                            nested.forEach(child=>readList(child,Math.min(12,level+1)));
+                        });
+                    }
+                    readList(node,Math.min(12,Math.max(0,Number(node.dataset.bibLevel)||0)));
+                }else if(tag==='TABLE'){
+                    const b=identity(node,'table');delete b.html;
+                    b.rows=Array.from(node.rows).filter(row=>row.closest('table')===node).map(row=>({cells:Array.from(row.cells).map(cell=>{
+                        const blocks=read(cell);return {colspan:Math.max(1,cell.colSpan),text:blocks.map(block=>block.text).join('\n'),blocks};
+                    })}));
+                    b.text=b.rows.map(row=>row.cells.map(cell=>cell.text).join(' | ')).join('\n');result.push(b);
+                }else if((tag==='DIV'||tag==='P')&&Array.from(node.children).some(child=>['DIV','P','UL','OL','TABLE'].includes(child.tagName))){
+                    result.push(...read(node));
+                }else if(tag==='HR'){
+                    const b=identity(node,'paragraph');b.text='';b.html='<hr>';delete b.list;delete b.heading;result.push(b);
+                }else push(node);
+            });
+            flush();return result;
+        }
+        return read(editor);
+    }
+
     function manualElement(s){
         const section=$('<section>',{class:'bib-section bib-manual-section'}).data('section',clone(s));
         const heading=$('<div>',{class:'bib-section-title-edit'}).append($('<input>',{class:'form-control','aria-label':'Título de sección'}).attr('data-manual-title','1').val(s.title),smallButton('↑','section-up','Subir sección'),smallButton('↓','section-down','Bajar sección'),smallButton('Quitar','remove-manual','Quitar sección'));
@@ -424,14 +530,7 @@
         return c;
     }
     app.on('click','[data-edit-action]',function(){
-        const button=$(this),action=button.attr('data-edit-action'),block=button.closest('.bib-editor-block');
-        if(action==='up')block.prev('.bib-editor-block').before(block);
-        if(action==='down')block.next('.bib-editor-block').after(block);
-        if(action==='remove')block.remove();
-        if(action==='add-block'||action==='add-table'){
-            const list=button.parent().prev('.bib-blocks');let b=paragraph();
-            if(action==='add-table')b={id:uuid(),kind:'table',text:'',rows:[{cells:[{text:'',colspan:1,blocks:[paragraph()]},{text:'',colspan:1,blocks:[paragraph()]}]},{cells:[{text:'',colspan:1,blocks:[paragraph()]},{text:'',colspan:1,blocks:[paragraph()]}]}]};list.append(blockElement(b));list.children().last().find('textarea,[contenteditable]').first().trigger('focus');
-        }
+        const button=$(this),action=button.attr('data-edit-action');
         if(action==='remove-section')button.closest('.bib-additional-section').remove();
         const section=button.closest('.bib-manual-section');
         if(action==='remove-manual')section.remove();if(action==='section-up')section.prev().before(section);if(action==='section-down')section.next().after(section);
@@ -542,12 +641,12 @@
         if(busy)return;if(publish&&!window.confirm('¿Guardar y publicar esta versión? La vigente anterior se conservará en el historial.'))return;
         const c=collect(),reason=$('#bib-change-reason').val()||'';busy=true;$('#bib-editor :input').prop('disabled',true);$('#bib-editor [contenteditable]').attr('contenteditable','false');alertBox.addClass('d-none');
         try{
-            let data=config.upload?{destination:$('#bib-destination').val(),document:$('#bib-destination-document').val()||null,content:$('#bib-destination').val()==='support'?null:c}:(config.version?{action:config.newVersion?'new_version':'save',revision:config.revision,requestId:config.requestId,reason,content:c}:{kind:config.kind,requestId:config.requestId,content:c});
+            let data=config.upload?{destination:$('#bib-destination').val(),document:$('#bib-destination-document').val()||null,content:$('#bib-destination').val()==='support'?null:c}:(config.version?{action:config.newVersion?'new_version':'save',revision:config.revision,requestId:config.requestId,reason,content:c}:{kind:config.kind,requestId:config.requestId,sourceVersion:config.sourceVersion||null,content:c});
             const result=await request(config.url,data);dirty=false;
             if(config.upload){busy=false;window.BibliotecaNavigation.visit(result.url);return;}
             config.newVersion=false;config.version=result.version;config.revision=result.revision;config.url=config.actionTemplate.replace('VERSION_PLACEHOLDER',result.version);
             if(!job)c.id=result.documentId;content=c;$('#bib-save-status').text('Borrador guardado · Versión '+result.number);
-            $('#bib-editor-title').text('Editar borrador');$('#bib-editor-version').text(' · Versión interna '+result.number);
+            $('#bib-editor-title').text('Editar borrador');$('#bib-editor-version').text(Number(result.number)===0?' · Versión base · 0':' · Versión interna '+result.number);
             $('#bib-save').text('Guardar borrador');$('#bib-discard').text('Descartar cambios');$('#bib-delete-draft').removeClass('d-none');$('#bib-new-version-notice').text('Versión '+result.number+' guardada como borrador. La versión publicada se conserva hasta aprobar la nueva.');
             $('[data-bib-cancel]').attr('href',result.url);$('#bib-saved-link').removeClass('d-none');
             window.BibliotecaNavigation.replaceUrl(result.editUrl);

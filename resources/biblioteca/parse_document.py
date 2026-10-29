@@ -4,7 +4,7 @@ from zipfile import ZipFile
 from xml.etree import ElementTree as ET
 import hashlib, json, re, sys, unicodedata
 
-PARSER_VERSION = "1.0.0"
+PARSER_VERSION = "1.1.0"
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 NS = {"w": W[1:-1]}
 SECTIONS = {"1": ("identification","Identificación"),"2":("purpose","Propósito del puesto"),
@@ -130,20 +130,41 @@ def map_document(p):
     lines=list(lines_of(blocks))
     title=lines[0]["text"] if lines else ""
     title_name=re.sub(r"^descriptivo de puesto(?: de trabajo)?\s*[-–—:]?\s*","",title,flags=re.I)
-    fields={k:None for k in ["name","area","reportsTo","supervisor","supervises"]};locations={}
-    keys={"1.":"name","1.b":"area","1.c":"reportsTo","1.d":"supervisor","1.e":"supervises"}
-    patterns=[("name",r"^1\.\s*nombre del puesto\s*:?\s*(.*)$"),
-      ("area",r"^1\.b\s*.rea\s*:?\s*(.*)$"),
+    fields={k:None for k in ["name","area","reportsTo","supervisor","supervises"]};locations={};value_locations={}
+    # Category values may themselves contain colons: match only the field label.
+    patterns=[
+      ("name",r"^(?:1\.\s*)?nombre del puesto(?:\s*/\s*rol)?\s*:\s*(.*)$"),
+      ("name",r"^1\.\s*nombre del puesto\s*:?\s*(.*)$"),
+      ("area",r"^(?:1\.b\s*)?[áa]rea\s*:\s*(.*)$"),
+      ("area",r"^1\.b\s*[áa]rea\s*:?\s*(.*)$"),
+      ("reportsTo",r"^(?:1\.c\s*)?reporta a\s*:\s*(.*)$"),
       ("reportsTo",r"^1\.c\s*reporta a\s*:?\s*(.*)$"),
+      ("supervisor",r"^(?:1\.d\s*)?supervisor directo\s*:\s*(.*)$"),
       ("supervisor",r"^1\.d\s*supervisor directo\s*:?\s*(.*)$"),
-      ("supervises",r"^1\.e\s*supervisa el trabajo de\s*:?\s*(.*)$")]
+      ("supervises",r"^(?:1\.e\s*)?(?:supervisa el trabajo de|supervisa a|personal a cargo)\s*:\s*(.*)$"),
+      ("supervises",r"^1\.e\s*supervisa el trabajo de\s*:?\s*(.*)$"),
+      ("category",r"^categor[íi]a(?: actual)?\s*:\s*(.*)$"),
+      ("agreement",r"^convenio\s*:\s*(.*)$"),
+      ("service",r"^servicio\s*/\s*rol de referencia\s*:\s*(.*)$"),
+      ("sector",r"^sector\s*:\s*(.*)$")]
+    values={**fields,"category":None,"agreement":None,"service":None,"sector":None}
     for i,b in enumerate(lines):
         for key,pat in patterns:
             m=re.match(pat,b["text"],re.I)
-            if m:
-                v=m.group(1).strip()
-                if not v and i+1<len(lines) and not re.match(r"^[1-8]\.",lines[i+1]["text"]):v=lines[i+1]["text"]
-                fields[key]=v or None;locations[key]=b["id"]
+            if not m or values[key] is not None:continue
+            v=m.group(1).strip();used=[b["id"]]
+            if not v and i+1<len(lines):
+                following=lines[i+1]
+                if not re.match(r"^[1-8]\.",following["text"]) and not any(re.match(pat,following["text"],re.I) for _,pat in patterns):
+                    v=following["text"];used.append(following["id"])
+            values[key]=v or None;locations[key]=b["id"];value_locations[key]=used
+            break
+    fields.update({k:values[k] for k in fields})
+    for key in ["category","agreement","service","sector"]:
+        if values[key] is not None:metadata[key]=values[key]
+    if not metadata.get("sector") and metadata.get("service"):
+        metadata["sector"]=metadata["service"];metadata["sectorSource"]="service"
+    identification_tables={location.split("/row/")[0] for location in locations.values() if "/row/" in location}
     header_text="\n".join(b["text"] for b in flat(headers))
     edition_match=re.search(r"Versi.n\s*:?\s*([^|\n]+)",header_text,re.I)
     edition=edition_match.group(1).strip() if edition_match else None
@@ -156,13 +177,16 @@ def map_document(p):
     if standard:
         for b in blocks:
             if b["kind"]=="table":
-                if "1. Nombre del puesto" in b["text"]:
+                if b["id"] in identification_tables:
                     if current["key"]!="identification":finish();current={"key":"identification","title":"Identificación","blocks":[]}
-                elif "Firma y aclaración" in b["text"]:
+                elif "firma y aclaracion" in norm(b["text"]):
                     finish();current={"key":"signatures","title":"Espacios de firma","blocks":[]}
                 current["blocks"].append(b);continue
-            for line in b["text"].splitlines() or [""]:
-                lb=dict(b,text=line,id=b["id"]+f"/line/{len(current['blocks'])}")
+            for line_index,line in enumerate(b["text"].splitlines() or [""]):
+                # The document name already represents its matching first title line.
+                if lines and b["id"]+f"/line/{line_index}"==lines[0]["id"] and norm(title_name)==norm(fields["name"]):
+                    continue
+                lb=dict(b,text=line,id=b["id"]+f"/line/{line_index}")
                 m=re.match(r"^([1-8])\.\s+(Nombre del [Pp]uesto|Identificaci.n del [Pp]uesto|Prop.sito del [Pp]uesto|Principales [Tt]areas y [Rr]esponsabilidades|Contexto del [Pp]uesto|Perfil del [Pp]uesto|Competencias [Rr]equeridas|Compromiso|Contribuci.n al Hospital)\s*$",line.strip(),re.I)
                 if m:
                     key,label=SECTIONS[m.group(1)]
@@ -191,7 +215,7 @@ def map_document(p):
             if key not in found:warnings.append(issue("missing_"+key,"Sección ausente",label))
     if not raw.strip():warnings.append(issue("no_text","Sin contenido extraíble","El archivo requiere revisión."))
     return {"parserVersion":PARSER_VERSION,"format":p.suffix[1:].upper(),"structure":"standard" if standard else "operational" if raw.strip() else "unclassified",
-      "title":title,"titleName":title_name,"fields":fields,"fieldLocations":locations,"edition":edition,"documentDate":date,
+      "title":title,"titleName":title_name,"fields":fields,"fieldLocations":locations,"fieldValueLocations":value_locations,"edition":edition,"documentDate":date,
       "rawText":raw,"blocks":blocks,"headers":headers,"extras":extras,"sections":sections,"warnings":warnings,"metadata":metadata}
 if __name__=="__main__":
     try:

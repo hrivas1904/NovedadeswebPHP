@@ -24,14 +24,27 @@ class Content
         $c['name']=$c['name']?:($p['titleName']??$p['title']??'');
         $labels=['relaciones internas'=>'internal','relaciones externas'=>'external','formacion'=>'education','experiencia'=>'experience','conocimientos'=>'knowledge','genericas'=>'generic','especificas'=>'specific'];
         foreach($p['sections']??[] as $s) {
-            if($s['key']==='identification') continue;
+            if($s['key']==='identification') {
+                // Identification values already shown in the main fields must not be repeated.
+                // Keep category, agreement and any unknown source fields as an additional table.
+                $mapped=[];
+                $keys=['name','area','reportsTo','supervisor','supervises','sector'];
+                if(($p['metadata']['sectorSource']??null)==='service')$keys[]='service';
+                foreach($keys as $key) {
+                    foreach($p['fieldValueLocations'][$key]??[] as $location)$mapped[$location]=true;
+                    if(isset($p['fieldLocations'][$key]))$mapped[$p['fieldLocations'][$key]]=true;
+                }
+                $extra=self::unmappedIdentification($s['blocks'],$mapped);
+                if($extra)$c['additional'][]=['key'=>'identification-extra','title'=>'Información adicional de identificación','blocks'=>$extra];
+                continue;
+            }
             if(in_array($s['key'], ['purpose','tasks','commitment','contribution'])) { $c['groups'][$s['key']]=array_merge($c['groups'][$s['key']],$s['blocks']); continue; }
             if(in_array($s['key'], ['context','profile','competencies'])) {
-                $selected=null; $extra=[];
+                $patterns=['context'=>'Relaciones internas|Relaciones externas','profile'=>'Formación|Experiencia|Conocimientos','competencies'=>'(?:Competencias\s+)?Genéricas|(?:Competencias\s+)?Específicas']; $selected=null; $extra=[];
                 foreach($s['blocks'] as $b) {
-                    if($b['kind']==='paragraph' && preg_match('/^\s*[-•]?\s*(Relaciones internas|Relaciones externas|Formación|Experiencia|Conocimientos|(?:Competencias\s+)?Genéricas|(?:Competencias\s+)?Específicas)\s*:?\s*(.*)$/isu',$b['text'],$m)) {
+                    if($b['kind']==='paragraph' && preg_match('/^\s*[-•]?\s*('.$patterns[$s['key']].')\s*(?::\s*(.*))?$/isu',$b['text'],$m)) {
                         $selected=$labels[preg_replace('/^competencias\s+/','',self::normalize($m[1]))];
-                        if($m[2]!=='') { $b['text']=$m[2]; $c['groups'][$selected][]=$b; }
+                        if(($m[2]??'')!=='') { $b['text']=$m[2]; $c['groups'][$selected][]=$b; }
                     } elseif($selected) $c['groups'][$selected][]=$b; else $extra[]=$b;
                 }
                 if($extra) $c['additional'][]=array_merge($s,['blocks'=>$extra]);
@@ -39,6 +52,33 @@ class Content
         }
         if(!empty($p['extras'])) $c['additional'][]=['key'=>'preserved','title'=>'Contenido adicional de la fuente','blocks'=>$p['extras']];
         return $c;
+    }
+    private static function unmappedIdentification(array $blocks,array $mapped): array {
+        $result=[];
+        foreach($blocks as $b) {
+            if($b['kind']==='table') {
+                $rows=[];
+                foreach($b['rows'] as $row) {
+                    $cells=[];
+                    foreach($row['cells'] as $cell) {
+                        $remaining=self::unmappedIdentification($cell['blocks'],$mapped);
+                        if(!$remaining)continue;
+                        $cell['blocks']=$remaining;$cell['text']=implode("\n",array_column($remaining,'text'));$cells[]=$cell;
+                    }
+                    if($cells)$rows[]=array_merge($row,['cells'=>$cells]);
+                }
+                if(!$rows)continue;
+                $b['rows']=$rows;$b['text']=implode("\n",array_map(fn($row)=>implode("\n",array_column($row['cells'],'text')),$rows));
+            } elseif($b['kind']==='paragraph') {
+                if(isset($mapped[$b['id']]))continue;
+                $lines=preg_split('/\r\n|\r|\n/',$b['text']);$remaining=[];
+                foreach($lines as $index=>$line)if(!isset($mapped[$b['id'].'/line/'.$index]))$remaining[]=$line;
+                $b['text']=implode("\n",$remaining);
+                if(trim($b['text'])==='')continue;
+            }
+            $result[]=$b;
+        }
+        return $result;
     }
     public static function institutional(array $c,bool $defaults=true): array {
         if($defaults && empty($c['groups']['generic']))$c['groups']['generic']=array_map(fn($s)=>self::paragraph($s,true),config('biblioteca.competencies'));

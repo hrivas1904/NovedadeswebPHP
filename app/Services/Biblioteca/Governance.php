@@ -19,6 +19,12 @@ class Governance
             $d=$e['document']; $v=$e['version'];
             if(!($visibility['section:'.$d['kind']]->visible ?? ($d['kind']!=='instructivos'))) return false;
             if(!($visibility['document:'.$d['id']]->visible ?? true)) return false;
+            if($d['kind']==='descriptivos') {
+                return (int)($v['current_slot']??0)===1
+                    && !empty($v['published_at'])
+                    && ($v['state']??null)==='Vigente'
+                    && ($v['review_state']??null)==='Validado';
+            }
             if($d['kind']!=='politicas') return true;
             $approval=$approvals->get($v['id']);
             return $v['current_slot'] && $v['published_at'] && $v['state']==='Publicado' && $approval

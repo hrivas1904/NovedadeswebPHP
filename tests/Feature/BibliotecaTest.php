@@ -30,9 +30,15 @@ class BibliotecaTest extends TestCase {
         $this->assertSame(1,DB::table('bib_versions')->where('current_slot',1)->count());
     }
     public function test_permissions_and_authentication():void {
-        $v=(new Library)->create('descriptivos',$this->job(),'test',(string)Str::uuid());$reader=new User(['name'=>'Lector','rol'=>'Colaborador/a']);$reader->id=100;$this->actingAs($reader);
-        $this->get(route('biblioteca.show',$v['document_id']))->assertOk()->assertDontSee('Crear borrador para editar');
+        $admin=auth()->user();$lib=new Library;$v=$lib->create('descriptivos',$this->job(),'test',(string)Str::uuid());$reader=new User(['name'=>'Lector','rol'=>'Colaborador/a']);$reader->id=100;$this->actingAs($reader);
+        $this->get(route('biblioteca.show',$v['document_id']))->assertNotFound();
         $this->postJson(route('biblioteca.action',$v['id']),['action'=>'draft'])->assertForbidden();$this->get(route('biblioteca.new'))->assertForbidden();
+        $this->actingAs($admin);$lib->publish($v['id'],0,'Versión aprobada para colaboradores',true,'test');$this->actingAs($reader);
+        $this->get(route('biblioteca.show',$v['document_id']))->assertOk()->assertDontSee('Crear borrador para editar');
+        $this->actingAs($admin);
+        (require database_path('migrations/2026_10_29_180000_add_biblioteca_baseline_batches.php'))->up();
+        DB::table('bib_documents')->where('id',$v['document_id'])->update(['baseline_role'=>'legacy']);
+        $this->getJson(route('biblioteca.edit',$v['id']))->assertStatus(422)->assertJsonPath('message','Este descriptivo se conserva como antecedente. Editá un documento de la nueva base.');
         auth()->logout();$this->get(route('biblioteca.index'))->assertRedirect(route('login'));
     }
     public function test_manual_requires_approval_and_retains_tables():void {

@@ -133,7 +133,8 @@ const assert=require('assert'),fs=require('fs'),path=require('path');
   await page.getByRole('button',{name:'Cerrar vista previa'}).click();
   await change(()=>nav('Administración').click());
   await change(()=>page.getByRole('link',{name:'+ Nuevo documento',exact:true}).click());
-  assert.equal(await page.locator('[data-group=generic] [data-block-rich]').count(),5);
+  assert.equal(await page.locator('[data-group=generic] [data-section-rich]').count(),1);
+  assert.equal(await page.locator('[data-group=generic] [data-section-rich] > ul > li').count(),5);
   await page.locator('#bib-name').fill('Nuevo descartado por navegación');
   await change(()=>page.getByRole('button',{name:'Descartar nuevo documento',exact:true}).click());
 

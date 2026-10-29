@@ -14,15 +14,15 @@ const assert=require('assert'),fs=require('fs'),path=require('path');
  await page.route('**/*',r=>{const u=new URL(r.request().url());return u.origin===base&&!u.pathname.startsWith('/biblioteca')&&!/^\/(css|js|img|images|fonts|favicon)/.test(u.pathname)?r.abort():r.continue();});
  async function changed(action){const n=await page.evaluate(()=>window.viewLoads);await action();await page.waitForFunction(n=>window.viewLoads>n,n);}
  async function saved(action){const response=page.waitForResponse(r=>r.request().method()==='POST'&&/\/(accion|documentos)$/.test(new URL(r.url()).pathname));await action();const r=await response;assert(r.ok(),await r.text());await page.waitForFunction(()=>!window.BibliotecaView.isPending());return r.json();}
- const block=()=>page.locator('[data-group=generic] .bib-editor-block').nth(1),field=()=>block().locator('[data-block-rich]');
+ const block=()=>page.locator('[data-group=generic] .bib-editor-block'),field=()=>block().locator('[data-section-rich] > ul > li').nth(1);
  try{
   await page.goto(base+'/biblioteca/versiones/'+fixtures.descriptivos.id+'/editar',{waitUntil:'networkidle'});
   await page.evaluate(()=>{window.viewLoads=0;window.header=document.querySelector('.bib-header');document.querySelector('.bib-app').addEventListener('biblioteca:loaded',()=>window.viewLoads++);});
   assert.equal(await page.locator('#bib-delete-draft').isVisible(),false);
-  const first=await page.locator('[data-group=generic] [data-block-rich]').first().innerHTML();
+  const first=await page.locator('[data-group=generic] [data-section-rich] > ul > li').first().innerHTML();
   await field().fill('Competencia con formato');
-  await field().press('Control+a');await block().getByRole('button',{name:'Negrita',exact:true}).click();
-  assert((await field().innerHTML()).match(/<(b|strong)>/));assert.equal(await page.locator('[data-group=generic] [data-block-rich]').first().innerHTML(),first);
+  await field().evaluate(el=>{const range=document.createRange();range.selectNodeContents(el);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);el.closest('[contenteditable]').dispatchEvent(new MouseEvent('mouseup',{bubbles:true}));});await block().getByRole('button',{name:'Negrita',exact:true}).click();
+  assert((await field().innerHTML()).match(/<(b|strong)>/));assert.equal(await page.locator('[data-group=generic] [data-section-rich] > ul > li').first().innerHTML(),first);
   await field().press('ArrowRight');await block().getByRole('button',{name:'Agregar emoji',exact:true}).click();
   await page.getByRole('button',{name:'Acuerdo',exact:true}).click();assert((await field().innerText()).includes('🤝'));
   await block().scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,'editor-desktop.png')});
@@ -38,7 +38,7 @@ const assert=require('assert'),fs=require('fs'),path=require('path');
   await changed(()=>page.locator('#bib-delete-draft').click());
   assert(page.url().includes(fixtures.descriptivos.id));assert.equal((await context.request.get(base+'/biblioteca/versiones/'+draft.version+'/editar')).status(),404);
   assert.equal(documents,1);assert(await page.evaluate(()=>window.header===document.querySelector('.bib-header')));
-  console.log('Formato en segundo bloque, emoji, preview, guardado, descarte y eliminación: OK.');
+  console.log('Formato en segunda competencia, emoji, preview, guardado, descarte y eliminación: OK.');
   await changed(()=>page.evaluate(url=>window.BibliotecaNavigation.visit(url),base+'/biblioteca/administracion/nuevo?kind=descriptivos'));
   await page.locator('#bib-name').fill('Documento cancelado QA');await page.locator('#bib-area').fill('Calidad');
   const created=await saved(()=>page.locator('#bib-save').click());await changed(()=>page.locator('#bib-delete-draft').click());

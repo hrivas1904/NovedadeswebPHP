@@ -68,19 +68,21 @@ const fs=require('fs'),path=require('path'),assert=require('assert');
   await page.locator('.bib-rich-tools').first().scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,'02-formato.png')});
 
   // Generic competencies start populated and can be customized.
+  // A single editor contains all of the individually editable list items.
   await go('/biblioteca/administracion/nuevo?kind=descriptivos');
-  assert.equal(await page.locator('[data-group="generic"] [data-block-rich]').count(),5);
+  assert.equal(await page.locator('[data-group=generic] [data-section-rich]').count(),1);
+  assert.equal(await page.locator('[data-group=generic] [data-section-rich] > ul > li').count(),5);
   await page.locator('#bib-name').fill('Puesto con competencias editadas');
   await page.locator('#bib-area').fill('Calidad');
-  const generic=page.locator('[data-group="generic"] [data-block-rich]').first();
+  const generic=page.locator('[data-group="generic"] [data-section-rich] > ul > li').first();
   await generic.fill('Competencia personalizada ');
   await page.locator('[data-group="generic"] [data-emoji-picker]').first().click();
   await page.getByRole('button',{name:'Acuerdo',exact:true}).click();
   assert((await generic.innerText()).includes('🤝'));
   await page.getByRole('button',{name:'Guardar borrador',exact:true}).click();
   await page.locator('#bib-save-status').filter({hasText:'Borrador guardado'}).waitFor();
-  await page.reload();await page.locator('[data-group="generic"] [data-block-rich]').first().waitFor();
-  assert.equal(await page.locator('[data-group="generic"] [data-block-rich]').first().innerText(),'Competencia personalizada 🤝');
+  await page.reload();await page.locator('[data-group="generic"] [data-section-rich] > ul > li').first().waitFor();
+  assert.equal(await page.locator('[data-group="generic"] [data-section-rich] > ul > li').first().innerText(),'Competencia personalizada 🤝');
   await page.locator('[data-group="generic"]').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,'03-competencias.png')});
   await go('/biblioteca/administracion/nuevo?kind=descriptivos');
   await page.locator('#bib-name').fill('Documento que se descarta');

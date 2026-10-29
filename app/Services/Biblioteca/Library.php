@@ -20,6 +20,10 @@ class Library
         $v=$version?$this->version($version):((array)DB::table('bib_versions')->where('document_id',$id)->orderByRaw("CASE WHEN current_slot=1 THEN 0 WHEN origin='imported' AND state NOT IN ('Borrador','Histórico / retirado') THEN 1 WHEN state='Borrador' THEN 2 ELSE 3 END")->orderByDesc('number')->first());
         abort_unless($v && $v['document_id']===$id,404); return $this->present($d,$v);
     }
+    public static function versionCaption(array $v, array $d=[]): string {
+        if(($d['baseline_role']??null)==='legacy')return 'Antecedente de la base · versión original '.$v['number'];
+        return (int)$v['number']===0?'Versión base · 0':'Versión interna '.$v['number'];
+    }
     public function present(array $d,array $v): array {
         $c=Content::decode($v['payload_json']); $p=Content::decode($v['parsed_json']); $job=$d['kind']==='descriptivos';
         $title=$job?($v['published_at']?($p['metadata']['publishedName']??$c['name']??$d['title']):($d['canonical_name']?:($c['name']??$d['title']))):($c['title']??$d['title']);
@@ -31,7 +35,7 @@ class Library
         if(!$job && ($date=$c['lastReview']??$c['validFrom']??null)) $next=CarbonImmutable::parse($date)->addMonthsNoOverflow($c['reviewMonths']??12)->format('Y-m-d');
         $status=[];
         if(!$job) { if(($d['kind']==='politicas'&&!DB::table('bib_policy_approvals')->where('version_id',$v['id'])->exists())||empty($c['approvalRecord']))$status[]=$d['kind']==='politicas'?'Pendiente de aprobación de Gerencia':'Falta instrumento de aprobación';if($next && $next<self::today())$status[]='Revisión vencida';elseif($next && $next<=CarbonImmutable::now(config('biblioteca.timezone'))->addDays(60)->format('Y-m-d'))$status[]='Próxima revisión'; }
-        return ['document'=>$d,'version'=>$v,'content'=>$c,'parsed'=>$p,'title'=>$title,'area'=>$area,'state'=>$label,'nextReview'=>$next,'situation'=>implode(' · ',$status),'job'=>$job];
+        return ['document'=>$d,'version'=>$v,'versionLabel'=>self::versionCaption($v,$d),'content'=>$c,'parsed'=>$p,'title'=>$title,'area'=>$area,'state'=>$label,'nextReview'=>$next,'situation'=>implode(' · ',$status),'job'=>$job];
     }
     public function entries(bool $allVersions=false): array {
         $docs=DB::table('bib_documents')->get()->keyBy('id'); $out=[];$seen=[];
@@ -77,7 +81,9 @@ class Library
         });
     }
     public function insertVersion(string $id,array $c,string $actor,?array $base=null,array $extra=[]): array {
-        $job=$this->document($id)['kind']==='descriptivos';$now=self::now();$vid=(string)Str::uuid();
+        $document=$this->document($id);
+        if(($document['baseline_role']??null)==='legacy')Content::fail('Este descriptivo se conserva como antecedente. Usá un documento de la nueva base.');
+        $job=$document['kind']==='descriptivos';$now=self::now();$vid=(string)Str::uuid();
         $lastNumber=(int)DB::table('bib_versions')->where('document_id',$id)->max('number');
         foreach(DB::table('bib_events')->where('document_id',$id)->where('action','eliminar_borrador')->pluck('before_json') as $deleted)$lastNumber=max($lastNumber,(int)(Content::decode($deleted)['number']??0));
         $v=['id'=>$vid,'document_id'=>$id,'number'=>$lastNumber+1,'revision'=>0,'state'=>'Borrador','review_state'=>'Pendiente','current_slot'=>null,'based_on'=>$base['id']??null,'source_version_id'=>$base['source_version_id']??null,'origin'=>'system','created_at'=>$now,'updated_at'=>$now,'created_by'=>$actor,'published_at'=>null,'published_by'=>null,'resolution'=>'','change_reason'=>'','payload_json'=>Content::json($c),'parsed_json'=>$job?Content::json(Content::toParsed($c)):null,'search_text'=>Content::plain(Content::json($c))];
@@ -240,6 +246,7 @@ class Library
     public function review(string $id,int $revision,int $documentRevision,array $input,string $actor): array {
         return DB::transaction(function()use($id,$revision,$documentRevision,$input,$actor) {
             $v=$this->lock($id,$revision);$d=$this->document($v['document_id']);abort_unless($d['kind']==='descriptivos',422);
+            if(($d['baseline_role']??null)==='legacy')Content::fail('Este descriptivo se conserva como antecedente. Revisá un documento de la nueva base.');
             abort_if($d['revision']!=$documentRevision,409,'La identidad del puesto cambió. Recargá antes de guardar.');
             $action=$input['action'];$name=trim($input['canonical_name']??'');$area=trim($input['normalized_area']??'');$comment=trim($input['comment']??'');
             if($action!=='save' && (!$name||!$area||empty($input['confirmed'])))Content::fail('Completá nombre y área y confirmá la revisión.');

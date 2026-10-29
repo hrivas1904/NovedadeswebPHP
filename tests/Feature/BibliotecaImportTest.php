@@ -45,7 +45,26 @@ class BibliotecaImportTest extends TestCase {
     }
     public function test_sync_unchanged_sources_creates_no_versions_or_events():void {
         $bundle=getenv('BIBLIOTECA_TEST_BUNDLE');$this->assertNotFalse($bundle);(new Importer)->import($bundle);
-        $root=getenv('BIBLIOTECA_TEST_SOURCE');$this->assertNotFalse($root);config(['biblioteca.source_root'=>$root]);
+        // Sync the imported snapshot, not the live folder, which can acquire new documents.
+        $fixture=$this->storage.'/source-fixture';
+        foreach(Content::decode(file_get_contents(resource_path('biblioteca/sources.json')))['folders'] as $folder)File::ensureDirectoryExists($fixture.'/'.$folder['path']);
+        $sources=[];
+        foreach(DB::table('bib_sources')->get() as $row) {
+            $raw=Content::decode($row->raw_json);$relative=$raw['source']['relative_path']??null;if(!$relative)continue;
+            $relative=str_replace('\\','/',$relative);$time=$raw['version']['imported_at']??$raw['imported_at']??'';
+            if(!isset($sources[$relative])||$time>$sources[$relative]['time'])$sources[$relative]=['row'=>(array)$row,'time'=>$time];
+        }
+        foreach($sources as $relative=>$source) {
+            $this->assertDoesNotMatchRegularExpression('~(^[\\/]|^[A-Za-z]:|(^|[\\/])\.\.([\\/]|$))~',$relative);
+            if(is_file($this->storage.'/'.$source['row']['snapshot']))$original=Uploads::sourcePath($source['row']);
+            else {
+                $root=getenv('BIBLIOTECA_TEST_SOURCE');$this->assertNotFalse($root);
+                $original=$root.'/'.$relative;$this->assertFileExists($original);
+                $this->assertSame($source['row']['sha256'],hash_file('sha256',$original));
+            }
+            $target=$fixture.'/'.$relative;File::ensureDirectoryExists(dirname($target));File::copy($original,$target);
+        }
+        config(['biblioteca.source_root'=>$fixture]);
         $before=[DB::table('bib_versions')->count(),DB::table('bib_events')->count()];
         $report=(new Synchronizer)->run('prueba');$this->assertSame(41,$report['analyzed']);$this->assertSame(41,$report['unchanged']);
         foreach(['new','modified','removed','restored'] as $key)$this->assertSame(0,$report[$key]);$this->assertSame([],$report['errors']);

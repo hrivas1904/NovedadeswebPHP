@@ -3,14 +3,33 @@
 @php
  $newVersion=$newVersion??false;
 @endphp
-<div class="bib-page-heading"><div><h2 id="bib-editor-title">{{ $upload?'Revisar importación':($newVersion?'Editar documento':($entry?'Editar borrador':'Nuevo documento')) }}</h2><p>{{ $collections[$kind]['label'] }}<span id="bib-editor-version">@if($entry) · {{ $newVersion?'Basada en la versión':'Versión interna' }} {{ $entry['version']['number'] }}@endif</span></p></div><a class="btn btn-outline-secondary" data-bib-cancel href="{{ $entry?route('biblioteca.show',['document'=>$entry['document']['id'],'version'=>$entry['version']['id']]):route('biblioteca.manage') }}">Volver</a></div>
+<div class="bib-page-heading"><div><h2 id="bib-editor-title">{{ $upload?'Revisar importación':($newVersion?'Editar documento':($entry?'Editar borrador':'Nuevo documento')) }}</h2><p>{{ $collections[$kind]['label'] }}<span id="bib-editor-version">@if($entry) · {{ $newVersion?'Basada en: ':'' }}{{ $entry['versionLabel'] }}@endif</span></p></div><a class="btn btn-outline-secondary" data-bib-cancel href="{{ $entry?route('biblioteca.show',['document'=>$entry['document']['id'],'version'=>$entry['version']['id']]):route('biblioteca.manage') }}">Volver</a></div>
 @if(!$entry&&!$upload)<div class="bib-kind-picker"><label for="bib-kind">Colección</label><select class="form-select" id="bib-kind" data-new-url="{{ route('biblioteca.new') }}">@foreach($collections as $k=>$c)<option value="{{ $k }}" @selected($kind===$k)>{{ $c['label'] }}</option>@endforeach</select></div>@endif
 @if($upload)<div class="alert {{ $upload['error']?'alert-warning':'alert-info' }}"><strong>{{ $upload['name'] }}</strong><br>{{ $upload['error']?:'Revisá los campos propuestos. La incorporación conserva el original y deja la versión pendiente de validación.' }}</div>
 <section class="bib-section"><h3>Destino de la incorporación</h3><div class="bib-form-grid bib-reading"><div><label for="bib-destination">Incorporar como</label><select id="bib-destination" class="form-select">@if(!$upload['error'])<option value="new">Nuevo puesto</option><option value="version">Nueva versión de un puesto existente</option><option value="document">Documento de un puesto existente</option>@endif<option value="support">Fuente complementaria</option></select></div><div><label for="bib-destination-document">Puesto existente</label><select id="bib-destination-document" class="form-select"><option value="">Seleccionar</option>@foreach($destinations as $d)<option value="{{ $d['document']['id'] }}">{{ $d['title'] }} · {{ $d['area'] }}</option>@endforeach</select></div></div></section>@endif
 @if($newVersion)<div class="alert alert-info" id="bib-new-version-notice">Los cambios se guardarán como una nueva versión en borrador. La versión {{ $entry['version']['number'] }} se conservará en el historial. Publicar requiere una confirmación posterior.</div>@endif
 <form id="bib-editor" novalidate>
 @if($kind==='descriptivos')
-<section class="bib-section"><h3>Identificación del puesto</h3><div class="bib-form-grid bib-reading">@foreach(['name'=>'Nombre del puesto','area'=>'Área','sector'=>'Sector / servicio','reportsTo'=>'Reporta a','supervisor'=>'Supervisor directo','supervises'=>'Supervisa / personal a cargo'] as $field=>$label)<div><label for="bib-{{ $field }}">{{ $label }} @if(in_array($field,['name','area']))<span aria-label="obligatorio">*</span>@endif</label><input class="form-control" id="bib-{{ $field }}" data-field="{{ $field }}" maxlength="4000" value="{{ $content[$field] }}"></div>@endforeach</div></section>
+<section class="bib-section"><h3>Identificación del puesto</h3><div class="bib-form-grid bib-reading">
+@foreach(['name'=>'Nombre del puesto','area'=>'Área','sector'=>'Sector / servicio','reportsTo'=>'Reporta a','supervisor'=>'Supervisor directo','supervises'=>'Supervisa / personal a cargo'] as $field=>$label)
+<div><label for="bib-{{ $field }}">{{ $label }} @if(in_array($field,['name','area']))<span aria-label="obligatorio">*</span>@endif</label>
+@if($field==='sector')
+<select class="form-select" id="bib-sector" data-field="sector" aria-describedby="bib-sector-help">
+<option value="">Sin seleccionar</option>
+@if($sectorOptions['unlisted'])
+<option value="{{ $sectorOptions['current'] }}" selected>{{ $sectorOptions['current'] }} — valor actual fuera del catálogo activo</option>
+@endif
+@foreach($sectorOptions['names'] as $name)
+<option value="{{ $name }}" @selected($sectorOptions['current']===$name)>{{ $name }}</option>
+@endforeach
+</select>
+<small id="bib-sector-help" class="d-block text-muted">Áreas activas de <a href="{{ route('rrhh.parametrizacionesGenerales') }}" target="_blank" rel="noopener">Parametrización</a>. El valor anterior se conserva hasta que elijas otra opción.</small>
+@else
+<input class="form-control" id="bib-{{ $field }}" data-field="{{ $field }}" maxlength="4000" value="{{ $content[$field] }}">
+@endif
+</div>
+@endforeach
+</div></section>
 <div id="bib-job-groups"></div>
 <section class="bib-section"><h3>Secciones adicionales</h3><div class="bib-reading"><div id="bib-additional"></div><button type="button" class="btn btn-sm btn-outline-primary" id="bib-add-section">+ Agregar sección</button></div></section>
 @else
@@ -33,7 +52,7 @@
  foreach($editorContent['additional'] as &$section)$section['blocks']=\App\Services\Biblioteca\Content::sanitizeBlocks($section['blocks']);unset($section);
  }
  if($kind!=='descriptivos')foreach($editorContent['sections'] as &$s){$s['html']=\App\Services\Biblioteca\Content::sanitize($s['html']);}unset($s);
- $editorConfig=['kind'=>$kind,'newVersion'=>$newVersion,'content'=>$editorContent,'groups'=>config('biblioteca.groups'),'version'=>$entry['version']['id']??null,'revision'=>$entry['version']['revision']??0,'requestId'=>$requestId,'url'=>$upload?route('biblioteca.upload.confirm',$upload['id']):($entry?route('biblioteca.action',$entry['version']['id']):route('biblioteca.store')),'actionTemplate'=>route('biblioteca.action','VERSION_PLACEHOLDER'),'upload'=>(bool)$upload];
+ $editorConfig=['kind'=>$kind,'newVersion'=>$newVersion,'sourceVersion'=>$sourceVersion??null,'content'=>$editorContent,'groups'=>config('biblioteca.groups'),'version'=>$entry['version']['id']??null,'revision'=>$entry['version']['revision']??0,'requestId'=>$requestId,'url'=>$upload?route('biblioteca.upload.confirm',$upload['id']):($entry?route('biblioteca.action',$entry['version']['id']):route('biblioteca.store')),'actionTemplate'=>route('biblioteca.action','VERSION_PLACEHOLDER'),'upload'=>(bool)$upload];
 @endphp
 <script type="application/json" id="bib-editor-config">@json($editorConfig)</script>
 @endsection

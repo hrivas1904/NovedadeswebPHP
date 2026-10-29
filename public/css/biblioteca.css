@@ -207,3 +207,11 @@ th[aria-sort="ascending"] .bib-sort-arrow,th[aria-sort="descending"] .bib-sort-a
 .bib-visibility-table td{vertical-align:middle}
 @media(max-width:600px){.bib-visibility-section-row{padding:12px;gap:10px}.bib-visibility-section-row .bib-visibility-control{min-width:108px;max-width:130px}.bib-visibility-section-name{gap:7px}.bib-visibility-section-name strong{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.bib-switch-track,.bib-switch-track:after{transition:none}}
+
+/* One editor per job-description section; paragraphs and lists share the field. */
+.bib-section-editor{padding:0;background:#fff;border:0;margin-bottom:0}
+.bib-job-section-editor{min-height:150px;background:#fff;overflow-wrap:anywhere}
+.bib-job-section-editor>div,.bib-job-section-editor>p{margin:0 0 .75em}
+.bib-job-section-editor>div:last-child,.bib-job-section-editor>p:last-child{margin-bottom:0}
+.bib-job-section-editor ul,.bib-job-section-editor ol{padding-left:24px;margin:0 0 .75em}
+.bib-job-section-editor li{padding:3px 0}

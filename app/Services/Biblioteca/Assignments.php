@@ -36,7 +36,7 @@ class Assignments
                 ->where($category ? 'ID_CATEG' : 'LEGAJO', $id)->lockForUpdate()->first();
             abort_unless($master, 404);
             if ($document) {
-                $d = DB::table('bib_documents')->where('id', $document)->first();
+                $d = DB::table('bib_documents')->where('id', $document)->lockForUpdate()->first();
                 if (! $d || $d->kind !== 'descriptivos') {
                     Content::fail('Seleccioná un descriptivo de puesto.');
                 }
@@ -50,6 +50,9 @@ class Assignments
             abort_if((int) ($before?->revision ?? 0) !== $revision, 409, 'La asignación cambió. Actualizá la página antes de guardar.');
             if (($before?->document_id ?? null) === $document) {
                 return;
+            }
+            if ($document && ($d->baseline_role ?? null) === 'legacy') {
+                Content::fail('Este descriptivo es un antecedente. Seleccioná uno de la nueva base.');
             }
             $after = [$key => $id, 'document_id' => $document, 'revision' => $revision + 1,
                 'updated_at' => Library::now(), 'updated_by' => $actor];
@@ -120,6 +123,6 @@ class Assignments
         }
 
         return ['categories' => $categoryRows, 'employees' => $employeeRows,
-            'documents' => $docs->sortBy(fn ($d) => Content::normalize($d->canonical_name ?: $d->title))->values()->all()];
+            'documents' => $docs->filter(fn ($d) => ($d->baseline_role ?? null) !== 'legacy')->sortBy(fn ($d) => Content::normalize($d->canonical_name ?: $d->title))->values()->all()];
     }
 }
