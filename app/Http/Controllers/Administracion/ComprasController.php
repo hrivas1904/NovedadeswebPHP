@@ -942,57 +942,71 @@ class ComprasController extends Controller
     }
 
     public function listarRemitos($id)
-{
-    $remitos = DB::table('pedidos_compras_adjuntos')
-        ->where('pedido_compra_id', $id)
-        ->where('tipo', 'REMITO')
-        ->orderByDesc('created_at')
-        ->get();
+    {
+        $remitos = DB::table('pedidos_compras_adjuntos')
+            ->where('pedido_compra_id', $id)
+            ->where('tipo', 'REMITO')
+            ->orderByDesc('created_at')
+            ->get();
 
-    return response()->json($remitos);
-}
-
-public function eliminarRemito($id)
-{
-    $remito = DB::table('pedidos_compras_adjuntos')
-        ->where('id', $id)
-        ->where('tipo', 'REMITO')
-        ->first();
-
-    if (!$remito) {
-        return response()->json([
-            'success' => false,
-            'mensaje' => 'Remito no encontrado.'
-        ], 404);
+        return response()->json($remitos);
     }
 
-    try {
-
-        if (
-            $remito->archivo &&
-            Storage::disk('public')->exists($remito->archivo)
-        ) {
-            Storage::disk('public')->delete($remito->archivo);
-        }
-
-        DB::table('pedidos_compras_adjuntos')
+    public function eliminarRemito($id)
+    {
+        $remito = DB::table('pedidos_compras_adjuntos')
             ->where('id', $id)
             ->where('tipo', 'REMITO')
-            ->delete();
+            ->first();
 
-        return response()->json([
-            'success' => true,
-            'mensaje' => 'Remito eliminado correctamente.'
-        ]);
+        if (!$remito) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Remito no encontrado.'
+            ], 404);
+        }
 
-    } catch (\Exception $e) {
+        try {
 
-        return response()->json([
-            'success' => false,
-            'mensaje' => 'No se pudo eliminar el remito.'
-        ], 500);
+            if (
+                $remito->archivo &&
+                Storage::disk('public')->exists($remito->archivo)
+            ) {
+                Storage::disk('public')->delete($remito->archivo);
+            }
+
+            DB::table('pedidos_compras_adjuntos')
+                ->where('id', $id)
+                ->where('tipo', 'REMITO')
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Remito eliminado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No se pudo eliminar el remito.'
+            ], 500);
+        }
     }
-}
 
-
+    public function obtenerValorDolarOficial()
+    {
+        try {
+            $ch = curl_init("https://dolarapi.com/v1/dolares/oficial");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $jsonResponse = curl_exec($ch);
+            curl_close($ch);
+            $data = json_decode($jsonResponse, true);
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'No se pudo obtener el valor dolar'
+            ], 500);
+        };
+    }
 }
