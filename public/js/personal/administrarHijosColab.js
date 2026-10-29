@@ -6,6 +6,8 @@ let fechaNacimiento;
 let legajo;
 
 function cargarHijoColab(legajo) {
+    $("#divHijosEdit").data("legajo", legajo);
+
     $.ajax({
         url: "/rrhh/personal/listarFamiliares",
         type: "GET",
@@ -13,7 +15,7 @@ function cargarHijoColab(legajo) {
 
         success: function (res) {
             if (res.success) {
-                const familiares = res.data;              
+                const familiares = res.data;
 
                 if (familiares && familiares.length > 0) {
                     $("#divHijosEdit").empty().removeAttr("hidden");
@@ -85,18 +87,21 @@ function cargarHijoColab(legajo) {
 
 $(document).on("click", ".btn-edit-hijo", function () {
     div = $(this).closest(".cardHijos");
-    div.find(".inputNombre, .inputDni, .inputFechaNacimiento").prop("readonly",false);
+    div.find(".inputNombre, .inputDni, .inputFechaNacimiento").prop(
+        "readonly",
+        false,
+    );
     $(this).addClass("d-none");
     div.find(".btn-update-hijo").removeClass("d-none");
 });
 
 $(document).on("click", ".btn-update-hijo", function () {
-    div=$(this).closest(".cardHijos");
-    idHijo=div.find(".inputId").val();
-    dni=div.find(".inputDni").val();
-    fechaNacimiento=div.find(".inputFechaNacimiento").val();
-    nombre=div.find(".inputNombre").val();
-    legajo=div.find(".inputLegajo").val();
+    div = $(this).closest(".cardHijos");
+    idHijo = div.find(".inputId").val();
+    dni = div.find(".inputDni").val();
+    fechaNacimiento = div.find(".inputFechaNacimiento").val();
+    nombre = div.find(".inputNombre").val();
+    legajo = div.find(".inputLegajo").val();
 
     if (!nombre || !dni || !fechaNacimiento) {
         Swal.fire({
@@ -108,9 +113,9 @@ $(document).on("click", ".btn-update-hijo", function () {
             },
         });
         return;
-    };
+    }
 
-    if (dni.length!=8){
+    if (dni.length != 8) {
         Swal.fire({
             title: "Atención",
             icon: "warning",
@@ -120,20 +125,20 @@ $(document).on("click", ".btn-update-hijo", function () {
             },
         });
         return;
-    };
+    }
 
     $.ajax({
         url: "/rrhh/personal/editarFamiliares",
         type: "GET",
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         data: {
-            idHijo:idHijo,
-            dni:dni,
-            fechaNacimiento:fechaNacimiento,
-            nombre:nombre,
-            legajo:legajo
+            idHijo: idHijo,
+            dni: dni,
+            fechaNacimiento: fechaNacimiento,
+            nombre: nombre,
+            legajo: legajo,
         },
         success: function (res) {
             if (res.success) {
@@ -147,11 +152,13 @@ $(document).on("click", ".btn-update-hijo", function () {
                     buttonsStyling: false,
                 });
 
-                div.find(".inputNombre, .inputDni, .inputFechaNacimiento").prop("readonly",true);
+                div.find(".inputNombre, .inputDni, .inputFechaNacimiento").prop(
+                    "readonly",
+                    true,
+                );
                 div.find(".btn-update-hijo").addClass("d-none");
                 div.find(".btn-edit-hijo").removeClass("d-none");
-            }
-            else {
+            } else {
                 Swal.fire({
                     title: "Error",
                     text: "Error al actualizar datos.",
@@ -174,13 +181,13 @@ $(document).on("click", ".btn-update-hijo", function () {
                 buttonsStyling: false,
             });
         },
-    });    
+    });
 });
 
-$(document).on("click",".btn-eliminar-hijo",function(){
-    div=$(this).closest(".cardHijos");
-    idHijo=div.find(".inputId").val();
-    legajo=div.find(".inputLegajo").val();
+$(document).on("click", ".btn-eliminar-hijo", function () {
+    div = $(this).closest(".cardHijos");
+    idHijo = div.find(".inputId").val();
+    legajo = div.find(".inputLegajo").val();
 
     Swal.fire({
         title: "¿Quitar familiar?",
@@ -197,11 +204,13 @@ $(document).on("click",".btn-eliminar-hijo",function(){
                 url: "/rrhh/personal/quitarFamiliares",
                 type: "POST",
                 headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
                 },
-                data: { 
-                    idHijo:idHijo,
-                    legajo:legajo 
+                data: {
+                    idHijo: idHijo,
+                    legajo: legajo,
                 },
                 success: function (res) {
                     if (res.success) {
@@ -264,12 +273,12 @@ $("#btnAgregarHijoEdit").on("click", function (e) {
     $("#divHijosEdit").append(html);
 });
 
-$(document).on("click",".btnGuardarHijo",function(){
-    div=$(this).closest(".fila-hijo");
-    nombre=div.find(".inputNombreGuardar").val();
-    dni=div.find(".inputDniGuardar").val();
-    fechaNacimiento=div.find(".inputFechaNacGuardar").val();
-    legajo=$(".cardHijos").find(".inputLegajo").val();
+$(document).on("click", ".btnGuardarHijo", function () {
+    div = $(this).closest(".fila-hijo");
+    nombre = div.find(".inputNombreGuardar").val();
+    dni = div.find(".inputDniGuardar").val();
+    fechaNacimiento = div.find(".inputFechaNacGuardar").val();
+    legajo = $("#divHijosEdit").data("legajo");
 
     if (!nombre || !dni || !fechaNacimiento) {
         Swal.fire({
@@ -281,9 +290,9 @@ $(document).on("click",".btnGuardarHijo",function(){
             },
         });
         return;
-    };
+    }
 
-    if (dni.length!=8){
+    if (dni.length != 8) {
         Swal.fire({
             title: "Atención",
             icon: "warning",
@@ -293,22 +302,22 @@ $(document).on("click",".btnGuardarHijo",function(){
             },
         });
         return;
-    };
+    }
 
     $.ajax({
-        url:"/rrhh/personal/agregarFamiliares",
-        type:"POST",
-        data:{
-            nombre:nombre,
-            dni:dni,
-            fechaNacimiento:fechaNacimiento,
-            legajo:legajo,
+        url: "/rrhh/personal/agregarFamiliares",
+        type: "POST",
+        data: {
+            nombre: nombre,
+            dni: dni,
+            fechaNacimiento: fechaNacimiento,
+            legajo: legajo,
         },
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
-        success:function(res){
-            if(res.success){
+        success: function (res) {
+            if (res.success) {
                 Swal.fire({
                     title: "Operación exitosa",
                     text: "El familiar ha sido agregado correctamente.",
@@ -319,14 +328,12 @@ $(document).on("click",".btnGuardarHijo",function(){
                     buttonsStyling: false,
                 });
 
-                div.fadeOut(400, function() { 
+                div.fadeOut(400, function () {
                     $(this).remove();
                 });
 
                 cargarHijoColab(legajo);
-
-            }
-            else{
+            } else {
                 Swal.fire({
                     title: "Error",
                     text: "Error al guardar familiar.",
@@ -338,7 +345,7 @@ $(document).on("click",".btnGuardarHijo",function(){
                 });
             }
         },
-        error:function(){
+        error: function () {
             Swal.fire({
                 title: "Error",
                 text: "Error del servidor.",
@@ -348,7 +355,7 @@ $(document).on("click",".btnGuardarHijo",function(){
                 },
                 buttonsStyling: false,
             });
-        }
+        },
     });
 });
 
