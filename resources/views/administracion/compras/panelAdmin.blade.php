@@ -586,6 +586,17 @@
                                     <option value="EUR">EUR - Euro</option>
                                 </select>
                             </div>
+
+                            <div id="cotizacionDolar" class="col-12 col-md-6 col-lg-2 d-none">
+                                <label class="form-label fw-semibold">
+                                    Cotización Dolar
+                                </label>
+                                <input class="form-control" id="inputCotizacionDolar" readonly>
+                                <input
+                                    type="hidden"
+                                    id="inputFechaCotizacion"
+                                    name="fecha_cotizacion">
+                            </div>
                         </div>
 
                         <div class="mb-3">

@@ -402,22 +402,50 @@ function enviarPedido(desdeModal = false) {
 
     const moneda = desdeModal ? $("#fMonedaModal").val() : $("#fMoneda").val();
 
+    // Cotización del dólar oficial
+    const cotizacionUsd = $("#inputCotizacionDolar").val();
+    const fechaCotizacion = $("#inputFechaCotizacion").val();
+
+    // Validación para pedidos en USD
+    if (moneda === "USD") {
+        if (
+            !cotizacionUsd ||
+            !Number.isFinite(Number(cotizacionUsd)) ||
+            Number(cotizacionUsd) <= 0 ||
+            !fechaCotizacion
+        ) {
+            Swal.fire({
+                icon: "warning",
+                title: "Cotización no disponible",
+                text: "No se pudo obtener una cotización válida del dólar. Verificá la información antes de registrar el pedido.",
+            });
+            return;
+        }
+    }
+
     const formData = new FormData();
 
     formData.append("fecha", $("#fFecha").val());
     formData.append("prioridad", $("#fPrioridad").val());
     formData.append("solicitante_id", $("#fUserId").val());
-    formData.append("centro_costo_id", centroCosto);
-    formData.append("proveedor_id", proveedor);
+    formData.append("centro_costo_id", centroCosto || "");
+    formData.append("proveedor_id", proveedor || "");
     formData.append("moneda", moneda);
     formData.append("descripcion", $("#fDescripcion").val());
 
+    // Agregar cotización solamente cuando la moneda sea USD
+    if (moneda === "USD") {
+        formData.append("cotizacion_usd", cotizacionUsd);
+        formData.append("fecha_cotizacion", fechaCotizacion);
+    }
+
+    // Registrar productos
     lineas.forEach((item, i) => {
         formData.append(`detalle[${i}][producto_id]`, item.producto_id);
 
         formData.append(`detalle[${i}][cantidad]`, item.cantidad);
 
-        formData.append(`detalle[${i}][precio]`, item.precio);
+        formData.append(`detalle[${i}][precio]`, item.precio ?? "");
 
         formData.append(
             `detalle[${i}][descripcion_item]`,
@@ -425,6 +453,7 @@ function enviarPedido(desdeModal = false) {
         );
     });
 
+    // Registrar adjuntos
     archivosSeleccionados.forEach((file, i) => {
         formData.append(`adjuntos[${i}]`, file);
     });
@@ -451,6 +480,7 @@ function enviarPedido(desdeModal = false) {
             }).then(() => {
                 if (desdeModal) {
                     $("#modalCargaPedido").modal("hide");
+
                     $("#tablaPedidosCompras")
                         .DataTable()
                         .ajax.reload(null, false);
@@ -463,16 +493,81 @@ function enviarPedido(desdeModal = false) {
         error: function (xhr) {
             console.error(xhr.responseText);
 
+            const errores = xhr.responseJSON?.errors;
+
+            const mensaje = errores
+                ? Object.values(errores).flat().join("\n")
+                : (xhr.responseJSON?.mensaje ??
+                  "No fue posible registrar el pedido.");
+
             Swal.fire({
                 icon: "error",
                 title: "Ocurrió un error",
-                text:
-                    xhr.responseJSON?.mensaje ??
-                    "No fue posible registrar el pedido.",
+                text: mensaje,
             });
         },
     });
 }
+
+function actualizarVisibilidadCotizacion() {
+    const moneda = $("#fMonedaModal").val();
+
+    if (moneda === "USD") {
+        $("#cotizacionDolar").removeClass("d-none");
+    } else {
+        $("#cotizacionDolar").addClass("d-none");
+        $("#inputCotizacionDolar").val("");
+    }
+}
+
+function actualizarVisibilidadCotizacion() {
+    const moneda = $("#fMonedaModal").val();
+
+    $("#cotizacionDolar").toggleClass("d-none", moneda !== "USD");
+}
+
+$(document).ready(function () {
+    $("#fMonedaModal").on("change", function () {
+        actualizarVisibilidadCotizacion();
+    });
+
+    $("#modalCargaPedido").on("show.bs.modal", function () {
+        actualizarVisibilidadCotizacion();
+
+        $.ajax({
+            url: "/administracion/obtenerValorDolarOficial",
+            type: "GET",
+            dataType: "json",
+        })
+            .done(function (res) {
+                $("#inputCotizacionDolar").val(res.venta);
+
+                // Convertir fecha UTC a fecha y hora de Argentina
+                const fecha = new Date(res.fechaActualizacion);
+
+                const fechaArgentina = new Intl.DateTimeFormat("sv-SE", {
+                    timeZone: "America/Argentina/Buenos_Aires",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hourCycle: "h23",
+                })
+                    .format(fecha)
+                    .replace(" ", " ");
+
+                $("#inputFechaCotizacion").val(fechaArgentina);
+            })
+            .fail(function (xhr) {
+                console.error("Error al obtener cotización:", xhr);
+
+                $("#inputCotizacionDolar").val("");
+                $("#inputFechaCotizacion").val("");
+            });
+    });
+});
 
 function cancelarEdicion() {
     Swal.fire({
@@ -534,3 +629,23 @@ function cancelarEdicion() {
         });
     });
 }
+
+$("#modalCargaPedido").on("hidden.bs.modal", function () {
+    // Limpiar campos del formulario
+    $(this).find("input, textarea").not('[type="hidden"]').val("");
+    $(this).find("select").val("").trigger("change");
+
+    // Limpiar cotización
+    $("#inputCotizacionDolar").val("");
+    $("#inputFechaCotizacion").val("");
+    $("#cotizacionDolar").addClass("d-none");
+
+    // Limpiar archivos seleccionados
+    archivosSeleccionados = [];
+
+    // Limpiar input de archivos
+    $(this).find('input[type="file"]').val("");
+
+    // Limpiar productos cargados
+    $("#tablaDetallePedido tbody").empty();
+});

@@ -62,28 +62,48 @@ class ComprasController extends Controller
         return response()->json($productos);
     }
 
+
     public function guardarPedido(Request $request)
     {
         $request->validate([
-            'fecha'                      => ['required', 'date'],
-            'prioridad'                  => ['required'],
-            'centro_costo_id'            => ['nullable', 'integer', 'exists:centros_costo,id'],
-            'proveedor_id'               => ['nullable', 'integer', 'exists:proveedores,id'],
-            'detalle'                    => ['required', 'array', 'min:1'],
-            'detalle.*.producto_id'      => ['required', 'integer', 'exists:productos,id'],
-            'detalle.*.cantidad'         => ['required', 'numeric', 'min:0.01'],
-            'detalle.*.precio'           => ['nullable', 'numeric', 'min:0'],
-            'adjuntos'                   => ['nullable', 'array'],
-            'adjuntos.*'                 => ['file', 'max:3072', 'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'],
-            'moneda'                     => ['required', 'in:ARS,USD,EUR'],
+            'fecha'                   => ['required', 'date'],
+            'prioridad'               => ['required'],
+            'centro_costo_id'         => ['nullable', 'integer', 'exists:centros_costo,id'],
+            'proveedor_id'            => ['nullable', 'integer', 'exists:proveedores,id'],
+            'descripcion'             => ['nullable', 'string'],
+
+            'detalle'                 => ['required', 'array', 'min:1'],
+            'detalle.*.producto_id'   => ['required', 'integer', 'exists:productos,id'],
+            'detalle.*.cantidad'      => ['required', 'numeric', 'min:0.01'],
+            'detalle.*.precio'        => ['nullable', 'numeric', 'min:0'],
+            'detalle.*.descripcion_item' => ['nullable', 'string'],
+
+            'adjuntos'                => ['nullable', 'array'],
+            'adjuntos.*'              => ['file', 'max:3072', 'mimes:pdf,jpg,jpeg,png,webp,xlsx,xls,doc,docx'],
+
+            'moneda'                  => ['required', 'in:ARS,USD,EUR'],
+            'cotizacion_usd'          => ['required_if:moneda,USD', 'nullable', 'numeric', 'gt:0'],
+            'fecha_cotizacion'        => ['required_if:moneda,USD', 'nullable', 'date'],
         ]);
 
         DB::beginTransaction();
 
+        $archivosGuardados = [];
+
         try {
 
+            // Cotización únicamente para pedidos USD
+            $cotizacion = $request->moneda === 'USD'
+                ? $request->cotizacion_usd
+                : null;
+
+            $fechaCotizacion = $request->moneda === 'USD'
+                ? $request->fecha_cotizacion
+                : null;
+
+            // REGISTRAR CABECERA
             $pedido = DB::select(
-                "CALL SP_GUARDAR_PEDIDO_COMPRA(?,?,?,?,?,?,?)",
+                "CALL SP_GUARDAR_PEDIDO_COMPRA(?,?,?,?,?,?,?,?,?)",
                 [
                     $request->fecha,
                     strtoupper($request->prioridad),
@@ -92,11 +112,14 @@ class ComprasController extends Controller
                     $request->proveedor_id ?: null,
                     $request->moneda,
                     $request->descripcion,
+                    $cotizacion,
+                    $fechaCotizacion
                 ]
             );
 
             $pedidoId = $pedido[0]->pedido_id;
 
+            // REGISTRAR DETALLE
             foreach ($request->detalle as $item) {
 
                 DB::statement(
@@ -105,29 +128,65 @@ class ComprasController extends Controller
                         $pedidoId,
                         $item['producto_id'],
                         $item['cantidad'],
-                        $item['precio'] !== '' ? $item['precio'] : null,
-                        $item['descripcion_item']
+                        $item['precio'] ?? null,
+                        $item['descripcion_item'] ?? null
                     ]
                 );
             }
 
+            // REGISTRAR ADJUNTOS
             if ($request->hasFile('adjuntos')) {
+
                 foreach ($request->file('adjuntos') as $archivo) {
-                    $path = $archivo->store('pedidos_compras/' . $pedidoId, 'public');
+
+                    $path = $archivo->store(
+                        'pedidos_compras/' . $pedidoId,
+                        'public'
+                    );
+
+                    if ($path === false) {
+                        throw new \RuntimeException(
+                            'No se pudo almacenar el archivo adjunto.'
+                        );
+                    }
+
+                    $archivosGuardados[] = $path;
 
                     DB::statement(
                         "CALL SP_GUARDAR_ADJUNTO_PEDIDO_COMPRA(?,?,?,?)",
-                        [$pedidoId, $path, $archivo->getClientOriginalName(), 'PRESUPUESTO']
+                        [
+                            $pedidoId,
+                            $path,
+                            $archivo->getClientOriginalName(),
+                            'PRESUPUESTO'
+                        ]
                     );
                 }
             }
 
+            // EVALUAR AUTODERIVACIÓN / AUTOAUTORIZACIÓN
+            DB::statement(
+                "CALL SP_AUTODERIVACION_AUTOAUTORIZACION_PCOMPRA(?,?)",
+                [
+                    $pedidoId,
+                    Auth::id()
+                ]
+            );
+
             DB::commit();
 
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'pedido_id' => $pedidoId
+            ]);
         } catch (\Exception $e) {
 
             DB::rollBack();
+
+            // Limpiar archivos almacenados si falla la operación
+            foreach ($archivosGuardados as $path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+            }
 
             return response()->json([
                 'success' => false,
@@ -136,13 +195,15 @@ class ComprasController extends Controller
         }
     }
 
+
+
     public function actualizarPedido(Request $request, $id)
     {
         $validated = $request->validate([
             'prioridad'                  => ['required', 'in:BAJA,MEDIA,URGENTE'],
             'centro_costo_id'            => ['nullable', 'integer', 'exists:centros_costo,id'],
             'proveedor_id'               => ['nullable', 'integer', 'exists:proveedores,id'],
-            'moneda'                     => ['nullable', 'string'],
+            'moneda'                     => ['nullable', 'in:ARS,USD,EUR'],
             'descripcion'                => ['nullable', 'string'],
 
             'detalle'                    => ['required', 'array', 'min:1'],
@@ -152,7 +213,6 @@ class ComprasController extends Controller
             'detalle.*.precio'           => ['nullable', 'numeric', 'min:0'],
             'detalle.*.descripcion_item' => ['nullable', 'string'],
 
-            // NUEVO: productos eliminados
             'eliminados'                 => ['nullable', 'array'],
             'eliminados.*'               => ['integer', 'distinct'],
         ]);
@@ -185,14 +245,14 @@ class ComprasController extends Controller
                     ->delete();
             }
 
-            // 3. ACTUALIZAR O INSERTAR DETALLE
+            // 3. ACTUALIZAR O INSERTAR DETALLES
             foreach ($validated['detalle'] as $item) {
 
                 $precio = $item['precio'] ?? null;
 
                 if (!empty($item['id'])) {
 
-                    // Línea existente
+                    // Actualizar línea existente
                     DB::statement(
                         "CALL SP_ACTUALIZAR_DETALLE_PEDIDO_COMPRA(?,?,?,?,?)",
                         [
@@ -205,7 +265,7 @@ class ComprasController extends Controller
                     );
                 } else {
 
-                    // Línea nueva
+                    // Registrar nueva línea
                     DB::statement(
                         "CALL SP_GUARDAR_DETALLE_PEDIDO_COMPRA(?,?,?,?,?)",
                         [
@@ -219,6 +279,16 @@ class ComprasController extends Controller
                 }
             }
 
+            // 4. EVALUAR AUTODERIVACIÓN / AUTOAUTORIZACIÓN
+            DB::statement(
+                "CALL SP_AUTODERIVACION_AUTOAUTORIZACION_PCOMPRA(?,?)",
+                [
+                    $id,
+                    Auth::id()
+                ]
+            );
+
+            // 5. CONFIRMAR TRANSACCIÓN
             DB::commit();
 
             return response()->json([
