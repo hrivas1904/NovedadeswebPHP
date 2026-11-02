@@ -9,6 +9,7 @@ use App\Http\Controllers\RRHH\GeoController;
 use App\Http\Controllers\Core\TicketController;
 use App\Http\Controllers\RRHH\ParametrosController;
 use App\Http\Controllers\RRHH\CronogramaController;
+use App\Http\Controllers\RRHH\DescriptivosController;
 use App\Http\Controllers\RRHH\ZktecoController;
 use App\Http\Controllers\RRHH\MedicosController;
 use App\Http\Controllers\RRHH\EddController;
@@ -459,6 +460,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/medicos/obtenerLegajo/{idMedico}', [MedicosController::class, 'obtenerLegajoMedico']);
     Route::get('/medicos/obtenerServicios', [MedicosController::class, 'obtenerServiciosMedicos']);
     Route::put('/medicos/registrarNuevoMedico', [MedicosController::class, 'registrarNuevoMedico']);
+
+    //DESCRIPTIVOS
+    Route::prefix('descriptivos')->name('descriptivos.')->group(function () {
+        Route::get('/miDescriptivo', [DescriptivosController::class, 'miDescriptivo'])->name('miDescriptivo');
+    });
 
     // EVALUACIÓN DE DESEMPEÑO
     Route::prefix('edd')->name('edd.')->middleware('can:edd.acceder')->group(function () {

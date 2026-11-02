@@ -183,7 +183,7 @@
                             </a>
                             <ul class="submenu">
                                 <li><a class="submenu-link" href="{{ route('rrhh.miLegajo') }}">Mi legajo</a></li>
-                                <li><a class="submenu-link" href="{{ route('biblioteca.mine') }}">Mi Descriptivo</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.miDescriptivo') }}">Mi Descriptivo</a></li>
                                 @if (Auth::user()->rol === 'Coordinador/a L2' ||
                                 Auth::user()->rol === 'Administrador/a' ||
                                 Auth::user()->rol === 'Coordinador/a')
