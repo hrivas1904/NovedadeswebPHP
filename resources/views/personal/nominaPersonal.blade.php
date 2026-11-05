@@ -138,99 +138,80 @@
         </div>
     </div>
 </div>
+
 <div id="contenedorConstancia" class="d-none"></div>
 @endsection
 
 @push('modals')
-<div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-    aria-hidden="true" data-bs-backdrop="static">
-
+<div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content p-2">
-
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fa-solid fa-user me-2"></i> Dar de alta nuevo colaborador
-                </h5>
+                <h5 class="modal-title">Alta de personal</h5>
                 <button type="button" class="btn-close" onclick="cerrarModal()"></button>
             </div>
-
             <div class="modal-body">
                 <form id="formAltaColaborador">
                     @csrf
-                    <div class="row g-4 mb-4">
-                        <div class="col-lg-6">
-                            <div class="section-divider mb-3">
-                                <span>Datos Personales</span>
-                            </div>
-                            <div class="empleado-box p-3">
-                                <div class="row g-3">
-                                    <div class="col-lg-7">
-                                        <label class="form-label">Apellido y Nombre</label>
-                                        <input type="text" name="nombre_completo" id="nombre_completo"
-                                            class="form-control" required>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Estado</label>
-                                        <select name="estado" id="estado" class="form-select">
-                                            <option value="ACTIVO">ACTIVO</option>
-                                            <option value="DE BAJA">DE BAJA</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label class="form-label">DNI</label>
-                                        <input type="number" name="dni" id="dni" class="form-control"
-                                            inputmode="numeric" maxlength="8" required>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <label class="form-label fw-bold">CUIL</label>
-                                        <div class="input-group">
-                                            <input type="number" id="firstPartCuil" class="form-control text-center"
-                                                min="00" style="max-width: 70px;" maxlength="2" required>
-                                            <span class="input-group-text">-</span>
-                                            <input type="text" id="middlePartCuil"
-                                                class="form-control text-center bg-light" readonly>
-                                            <span class="input-group-text">-</span>
-                                            <input type="number" id="lastPartCuil" class="form-control text-center"
-                                                min="0" max="9" style="max-width: 60px;"
-                                                maxlength="1" required>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-12 col-xl-6">
+                            <div class="card p-3">
+                                <div class="d-flex flex-column justify-content-start gap-3">
+                                    <label class="text-muted fs-6 fw-bold">Datos personales</label>
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-4 col-xl-6">
+                                            <label class="label-control text-muted">Nombre</label>
+                                            <input type="text" name="nombre" class="form-control" required>
                                         </div>
-                                        <input name="cuil" id="cuil" hidden>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <label class="form-label">Fecha nacimiento</label>
-                                        <input id="fecha_nacimiento" name="fecha_nacimiento" class="form-control"
-                                            type="text" required>
+                                        <div class="col-12 col-md-4 col-xl-6">
+                                            <label class="label-control text-muted">Apellido</label>
+                                            <input type="text" name="apellido" class="form-control" required>
+                                        </div>
+                                        <div class="col-12 col-md-4 col-xl-3">
+                                            <label class="label-control text-muted">DNI</label>
+                                            <input type="number" name="dni" class="form-control" inputmode="numeric" maxlength="8" required>
+                                        </div>
+                                        <div class="col-12 col-md-7 col-xl-6">
+                                            <label class="label-control text-muted">CUIL</label>
+                                            <div class="input-group">
+                                                <input type="text" id="firstPartCuil" class="form-control text-center" min="00" style="max-width: 70px;" maxlength="2" required>
+                                                <input type="text" id="middlePartCuil" class="form-control text-center bg-light" readonly>
+                                                <input type="text" id="lastPartCuil" class="form-control text-center" min="0" max="9" style="max-width: 60px;" maxlength="1" required>
+                                            </div>
+                                            <input name="cuil" id="cuil" hidden>
+                                        </div>
+                                        <div class="col-12 col-md-5 col-xl-3">
+                                            <label class="label-control text-muted">Fecha nacimiento</label>
+                                            <input id="fecha_nacimiento" name="fecha_nacimiento" class="form-control"
+                                                type="text" required>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-lg-6">
-                            <div class="section-divider mb-3">
-                                <span>Datos de Contacto</span>
-                            </div>
-                            <div class="empleado-box p-3">
-                                <div class="row g-3">
-                                    <div class="col-lg-7">
-                                        <label class="form-label">Correo electrónico</label>
-                                        <input type="email" name="email" id="email" class="form-control"
-                                            required>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <label class="form-label">Teléfono</label>
-                                        <input type="number" name="telefono" id="telefono" class="form-control">
-                                    </div>
-                                    <div class="col-lg-7">
-                                        <label class="form-label">Domicilio</label>
-                                        <input type="text" name="domicilio" id="domicilio" class="form-control">
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <label class="form-label">Localidad</label>
-                                        <select id="selectLocalidad" name="localidad" class="form-select"
-                                            style="width:100%" required>
-                                            <option value="">Seleccionar localidad</option>
-                                        </select>
+                        <div class="col-12 col-md-12 col-xl-6">
+                            <div class="card p-3">
+                                <div class="d-flex flex-column justify-content-start gap-3">
+                                    <label class="text-muted fs-6 fw-bold">Datos de contacto</label>
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-7 col-xl-7">
+                                            <label class="label-control text-muted">Correo electrónico</label>
+                                            <input type="email" name="email" class="form-control" required>
+                                        </div>
+                                        <div class="col-lg-5 col-md-5 col-xl-5">
+                                            <label class="label-control text-muted">Teléfono</label>
+                                            <input type="text" name="telefono" id="telefono" class="form-control">
+                                        </div>
+                                        <div class="col-12 col-md-7 col-xl-7">
+                                            <label class="label-control text-muted">Domicilio</label>
+                                            <input type="text" name="domicilio" id="domicilio" class="form-control">
+                                        </div>
+                                        <div class="col-12 col-md-5 col-xl-5">
+                                            <label class="label-control text-muted">Localidad</label>
+                                            <select id="selectLocalidad" name="localidad" class="form-select" style="width:100%" required>
+                                                <option value="">Seleccionar localidad</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
