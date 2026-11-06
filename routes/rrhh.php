@@ -512,4 +512,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['dashboard.publico'])->group(function () {
     Route::get('/guiaInterna/{token}', [PersonalController::class, 'flyerPublico'])->name('flyerPublico');
     Route::get('/votacionEntrePares/{token}', [VotacionesController::class, 'index'])->name('votacionEntrePares.index');
+    Route::get('/obtenerColaboradoresxGrupo/{token}', [VotacionesController::class, 'obtenerColaboradoresxGrupo'])->name('votacionEntrePares.obtenerColaboradoresxGrupo');
+    Route::post('/votaciones/validarDni/{token}',[VotacionesController::class, 'validarDniVotacion'])->middleware('throttle:10,1')->name('votaciones.validarDni');
+    Route::post('/votaciones/emitirVoto/{token}',[VotacionesController::class, 'emitirVoto'])->middleware('throttle:10,1')->name('votaciones.emitirVoto');
 });

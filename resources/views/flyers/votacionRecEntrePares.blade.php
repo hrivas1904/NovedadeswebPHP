@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reconocimiento entre Pares</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -629,6 +632,130 @@
             </div>
         </div>
     </header>
+
+    <main class="wrap my-4">
+        <section id="sectionEncuesta">
+            <div class="row g-3">
+                <div class="col-12 col-lg-7">
+                    <div class="d-flex flex-column gap-3">
+                        <div class="card p-3">
+                            <div class="d-flex flex-column gap-2" id="divValidacionDni">
+
+                                <label for="inputDni" class="form-label text-muted fw-bold">
+                                    Ingresar DNI (sin puntos)
+                                </label>
+
+                                <div class="input-group">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="inputDni"
+                                        name="dni"
+                                        placeholder="Ej.: 30123456"
+                                        maxlength="8"
+                                        inputmode="numeric"
+                                        autocomplete="off">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        id="btnValidarDni">
+                                        <i class="fa-solid fa-id-card me-2"></i>
+                                        Validar identidad
+                                    </button>
+                                </div>
+
+                                <div id="mensajeValidacionDni" class="d-none"></div>
+
+                            </div>
+                        </div>
+
+                        <div id="divResponderPreguntas" class="d-none d-flex flex-column gap-3">
+                            <div class="card p-3">
+                                <div class="d-flex flex-column gap-2">
+                                    <label class="label-control text-muted fw-bold fs-6">Grupo 1 de 3</label>
+                                    <small class="text-muted">
+                                        Áreas de este grupo: Enfermería
+                                    </small>
+                                    <label class="label-control text-muted fw-bold">¿Quién de este grupo hace fácil lo difícil?</label>
+                                    <select class="form-select" id="selectorGrupo1" data-id="1">
+                                        <option value="">Selecciona un/a colaborador/a</option>
+                                    </select>
+                                    <label class="label-control text-muted fw-bold">¿Por qué?</label>
+                                    <input class="form-control" id="inputRta12" placeholder="Escribe aquí..." data-id="2">
+                                    <label class="label-control text-muted fw-bold">¿Por qué la elegiste?</label>
+                                    <small class="text-muted">
+                                        Contanos una situación concreta en la que esta persona hizo fácil algo difícil.
+                                    </small>
+                                    <input class="form-control" id="inputRta13" placeholder="Escribe aquí..." data-id="3">
+                                </div>
+                            </div>
+                            <div class="card p-3">
+                                <div class="d-flex flex-column gap-2">
+                                    <label class="label-control text-muted fw-bold fs-6">Grupo 2 de 3</label>
+                                    <small class="text-muted">
+                                        Áreas de este grupo: Limpieza · Recepción y Consultorios (Recepción, Consultorios Externos y Sede Mitre) · Esterilización · Mantenimiento · Sistemas
+                                    </small>
+                                    <label class="label-control text-muted fw-bold">¿Quién de este grupo hace fácil lo difícil?</label>
+                                    <select class="form-select" id="selectorGrupo2" data-id="1">
+                                        <option value="">Selecciona un/a colaborador/a</option>
+                                    </select>
+                                    <label class="label-control text-muted fw-bold">¿Por qué?</label>
+                                    <input class="form-control" id="inputRta22" placeholder="Escribe aquí..." data-id="2">
+                                    <label class="label-control text-muted fw-bold">¿Por qué la elegiste?</label>
+                                    <small class="text-muted">
+                                        Contanos una situación concreta en la que esta persona hizo fácil algo difícil.
+                                    </small>
+                                    <input class="form-control" id="inputRta23" placeholder="Escribe aquí..." data-id="3">
+                                </div>
+                            </div>
+                            <div class="card p-3">
+                                <div class="d-flex flex-column gap-2">
+                                    <label class="label-control text-muted fw-bold fs-6">Grupo 3 de 3</label>
+                                    <small class="text-muted">
+                                        Áreas de este grupo: Quirófano · Facturación · Administración · Diagnóstico por Imágenes · Farmacia · Recursos Humanos
+                                    </small>
+                                    <label class="label-control text-muted fw-bold">¿Quién de este grupo hace fácil lo difícil?</label>
+                                    <select class="form-select" id="selectorGrupo3" data-id="1">
+                                        <option value="">Selecciona un/a colaborador/a</option>
+                                    </select>
+                                    <label class="label-control text-muted fw-bold">¿Por qué?</label>
+                                    <input class="form-control" id="inputRta32" placeholder="Escribe aquí..." data-id="2">
+                                    <label class="label-control text-muted fw-bold">¿Por qué la elegiste?</label>
+                                    <small class="text-muted">
+                                        Contanos una situación concreta en la que esta persona hizo fácil algo difícil.
+                                    </small>
+                                    <input class="form-control" id="inputRta33" placeholder="Escribe aquí..." data-id="3">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="contenedorBotonSend" class="d-flex justify-content-end" >
+                            <button type="button" class="btn-primary btn d-none" id="btnEnviarVotacion">Enviar respuestas</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <div class="fmark">
+                <img src="data:image/png;base64,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" alt="Hospital Privado Tres Cerritos" style="height:26px; width:auto;">
+                <p>Hospital Privado Tres Cerritos · Votación · Reconocimiento entre pares 2026</p>
+            </div>
+            <p></p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+    <script>
+        const DASHBOARD_TOKEN = "{{ request()->route('token') }}";
+    </script>
+    <script src="{{ asset('js/personal/votaciones.js') }}"></script>
 
 </body>
 
