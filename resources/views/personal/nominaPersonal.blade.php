@@ -19,7 +19,7 @@
             Colaboradores
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-            Nómina de personal
+            Personal
         </li>
 
     </ol>
@@ -216,180 +216,149 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row mb-4">
                         <div class="col-12">
-                            <div class="section-divider mb-3">
-                                <span>Contactos de emergencia</span>
-                            </div>
-                            <div class="empleado-box p-3">
-                                <div class="row g-3">
-
-                                    <!-- CONTACTO 1 -->
-                                    <div class="col-lg-6">
-                                        <div class="card-glass p-3 h-100">
-                                            <h6 class="mb-3 text-muted">Contacto de Emergencia 1</h6>
-                                            <div class="mb-2">
-                                                <label class="form-label">Nombre</label>
-                                                <input id="personaEmergencia1Edit" name="personaEmerg1"
-                                                    class="form-control editAllowed">
-                                            </div>
-
-                                            <div class="row g-2">
-                                                <div class="col-lg-6 col-12">
-                                                    <label class="form-label">Teléfono</label>
-                                                    <input id="contactoEmergencia1Edit" name="telefEmerg1"
-                                                        class="form-control editAllowed">
+                            <div class="card p-3">
+                                <div class="d-flex flex-column gap-3">
+                                    <label class="text-muted fw-bold fs-6">Contactos de emergencia</label>
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-12 col-lg-6">
+                                            <div class="d-flex flex-column gap-3">
+                                                <label class="text-muted fw-bold">Contacto de emergencia 1</label>
+                                                <div class="row g-3">
+                                                    <div class="col-12 col-md-12 col-xl-12">
+                                                        <label class="label-control text-muted">Nombre</label>
+                                                        <input id="personaEmergencia1Edit" name="personaEmerg1" class="form-control editAllowed">
+                                                    </div>
+                                                    <div class="col-12 col-md-12 col-xl-6">
+                                                        <label class="label-control text-muted">Teléfono</label>
+                                                        <input id="contactoEmergencia1Edit" name="telefEmerg1" class="form-control editAllowed">
+                                                    </div>
+                                                    <div class="col-12 col-md-12 col-xl-6">
+                                                        <label class="label-control text-muted">Parentesco</label>
+                                                        <input id="parentescoEmergencia1Edit" name="parentesco1" class="form-control editAllowed">
+                                                    </div>
                                                 </div>
-
-                                                <div class="col-lg-6 col-12">
-                                                    <label class="form-label">Parentesco</label>
-                                                    <input id="parentescoEmergencia1Edit" name="parentesco1"
-                                                        class="form-control editAllowed">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-12 col-lg-6">
+                                            <div class="d-flex flex-column gap-3">
+                                                <label class="text-muted fw-bold">Contacto de emergencia 2</label>
+                                                <div class="row g-3">
+                                                    <div class="col-12 col-md-12 col-xl-12">
+                                                        <label class="label-control text-muted">Nombre</label>
+                                                        <input id="personaEmergencia2Edit" name="personaEmerg2" class="form-control editAllowed">
+                                                    </div>
+                                                    <div class="col-12 col-md-12 col-xl-6">
+                                                        <label class="label-control text-muted">Teléfono</label>
+                                                        <input id="contactoEmergencia2Edit" name="telefEmerg2" class="form-control editAllowed">
+                                                    </div>
+                                                    <div class="col-12 col-md-12 col-xl-6">
+                                                        <label class="label-control text-muted">Parentesco</label>
+                                                        <input id="parentescoEmergencia2Edit" name="parentesco2" class="form-control editAllowed">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- CONTACTO 2 -->
-                                    <div class="col-lg-6">
-                                        <div class="card-glass p-3 h-100">
-                                            <h6 class="mb-3 text-muted">Contacto de Emergencia 2</h6>
-
-                                            <div class="mb-2">
-                                                <label class="form-label">Nombre</label>
-                                                <input id="personaEmergencia2Edit" name="personaEmerg2"
-                                                    class="form-control editAllowed">
-                                            </div>
-
-                                            <div class="mb-2">
-                                                <label class="form-label">Teléfono</label>
-                                                <input id="contactoEmergencia2Edit" name="telefEmerg2"
-                                                    class="form-control editAllowed">
-                                            </div>
-
-                                            <div>
-                                                <label class="form-label">Parentesco</label>
-                                                <input id="parentescoEmergencia2Edit" name="parentesco2"
-                                                    class="form-control editAllowed">
-                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card p-3">
+                                <div class="d-flex flex-column gap-3">
+                                    <label class="text-muted fw-bold fs-6">Grupo familiar</label>
+                                    <div class="row g-3">
+                                        <div class="col-lg-2">
+                                            <label class="label-control text-muted">Padre</label>
+                                            <input id="padreColaborador" name="padreColaborador"
+                                                class="form-control"></input>
                                         </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="section-divider mb-3">
-                                <span>Grupo familiar</span>
-                            </div>
-                            <div class="empleado-box p-3">
-                                <div class="row g-3">
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Padre</label>
-                                        <input id="padreColaborador" name="padreColaborador"
-                                            class="form-control"></input>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Madre</label>
-                                        <input id="madreColaborador" name="madreColaborador" class="form-control"
-                                            type="text"></input>
-                                    </div>
-                                    <div class="col-lg-2 d-flex flex-column">
-                                        <label class="form-label">Agregar hijo/a</label>
-                                        <button type="button" id="btnAgregarHijo" class="btn btn-primary">
-                                            <i class="fa-solid fa-plus"></i> Hijo/a
-                                        </button>
-                                    </div>
-
-                                    <div id="divHijos" class="col-lg-12 p-3" hidden>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="section-divider mb-3">
-                                <span>Datos Socioeconómicos</span>
-                            </div>
-                            <div class="empleado-box p-3">
-                                <div class="row g-3">
-                                    <div class="col-lg-3">
-                                        <label class="form-label">Estado civil</label>
-                                        <select name="estado_civil" id="estado_civil" class="form-select" required>
-                                            <option selected disabled="">Seleccione estado civil</option>
-                                            <option value="SOLTERO/A">SOLTERO/A</option>
-                                            <option value="CASADO/A">CASADO/A</option>
-                                            <option value="DIVORCIADO/A">DIVORCIADO/A</option>
-                                            <option value="VIUDO/A">VIUDO/A</option>
-                                            <option value="N/D">N/D</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Género</label>
-                                        <select name="genero" id="genero" class="form-select" required>
-                                            <option selected disabled value="">Seleccione género</option>
-                                            <option value="MASCULINO">MASCULINO</option>
-                                            <option value="FEMENINO">FEMENINO</option>
-                                            <option value="NO BINARIO">NO BINARIO</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-7">
-                                        <label class="form-label fw-bold">Obra social</label>
-                                        <div class="input-group flex-nowrap">
-                                            <select name="obra_social_id" id="obraSocial" class="form-select">
-                                                <option value="">Seleccione obra social</option>
-                                            </select>
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                id="btnAbrirModalOs">
-                                                <i class="fa-solid fa-plus"></i>
+                                        <div class="col-lg-2">
+                                            <label class="label-control text-muted">Madre</label>
+                                            <input id="madreColaborador" name="madreColaborador" class="form-control"
+                                                type="text"></input>
+                                        </div>
+                                        <div class="col-lg-2 d-flex flex-column">
+                                            <label class="label-control text-muted">Agregar hijo/a</label>
+                                            <button type="button" id="btnAgregarHijo" class="btn btn-primary">
+                                                <i class="fa-solid fa-plus"></i> Hijo/a
                                             </button>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Código OS</label>
-                                        <input type="text" name="codigo_os" id="codigoOS" class="form-control"
-                                            readonly>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label class="form-label">Título</label>
-                                        <select name="posee_titulo" id="select-titulo" class="form-select">
-                                            <option selected disabled value="" disabled>Seleccione opción
-                                            </option>
-                                            <option value="SI">SI</option>
-                                            <option value="NO">NO</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 d-none" id="divTitulo">
-                                        <label class="form-label">Descripción de título</label>
-                                        <input name="titulo" class="form-control" type="text" />
-                                    </div>
 
-                                    <div class="col-lg-1 d-none" id="divMatricula">
-                                        <label class="form-label">M.P.</label>
-                                        <input name="matricula_profesional" class="form-control" type="text" />
+                                        <div id="divHijos" class="col-lg-12 p-3" hidden>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row mb-4">
                         <div class="col-12">
-                            <div class="section-divider mb-3">
-                                <span>Datos Laborales</span>
+                            <div class="card p-3">
+                                <div class="d-flex flex-column gap-3">
+                                    <label class="fw-bold fs-6 text-muted">Datos socioeconómicos</label>
+                                    <div class="row g-3">
+                                        <div class="col-lg-3">
+                                            <label class="label-control text-muted">Estado civil</label>
+                                            <select name="estado_civil" id="estado_civil" class="form-select" required>
+                                                <option selected disabled="">Seleccione estado civil</option>
+                                                <option value="SOLTERO/A">SOLTERO/A</option>
+                                                <option value="CASADO/A">CASADO/A</option>
+                                                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
+                                                <option value="VIUDO/A">VIUDO/A</option>
+                                                <option value="N/D">N/D</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="label-control text-muted">Género</label>
+                                            <select name="genero" id="genero" class="form-select" required>
+                                                <option selected disabled value="">Seleccione género</option>
+                                                <option value="MASCULINO">MASCULINO</option>
+                                                <option value="FEMENINO">FEMENINO</option>
+                                                <option value="NO BINARIO">NO BINARIO</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-7">
+                                            <label class="label-control text-muted">Obra social</label>
+                                            <div class="input-group flex-nowrap">
+                                                <select name="obra_social_id" id="obraSocial" class="form-select">
+                                                    <option value="">Seleccione obra social</option>
+                                                </select>
+                                                <button type="button" class="btn btn-sm btn-primary" id="btnAbrirModalOs">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="label-control text-muted">Código OS</label>
+                                            <input type="text" name="codigo_os" id="codigoOS" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="label-control text-muted">Título</label>
+                                            <select name="posee_titulo" id="select-titulo" class="form-select">
+                                                <option selected disabled value="" disabled>Seleccione opción
+                                                </option>
+                                                <option value="SI">SI</option>
+                                                <option value="NO">NO</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3 d-none" id="divTitulo">
+                                            <label class="label-control text-muted">Descripción de título</label>
+                                            <input name="titulo" class="form-control" type="text" />
+                                        </div>
+                                        <div class="col-lg-1 d-none" id="divMatricula">
+                                            <label class="label-control text-muted">M.P.</label>
+                                            <input name="matricula_profesional" class="form-control" type="text" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="empleado-box p-3">
+                        </div>
+                        <div class="col-12">
+                            <div class="card p-3">
+                                <label class="text-muted fw-bold fs-6">Datos Laborales</label>
                                 <div class="row g-3">
                                     <div class="col-lg-2">
-                                        <label class="form-label">Tipo de contrato</label>
+                                        <label class="label-control text-muted">Tipo de contrato</label>
                                         <select name="tipo_contrato" id="tipoContrato" class="form-select" required>
                                             <option selected="">Seleccione opción</option>
                                             <option value="Tiempo fijo">PLAZO FIJO</option>
@@ -400,50 +369,50 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
-                                        <label class="form-label">Fecha ingreso</label>
+                                        <label class="label-control text-muted">Fecha ingreso</label>
                                         <input type="date" name="fecha_ingreso" id="fechaInicio"
                                             class="form-control" required>
                                     </div>
                                     <div class="col-lg-2">
-                                        <label class="form-label">Fecha fin prueba</label>
+                                        <label class="label-control text-muted">Fecha fin prueba</label>
                                         <input type="date" name="fecha_fin_prueba" id="fechaFin"
                                             class="form-control" readonly>
                                     </div>
                                     <div class="col-lg-2">
-                                        <label class="form-label">Área</label>
+                                        <label class="label-control text-muted">Área</label>
                                         <select name="area_id" id="area" class="form-select js-select-area">
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
-                                        <label class="form-label">Servicio</label>
+                                        <label class="label-control text-muted">Servicio</label>
                                         <select name="servicio_id" id="servicio"
                                             class="form-select js-select-servicio">
                                             <option selected value="">Seleccione servicio</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-2 col-sm-2">
-                                        <label class="form-label">Convenio</label>
+                                        <label class="label-control text-muted">Convenio</label>
                                         <select name="posee_convenio" id="convenio" class="form-select">
                                             <option value="SANIDAD">SANIDAD</option>
                                             <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-2 col-sm-2">
-                                        <label class="form-label">Categoría</label>
+                                        <label class="label-control text-muted">Categoría</label>
                                         <select name="categoria_id" id="categoria"
                                             class="form-select js-select-categoria">
                                             <option selected value="">Seleccione categoría</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-2 col-sm-2">
-                                        <label class="form-label">Rol</label>
+                                        <label class="label-control text-muted">Rol</label>
                                         <select name="rol_interno_id" id="rol_interno"
                                             class="form-select js-select-rol">
-                                            <option selected value="">Seleccione rol</option>
+                                            <option selected value="">Puesto</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-2 col-sm-2">
-                                        <label class="form-label">Régimen horario</label>
+                                        <label class="label-control text-muted">Régimen horario</label>
                                         <select name="regimen_horas" id="selectRegimen" class="form-select">
                                             <option selected disabled value="">Seleccione régimen</option>
                                             <option value="44">44</option>
@@ -457,12 +426,12 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-1 col-sm-2">
-                                        <label class="form-label">Horas diarias</label>
+                                        <label class="label-control text-muted">Horas diarias</label>
                                         <input type="text" name="horas_diarias" id="horasDiarias"
                                             class="form-control" readonly required title="Horas Diarias">
                                     </div>
                                     <div class="col-lg-2 col-sm-2">
-                                        <label class="form-label">Es coordinador</label>
+                                        <label class="label-control text-muted">Es coordinador</label>
                                         <select name="es_coordinador" id="es_coordinador" class="form-select">
                                             <option selected disabled value="">Seleccione opción</option>
                                             <option value="SI">SI</option>
@@ -470,7 +439,7 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-2 col-sm-2">
-                                        <label class="form-label">Afiliado al sindicato</label>
+                                        <label class="label-control text-muted">Afiliado al sindicato</label>
                                         <select name="es_afiliado" id="es_afiliado" class="form-select">
                                             <option selected disabled value="">Seleccione opción</option>
                                             <option value="SI">SI</option>
