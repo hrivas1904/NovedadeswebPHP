@@ -268,12 +268,12 @@
                                 <div class="d-flex flex-column gap-3">
                                     <label class="text-muted fw-bold fs-6">Grupo familiar</label>
                                     <div class="row g-3">
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-5">
                                             <label class="label-control text-muted">Padre</label>
                                             <input id="padreColaborador" name="padreColaborador"
                                                 class="form-control"></input>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-5">
                                             <label class="label-control text-muted">Madre</label>
                                             <input id="madreColaborador" name="madreColaborador" class="form-control"
                                                 type="text"></input>

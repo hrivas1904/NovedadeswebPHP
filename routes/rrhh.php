@@ -13,6 +13,7 @@ use App\Http\Controllers\RRHH\DescriptivosController;
 use App\Http\Controllers\RRHH\ZktecoController;
 use App\Http\Controllers\RRHH\MedicosController;
 use App\Http\Controllers\RRHH\EddController;
+use App\Http\Controllers\RRHH\VotacionesController;
 use Faker\Provider\Person;
 use Illuminate\Support\Facades\Route;
 
@@ -510,4 +511,5 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['dashboard.publico'])->group(function () {
     Route::get('/guiaInterna/{token}', [PersonalController::class, 'flyerPublico'])->name('flyerPublico');
+    Route::get('/votacionEntrePares/{token}', [VotacionesController::class, 'index'])->name('votacionEntrePares.index');
 });
