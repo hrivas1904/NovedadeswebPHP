@@ -507,6 +507,11 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/periodos/{periodo}/instrumentos/{instrumento}/versiones', [EddController::class, 'nuevaVersionInstrumento'])->whereNumber(['periodo', 'instrumento'])->name('instrumentos.versiones');
         });
     });
+
+    //VOTACIONES
+    Route::get('/verVotaciones', [VotacionesController::class, 'verVotaciones'])->name('votaciones.verVotaciones');
+    Route::get('/obtenerRespuestas', [VotacionesController::class, 'obtenerRespuestas'])->name('votaciones.obtenerRespuestas');
+    Route::get('/mejores3xGrupo', [VotacionesController::class, 'mejores3xGrupo'])->name('votaciones.mejores3xGrupo');
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {

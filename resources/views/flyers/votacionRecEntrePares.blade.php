@@ -641,11 +641,11 @@
                         <div class="card p-3">
                             <div class="d-flex flex-column gap-2" id="divValidacionDni">
 
-                                <label for="inputDni" class="form-label text-muted fw-bold">
+                                <label for="inputDni" class="form-label text-muted fw-bold div-dni">
                                     Ingresar DNI (sin puntos)
                                 </label>
 
-                                <div class="input-group">
+                                <div class="input-group div-dni">
                                     <input
                                         type="text"
                                         class="form-control"
@@ -681,8 +681,6 @@
                                     <select class="form-select" id="selectorGrupo1" data-id="1">
                                         <option value="">Selecciona un/a colaborador/a</option>
                                     </select>
-                                    <label class="label-control text-muted fw-bold">¿Por qué?</label>
-                                    <input class="form-control" id="inputRta12" placeholder="Escribe aquí..." data-id="2">
                                     <label class="label-control text-muted fw-bold">¿Por qué la elegiste?</label>
                                     <small class="text-muted">
                                         Contanos una situación concreta en la que esta persona hizo fácil algo difícil.
@@ -700,8 +698,6 @@
                                     <select class="form-select" id="selectorGrupo2" data-id="1">
                                         <option value="">Selecciona un/a colaborador/a</option>
                                     </select>
-                                    <label class="label-control text-muted fw-bold">¿Por qué?</label>
-                                    <input class="form-control" id="inputRta22" placeholder="Escribe aquí..." data-id="2">
                                     <label class="label-control text-muted fw-bold">¿Por qué la elegiste?</label>
                                     <small class="text-muted">
                                         Contanos una situación concreta en la que esta persona hizo fácil algo difícil.
@@ -719,8 +715,6 @@
                                     <select class="form-select" id="selectorGrupo3" data-id="1">
                                         <option value="">Selecciona un/a colaborador/a</option>
                                     </select>
-                                    <label class="label-control text-muted fw-bold">¿Por qué?</label>
-                                    <input class="form-control" id="inputRta32" placeholder="Escribe aquí..." data-id="2">
                                     <label class="label-control text-muted fw-bold">¿Por qué la elegiste?</label>
                                     <small class="text-muted">
                                         Contanos una situación concreta en la que esta persona hizo fácil algo difícil.

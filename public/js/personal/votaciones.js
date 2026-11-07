@@ -52,7 +52,7 @@ $(document).ready(function () {
                         .addClass("d-flex");
 
                     obtenerColaboradoresxGrupo();
-                    $("#btnEnviarVotacion").removeClass('d-none');
+                    $("#btnEnviarVotacion").removeClass("d-none");
                 }
             },
             error: function (xhr) {
@@ -129,7 +129,7 @@ function cargarSelectorGrupo(selector, colaboradores) {
         $select.append(
             $("<option>", {
                 value: colaborador.legajo,
-                text: colaborador.colaborador,
+                text: `${colaborador.colaborador} - ${colaborador.area}`,
             }),
         );
     });
@@ -148,7 +148,6 @@ $(document).on("click", "#btnEnviarVotacion", function () {
     const grupos = [1, 2, 3].map((numero) => ({
         grupo: numero,
         candidato: $(`#selectorGrupo${numero}`).val(),
-        motivo: $(`#inputRta${numero}2`).val().trim(),
         situacion: $(`#inputRta${numero}3`).val().trim(),
     }));
 
@@ -159,13 +158,11 @@ $(document).on("click", "#btnEnviarVotacion", function () {
             return;
         }
 
-        if (grupo.candidato !== "NO_CONOZCO") {
-            if (!grupo.motivo || !grupo.situacion) {
-                alert(
-                    `Debe completar las respuestas del grupo ${grupo.grupo}.`,
-                );
-                return;
-            }
+        if (grupo.candidato !== "NO_CONOZCO" && !grupo.situacion) {
+            alert(
+                `Debe explicar por qué eligió al colaborador del grupo ${grupo.grupo}.`,
+            );
+            return;
         }
     }
 
@@ -199,9 +196,10 @@ $(document).on("click", "#btnEnviarVotacion", function () {
                 $("#divResponderPreguntas").addClass("d-none");
 
                 $("#btnEnviarVotacion").parent().addClass("d-none");
+                $(".div-dni").addClass("d-none");
 
                 mostrarMensajeDni(
-                    "¡Tu voto fue registrado correctamente! Muchas gracias por participar.",
+                    "¡Gracias por ser parte de este reconocimiento! Tu voto es mucho más que una elección: es una forma de valorar a quienes, con compromiso, compañerismo y dedicación, hacen que las cosas difíciles sean un poco más fáciles cada día. Porque los pequeños grandes gestos merecen ser reconocidos.",
                     "success",
                 );
             } else {

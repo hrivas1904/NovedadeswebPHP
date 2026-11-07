@@ -13,6 +13,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use PhpParser\Node\Expr\FuncCall;
 
 class VotacionesController extends Controller
 {
@@ -54,12 +55,17 @@ class VotacionesController extends Controller
 
             foreach ($grupos as $nombre => $areas) {
 
-                $resultado[$nombre] = DB::table('empleados')
-                    ->select('legajo', 'colaborador')
-                    ->whereIn('id_area', $areas)
-                    ->where('estado', 'ACTIVO')
-                    ->where('legajo', '<>', $legajo)
-                    ->orderBy('colaborador', 'ASC')
+                $resultado[$nombre] = DB::table('empleados as e')
+                    ->join('areas as a', 'a.id_area', '=', 'e.id_area')
+                    ->select(
+                        'e.legajo',
+                        'e.colaborador',
+                        'a.nombre as area'
+                    )
+                    ->whereIn('e.id_area', $areas)
+                    ->where('e.estado', 'ACTIVO')
+                    ->where('e.legajo', '<>', $legajo)
+                    ->orderBy('e.colaborador', 'ASC')
                     ->get();
             }
 
@@ -156,7 +162,6 @@ class VotacionesController extends Controller
             'grupos' => ['required', 'array', 'size:3'],
             'grupos.*.grupo' => ['required', 'integer', 'between:1,3'],
             'grupos.*.candidato' => ['required'],
-            'grupos.*.motivo' => ['nullable', 'string', 'max:512'],
             'grupos.*.situacion' => ['nullable', 'string', 'max:512'],
         ]);
 
@@ -205,18 +210,15 @@ class VotacionesController extends Controller
                     }
 
                     $candidato = (string) $grupo['candidato'];
-                    $motivo = trim($grupo['motivo'] ?? '');
                     $situacion = trim($grupo['situacion'] ?? '');
 
                     if ($candidato === 'NO_CONOZCO') {
 
-                        $motivo = '';
                         $situacion = '';
                     } else {
 
                         if (
                             !ctype_digit($candidato) ||
-                            !$motivo ||
                             !$situacion
                         ) {
                             throw new \Exception(
@@ -242,12 +244,6 @@ class VotacionesController extends Controller
                     $respuestas[] = [
                         'pregunta' => $preguntas[0],
                         'respuesta' => $candidato,
-                        'grupo' => $numero
-                    ];
-
-                    $respuestas[] = [
-                        'pregunta' => $preguntas[1],
-                        'respuesta' => $motivo,
                         'grupo' => $numero
                     ];
 
@@ -317,5 +313,22 @@ class VotacionesController extends Controller
                 'mensaje' => $e->getMessage()
             ], 422);
         }
+    }
+
+    public function verVotaciones()
+    {
+        return view('personal.verVotaciones');
+    }
+
+    public function obtenerRespuestas()
+    {
+        $respuestas = DB::select("call SP_OBTENER_RESPUESTAS_REC_PARES()");
+        return response()->json(["data" => $respuestas]);
+    }
+
+    public function mejores3xGrupo()
+    {
+        $mejores = DB::select("call SP_OBTENER_MEJORES3_XGRUPO();");
+        return response()->json((["data" => $mejores]));
     }
 }
