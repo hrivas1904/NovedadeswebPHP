@@ -181,96 +181,137 @@ class PersonalController extends Controller
 
     public function store(Request $request)
     {
-        DB::beginTransaction();
+        $idUser = auth()->id();
+        $ip     = $request->ip();
+        $nav    = substr((string) $request->userAgent(), 0, 512);
+        $v      = fn($x) => ($x === null || trim((string) $x) === '') ? null : trim($x);
 
-        try {
-            // Normalización de opcionales
-            $fechaFinPrueba = $request->fecha_fin_prueba ?: null;
-            $idOS           = $request->obra_social_id ?: null;
+        $idPersonal = $request->input('id_personal');   // viene en un reintento
+        $avisos     = [];
 
-            DB::statement("
-            CALL SP_INSERTAR_EMPLEADO(
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, ?, ?, ?,
-                @legajo, @mensaje
-            )
-        ", [
-                $request->cuil,
-                $request->dni,
-                $request->nombre_completo,
-                $request->domicilio,
-                $request->localidad,
-                $request->estado_civil,
-                $request->genero,
-                $request->fecha_nacimiento,
-                $request->fecha_ingreso,
-                $fechaFinPrueba,
-                $request->posee_convenio,
-                $request->area_id,
-                $request->servicio_id,
-                $request->categoria_id,
-                $request->rol_interno_id,
-                $request->es_coordinador,
-                $request->regimen_horas,
-                $request->horas_diarias,
-                $idOS,
-                $request->posee_titulo,
-                $request->titulo,
-                $request->matricula_profesional,
-                $request->email,
-                $request->telefono,
-                $request->es_afiliado,
-                $request->estado,
-                $request->tipo_contrato,
-                $request->persona_emerg1,
-                $request->contacto_emerg1,
-                $request->parentesco_emerg1,
-                $request->persona_emerg2,
-                $request->contacto_emerg2,
-                $request->parentesco_emerg2,
-                $request->padreColaborador,
-                $request->madreColaborador,
-            ]);
-
-            // ... después del CALL ...
-            $res = DB::select("SELECT @legajo AS legajo, @mensaje AS mensaje");
-            $nuevoLegajo = $res[0]->legajo;
-            $mensajeSP = $res[0]->mensaje;
-
-            if ($mensajeSP === 'Colaborador registrado correctamente') {
-                // AQUÍ es donde insertas los hijos usando $nuevoLegajo
-                if ($request->has('hijos')) {
-                    foreach ($request->hijos as $hijo) {
-                        DB::statement("CALL SP_INSERTAR_FAMILIAR(?, ?, ?)", [
-                            $nuevoLegajo,
-                            $hijo['nombre'],
-                            'Hijo/a'
-                        ]);
-                    }
-                }
-
-                DB::commit();
-                return response()->json([
-                    'success' => true,
-                    'mensaje' => "Empleado registrado con Legajo: " . $nuevoLegajo
+        // 1. Persona (se saltea si es reintento)
+        if (!$idPersonal) {
+            try {
+                DB::statement('CALL SP_ALTA_PERSONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, @id_personal)', [
+                    $request->nombre,
+                    $request->apellido,
+                    $v($request->cuil),
+                    $v($request->dni),
+                    $v($request->domicilio),
+                    $v($request->localidad),
+                    $v($request->estado_civil),
+                    $v($request->fecha_nacimiento),
+                    $v($request->p_titulo),
+                    $v($request->p_descripcion_titulo),
+                    $v($request->matricula_profesional),
+                    $v($request->email),
+                    $v($request->telefono),
+                    null,
+                    null,                                  // url_foto_legajo, id_huella_tarja
+                    $v($request->genero),
+                    $v($request->padreColaborador),
+                    $v($request->madreColaborador),
+                    $idUser,
+                    $ip,
+                    $nav,
                 ]);
-            } else {
-                DB::rollBack();
-                return response()->json([
-                    'success' => false,
-                    'mensaje' => $mensajeSP // Aquí saldría "El colaborador ya existe" o similar
-                ]);
+                $idPersonal = DB::selectOne('SELECT @id_personal AS id')->id;
+            } catch (QueryException $e) {
+                return $this->errorSp($e, 'No se pudo registrar la persona.');
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'mensaje' => 'Error al registrar el colaborador',
-                'error'   => $e->getMessage()
-            ], 500);
+
+            // 2. Contactos de emergencia (si fallan, se avisa y se siguen cargando desde edición)
+            foreach ([1, 2] as $i) {
+                if (!$v($request->input("personaEmerg$i"))) continue;
+                try {
+                    DB::statement('CALL SP_ALTA_CONTACTO_PERSONAL(?,?,?,?,?,?,?)', [
+                        $idPersonal,
+                        $request->input("personaEmerg$i"),
+                        $v($request->input("telefEmerg$i")),
+                        $request->input("parentesco$i"),
+                        $idUser,
+                        $ip,
+                        $nav,
+                    ]);
+                } catch (QueryException $e) {
+                    $avisos[] = "Contacto $i: " . $this->mensajeSp($e, 'no se pudo guardar.');
+                }
+            }
+
+            // 3. Hijos
+            foreach ($request->input('hijos', []) as $h) {
+                if (!$v($h['nombre'] ?? null)) continue;
+                try {
+                    DB::statement('CALL SP_ALTA_FAMILIAR_PERSONAL(?,?,?,?,?,?,?,?)', [
+                        $idPersonal,
+                        $h['nombre'],
+                        $v($h['dni'] ?? null),
+                        $v($h['fechaNacimiento'] ?? null),
+                        'Hijo/a',
+                        $idUser,
+                        $ip,
+                        $nav,
+                    ]);
+                } catch (QueryException $e) {
+                    $avisos[] = "Hijo/a {$h['nombre']}: " . $this->mensajeSp($e, 'no se pudo guardar.');
+                }
+            }
         }
+
+        // 4. Vínculo
+        try {
+            DB::statement('CALL SP_ALTA_VINCULO_EMPRESA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, @id_vinculo, @legajo)', [
+                $request->tipo_vinculo,
+                $idPersonal,
+                $request->fecha_ingreso,
+                $v($request->fecha_fin_prueba),
+                $v($request->rol_interno_id),
+                $v($request->categoria_id),
+                $v($request->regimen_horas),
+                $v($request->horas_diarias),
+                $request->tipo_contrato,
+                $v($request->obra_social_id),
+                $idUser,
+                $v($request->servicio_id),
+                $v($request->razon_social),
+                $ip,
+                $nav,
+                $v($request->posee_convenio),
+                $request->es_afiliado === 'SI' ? 1 : 0,
+            ]);
+            $res = DB::selectOne('SELECT @id_vinculo AS id_vinculo, @legajo AS legajo');
+        } catch (QueryException $e) {
+            // la persona ya quedó creada: el front reintenta solo el vínculo
+            return $this->errorSp($e, 'No se pudo registrar el vínculo.', [
+                'id_personal' => $idPersonal,
+                'avisos'      => $avisos,
+            ]);
+        }
+
+        return response()->json([
+            'success'     => true,
+            'mensaje'     => $res->legajo
+                ? "Colaborador registrado con legajo {$res->legajo}."
+                : 'Personal registrado correctamente.',
+            'id_personal' => $idPersonal,
+            'legajo'      => $res->legajo,
+            'avisos'      => $avisos,
+        ]);
+    }
+
+    private function mensajeSp(QueryException $e, string $generico): string
+    {
+        // los SIGNAL '45000' de los SP traen el mensaje para el usuario
+        return ($e->errorInfo[0] ?? null) === '45000' ? $e->errorInfo[2] : $generico;
+    }
+
+    private function errorSp(QueryException $e, string $generico, array $extra = [])
+    {
+        Log::error($generico, ['error' => $e->getMessage()]);
+        return response()->json(
+            array_merge(['success' => false, 'mensaje' => $this->mensajeSp($e, $generico)], $extra),
+            422
+        );
     }
 
     private function normalizarFiltro($valor)

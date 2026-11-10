@@ -4,6 +4,7 @@ let nombre;
 let dni;
 let fechaNacimiento;
 let legajo;
+let indiceHijoAlta = 0;
 
 function cargarHijoColab(legajo) {
     $("#divHijosEdit").data("legajo", legajo);
@@ -361,4 +362,36 @@ $(document).on("click", ".btnGuardarHijo", function () {
 
 $(document).on("click", ".btnQuitarHijo", function () {
     $(this).closest(".fila-hijo").remove();
+});
+
+$("#btnAgregarHijo").on("click", function () {
+    $("#divHijos").removeAttr("hidden").append(`
+        <div class="row g-3 fila-hijo-alta mb-2">
+            <div class="col-lg-5 col-12">
+                <label class="form-label">Nombre y apellido</label>
+                <input type="text" name="hijos[${indiceHijoAlta}][nombre]" class="form-control" required>
+            </div>
+            <div class="col-lg-3 col-12">
+                <label class="form-label">DNI</label>
+                <input type="text" name="hijos[${indiceHijoAlta}][dni]" class="form-control"
+                       inputmode="numeric" maxlength="8" pattern="\\d{7,8}">
+            </div>
+            <div class="col-lg-3 col-12">
+                <label class="form-label">Fecha nacimiento</label>
+                <input type="date" name="hijos[${indiceHijoAlta}][fechaNacimiento]" class="form-control">
+            </div>
+            <div class="col-lg-1 col-12 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btnQuitarHijoAlta">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `);
+    indiceHijoAlta++;
+});
+
+$(document).on("click", ".btnQuitarHijoAlta", function () {
+    $(this).closest(".fila-hijo-alta").remove();
+    if (!$("#divHijos .fila-hijo-alta").length)
+        $("#divHijos").attr("hidden", true);
 });

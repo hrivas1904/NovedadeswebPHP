@@ -991,57 +991,47 @@ function cerrarModal() {
 
 $("#formAltaColaborador").on("submit", function (e) {
     e.preventDefault();
+    const $form = $(this);
+    const $btn = $("#btnGuardarColaborador").prop("disabled", true);
 
-    const primeraParte = $("#firstPartCuil").val();
-    const parteCentral = $("#middlePartCuil").val();
-    const ultimaParte = $("#lastPartCuil").val();
-
-    // CUIL únicamente con números, sin guiones
-    const cuil = `${primeraParte}${parteCentral}${ultimaParte}`.replace(
-        /\D/g,
-        "",
-    );
-
-    $("#cuil").val(cuil);
-
-    let formData = $(this).serialize();
+    let datos = $form.serialize(); // no incluye campos disabled
+    const idPersonal = $form.data("idPersonal");
+    if (idPersonal) datos += "&id_personal=" + idPersonal; // reintento: solo vínculo
 
     $.ajax({
         url: "/rrhh/personal/guardar",
         type: "POST",
-        data: formData,
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-
-        success: function (response) {
-            if (response.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Correcto",
-                    text: response.mensaje,
-                });
-
-                $("#formAltaColaborador")[0].reset();
-                $("#modalAltaColaborador").modal("hide");
-                tablaPersonal.ajax.reload(null, false);
-            } else {
-                Swal.fire({
-                    icon: "warning",
-                    title: "Atención",
-                    text: response.mensaje,
-                });
+        data: datos,
+        success: function (res) {
+            $form.removeData("idPersonal");
+            let texto = res.mensaje;
+            if (res.avisos && res.avisos.length) {
+                texto += "\n\nPendientes: " + res.avisos.join(" | ");
             }
-        },
-
-        error: function (xhr) {
             Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Ocurrió un error al guardar el colaborador",
+                title: "Operación exitosa",
+                text: texto,
+                icon: res.avisos && res.avisos.length ? "warning" : "success",
+                customClass: { confirmButton: "btn btn-primary" },
+                buttonsStyling: false,
+            }).then(() => cerrarModal());
+        },
+        error: function (xhr) {
+            const r = xhr.responseJSON || {};
+            if (r.id_personal) {
+                // la persona quedó creada; el próximo envío solo reintenta el vínculo
+                $form.data("idPersonal", r.id_personal);
+            }
+            Swal.fire({
+                title: "Atención",
+                text: r.mensaje || "Error del servidor.",
+                icon: "warning",
+                customClass: { confirmButton: "btn btn-primary" },
+                buttonsStyling: false,
             });
-
-            console.error(xhr.responseText);
+        },
+        complete: function () {
+            $btn.prop("disabled", false);
         },
     });
 });
