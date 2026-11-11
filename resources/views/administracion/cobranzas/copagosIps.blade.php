@@ -126,6 +126,14 @@
         Cobrado
     </button>
 
+    <input type="month" class="form-control w-auto" id="inputFechaCambiar">
+
+    <button
+        type="button"
+        class="btn btn-secondary btn-sm" id="btnAplicarPeriodo">
+        Aplicar cambios
+    </button>
+
     <span class="small text-muted ms-auto d-none" id="contadorCruce"></span>
 </div>
 
@@ -133,7 +141,11 @@
     <table id="tablaCruce" class="table table-striped table-hover align-middle table-header-hp3c nowrap">
         <thead>
             <tr>
-                <th></th>
+                <th>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="checkDefault">
+                    </div>
+                </th>
                 <th>Paciente</th>
                 <th>FIN</th>
                 <th>Teléfono</th>
@@ -167,6 +179,7 @@
         marcarResuelto: "{{ route('administracion.marcarResuelto') }}",
         guardarSnapshot: "{{ route('administracion.guardarSnapshot') }}",
         corregirNombre: "{{ route('administracion.corregirNombre') }}",
+        cambiarPeriodo: "{{ route('administracion.cambiarPeriodo') }}",
     };
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>

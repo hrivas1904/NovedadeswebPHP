@@ -913,6 +913,26 @@ class CopagosController extends Controller
 
     public function puedeEditarNombre(): bool
     {
-        return in_array(auth()->id(), [1, 2, 5, 6]); // + ID de la aux en PRODUCCIÓN
+        return in_array(auth()->id(), [1, 2, 5, 6, 50, 224]); // + ID de la aux en PRODUCCIÓN
+    }
+
+    public function cambiarPeriodo(Request $request)
+    {
+        $data = $request->validate([
+            'nombres'   => 'required|array|min:1',
+            'nombres.*' => 'string|max:150',
+            'periodo'   => 'required|date_format:Y-m',
+        ]);
+
+        [$anio, $mes] = explode('-', $data['periodo']);
+        $periodo = $this->meses[(int) $mes - 1] . '-' . substr($anio, -2); // "sep-26"
+
+        $filas = DB::table('copagos_liquidacion')
+            ->whereIn('nombre_norm', $data['nombres'])
+            ->update(['periodo' => $periodo]);
+
+        return response()->json([
+            'message' => count($data['nombres']) . " paciente(s) ({$filas} filas) pasaron al período {$periodo}.",
+        ]);
     }
 }

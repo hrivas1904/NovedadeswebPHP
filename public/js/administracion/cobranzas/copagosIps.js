@@ -200,11 +200,19 @@ function inicializarTablaCruce() {
         },
         columns: [
             {
-                data: null,
+                data: "nombreNorm",
                 orderable: false,
                 searchable: false,
-                className: "dt-control text-center",
-                defaultContent: '<i class="fa-solid fa-chevron-down"></i>',
+                className: "text-center",
+                render: function (data, type, row) {
+                    if (type !== "display") return "";
+                    if (!row.fins || !row.fins.length) return "";
+                    return (
+                        '<input class="form-check-input chk-fila" type="checkbox" data-nombre-norm="' +
+                        escapeHtml(data) +
+                        '">'
+                    );
+                },
             },
             { data: "nombreDisplay", render: renderNombre, width: "15%" },
             { data: "fins", render: renderLista },
@@ -702,3 +710,62 @@ $(document).on(
         }
     },
 );
+
+$(document).on("click", "#btnAplicarPeriodo", function () {
+    const btn = $(this);
+    const periodo = $("#inputFechaCambiar").val(); // "2026-09"
+
+    // tabla.$() busca en todas las páginas, no solo en la visible
+    const nombres = tablaCruce
+        .$("input.chk-fila:checked")
+        .map(function () {
+            return $(this).data("nombre-norm");
+        })
+        .get();
+
+    if (!nombres.length) {
+        Swal.fire({
+            icon: "warning",
+            title: "Seleccioná al menos un paciente",
+        });
+        return;
+    }
+    if (!periodo) {
+        Swal.fire({ icon: "warning", title: "Seleccioná el período" });
+        return;
+    }
+
+    Swal.fire({
+        icon: "question",
+        title: "¿Cambiar el período?",
+        text: nombres.length + " paciente(s) pasarán al período seleccionado.",
+        showCancelButton: true,
+        confirmButtonText: "Aplicar",
+        cancelButtonText: "Cancelar",
+    }).then(function (r) {
+        if (!r.isConfirmed) return;
+
+        $.ajax({
+            url: COPAGOS_IPS_ROUTES.cambiarPeriodo,
+            method: "POST",
+            data: { nombres: nombres, periodo: periodo },
+            beforeSend: function () {
+                btn.prop("disabled", true);
+            },
+            success: function (res) {
+                mostrarExito(res.message);
+                $("#inputFechaCambiar").val("");
+                tablaCruce.$("input.chk-fila").prop("checked", false);
+                tablaCruce.ajax.reload(function () {
+                    console.log("cruce recargado");
+                }, false);
+            },
+            error: function (err) {
+                mostrarError(err, "No se pudo cambiar el período.");
+            },
+            complete: function () {
+                btn.prop("disabled", false);
+            },
+        });
+    });
+});
