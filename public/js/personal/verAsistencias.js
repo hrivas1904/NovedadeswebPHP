@@ -128,6 +128,25 @@ function verAsistencia() {
                 },
 
                 {
+                    title: "Canción",
+                    data: "cancion",
+                    defaultContent: "",
+                    render: function (data, type) {
+                        const cancion = data || "No especificada";
+
+                        if (type !== "display") {
+                            return cancion;
+                        }
+
+                        return `
+                            <span class="text-wrap">
+                                ${escaparHTML(cancion)}
+                            </span>
+                        `;
+                    },
+                },
+
+                {
                     title: "Transporte",
                     data: "transporte",
                     render: function (data) {

@@ -362,7 +362,8 @@ class VotacionesController extends Controller
                     'ei.dni',
                     'ei.sector',
                     'ei.condicion',
-                    'eri.requerimiento'
+                    'eri.requerimiento',
+                    'ec.cancion',
                 )
                 ->orderByDesc('ec.fecha_confirmacion')
                 ->get();
