@@ -331,4 +331,104 @@ class VotacionesController extends Controller
         $mejores = DB::select("call SP_OBTENER_MEJORES3_XGRUPO();");
         return response()->json((["data" => $mejores]));
     }
+
+
+    public function listarAsistencias()
+    {
+        try {
+
+            $registros = DB::table('eventos_confirmaciones as ec')
+                ->join(
+                    'eventos_invitados as ei',
+                    'ei.id_confirmacion',
+                    '=',
+                    'ec.id'
+                )
+                ->leftJoin(
+                    'eventos_requerimientos_invitados as eri',
+                    'eri.id_invitado',
+                    '=',
+                    'ei.id'
+                )
+                ->whereNull('ec.deleted_at')
+                ->whereNull('ei.deleted_at')
+                ->select(
+                    'ec.id as id_confirmacion',
+                    'ec.fecha_confirmacion',
+                    'ec.transporte',
+                    'ec.cancion',
+                    'ei.id as id_invitado',
+                    'ei.invitado',
+                    'ei.dni',
+                    'ei.sector',
+                    'ei.condicion',
+                    'eri.requerimiento'
+                )
+                ->orderByDesc('ec.fecha_confirmacion')
+                ->get();
+
+            $confirmaciones = $registros
+                ->groupBy('id_confirmacion')
+                ->map(function ($filas) {
+
+                    $primera = $filas->first();
+
+                    $invitados = $filas
+                        ->groupBy('id_invitado')
+                        ->map(function ($items) {
+
+                            $persona = $items->first();
+
+                            return [
+                                'id' => $persona->id_invitado,
+                                'nombre' => $persona->invitado,
+                                'dni' => $persona->dni,
+                                'sector' => $persona->sector,
+                                'condicion' => $persona->condicion,
+                                'requerimientos' => $items
+                                    ->pluck('requerimiento')
+                                    ->filter()
+                                    ->unique()
+                                    ->values()
+                                    ->all()
+                            ];
+                        })
+                        ->values();
+
+                    $titular = $invitados->firstWhere(
+                        'condicion',
+                        'TITULAR'
+                    );
+
+                    $acompanantes = $invitados
+                        ->where('condicion', 'ACOMPAÑANTE')
+                        ->values();
+
+                    return [
+                        'id_confirmacion' => $primera->id_confirmacion,
+                        'fecha_confirmacion' => $primera->fecha_confirmacion,
+                        'transporte' => $primera->transporte,
+                        'cancion' => $primera->cancion,
+                        'titular' => $titular,
+                        'acompanantes' => $acompanantes->all(),
+                        'cantidad_acompanantes' => $acompanantes->count()
+                    ];
+                })
+                ->values();
+
+            return response()->json([
+                'data' => $confirmaciones
+            ]);
+        } catch (\Throwable $e) {
+
+            Log::error('Error al listar asistencias', [
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'data' => [],
+                'mensaje' => 'No se pudieron obtener las asistencias.'
+            ], 500);
+        }
+    }
 }

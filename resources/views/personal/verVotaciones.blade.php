@@ -27,7 +27,10 @@
 <div class="d-flex justify-content-between align-items-center">
     <h3 class="tituloVista mb-3">Resultados votaciones</h3>
     <div class="d-flex gap-3">
-        <button class="btn btn-outline-secondary" id="btnVerResultados" onclick="verTop3xGrupo()">
+        <button class="btn btn-outline-secondary" id="btnVerAsistencia" onclick="verAsistencia()">
+            Ver asistencia
+        </button>
+        <button class="btn btn-secondary" id="btnVerResultados" onclick="verTop3xGrupo()">
             Ver resultados
         </button>
         <button class="btn btn-outline-primary" id="btnExportarResultados">
@@ -86,8 +89,28 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalAsistencia" tabindex="-1" aria-labelledby="modalTop3xGrupo" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Asistencia confirmadas</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-card p-2">
+                    <table id="tbAsistencias" class="table table-striped table-hover">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endpush
 
 @push('scripts')
 <script src="{{ asset('js/personal/verVotaciones.js') }}"></script>
+<script src="{{ asset('js/personal/verAsistencias.js') }}"></script>
 @endpush
