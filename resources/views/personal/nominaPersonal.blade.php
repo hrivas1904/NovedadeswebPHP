@@ -1374,6 +1374,7 @@
 <script src="{{ asset('js/personal/scriptComun.js') }}"></script>
 <script src="{{ asset('js/personal/editColaborador.js') }}"></script>
 <script src="{{ asset('js/personal/prestamos.js') }}"></script>
+<script src="{{ asset('js/personal/gestionPersonal.js') }}"></script>
 <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
 <script src="{{ asset('js/personal/nuevaAltaPersonal.js') }}"></script>
 <script src="{{ asset('js/personal/generarConstanciaPdf.js') }}"></script>

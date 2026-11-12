@@ -291,6 +291,13 @@
                         @if (Auth::user()->rol != 'Colaborador/a')
                         <li class="nav-section-title section-administracion"><span class="section-dot"></span>Administración</li>
 
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('administracion.links.index') }}">
+                                <i class="fa-solid fa-link" aria-hidden="true"></i>
+                                <span class="link-text">Links de importación</span>
+                            </a>
+                        </li>
+
                         @if (in_array(Auth::id(), [1,2,5,6]))
                         <li class="nav-item has-submenu">
                             <a class="nav-link" href="#" role="button" aria-expanded="false">

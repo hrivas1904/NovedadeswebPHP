@@ -11,6 +11,7 @@ use App\Http\Controllers\Administracion\PresupuestarController;
 use App\Http\Controllers\Administracion\SaldosCuentaController;
 use App\Http\Controllers\Administracion\ConciliacionesController;
 use App\Http\Controllers\Administracion\CopagosController;
+use App\Http\Controllers\Administracion\LinksController;
 
 Route::middleware(['auth'])->group(function () {
     //DOLARAPI.COM
@@ -167,4 +168,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/copagos/snapshot', [CopagosController::class, 'guardarSnapshot'])->name('guardarSnapshot');
     Route::post('/nombre', [CopagosController::class, 'corregirNombre'])->name('corregirNombre');
     Route::post('/cambiar-periodo', [CopagosController::class, 'cambiarPeriodo'])->name('cambiarPeriodo');
+
+    //LINKS
+    Route::get('/links/index', [LinksController::class, 'index'])->name('links.index');
+    Route::get('/links/obtenerLinksImportacion', [LinksController::class, 'obtenerLinksImportacion']);
 });
