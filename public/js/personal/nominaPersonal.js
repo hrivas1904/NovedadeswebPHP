@@ -1,181 +1,5 @@
 let tablaPersonal = null;
 
-//VER LEGAJO
-function verLegajo(legajoColaborador, nombre) {
-    console.log("Mostrando legajo:", legajoColaborador);
-    legajoActivo = legajoColaborador;
-
-    $("#tituloLegajo").html(`
-        <i class="fa-solid fa-id-card me-2"></i>
-        Legajo de <strong>${nombre}</strong>
-    `);
-
-    listarCuentasBancarias(legajoColaborador);
-    cargarRequerimientosAlimentarios();
-    cargarReqSeleccionados(legajoColaborador);
-    cargarHijoColab(legajoColaborador);
-
-    $.ajax({
-        url: `/rrhh/personal/ver-legajo/${legajoColaborador}`,
-        type: "GET",
-        success: function (response) {
-            if (response.success) {
-                const d = response.data;
-
-                $("#inputLegajo").val(d.LEGAJO);
-                $("#inputNombre").val(d.COLABORADOR);
-                $("#inputEstado").val(d.ESTADO);
-                $("#inputDni").val(d.DNI);
-                $("#inputCuil").val(d.CUIL);
-                ($("#inputFechaNacimiento").val(d.FECHA_NAC),
-                    $("#inputEdad").val(calcularEdad(d.FECHA_NAC)));
-                $("#inputEmail").val(d.CORREO);
-                $("#inputTelefono").val(d.TELEFONO);
-                $("#inputDomicilio").val(d.DOMICILIO);
-                if (d.LOCALIDAD) {
-                    let option = new Option(
-                        d.LOCALIDAD,
-                        d.LOCALIDAD,
-                        true,
-                        true,
-                    );
-                    $("#selectLocalidadEdit").append(option).trigger("change");
-                }
-                $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
-                $("#inputGenero").val(d.GENERO);
-                $("#selectObraSocialEdit").val(d.ID_OS).trigger("change");
-
-                $("#inputCodigoOS").val(d.COD_OS);
-                $("#inputTitulo").val(d.TITULO);
-                $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
-                $("#inputMatricula").val(d.MAT_PROF);
-
-                $("#inputTipoContrato").val(d.TIPO_CONTRATO);
-                $("#inputFechaIngreso").val(d.FECHA_INGRESO);
-                $("#inputFechaFinPrueba").val(
-                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA),
-                );
-
-                $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
-                $("#inputFechaEgreso").val(d.FECHA_EGRESO);
-                $("#inputArea").val(d.ID_AREA);
-                cargarServiciosSimple(d.ID_SERVICIOS);
-                $("#inputConvenio").val(d.CONVENIO);
-                $("#inputCategoria").val(d.ID_CATEG);
-                cargarRolesSimple(d.ID_ROL);
-                $("#inputRegimen").val(d.REGIMEN);
-                $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
-                $("#inputCordinador").val(d.COORDINADOR);
-                $("#inputAfiliado").val(d.AFILIADO);
-
-                $("#personaEmergencia1Edit").val(d.PERSONA_EMERG1);
-                $("#contactoEmergencia1Edit").val(d.CONTACTO_EMERG1);
-                $("#parentescoEmergencia1Edit").val(d.PARENTESCO_EMERG1);
-                $("#personaEmergencia2Edit").val(d.PERSONA_EMERG2);
-                $("#contactoEmergencia2Edit").val(d.CONTACTO_EMERG2);
-                $("#parentescoEmergencia2Edit").val(d.PARENTESCO_EMERG2);
-                $("#padreColaboradorEdit").val(d.PADRE);
-                $("#madreColaboradorEdit").val(d.MADRE);
-
-                $("#inputNoche").val(d.NOCHE);
-                $("#inputUti").val(d.UTI);
-
-                $("#inputMotivoBaja").val(d.MOTIVO_BAJA);
-                $("#inputObservBaja").val(d.OBSERV_BAJA);
-
-                $("#modalLegajoColaborador").modal("show");
-
-                $("#modalLegajoColaborador")
-                    .off("shown.bs.modal")
-                    .on("shown.bs.modal", function () {
-                        inicializarORefrescarHistorial();
-                    });
-            } else {
-                Swal.fire("Error", response.mensaje, "error");
-            }
-        },
-        error: function () {
-            Swal.fire("Error", "No se pudo cargar el legajo", "error");
-        },
-    });
-}
-
-//DAR BAJA EMPLEADO
-function darDeBaja(legajoColaborador, nombre) {
-    $("#modalDarBajaColaborador").modal("show");
-
-    $("#tituloBajaColab").html(`
-        <i class="fa-solid fa-id-card me-2"></i>
-        Dar de baja a <strong>${nombre}</strong>
-    `);
-
-    $("#inputLegajoBaja").val(legajoColaborador);
-}
-
-$(document).on("submit", "#formBajaColaborador", function (e) {
-    e.preventDefault();
-
-    const legajo = $("#inputLegajoBaja").val();
-
-    Swal.fire({
-        title: "¿Confirmar baja?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, dar de baja",
-        cancelButtonText: "Cancelar",
-        customClass: {
-            confirmButton: "btn btn-primary",
-            cancelButton: "btn btn-secondary",
-        },
-    }).then((result) => {
-        if (!result.isConfirmed) return;
-
-        $.ajax({
-            url: `/rrhh/personal/baja/${legajo}`,
-            type: "POST",
-            data: {
-                fechaBaja: $("#fechaBajaColab").val(),
-                motivo: $("#selectMotivoBajaColab").val(),
-                observaciones: $("input[name='observacionesBaja']").val(),
-                _token: $('meta[name="csrf-token"]').attr("content"),
-            },
-            success: function (res) {
-                if (res.success) {
-                    Swal.fire({
-                        title: "Operación exitosa",
-                        text: res.mensaje,
-                        icon: "success",
-                        customClass: {
-                            confirmButton: "btn btn-primary",
-                        },
-                    });
-                    $("#modalDarBajaColaborador").modal("hide");
-                    tablaPersonal.ajax.reload(null, false);
-                } else {
-                    Swal.fire({
-                        title: "Atención",
-                        text: res.mensaje,
-                        icon: "warning",
-                        customClass: {
-                            confirmButton: "btn btn-primary",
-                        },
-                    });
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Error",
-                    text: "No se pudo dar de baja",
-                    icon: "error",
-                    customClass: {
-                        confirmButton: "btn btn-primary",
-                    },
-                });
-            },
-        });
-    });
-});
-
 //TB PERSONAL
 $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
@@ -435,3 +259,159 @@ $(document).ready(function () {
         });
     }
 });
+
+//VER LEGAJO
+function verLegajo(legajoColaborador, nombre) {
+    console.log("Mostrando legajo:", legajoColaborador);
+    legajoActivo = legajoColaborador;
+
+    $("#tituloLegajo").html(`
+        <i class="fa-solid fa-id-card me-2"></i>
+        Legajo de <strong>${nombre}</strong>
+    `);
+
+    listarCuentasBancarias(legajoColaborador);
+    cargarRequerimientosAlimentarios();
+    cargarReqSeleccionados(legajoColaborador);
+    cargarHijoColab(legajoColaborador);
+
+    $.ajax({
+        url: `/rrhh/personal/ver-legajo/${legajoColaborador}`,
+        type: "GET",
+        success: function (response) {
+            if (response.success) {
+                const d = response.data;
+
+                $("#inputLegajo").val(d.LEGAJO);
+                $("#inputNombre").val(d.COLABORADOR);
+                $("#inputEstado").val(d.ESTADO);
+                $("#inputDni").val(d.DNI);
+                $("#inputCuil").val(d.CUIL);
+                ($("#inputFechaNacimiento").val(d.FECHA_NAC),
+                    $("#inputEdad").val(calcularEdad(d.FECHA_NAC)));
+                $("#inputEmail").val(d.CORREO);
+                $("#inputTelefono").val(d.TELEFONO);
+                $("#inputDomicilio").val(d.DOMICILIO);
+                if (d.LOCALIDAD) {
+                    let option = new Option(
+                        d.LOCALIDAD,
+                        d.LOCALIDAD,
+                        true,
+                        true,
+                    );
+                    $("#selectLocalidadEdit").append(option).trigger("change");
+                }
+                $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
+                $("#inputGenero").val(d.GENERO);
+                $("#selectObraSocialEdit").val(d.ID_OS).trigger("change");
+
+                $("#inputCodigoOS").val(d.COD_OS);
+                $("#inputTitulo").val(d.TITULO);
+                $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
+                $("#inputMatricula").val(d.MAT_PROF);
+
+                $("#inputTipoContrato").val(d.TIPO_CONTRATO);
+                $("#inputFechaIngreso").val(d.FECHA_INGRESO);
+                $("#inputFechaFinPrueba").val(
+                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA),
+                );
+
+                $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
+                $("#inputFechaEgreso").val(d.FECHA_EGRESO);
+                $("#inputArea").val(d.ID_AREA);
+                cargarServiciosSimple(d.ID_SERVICIOS);
+                $("#inputConvenio").val(d.CONVENIO);
+                $("#inputCategoria").val(d.ID_CATEG);
+                cargarRolesSimple(d.ID_ROL);
+                $("#inputRegimen").val(d.REGIMEN);
+                $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
+                $("#inputCordinador").val(d.COORDINADOR);
+                $("#inputAfiliado").val(d.AFILIADO);
+
+                $("#personaEmergencia1Edit").val(d.PERSONA_EMERG1);
+                $("#contactoEmergencia1Edit").val(d.CONTACTO_EMERG1);
+                $("#parentescoEmergencia1Edit").val(d.PARENTESCO_EMERG1);
+                $("#personaEmergencia2Edit").val(d.PERSONA_EMERG2);
+                $("#contactoEmergencia2Edit").val(d.CONTACTO_EMERG2);
+                $("#parentescoEmergencia2Edit").val(d.PARENTESCO_EMERG2);
+                $("#padreColaboradorEdit").val(d.PADRE);
+                $("#madreColaboradorEdit").val(d.MADRE);
+
+                $("#inputNoche").val(d.NOCHE);
+                $("#inputUti").val(d.UTI);
+
+                $("#inputMotivoBaja").val(d.MOTIVO_BAJA);
+                $("#inputObservBaja").val(d.OBSERV_BAJA);
+
+                $("#modalLegajoColaborador").modal("show");
+
+                $("#modalLegajoColaborador")
+                    .off("shown.bs.modal")
+                    .on("shown.bs.modal", function () {
+                        inicializarORefrescarHistorial();
+                    });
+            } else {
+                Swal.fire("Error", response.mensaje, "error");
+            }
+        },
+        error: function () {
+            Swal.fire("Error", "No se pudo cargar el legajo", "error");
+        },
+    });
+}
+
+//VER COMPROBANTES DE NOVEDAD
+$(document).on("click", ".btn-ver-archivo", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const idNovedad = $(this).data("registro");
+    verComprobantes(idNovedad);
+});
+
+function verComprobantes(idNovedad) {
+    $.ajax({
+        url: `/rrhh/novedades/${idNovedad}/comprobantes`,
+        method: "GET",
+        dataType: "json",
+        success: function (response) {
+            const contenedor = $("#contenedorComprobantes");
+            contenedor.html("");
+
+            if (!response || response.length === 0) {
+                contenedor.html(
+                    `<div class="alert alert-info">
+                        Esta novedad no tiene comprobantes.
+                    </div>`,
+                );
+            } else {
+                response.forEach((comp) => {
+                    const url = `/rrhh/comprobantes/${comp.id}/ver`;
+
+                    contenedor.append(`
+                        <div class="mb-4 border rounded p-2">
+                            <iframe
+                                src="${url}"
+                                style="width:100%; height:600px; border:none;"
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    `);
+                });
+            }
+
+            const modal = new bootstrap.Modal(
+                document.getElementById("modalVerComprobantes"),
+            );
+            modal.show();
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
+            Swal.fire(
+                "Error",
+                "No se pudieron cargar los comprobantes",
+                "error",
+            );
+        },
+    });
+}

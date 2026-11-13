@@ -1963,4 +1963,10 @@ class PersonalController extends Controller
             ], 500);
         }
     }
+
+    public function obtenerAreasSelector()
+    {
+        $areas = DB::select("SELECT id_area, nombre FROM areas WHERE estado = 1");
+        return response()->json(["data" => $areas]);
+    }
 }

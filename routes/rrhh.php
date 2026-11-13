@@ -278,6 +278,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/registrarPrestamo', [NovedadesController::class, 'registrarPrestamo']);
 
+    //SELECTORES
+    Route::get('/obtenerAreasSelector', [PersonalController::class, 'obtenerAreasSelector']);
+
     //cronograma
     Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);
     Route::post('/calendario/guardar', [CalendarioServController::class, 'guardarEvento']);

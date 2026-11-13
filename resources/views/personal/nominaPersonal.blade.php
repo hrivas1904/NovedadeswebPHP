@@ -143,7 +143,7 @@
 @endsection
 
 @push('modals')
-<div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content p-2">
             <div class="modal-header">
@@ -208,7 +208,7 @@
                                         </div>
                                         <div class="col-12 col-md-5 col-xl-5">
                                             <label class="label-control text-muted">Localidad</label>
-                                            <select id="selectLocalidad" name="localidad" class="form-select" style="width:100%" required>
+                                            <select class="form-select" style="width:100%" required>
                                                 <option value="">Seleccionar localidad</option>
                                             </select>
                                         </div>
@@ -487,6 +487,88 @@
                     Dar alta
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content p-2">
+            <form id="formAltaColaborador">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Alta de personal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-xl-6">
+                            <div class="card p-3">
+                                <div class="row g-3">
+                                    <label class="label-control text-muted fw-bold">DATOS PERSONALES</label>
+                                    <div class="col-12 col-xl-4">
+                                        <label class="text-muted">Nombre</label>
+                                        <input type="text" class="form-control" name="nombre" require>
+                                    </div>
+                                    <div class="col-12 col-xl-4">
+                                        <label class="text-muted">Apellido</label>
+                                        <input type="text" class="form-control" name="apellido" require>
+                                    </div>
+                                    <div class="col-12 col-xl-4">
+                                        <label class="text-muted">DNI</label>
+                                        <input type="text" class="form-control inputDniPersonal" name="dni" require>
+                                    </div>
+                                    <div class="col-12 col-xl-9">
+                                        <label for="preCuilPersonal" class="text-muted">CUIL</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control text-center preCuilPersonal" maxlength="2" inputmode="numeric" style="max-width: 65px;" require>
+                                            <input type="text" class="form-control text-center midCuilPersonal" maxlength="8" readonly require>
+                                            <input type="text" class="form-control text-center posCuilPersonal" maxlength="1" inputmode="numeric" style="max-width: 55px;" require>
+                                            <input name="cuil" class="inputCuilPersonal" hidden>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="text-muted">Fecha de nacimiento</label>
+                                        <input class="form-control" type="date" id="inputFnacimientoPersonal" name="fechaNacimiento" require>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-6">
+                            <div class="card p-3">
+                                <div class="row g-3">
+                                    <label class="label-control text-muted fw-bold">DATOS DE CONTACTO</label>
+                                    <div class="col-12 col-xl-4">
+                                        <label class="text-muted">Teléfono</label>
+                                        <input type="text" class="form-control inputTelefonoPersonal" name="telefono" require>
+                                    </div>
+                                    <div class="col-12 col-xl-8">
+                                        <label class="text-muted">Correo electrónico</label>
+                                        <input type="email" class="form-control" name="correoElectronico">
+                                    </div>
+                                    <div class="col-12 col-xl-8">
+                                        <label class="text-muted">Domicilio</label>
+                                        <input type="text" class="form-control" name="domicilio" require>
+                                    </div>
+                                    <div class="col-12 col-xl-4">
+                                        <label class="text-muted">Localidad</label>
+                                        <select id="selectLocalidad" name="localidad" class="form-select" style="width:100%" required>
+                                            <option value="">Seleccionar localidad</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" id="btnCerraFormAltaPersonal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
