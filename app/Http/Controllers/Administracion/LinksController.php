@@ -34,4 +34,26 @@ class LinksController extends Controller
             ], 500);
         };
     }
+
+    public function crearNuevoLinkImportacion(Request $request)
+    {
+        $p_nombre = $request->nombreArtefacto;
+        $p_descripcion = $request->descripcionArtefacto;
+        $p_url = $request->linkArtefacto;
+        $p_icono = $request->iconoArtefacto;
+
+        try {
+
+            DB::statement("call SP_CREAR_NUEVO_LINK_IMPORTACION(?,?,?,?)", [$p_nombre, $p_descripcion, $p_url, $p_icono]);
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'El link de importación fue creado correctamente.'
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'mensaje' => $e->getMessage()
+            ], 500);
+        };
+    }
 }

@@ -172,4 +172,5 @@ Route::middleware(['auth'])->group(function () {
     //LINKS
     Route::get('/links/index', [LinksController::class, 'index'])->name('links.index');
     Route::get('/links/obtenerLinksImportacion', [LinksController::class, 'obtenerLinksImportacion']);
+    Route::post('/links/crearNuevoLinkImportacion', [LinksController::class, 'crearNuevoLinkImportacion']);
 });

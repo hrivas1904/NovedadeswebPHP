@@ -97,7 +97,11 @@ function cargarLinksImportacion() {
                 let url = "";
 
                 try {
-                    const destino = new URL(/^https?:\/\//i.test(item.url || "")? item.url: `https://${item.url}`,);
+                    const destino = new URL(
+                        /^https?:\/\//i.test(item.url || "")
+                            ? item.url
+                            : `https://${item.url}`,
+                    );
 
                     if (["http:", "https:"].includes(destino.protocol)) {
                         url = destino.href;
@@ -118,13 +122,15 @@ function cargarLinksImportacion() {
                                         <span class="badge ${claseBadge} fs-6">
                                             ${textoEstado}
                                         </span>
-                                        ${!visible? `
+                                        ${
+                                            !visible
+                                                ? `
                                             <span class="badge bg-dark">
                                                 <i class="fa-solid fa-eye-slash me-1"></i>
                                                 Oculto
                                             </span>
                                         `
-                                            : ""
+                                                : ""
                                         }
 
                                     </div>
@@ -169,6 +175,99 @@ function cargarLinksImportacion() {
     });
 }
 
+const iconosDisponibles = [
+    { clase: "fa-solid fa-link", nombre: "Enlace" },
+    { clase: "fa-solid fa-file-excel", nombre: "Excel" },
+    { clase: "fa-solid fa-file-pdf", nombre: "PDF" },
+    { clase: "fa-solid fa-file-csv", nombre: "CSV" },
+    { clase: "fa-solid fa-file-import", nombre: "Importación" },
+    { clase: "fa-solid fa-file-export", nombre: "Exportación" },
+    { clase: "fa-solid fa-database", nombre: "Base de datos" },
+    { clase: "fa-solid fa-users", nombre: "Colaboradores" },
+    { clase: "fa-solid fa-user-doctor", nombre: "Médicos" },
+    { clase: "fa-solid fa-hospital", nombre: "Hospital" },
+    { clase: "fa-solid fa-folder-open", nombre: "Carpeta" },
+    { clase: "fa-solid fa-cloud-arrow-up", nombre: "Subir archivo" },
+    { clase: "fa-solid fa-cloud-arrow-down", nombre: "Descargar" },
+    { clase: "fa-solid fa-calendar-days", nombre: "Calendario" },
+    { clase: "fa-solid fa-chart-column", nombre: "Reportes" },
+    { clase: "fa-solid fa-gear", nombre: "Configuración" },
+];
+
+function cargarIconosDisponibles() {
+    let html = "";
+    iconosDisponibles.forEach(icono => {
+        html += `
+            <div class="col-3">
+                <button type="button"
+                        class="btn btn-outline-secondary w-100 btn-icono"
+                        data-icono="${icono.clase}"
+                        title="${icono.nombre}">
+                    <i class="${icono.clase} fs-4"></i>
+                </button>
+            </div>
+        `;
+    });
+    $("#galeriaIconos").html(html);
+}
+
+
+$("#btnSeleccionarIcono").on("click", function () {
+    $("#contenedorSelectorIconos").toggleClass("d-none");
+});
+
+$(document).on("click", ".btn-icono", function () {
+    const icono = $(this).data("icono");
+    $("#inputIconoArtefacto").val(icono + " fs-5");
+    $("#previewIconoArtefacto").attr("class", icono + " fs-5");
+    $(".btn-icono").removeClass("active");
+    $(this).addClass("active");
+    $("#contenedorSelectorIconos").addClass("d-none");
+});
+
+cargarIconosDisponibles();
+
 $(document).ready(function () {
     cargarLinksImportacion();
+});
+
+$("#formAltaLink").on("submit", function (e) {
+    e.preventDefault();
+    let formData = $(this).serialize();
+
+    $.ajax({
+        url: "/administracion/links/crearNuevoLinkImportacion",
+        type: "POST",
+        data: formData,
+        dataType: "JSON",
+        beforeSend: function () {
+            $("#btnGuardar").text("Guardando").prop("disabled", true);
+            $("#btnCancelar").prop("disabled", true);
+        },
+        success: function (res) {
+            Swal.fire({
+                icon: "success",
+                title: "Operación exitosa!",
+                text: res.mensaje,
+                timer: 1200,
+                showConfirmButton: false,
+            });
+            $("#modalAltaLink").modal("hide");
+            $("#formAltaLink")[0].reset();
+            cargarLinksImportacion();
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: xhr.responseJSON?.mensaje || "Ocurrió un error al crear el link.",
+                showConfirmButton: true,
+            });
+            console.error(error);
+        },
+        complete: function(){
+            $("#btnGuardar").text("Guardar").prop("disabled", false);
+            $("#btnCancelar").prop("disabled", false);
+        }
+    });
 });
