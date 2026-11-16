@@ -28,7 +28,7 @@
 <div class="d-flex justify-content-between align-items-center">
     <h3 class="tituloVista mb-3">Gestión de colaboradres</h3>
     @if (Auth::user()->rol === 'Administrador/a')
-    <button type="button" class="btn btn-primary" onclick="abrirModal()">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAltaColaborador">
         Nuevo Colaborador
     </button>
     @endif
@@ -492,7 +492,7 @@
 </div>
 
 <div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered">
         <div class="modal-content p-2">
             <form id="formAltaColaborador">
                 @csrf
@@ -560,7 +560,29 @@
                             </div>
                         </div>
                         <div class="col-12">
+                            <div class="card p-3">
+                                <div class="row g-3">
+                                    <div class="d-flex justify-content-between aling-items-center">
+                                        <label class="label-control text-muted fw-bold">CONTACTOS DE EMERGENCIA</label>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregarContacto">Agregar contacto</button>
+                                    </div>
+                                </div>
+                                <div class="row g-3 my-1" id="divContactosEmergencia">
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card p-3">
+                                <div class="row g-3">
+                                    <div class="d-flex justify-content-between aling-items-center">
+                                        <label class="label-control text-muted fw-bold">GRUPO FAMILIAR</label>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregarHijo">Agregar familiar</button>
+                                    </div>
+                                </div>
+                                <div class="row g-3 my-1" id="divFamiliares">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1451,7 +1473,9 @@
 </script>
 
 <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
-<script src="{{ asset('js/personal/administrarHijosColab.js') }}"></script>
+<script src="{{ asset('js/personal/selectores.js') }}"></script>
+<script src="{{ asset('js/personal/administrarContEmerg.js') }}"></script>
+<script src="{{ asset('js/personal/administrarFamiliares.js') }}"></script>
 <script src="{{ asset('js/personal/administrarCuentas.js') }}"></script>
 <script src="{{ asset('js/personal/scriptComun.js') }}"></script>
 <script src="{{ asset('js/personal/editColaborador.js') }}"></script>

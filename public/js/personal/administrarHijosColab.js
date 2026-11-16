@@ -373,8 +373,7 @@ $("#btnAgregarHijo").on("click", function () {
             </div>
             <div class="col-lg-3 col-12">
                 <label class="form-label">DNI</label>
-                <input type="text" name="hijos[${indiceHijoAlta}][dni]" class="form-control"
-                       inputmode="numeric" maxlength="8" pattern="\\d{7,8}">
+                <input type="text" name="hijos[${indiceHijoAlta}][dni]" class="form-control" inputmode="numeric" maxlength="8" pattern="\\d{7,8}">
             </div>
             <div class="col-lg-3 col-12">
                 <label class="form-label">Fecha nacimiento</label>

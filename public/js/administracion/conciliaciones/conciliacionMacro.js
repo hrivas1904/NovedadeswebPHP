@@ -11,6 +11,8 @@
     const SCOPE = '[data-conciliacion-banco="' + CONCILIACION_BANCO + '"] ';
 
     let filasConciliacion = [];
+    const seleccionadosConc = new Set();
+    let idsParaExportar = new Set();
     let resumenConciliacion = { saldo_inicio: 0, primer_mes: null };
     let tablaConciliacion = null;
     let restaurandoScroll = false;
@@ -139,7 +141,10 @@
                     text: "Exportar",
                     exportOptions: {
                         columns: [1, 2, 3, 4, 5, 6, 7, 8],
-                        orthogonal: "export", // fuerza a que llame render(v, 'export', ...) en vez de usar el HTML de pantalla
+                        orthogonal: "export",
+                        rows: function (idx, data) {
+                            return idsParaExportar.has(Number(data.id));
+                        },
                     },
                 },
             ],
@@ -187,7 +192,11 @@
                             btnComentario +
                             '<input type="checkbox" class="chk-conc ms-1" data-id="' +
                             row.id +
-                            '">'
+                            '"' +
+                            (seleccionadosConc.has(Number(row.id))
+                                ? " checked"
+                                : "") +
+                            ">"
                         );
                     },
                 },
@@ -554,38 +563,51 @@
     });
 
     function idsSeleccionados() {
-        let ids = [];
-        tablaConciliacion
+        return tablaConciliacion
             .rows({ search: "applied" })
-            .nodes()
-            .to$()
-            .find(".chk-conc:checked")
-            .each(function () {
-                ids.push($(this).data("id"));
-            });
-        return ids;
+            .data()
+            .toArray()
+            .map((r) => Number(r.id))
+            .filter((id) => seleccionadosConc.has(id));
+    }
+
+    function limpiarSeleccionConc() {
+        seleccionadosConc.clear();
+        $("#chkSeleccionarTodos").prop("checked", false);
+        $(".chk-conc").prop("checked", false);
+        actualizarSumaSeleccionados();
     }
 
     function actualizarSumaSeleccionados() {
-        const ids = idsSeleccionados();
+        const ids = new Set(idsSeleccionados());
         const suma = filasConciliacion
-            .filter((r) => ids.includes(r.id))
+            .filter((r) => ids.has(Number(r.id)))
             .reduce((a, r) => a + Number(r.importe), 0);
         $("#sumaSeleccionados").text(
-            ids.length + " seleccionados · " + fmtPesos(suma),
+            ids.size + " seleccionados · " + fmtPesos(suma),
         );
     }
 
-    $(document).on("change", SCOPE + ".chk-conc", actualizarSumaSeleccionados);
+    $(document).on("change", SCOPE + ".chk-conc", function () {
+        const id = Number($(this).data("id"));
+        if ($(this).is(":checked")) seleccionadosConc.add(id);
+        else seleccionadosConc.delete(id);
+        actualizarSumaSeleccionados();
+    });
 
     $(document).on("change", SCOPE + "#chkSeleccionarTodos", function () {
         const checked = $(this).is(":checked");
         tablaConciliacion
             .rows({ search: "applied" })
-            .nodes()
-            .to$()
-            .find(".chk-conc")
-            .prop("checked", checked);
+            .data()
+            .toArray()
+            .forEach(function (r) {
+                const id = Number(r.id);
+                if (checked) seleccionadosConc.add(id);
+                else seleccionadosConc.delete(id);
+            });
+        tablaConciliacion.rows().invalidate("data").draw(false); // redibuja checks sin saltar de página
+        $("#chkSeleccionarTodos").prop("checked", checked);
         actualizarSumaSeleccionados();
     });
 
@@ -627,7 +649,27 @@
     });
 
     $(document).on("click", SCOPE + "#btnExportarExcel", function () {
+        const ids = idsSeleccionados();
+        if (!ids.length) {
+            Swal.fire({
+                title: "Atención",
+                text: "Seleccioná al menos un movimiento para exportar.",
+                icon: "warning",
+                timer: 1500,
+                showConfirmButton: false,
+            });
+            return;
+        }
+
+        idsParaExportar = new Set(ids);
         tablaConciliacion.button(0).trigger();
+
+        // Buttons arma el archivo de forma asíncrona: esperamos antes de limpiar
+        setTimeout(function () {
+            idsParaExportar = new Set();
+            limpiarSeleccionConc();
+            tablaConciliacion.rows().invalidate("data").draw(false);
+        }, 1000);
     });
 
     $(document).on("subvista:cargada", function () {
