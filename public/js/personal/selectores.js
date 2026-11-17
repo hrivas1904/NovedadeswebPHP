@@ -130,33 +130,41 @@ function obtenerServiciosSelector(idSelector) {
     });
 }
 
-function obtenerObrasSociales(idSelector) {
+function obtenerObrasSociales(idSelector, modal, inputCodigo) {
     const $select = idSelector;
 
     $.ajax({
         url: "/rrhh/obra-social/lista",
         type: "GET",
         dataType: "json",
+
         success: function (data) {
+            if ($select.hasClass("select2-hidden-accessible")) {
+                $select.select2("destroy");
+            }
+
+            $select.empty().append('<option value=""></option>');
+
             $select.select2({
                 data: data,
                 placeholder: "Buscar obra social...",
                 allowClear: true,
                 width: "100%",
-                dropdownParent: $("#modalLegajoColaborador"),
+                dropdownParent: modal.find(".modal-content"),
             });
         },
-        error: function (err) {
-            console.error("Error cargando obras sociales:", err);
+
+        error: function (xhr, status, error) {
+            console.error("Error cargando obras sociales:", error);
         },
     });
 
-    idSelector.on("select2:select", function (e) {
+    $select.off("select2:select").on("select2:select", function (e) {
         const data = e.params.data;
-        $("#inputCodigoOS").val(data.codigo ?? "");
+        inputCodigo.val(data.codigo ?? "");
     });
 
-    idSelector.on("select2:clear", function () {
-        $("#inputCodigoOS").val(data.codigo ?? "");
+    $select.off("select2:clear").on("select2:clear", function () {
+        inputCodigo.val("");
     });
 }

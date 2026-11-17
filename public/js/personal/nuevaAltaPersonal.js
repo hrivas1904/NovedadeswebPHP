@@ -1,30 +1,3 @@
-$(".inputDniPersonal").on("change", function () {
-    const regexDNI = /^[0-9]{8}[A-Za-z]$/;
-    const valorDni = $(this).val();
-
-    if (regexDNI.test(valorDni)) {
-        Swal.fire({
-            icon: "warning",
-            title: "Atención!",
-            text: "El DNI debe contener sólo letras y debe tener una longitud de 8 dígitos",
-            showConfirmButton: false,
-            timer: 1500,
-        });
-    }
-
-    if (!valorDni) {
-        Swal.fire({
-            icon: "warning",
-            title: "Atención!",
-            text: "El DNI es obligatorio",
-            showConfirmButton: false,
-            timer: 1200,
-        });
-    }
-
-    $(".midCuilPersonal").val(valorDni);
-});
-
 $("#btnAgregarContacto").on("click", function () {
     agregarFormNuevoContacto($("#divContactosEmergencia"));
 });
@@ -33,7 +6,7 @@ $("#btnAgregarFamiliar").on("click", function () {
     agregarFormNuevoFamiliar($("#divFamiliares"));
 });
 
-$(document).ready(function(){
+$(document).ready(function () {
     obtenerLocalidadesGeoRest(
         $("#selectLocalidad"),
         $("#modalAltaColaborador"),
@@ -43,5 +16,20 @@ $(document).ready(function(){
     obtenerTiposContratosSelector($("#selectorTipoContratoExt"));
     obtenerTiposContratosSelector($("#selectorTipoContratoDep"));
     obtenerServiciosSelector($("#selectorServicioExterno"));
-    obtenerObrasSociales($("#selectorObrasSociales"));
+});
+
+$(document).on("change", "#selectorTipoVinculo", function () {
+    const valor = $(this).val();
+    console.log("Tipo de vínculo seleccionado:", valor);
+    const esDependencia = valor === "Dependencia";
+    const esExterno = valor === "Externo";
+    $("#divDependencia").toggleClass("d-none", !esDependencia);
+    $("#divExterno").toggleClass("d-none", !esExterno);
+    if (esDependencia) {
+        obtenerObrasSociales(
+            $("#selectorObrasSociales"),
+            $("#modalAltaColaborador"),
+            $("#inputCodigoObraSocial"),
+        );
+    }
 });

@@ -630,68 +630,83 @@
                             <div class="card p-3">
                                 <div class="row g-3">
                                     <div class="d-flex justify-content-between gap-3 aling-items-center">
-                                        <label class="label-control text-muted fw-bold">DATOS LABORALES</label>
                                         <div class="col-12 col-xl-3">
-                                            <select class="form-select" id="selectorTipoVinculo">
-                                                <option value="">Seleccione tipo de vínculo</option>
-                                                <option value="Dependencia">Relación de dependencia</option>
-                                                <option value="Externo">Externo</option>
+                                            <label class="label-control text-muted fw-bold">DATOS LABORALES</label>
+                                            <div class="col-12 col-xl-3">
+                                                <select class="form-select" id="selectorTipoVinculo">
+                                                    <option value="">Seleccione tipo de vínculo</option>
+                                                    <option value="Dependencia">Relación de dependencia</option>
+                                                    <option value="Externo">Externo</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 my-1 d-none" id="divDependencia">
+                                        <div class="col-12 col-xl-2">
+                                            <label class="label-control text-muted">Puesto de trabajo</label>
+                                            <select class="form-select" id="selectorPuestoTrabajoPersonal" name="puestoTrabajo"></select>
+                                        </div>
+                                        <div class="col-12 col-xl-2">
+                                            <label class="label-control text-muted">Categoría</label>
+                                            <select class="form-select" id="selectorCategoriaPersonal" name="categoria"></select>
+                                        </div>
+                                        <div class="col-12 col-xl-1">
+                                            <label class="label-control text-muted">Régimen</label>
+                                            <select class="form-select" id="selectorRegimenPersonal" name="regimen"></select>
+                                        </div>
+                                        <div class="col-12 col-xl-1">
+                                            <label class="label-control text-muted">Horas diarias</label>
+                                            <input class="form-control" id="inputHorasDiariasPersonal" name="horasDiarias" readonly>
+                                        </div>
+                                        <div class="col-12 col-xl-2">
+                                            <label class="label-control text-muted">Tipo de contrato</label>
+                                            <select class="form-select" id="selectorTipoContratoDep" name="tipoContratoDep"></select>
+                                        </div>
+                                        <div class="col-12 col-xl-3">
+                                            <label class="label-control text-muted">Obra social</label>
+                                            <select class="form-select" id="selectorObrasSociales" name="obraSocial"></select>
+                                        </div>
+                                        <div class="col-12 col-xl-1">
+                                            <label class="label-control text-muted">Código OS</label>
+                                            <input class="form-control" id="inputCodigoObraSocial" readonly>
+                                        </div>
+                                        <div class="col-12 col-xl-3">
+                                            <label class="label-control text-muted">Convenio</label>
+                                            <select class="form-select" name="convenio">
+                                                <option value="SANIDAD">SANIDAD</option>
+                                                <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-xl-3">
+                                            <label class="label-control text-muted">Afiliado al sindicato</label>
+                                            <select class="form-select" name="sindicato">
+                                                <option value="SI">SI</option>
+                                                <option value="NO">NO</option>
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row g-3 my-1" id="divDependencia">
-                                    <div class="col-12 col-xl-2">
-                                        <label class="label-control text-muted">Puesto de trabajo</label>
-                                        <select class="form-select" id="selectorPuestoTrabajoPersonal" name="puestoTrabajo"></select>
-                                    </div>
-                                    <div class="col-12 col-xl-2">
-                                        <label class="label-control text-muted">Categoría</label>
-                                        <select class="form-select" id="selectorCategoriaPersonal" name="categoria"></select>
-                                    </div>
-                                    <div class="col-12 col-xl-1">
-                                        <label class="label-control text-muted">Régimen</label>
-                                        <select class="form-select" id="selectorRegimenPersonal" name="regimen"></select>
-                                    </div>
-                                    <div class="col-12 col-xl-1">
-                                        <label class="label-control text-muted">Horas diarias</label>
-                                        <input class="form-control" id="inputHorasDiariasPersonal" name="horasDiarias" readonly>
-                                    </div>
-                                    <div class="col-12 col-xl-2">
-                                        <label class="label-control text-muted">Tipo de contrato</label>
-                                        <select class="form-select" id="selectorTipoContratoDep" name="tipoContratoDep"></select>
-                                    </div>
-                                    <div class="col-12 col-xl-3">
-                                        <label class="label-control text-muted">Obra social</label>
-                                        <select class="form-select" id="selectorObrasSociales" name="obraSocial"></select>
-                                    </div>
-                                    <div class="col-12 col-xl-1">
-                                        <label class="label-control text-muted">Código OS</label>
-                                        <input class="form-control" id="inputCodigoObraSocial" readonly>
-                                    </div>
-                                </div>
-                                <div class="row g-3 my-1" id="divExterno">
-                                    <div class="col-12 col-xl-3">
-                                        <label class="label-control text-muted">Tipo de contrato</label>
-                                        <select class="form-select" id="selectorTipoContratoExt" name="tipoContratoExt"></select>
-                                    </div>
-                                    <div class="col-12 col-xl-3">
-                                        <label class="label-control text-muted">Servicio</label>
-                                        <select class="form-select" id="selectorServicioExterno" name="servicioExterno"></select>
-                                    </div>
-                                    <div class="col-12 col-xl-6">
-                                        <label class="label-control text-muted">Razón social</label>
-                                        <input class="form-control" name="razonSocial" type="text">
+                                    <div class="row g-3 my-1 d-none" id="divExterno">
+                                        <div class="col-12 col-xl-3">
+                                            <label class="label-control text-muted">Tipo de contrato</label>
+                                            <select class="form-select" id="selectorTipoContratoExt" name="tipoContratoExt"></select>
+                                        </div>
+                                        <div class="col-12 col-xl-3">
+                                            <label class="label-control text-muted">Servicio</label>
+                                            <select class="form-select" id="selectorServicioExterno" name="servicioExterno"></select>
+                                        </div>
+                                        <div class="col-12 col-xl-6">
+                                            <label class="label-control text-muted">Razón social</label>
+                                            <input class="form-control" name="razonSocial" type="text">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" id="btnCerraFormAltaPersonal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" id="btnCerraFormAltaPersonal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
             </form>
         </div>
     </div>
@@ -1582,7 +1597,6 @@
 <script src="{{ asset('js/personal/scriptComun.js') }}"></script>
 <script src="{{ asset('js/personal/editColaborador.js') }}"></script>
 <script src="{{ asset('js/personal/prestamos.js') }}"></script>
-<script src="{{ asset('js/personal/gestionPersonal.js') }}"></script>
 <script src="{{ asset('js/personal/nominaPersonal.js') }}"></script>
 <script src="{{ asset('js/personal/nuevaAltaPersonal.js') }}"></script>
 <script src="{{ asset('js/personal/generarConstanciaPdf.js') }}"></script>
