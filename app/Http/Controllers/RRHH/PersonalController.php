@@ -1969,4 +1969,14 @@ class PersonalController extends Controller
         $areas = DB::select("SELECT id_area, nombre FROM areas WHERE estado = 1");
         return response()->json(["data" => $areas]);
     }
+
+    public function obtenerTiposContrato(){
+        $contratos = DB::select("SELECT nombre FROM tipos_contratos WHERE estado = 1");
+        return response()->json(["data"=>$contratos]);
+    }
+
+    public function obtenerServiciosPersonal(){
+        $contratos = DB::select("SELECT id_servicios, nombre FROM servicios WHERE estado = 1");
+        return response()->json(["data"=>$contratos]);
+    }
 }

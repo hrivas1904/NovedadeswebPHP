@@ -280,6 +280,8 @@ Route::middleware(['auth'])->group(function () {
 
     //SELECTORES
     Route::get('/obtenerAreasSelector', [PersonalController::class, 'obtenerAreasSelector']);
+    Route::get('/obtenerTiposContrato', [PersonalController::class, 'obtenerTiposContrato']);
+    Route::get('/obtenerServiciosPersonal', [PersonalController::class, 'obtenerServiciosPersonal']);
 
     //cronograma
     Route::get('/calendario/colaboradores-area', [CalendarioServController::class, 'listarColaboradoresArea']);

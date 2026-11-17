@@ -64,17 +64,99 @@ function obtenerAreasSelector(idSelector) {
     $.ajax({
         url: "/rrhh/obtenerAreasSelector",
         type: "GET",
-        dateType: "JSON",
+        dateType: "json",
 
         success: function (res) {
             selector = idSelector;
+            selector.empty();
+            selector.append('<option value="">Seleccione área</option>');
             $.each(res.data, function (index, item) {
                 selector.append(
                     `
-                        <option value="${item.id_area}">${item.nombre}<option/>
+                        <option value="${item.id_area}">${item.nombre}</option>
                     `,
                 );
             });
         },
+    });
+}
+
+function obtenerTiposContratosSelector(idSelector) {
+    $.ajax({
+        url: "/rrhh/obtenerTiposContrato",
+        type: "GET",
+        dateType: "json",
+
+        success: function (res) {
+            selector = idSelector;
+            selector.empty();
+            selector.append(
+                '<option value="">Seleccione tipo de contrato</option>',
+            );
+            $.each(res.data, function (index, item) {
+                selector.append(
+                    `
+                        <option value="${item.nombre}">${item.nombre}</option>
+                    `,
+                );
+            });
+        },
+    });
+}
+
+function obtenerServiciosSelector(idSelector) {
+    $.ajax({
+        url: "/rrhh/obtenerServiciosPersonal",
+        type: "GET",
+        dateType: "json",
+
+        success: function (res) {
+            selector = idSelector;
+            selector.empty();
+            selector.append('<option value="">Seleccione servicio</option>');
+            $.each(res.data, function (index, item) {
+                selector.append(
+                    `
+                        <option value="${item.id_servicios}">${item.nombre}</option>
+                    `,
+                );
+            });
+        },
+
+        error: function (xhr, status, error) {
+            console.error("Error al obtener servicios:", error);
+            console.error("Respuesta:", xhr.responseText);
+        },
+    });
+}
+
+function obtenerObrasSociales(idSelector) {
+    const $select = idSelector;
+
+    $.ajax({
+        url: "/rrhh/obra-social/lista",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            $select.select2({
+                data: data,
+                placeholder: "Buscar obra social...",
+                allowClear: true,
+                width: "100%",
+                dropdownParent: $("#modalLegajoColaborador"),
+            });
+        },
+        error: function (err) {
+            console.error("Error cargando obras sociales:", err);
+        },
+    });
+
+    idSelector.on("select2:select", function (e) {
+        const data = e.params.data;
+        $("#inputCodigoOS").val(data.codigo ?? "");
+    });
+
+    idSelector.on("select2:clear", function () {
+        $("#inputCodigoOS").val(data.codigo ?? "");
     });
 }

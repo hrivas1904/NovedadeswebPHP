@@ -33,11 +33,15 @@ $("#btnAgregarFamiliar").on("click", function () {
     agregarFormNuevoFamiliar($("#divFamiliares"));
 });
 
-$("#modalAltaColaborador").on("show.bs.modal", function () {
+$(document).ready(function(){
     obtenerLocalidadesGeoRest(
         $("#selectLocalidad"),
         $("#modalAltaColaborador"),
     );
     agregarFormNuevoContacto($("#divContactosEmergencia"));
     agregarFormNuevoFamiliar($("#divFamiliares"));
+    obtenerTiposContratosSelector($("#selectorTipoContratoExt"));
+    obtenerTiposContratosSelector($("#selectorTipoContratoDep"));
+    obtenerServiciosSelector($("#selectorServicioExterno"));
+    obtenerObrasSociales($("#selectorObrasSociales"));
 });

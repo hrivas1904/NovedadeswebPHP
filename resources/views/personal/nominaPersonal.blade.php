@@ -508,28 +508,28 @@
                                     <label class="label-control text-muted fw-bold">DATOS PERSONALES</label>
                                     <div class="col-12 col-xl-4">
                                         <label class="text-muted">Nombre</label>
-                                        <input type="text" class="form-control" name="nombre" require>
+                                        <input type="text" class="form-control" name="nombre" required>
                                     </div>
                                     <div class="col-12 col-xl-4">
                                         <label class="text-muted">Apellido</label>
-                                        <input type="text" class="form-control" name="apellido" require>
+                                        <input type="text" class="form-control" name="apellido" required>
                                     </div>
                                     <div class="col-12 col-xl-4">
                                         <label class="text-muted">DNI</label>
-                                        <input type="text" class="form-control inputDniPersonal" name="dni" require>
+                                        <input type="text" class="form-control inputDniPersonal" name="dni" required>
                                     </div>
                                     <div class="col-12 col-xl-9">
                                         <label for="preCuilPersonal" class="text-muted">CUIL</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control text-center preCuilPersonal" maxlength="2" inputmode="numeric" style="max-width: 65px;" require>
-                                            <input type="text" class="form-control text-center midCuilPersonal" maxlength="8" readonly require>
-                                            <input type="text" class="form-control text-center posCuilPersonal" maxlength="1" inputmode="numeric" style="max-width: 55px;" require>
+                                            <input type="text" class="form-control text-center preCuilPersonal" maxlength="2" inputmode="numeric" style="max-width: 65px;" required>
+                                            <input type="text" class="form-control text-center midCuilPersonal" maxlength="8" readonly required>
+                                            <input type="text" class="form-control text-center posCuilPersonal" maxlength="1" inputmode="numeric" style="max-width: 55px;" required>
                                             <input name="cuil" class="inputCuilPersonal" hidden>
                                         </div>
                                     </div>
                                     <div class="col-12 col-xl-3">
                                         <label class="text-muted">Fecha de nacimiento</label>
-                                        <input class="form-control" type="date" id="inputFnacimientoPersonal" name="fechaNacimiento" require>
+                                        <input class="form-control" type="date" id="inputFnacimientoPersonal" name="fechaNacimiento" required>
                                     </div>
                                 </div>
                             </div>
@@ -540,7 +540,7 @@
                                     <label class="label-control text-muted fw-bold">DATOS DE CONTACTO</label>
                                     <div class="col-12 col-xl-4">
                                         <label class="text-muted">Teléfono</label>
-                                        <input type="text" class="form-control inputTelefonoPersonal" name="telefono" require>
+                                        <input type="text" class="form-control inputTelefonoPersonal" name="telefono" required>
                                     </div>
                                     <div class="col-12 col-xl-8">
                                         <label class="text-muted">Correo electrónico</label>
@@ -548,7 +548,7 @@
                                     </div>
                                     <div class="col-12 col-xl-8">
                                         <label class="text-muted">Domicilio</label>
-                                        <input type="text" class="form-control" name="domicilio" require>
+                                        <input type="text" class="form-control" name="domicilio" required>
                                     </div>
                                     <div class="col-12 col-xl-4">
                                         <label class="text-muted">Localidad</label>
@@ -581,6 +581,108 @@
                                     </div>
                                 </div>
                                 <div class="row g-3 my-1" id="divFamiliares">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card p-3">
+                                <div class="row g-3">
+                                    <label class="label-control text-muted fw-bold">DATOS SOCIOECONÓMICOS</label>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="text-muted">Estado civil</label>
+                                        <select class="form-select" name="estadoCivil">
+                                            <option value="">Seleccione estado civil</option>
+                                            <option value="SOLTERO/A">SOLTERO/A</option>
+                                            <option value="CASADO/A">CASADO/A</option>
+                                            <option value="DIVORCIADO/A">DIVORCIADO/A</option>
+                                            <option value="VIUDO/A">VIUDO/A</option>
+                                            <option value="N/D">N/D</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="text-muted">Género</label>
+                                        <select class="form-select" name="genero">
+                                            <option value="">Seleccione género</option>
+                                            <option value="MASCULINO">MASCULINO</option>
+                                            <option value="FEMENINO">FEMENINO</option>
+                                            <option value="NO BINARIO">NO BINARIO</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-xl-1">
+                                        <label class="text-muted">Título</label>
+                                        <select class="form-select" name="titulo">
+                                            <option value="SI">SI</option>
+                                            <option value="NO">NO</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="text-muted">Descipción del título</label>
+                                        <input type="text" class="form-control input-titulo-personal" name="titulo">
+                                    </div>
+                                    <div class="col-12 col-xl-2">
+                                        <label class="text-muted">MP</label>
+                                        <input type="text" class="form-control input-mat-profesional" name="matriucla">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card p-3">
+                                <div class="row g-3">
+                                    <div class="d-flex justify-content-between gap-3 aling-items-center">
+                                        <label class="label-control text-muted fw-bold">DATOS LABORALES</label>
+                                        <div class="col-12 col-xl-3">
+                                            <select class="form-select" id="selectorTipoVinculo">
+                                                <option value="">Seleccione tipo de vínculo</option>
+                                                <option value="Dependencia">Relación de dependencia</option>
+                                                <option value="Externo">Externo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-3 my-1" id="divDependencia">
+                                    <div class="col-12 col-xl-2">
+                                        <label class="label-control text-muted">Puesto de trabajo</label>
+                                        <select class="form-select" id="selectorPuestoTrabajoPersonal" name="puestoTrabajo"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-2">
+                                        <label class="label-control text-muted">Categoría</label>
+                                        <select class="form-select" id="selectorCategoriaPersonal" name="categoria"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-1">
+                                        <label class="label-control text-muted">Régimen</label>
+                                        <select class="form-select" id="selectorRegimenPersonal" name="regimen"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-1">
+                                        <label class="label-control text-muted">Horas diarias</label>
+                                        <input class="form-control" id="inputHorasDiariasPersonal" name="horasDiarias" readonly>
+                                    </div>
+                                    <div class="col-12 col-xl-2">
+                                        <label class="label-control text-muted">Tipo de contrato</label>
+                                        <select class="form-select" id="selectorTipoContratoDep" name="tipoContratoDep"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="label-control text-muted">Obra social</label>
+                                        <select class="form-select" id="selectorObrasSociales" name="obraSocial"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-1">
+                                        <label class="label-control text-muted">Código OS</label>
+                                        <input class="form-control" id="inputCodigoObraSocial" readonly>
+                                    </div>
+                                </div>
+                                <div class="row g-3 my-1" id="divExterno">
+                                    <div class="col-12 col-xl-3">
+                                        <label class="label-control text-muted">Tipo de contrato</label>
+                                        <select class="form-select" id="selectorTipoContratoExt" name="tipoContratoExt"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="label-control text-muted">Servicio</label>
+                                        <select class="form-select" id="selectorServicioExterno" name="servicioExterno"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-6">
+                                        <label class="label-control text-muted">Razón social</label>
+                                        <input class="form-control" name="razonSocial" type="text">
+                                    </div>
                                 </div>
                             </div>
                         </div>
