@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class PersonalController extends Controller
 {
@@ -179,124 +181,146 @@ class PersonalController extends Controller
         return response()->json($data);
     }
 
-    public function store(Request $request)
+    public function guardarAltaPersonal(Request $request)
     {
-        $idUser = auth()->id();
-        $ip     = $request->ip();
-        $nav    = substr((string) $request->userAgent(), 0, 512);
-        $v      = fn($x) => ($x === null || trim((string) $x) === '') ? null : trim($x);
+        $request->validate([
+            'nombre'            => 'required|string|max:255',
+            'apellido'          => 'required|string|max:255',
+            'dni'               => 'required|digits_between:7,8',
+            'cuil'              => 'required|digits:11',
+            'fechaNacimiento'   => 'required|date|before:today',
+            'telefono'          => 'required|string|max:20',
+            'correoElectronico' => 'nullable|email|max:255',
+            'domicilio'         => 'required|string|max:512',
+            'localidad'         => 'required|string|max:255',
+            'estadoCivil'       => 'nullable|string|max:128',
+            'genero'            => 'nullable|string|max:25',
+            'titulo'            => 'nullable|in:SI,NO',
+            'descripcionTitulo' => 'nullable|string|max:255',
+            'matricula'         => 'nullable|string|max:50',
 
-        $idPersonal = $request->input('id_personal');   // viene en un reintento
-        $avisos     = [];
+            'tipoVinculo'       => 'required|in:DEPENDENCIA,EXTERNO',
+            'fechaIngreso'      => 'required|date',
+            'fechaFinPrueba'    => 'nullable|date|after_or_equal:fechaIngreso',
+            'puestoTrabajo'     => 'required_if:tipoVinculo,DEPENDENCIA|nullable|integer',
+            'categoria'         => 'required_if:tipoVinculo,DEPENDENCIA|nullable|integer',
+            'regimen'           => 'required_if:tipoVinculo,DEPENDENCIA|nullable|integer',
+            'horasDiarias'      => 'required_if:tipoVinculo,DEPENDENCIA|nullable|numeric',
+            'tipoContratoDep'   => 'required_if:tipoVinculo,DEPENDENCIA|nullable|string|max:45',
+            'obraSocial'        => 'nullable|integer',
+            'convenio'          => 'nullable|in:SANIDAD,FUERA DE CONVENIO',
+            'sindicato'         => 'nullable|in:SI,NO',
+            'tipoContratoExt'   => 'required_if:tipoVinculo,EXTERNO|nullable|string|max:45',
+            'servicioExterno'   => 'nullable|integer',
+            'razonSocial'       => 'nullable|string|max:255',
 
-        // 1. Persona (se saltea si es reintento)
-        if (!$idPersonal) {
-            try {
-                DB::statement('CALL SP_ALTA_PERSONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, @id_personal)', [
+            'nombreEmergencia.*'           => 'nullable|string|max:255',
+            'telefonoEmergencia.*'         => 'nullable|string|max:20',
+            'parentescoEmergencia.*'       => 'nullable|string|max:45',
+            'familiarNombrePersonal.*'     => 'nullable|string|max:255',
+            'familiarDniPersonal.*'        => 'nullable|digits_between:7,8',
+            'familiarNacimientoPersonal.*' => 'nullable|date',
+            'familiarParentescoPersonal.*' => 'nullable|string|max:45',
+        ]);
+
+        $tipo  = $request->tipoVinculo;
+        $audit = [auth()->id(), $request->ip(), substr((string) $request->userAgent(), 0, 512)];
+
+        try {
+            $resultado = DB::transaction(function () use ($request, $tipo, $audit) {
+
+                // 1) Persona
+                DB::statement('CALL SP_ALTA_PERSONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, @id_personal)', [
                     $request->nombre,
                     $request->apellido,
-                    $v($request->cuil),
-                    $v($request->dni),
-                    $v($request->domicilio),
-                    $v($request->localidad),
-                    $v($request->estado_civil),
-                    $v($request->fecha_nacimiento),
-                    $v($request->p_titulo),
-                    $v($request->p_descripcion_titulo),
-                    $v($request->matricula_profesional),
-                    $v($request->email),
-                    $v($request->telefono),
-                    null,
-                    null,                                  // url_foto_legajo, id_huella_tarja
-                    $v($request->genero),
-                    $v($request->padreColaborador),
-                    $v($request->madreColaborador),
-                    $idUser,
-                    $ip,
-                    $nav,
+                    $request->dni,
+                    $request->cuil,
+                    $request->fechaNacimiento,
+                    $request->telefono,
+                    $request->correoElectronico,
+                    $request->domicilio,
+                    $request->localidad,
+                    $request->estadoCivil,
+                    $request->genero,
+                    $request->titulo,
+                    $request->descripcionTitulo,
+                    $request->matricula,
+                    ...$audit,
                 ]);
                 $idPersonal = DB::selectOne('SELECT @id_personal AS id')->id;
-            } catch (QueryException $e) {
-                return $this->errorSp($e, 'No se pudo registrar la persona.');
-            }
 
-            // 2. Contactos de emergencia (si fallan, se avisa y se siguen cargando desde edición)
-            foreach ([1, 2] as $i) {
-                if (!$v($request->input("personaEmerg$i"))) continue;
-                try {
+                // 2) Vínculo (cabecera + legajo)
+                DB::statement('CALL SP_ALTA_VINCULO(?,?,?,?,?,?,?, @id_vinculo, @legajo)', [
+                    $tipo,
+                    $idPersonal,
+                    $request->fechaIngreso,
+                    $request->fechaFinPrueba,
+                    ...$audit,
+                ]);
+                $vinculo = DB::selectOne('SELECT @id_vinculo AS id_vinculo, @legajo AS legajo');
+
+                // 3) Detalle según tipo
+                if ($tipo === 'DEPENDENCIA') {
+                    DB::statement('CALL SP_ALTA_TRAMO_DEPENDENCIA(?,?,?,?,?,?,?,?,?,?,?,?,?, @id_tramo)', [
+                        $vinculo->id_vinculo,
+                        $request->puestoTrabajo,
+                        $request->categoria,
+                        $request->regimen,
+                        $request->horasDiarias,
+                        $request->tipoContratoDep,
+                        $request->obraSocial,
+                        $request->convenio,
+                        $request->sindicato === 'SI' ? 1 : 0,
+                        $request->fechaIngreso,
+                        ...$audit,
+                    ]);
+                } else {
+                    DB::statement('CALL SP_ALTA_VINCULO_MED_MONOTRIBUT(?,?,?,?,?,?,?)', [
+                        $vinculo->id_vinculo,
+                        $request->servicioExterno,
+                        $request->razonSocial,
+                        $request->tipoContratoExt,
+                        ...$audit,
+                    ]);
+                }
+
+                // 4) Contactos de emergencia (solo filas con nombre)
+                foreach ((array) $request->nombreEmergencia as $i => $nombre) {
+                    if (trim((string) $nombre) === '') continue;
                     DB::statement('CALL SP_ALTA_CONTACTO_PERSONAL(?,?,?,?,?,?,?)', [
                         $idPersonal,
-                        $request->input("personaEmerg$i"),
-                        $v($request->input("telefEmerg$i")),
-                        $request->input("parentesco$i"),
-                        $idUser,
-                        $ip,
-                        $nav,
+                        $nombre,
+                        $request->telefonoEmergencia[$i] ?? null,
+                        $request->parentescoEmergencia[$i] ?? null,
+                        ...$audit,
                     ]);
-                } catch (QueryException $e) {
-                    $avisos[] = "Contacto $i: " . $this->mensajeSp($e, 'no se pudo guardar.');
                 }
-            }
 
-            // 3. Hijos
-            foreach ($request->input('hijos', []) as $h) {
-                if (!$v($h['nombre'] ?? null)) continue;
-                try {
+                // 5) Familiares
+                foreach ((array) $request->familiarNombrePersonal as $i => $nombre) {
+                    if (trim((string) $nombre) === '') continue;
                     DB::statement('CALL SP_ALTA_FAMILIAR_PERSONAL(?,?,?,?,?,?,?,?)', [
                         $idPersonal,
-                        $h['nombre'],
-                        $v($h['dni'] ?? null),
-                        $v($h['fechaNacimiento'] ?? null),
-                        'Hijo/a',
-                        $idUser,
-                        $ip,
-                        $nav,
+                        $nombre,
+                        $request->familiarDniPersonal[$i] ?? null,
+                        $request->familiarNacimientoPersonal[$i] ?? null,
+                        $request->familiarParentescoPersonal[$i] ?? null,
+                        ...$audit,
                     ]);
-                } catch (QueryException $e) {
-                    $avisos[] = "Hijo/a {$h['nombre']}: " . $this->mensajeSp($e, 'no se pudo guardar.');
                 }
-            }
-        }
 
-        // 4. Vínculo
-        try {
-            DB::statement('CALL SP_ALTA_VINCULO_EMPRESA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, @id_vinculo, @legajo)', [
-                $request->tipo_vinculo,
-                $idPersonal,
-                $request->fecha_ingreso,
-                $v($request->fecha_fin_prueba),
-                $v($request->rol_interno_id),
-                $v($request->categoria_id),
-                $v($request->regimen_horas),
-                $v($request->horas_diarias),
-                $request->tipo_contrato,
-                $v($request->obra_social_id),
-                $idUser,
-                $v($request->servicio_id),
-                $v($request->razon_social),
-                $ip,
-                $nav,
-                $v($request->posee_convenio),
-                $request->es_afiliado === 'SI' ? 1 : 0,
-            ]);
-            $res = DB::selectOne('SELECT @id_vinculo AS id_vinculo, @legajo AS legajo');
+                return ['id_personal' => $idPersonal, 'legajo' => $vinculo->legajo];
+            });
         } catch (QueryException $e) {
-            // la persona ya quedó creada: el front reintenta solo el vínculo
-            return $this->errorSp($e, 'No se pudo registrar el vínculo.', [
-                'id_personal' => $idPersonal,
-                'avisos'      => $avisos,
-            ]);
+            // SIGNAL 45000 = validación de negocio del SP → mensaje al usuario
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['message' => $e->errorInfo[2]], 422);
+            }
+            Log::error('Alta de personal', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se pudo guardar el alta.'], 500);
         }
 
-        return response()->json([
-            'success'     => true,
-            'mensaje'     => $res->legajo
-                ? "Colaborador registrado con legajo {$res->legajo}."
-                : 'Personal registrado correctamente.',
-            'id_personal' => $idPersonal,
-            'legajo'      => $res->legajo,
-            'avisos'      => $avisos,
-        ]);
+        return response()->json(['message' => 'Alta registrada.', 'data' => $resultado]);
     }
 
     private function mensajeSp(QueryException $e, string $generico): string
@@ -1970,13 +1994,15 @@ class PersonalController extends Controller
         return response()->json(["data" => $areas]);
     }
 
-    public function obtenerTiposContrato(){
+    public function obtenerTiposContrato()
+    {
         $contratos = DB::select("SELECT nombre FROM tipos_contratos WHERE estado = 1");
-        return response()->json(["data"=>$contratos]);
+        return response()->json(["data" => $contratos]);
     }
 
-    public function obtenerServiciosPersonal(){
+    public function obtenerServiciosPersonal()
+    {
         $contratos = DB::select("SELECT id_servicios, nombre FROM servicios WHERE estado = 1");
-        return response()->json(["data"=>$contratos]);
+        return response()->json(["data" => $contratos]);
     }
 }

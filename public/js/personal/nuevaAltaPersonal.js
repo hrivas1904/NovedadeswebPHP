@@ -20,11 +20,23 @@ $(document).ready(function () {
 
 $(document).on("change", "#selectorTipoVinculo", function () {
     const valor = $(this).val();
-    console.log("Tipo de vínculo seleccionado:", valor);
-    const esDependencia = valor === "Dependencia";
-    const esExterno = valor === "Externo";
-    $("#divDependencia").toggleClass("d-none", !esDependencia);
-    $("#divExterno").toggleClass("d-none", !esExterno);
+
+    const esDependencia = valor === "DEPENDENCIA";
+    const esExterno = valor === "EXTERNO";
+
+    // Relación de dependencia
+    $("#divDependencia")
+        .toggleClass("d-none", !esDependencia)
+        .find("input, select, textarea")
+        .prop("disabled", !esDependencia);
+
+    // Personal externo
+    $("#divExterno")
+        .toggleClass("d-none", !esExterno)
+        .find("input, select, textarea")
+        .prop("disabled", !esExterno);
+
+    // Cargar obras sociales
     if (esDependencia) {
         obtenerObrasSociales(
             $("#selectorObrasSociales"),

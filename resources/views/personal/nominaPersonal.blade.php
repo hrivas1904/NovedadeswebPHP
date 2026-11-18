@@ -143,359 +143,11 @@
 @endsection
 
 @push('modals')
-<div class="modal fade" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content p-2">
-            <div class="modal-header">
-                <h5 class="modal-title">Alta de personal</h5>
-                <button type="button" class="btn-close" onclick="cerrarModal()"></button>
-            </div>
-            <div class="modal-body">
-                <form id="formAltaColaborador">
-                    @csrf
-                    <div class="row g-3">
-                        <div class="col-12 col-md-12 col-xl-6">
-                            <div class="card p-3">
-                                <div class="d-flex flex-column justify-content-start gap-3">
-                                    <label class="text-muted fs-6 fw-bold">Datos personales</label>
-                                    <div class="row g-3">
-                                        <div class="col-12 col-md-4 col-xl-6">
-                                            <label class="label-control text-muted">Nombre</label>
-                                            <input type="text" name="nombre" class="form-control" required>
-                                        </div>
-                                        <div class="col-12 col-md-4 col-xl-6">
-                                            <label class="label-control text-muted">Apellido</label>
-                                            <input type="text" name="apellido" class="form-control" required>
-                                        </div>
-                                        <div class="col-12 col-md-4 col-xl-3">
-                                            <label class="label-control text-muted">DNI</label>
-                                            <input type="text" name="dni" class="form-control" inputmode="numeric" maxlength="8" pattern="\d{7,8}" required>
-                                        </div>
-                                        <div class="col-12 col-md-7 col-xl-6">
-                                            <label class="label-control text-muted">CUIL</label>
-                                            <div class="input-group">
-                                                <input type="text" id="firstPartCuil" class="form-control text-center" min="00" style="max-width: 70px;" maxlength="2" required>
-                                                <input type="text" id="middlePartCuil" class="form-control text-center bg-light">
-                                                <input type="text" id="lastPartCuil" class="form-control text-center" min="0" max="9" style="max-width: 60px;" maxlength="1" required>
-                                            </div>
-                                            <input name="cuil" id="cuil" hidden>
-                                        </div>
-                                        <div class="col-12 col-md-5 col-xl-3">
-                                            <label class="label-control text-muted">Fecha nacimiento</label>
-                                            <input id="fecha_nacimiento" name="fecha_nacimiento" class="form-control"
-                                                type="text" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-12 col-xl-6">
-                            <div class="card p-3">
-                                <div class="d-flex flex-column justify-content-start gap-3">
-                                    <label class="text-muted fs-6 fw-bold">Datos de contacto</label>
-                                    <div class="row g-3">
-                                        <div class="col-12 col-md-7 col-xl-7">
-                                            <label class="label-control text-muted">Correo electrónico</label>
-                                            <input type="email" name="email" class="form-control" required>
-                                        </div>
-                                        <div class="col-lg-5 col-md-5 col-xl-5">
-                                            <label class="label-control text-muted">Teléfono</label>
-                                            <input type="text" name="telefono" id="telefono" class="form-control">
-                                        </div>
-                                        <div class="col-12 col-md-7 col-xl-7">
-                                            <label class="label-control text-muted">Domicilio</label>
-                                            <input type="text" name="domicilio" id="domicilio" class="form-control">
-                                        </div>
-                                        <div class="col-12 col-md-5 col-xl-5">
-                                            <label class="label-control text-muted">Localidad</label>
-                                            <select class="form-select" style="width:100%" required>
-                                                <option value="">Seleccionar localidad</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="card p-3">
-                                <div class="d-flex flex-column gap-3">
-                                    <label class="text-muted fw-bold fs-6">Contactos de emergencia</label>
-                                    <div class="row g-3">
-                                        <div class="col-12 col-md-12 col-lg-6">
-                                            <div class="d-flex flex-column gap-3">
-                                                <label class="text-muted fw-bold">Contacto de emergencia 1</label>
-                                                <div class="row g-3">
-                                                    <div class="col-12 col-md-12 col-xl-12">
-                                                        <label class="label-control text-muted">Nombre</label>
-                                                        <input id="personaEmergencia1" name="personaEmerg1" class="form-control editAllowed">
-                                                    </div>
-                                                    <div class="col-12 col-md-12 col-xl-6">
-                                                        <label class="label-control text-muted">Teléfono</label>
-                                                        <input id="contactoEmergencia1" name="telefEmerg1" class="form-control editAllowed">
-                                                    </div>
-                                                    <div class="col-12 col-md-12 col-xl-6">
-                                                        <label class="label-control text-muted">Parentesco</label>
-                                                        <input id="parentescoEmergencia1" name="parentesco1" class="form-control editAllowed">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-12 col-lg-6">
-                                            <div class="d-flex flex-column gap-3">
-                                                <label class="text-muted fw-bold">Contacto de emergencia 2</label>
-                                                <div class="row g-3">
-                                                    <div class="col-12 col-md-12 col-xl-12">
-                                                        <label class="label-control text-muted">Nombre</label>
-                                                        <input id="personaEmergencia2" name="personaEmerg2" class="form-control editAllowed">
-                                                    </div>
-                                                    <div class="col-12 col-md-12 col-xl-6">
-                                                        <label class="label-control text-muted">Teléfono</label>
-                                                        <input id="contactoEmergencia2" name="telefEmerg2" class="form-control editAllowed">
-                                                    </div>
-                                                    <div class="col-12 col-md-12 col-xl-6">
-                                                        <label class="label-control text-muted">Parentesco</label>
-                                                        <input id="parentescoEmergencia2" name="parentesco2" class="form-control editAllowed">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="card p-3">
-                                <div class="d-flex flex-column gap-3">
-                                    <label class="text-muted fw-bold fs-6">Grupo familiar</label>
-                                    <div class="row g-3">
-                                        <div class="col-lg-5">
-                                            <label class="label-control text-muted">Padre</label>
-                                            <input id="padreColaborador" name="padreColaborador"
-                                                class="form-control"></input>
-                                        </div>
-                                        <div class="col-lg-5">
-                                            <label class="label-control text-muted">Madre</label>
-                                            <input id="madreColaborador" name="madreColaborador" class="form-control"
-                                                type="text"></input>
-                                        </div>
-                                        <div class="col-lg-2 d-flex flex-column">
-                                            <label class="label-control text-muted">Agregar hijo/a</label>
-                                            <button type="button" id="btnAgregarHijo" class="btn btn-primary">
-                                                <i class="fa-solid fa-plus"></i> Hijo/a
-                                            </button>
-                                        </div>
-
-                                        <div id="divHijos" class="col-lg-12 p-3" hidden>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="card p-3">
-                                <div class="d-flex flex-column gap-3">
-                                    <label class="fw-bold fs-6 text-muted">Datos socioeconómicos</label>
-                                    <div class="row g-3">
-                                        <div class="col-lg-3">
-                                            <label class="label-control text-muted">Estado civil</label>
-                                            <select name="estado_civil" id="estado_civil" class="form-select" required>
-                                                <option selected disabled="">Seleccione estado civil</option>
-                                                <option value="SOLTERO/A">SOLTERO/A</option>
-                                                <option value="CASADO/A">CASADO/A</option>
-                                                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
-                                                <option value="VIUDO/A">VIUDO/A</option>
-                                                <option value="N/D">N/D</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="label-control text-muted">Género</label>
-                                            <select name="genero" id="genero" class="form-select" required>
-                                                <option selected disabled value="">Seleccione género</option>
-                                                <option value="MASCULINO">MASCULINO</option>
-                                                <option value="FEMENINO">FEMENINO</option>
-                                                <option value="NO BINARIO">NO BINARIO</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="label-control text-muted">Título</label>
-                                            <select name="p_titulo" id="select-titulo" class="form-select">
-                                                <option selected disabled value="" disabled>Seleccione opción
-                                                </option>
-                                                <option value="SI">SI</option>
-                                                <option value="NO">NO</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-3 d-none" id="divTitulo">
-                                            <label class="label-control text-muted">Descripción de título</label>
-                                            <input name="p_descripcion_titulo" class="form-control" type="text" />
-                                        </div>
-                                        <div class="col-lg-1 d-none" id="divMatricula">
-                                            <label class="label-control text-muted">M.P.</label>
-                                            <input name="matricula_profesional" class="form-control" type="text" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="card p-3">
-                                <div class="d-flex flex-column gap-3">
-                                    <label class="text-muted fw-bold fs-6">Datos Laborales</label>
-                                    <div class="col-12 col-md-6 col-md-4">
-                                        <select id="selectorTipoVinculo" name="tipo_vinculo" class="form-select" required>
-                                            <option value="" selected>Seleccionar tipo de vinculo con la organización</option>
-                                            <option value="DEPENDENCIA">Relación de dependencia</option>
-                                            <option value="EXTERNO">Externo</option>
-                                        </select>
-                                    </div>
-                                    <div class="row g-3 d-none" id="divDependencia">
-                                        <div class="col-lg-2">
-                                            <label class="label-control text-muted">Tipo de contrato</label>
-                                            <select name="tipo_contrato" id="tipoContrato" class="form-select" required>
-                                                <option selected="" disabled>Seleccione opción</option>
-                                                <option value="Tiempo fijo">PLAZO FIJO</option>
-                                                <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
-                                                <option value="Monotributista">MONOTRIBUTISTA</option>
-                                                <option value="Pasantía">PASANTÍA</option>
-                                                <option value="Práctica profesional">PRÁCTICA PROFESIONAL</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="label-control text-muted">Fecha ingreso</label>
-                                            <input type="date" name="fecha_ingreso" id="fechaInicio"
-                                                class="form-control" required>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="label-control text-muted">Fecha fin prueba</label>
-                                            <input type="date" name="fecha_fin_prueba" id="fechaFin"
-                                                class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="label-control text-muted">Área</label>
-                                            <select id="area" class="form-select js-select-area">
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="label-control text-muted">Servicio</label>
-                                            <select id="servicio" class="form-select js-select-servicio">
-                                                <option selected value="">Seleccione servicio</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-2">
-                                            <label class="label-control text-muted">Convenio</label>
-                                            <select name="posee_convenio" id="convenio" class="form-select">
-                                                <option value="SANIDAD">SANIDAD</option>
-                                                <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-2">
-                                            <label class="label-control text-muted">Categoría</label>
-                                            <select name="categoria_id" id="categoria"
-                                                class="form-select js-select-categoria">
-                                                <option selected value="">Seleccione categoría</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-2">
-                                            <label class="label-control text-muted">Puesto de trabajo (Rol)</label>
-                                            <select name="rol_interno_id" id="rol_interno"
-                                                class="form-select js-select-rol">
-                                                <option selected value="">Seleccione puesto</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-2">
-                                            <label class="label-control text-muted">Régimen horario</label>
-                                            <select name="regimen_horas" id="selectRegimen" class="form-select">
-                                                <option selected disabled value="">Seleccione régimen</option>
-                                                <option value="44">44</option>
-                                                <option value="40">40</option>
-                                                <option value="35">35</option>
-                                                <option value="32">32</option>
-                                                <option value="30">30</option>
-                                                <option value="24">24</option>
-                                                <option value="22">22</option>
-                                                <option value="20">20</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-1 col-sm-2">
-                                            <label class="label-control text-muted">Horas diarias</label>
-                                            <input type="text" name="horas_diarias" id="horasDiarias" class="form-control" readonly required title="Horas Diarias">
-                                        </div>
-                                        <div class="col-lg-2 col-sm-2">
-                                            <label class="label-control text-muted">Es coordinador</label>
-                                            <input id="es_coordinador" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-2">
-                                            <label class="label-control text-muted">Afiliado al sindicato</label>
-                                            <select name="es_afiliado" id="es_afiliado" class="form-select">
-                                                <option selected disabled value="">Seleccione opción</option>
-                                                <option value="SI">SI</option>
-                                                <option value="NO">NO</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-7">
-                                            <label class="label-control text-muted">Obra social</label>
-                                            <div class="input-group flex-nowrap">
-                                                <select name="obra_social_id" id="obraSocial" class="form-select">
-                                                    <option value="">Seleccione obra social</option>
-                                                </select>
-                                                <button type="button" class="btn btn-sm btn-primary" id="btnAbrirModalOs">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <label class="label-control text-muted">Código OS</label>
-                                            <input type="text" name="codigo_os" id="codigoOS" class="form-control" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="row g-3 d-none" id="divExternos">
-                                        <div class="col-12 col-md-12 col-xl-5">
-                                            <label class="label-control text-muted">Razón social</label>
-                                            <input name="razon_social" class="form-control" type="text" />
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-4">
-                                            <label class="label-control text-muted">Servicio</label>
-                                            <select name="servicio_id" class="form-select" id="selectorServicioExterno">
-                                                <option value="" disabled>Seleccione servicio</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-3">
-                                            <label class="label-control text-muted">Tipo de contrato</label>
-                                            <select name="tipo_contrato" class="form-select" id="selectorTipoContratoExterno">
-                                                <option selected="" disabled>Seleccione opción</option>
-                                                <option value="Tiempo fijo">PLAZO FIJO</option>
-                                                <option value="Tiempo indeterminado">PLAZO INDETERMINADO</option>
-                                                <option value="Monotributista">MONOTRIBUTISTA</option>
-                                                <option value="Pasantía">PASANTÍA</option>
-                                                <option value="Práctica profesional">PRÁCTICA PROFESIONAL</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="cerrarModal()">
-                    Cancelar
-                </button>
-                <button type="submit" form="formAltaColaborador" class="btn btn-primary"
-                    id="btnGuardarColaborador">
-                    Dar alta
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="modal fade" id="modalAltaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-fullscreen modal-dialog-centered">
-        <div class="modal-content p-2">
-            <form id="formAltaColaborador">
-                @csrf
+        <form id="formAltaColaborador">
+            @csrf
+            <div class="modal-content p-2">
                 <div class="modal-header">
                     <h5 class="modal-title">Alta de personal</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -524,7 +176,7 @@
                                             <input type="text" class="form-control text-center preCuilPersonal" maxlength="2" inputmode="numeric" style="max-width: 65px;" required>
                                             <input type="text" class="form-control text-center midCuilPersonal" maxlength="8" readonly required>
                                             <input type="text" class="form-control text-center posCuilPersonal" maxlength="1" inputmode="numeric" style="max-width: 55px;" required>
-                                            <input name="cuil" class="inputCuilPersonal" hidden>
+                                            <input type="hidden" name="cuil" class="inputCuilPersonal">
                                         </div>
                                     </div>
                                     <div class="col-12 col-xl-3">
@@ -617,11 +269,11 @@
                                     </div>
                                     <div class="col-12 col-xl-3">
                                         <label class="text-muted">Descipción del título</label>
-                                        <input type="text" class="form-control input-titulo-personal" name="titulo">
+                                        <input type="text" class="form-control input-titulo-personal" name="descripcionTitulo">
                                     </div>
                                     <div class="col-12 col-xl-2">
                                         <label class="text-muted">MP</label>
-                                        <input type="text" class="form-control input-mat-profesional" name="matriucla">
+                                        <input type="text" class="form-control input-mat-profesional" name="matricula">
                                     </div>
                                 </div>
                             </div>
@@ -632,99 +284,102 @@
                                     <div class="d-flex justify-content-between gap-3 aling-items-center">
                                         <div class="col-12 col-xl-3">
                                             <label class="label-control text-muted fw-bold">DATOS LABORALES</label>
-                                            <div class="col-12 col-xl-3">
-                                                <select class="form-select" id="selectorTipoVinculo">
-                                                    <option value="">Seleccione tipo de vínculo</option>
-                                                    <option value="Dependencia">Relación de dependencia</option>
-                                                    <option value="Externo">Externo</option>
-                                                </select>
-                                            </div>
+                                        </div>
+                                        <div class="col-12 col-xl-"
+                                        <div class="d-flex align-items-center gap-3">
+                                            <select class="form-select" id="selectorTipoVinculo" name="tipoVinculo">
+                                                <option value="">Seleccione tipo de vínculo</option>
+                                                <option value="DEPENDENCIA">Relación de dependencia</option>
+                                                <option value="EXTERNO">Externo</option>
+                                            </select>
+                                            <input class="form-control" type="date" name="fechaIngreso" required>
                                         </div>
                                     </div>
-                                    <div class="row g-3 my-1 d-none" id="divDependencia">
-                                        <div class="col-12 col-xl-2">
-                                            <label class="label-control text-muted">Puesto de trabajo</label>
-                                            <select class="form-select" id="selectorPuestoTrabajoPersonal" name="puestoTrabajo"></select>
-                                        </div>
-                                        <div class="col-12 col-xl-2">
-                                            <label class="label-control text-muted">Categoría</label>
-                                            <select class="form-select" id="selectorCategoriaPersonal" name="categoria"></select>
-                                        </div>
-                                        <div class="col-12 col-xl-1">
-                                            <label class="label-control text-muted">Régimen</label>
-                                            <select class="form-select" id="selectorRegimenPersonal" name="regimen"></select>
-                                        </div>
-                                        <div class="col-12 col-xl-1">
-                                            <label class="label-control text-muted">Horas diarias</label>
-                                            <input class="form-control" id="inputHorasDiariasPersonal" name="horasDiarias" readonly>
-                                        </div>
-                                        <div class="col-12 col-xl-2">
-                                            <label class="label-control text-muted">Tipo de contrato</label>
-                                            <select class="form-select" id="selectorTipoContratoDep" name="tipoContratoDep"></select>
-                                        </div>
-                                        <div class="col-12 col-xl-3">
-                                            <label class="label-control text-muted">Obra social</label>
-                                            <select class="form-select" id="selectorObrasSociales" name="obraSocial"></select>
-                                        </div>
-                                        <div class="col-12 col-xl-1">
-                                            <label class="label-control text-muted">Código OS</label>
-                                            <input class="form-control" id="inputCodigoObraSocial" readonly>
-                                        </div>
-                                        <div class="col-12 col-xl-3">
-                                            <label class="label-control text-muted">Convenio</label>
-                                            <select class="form-select" name="convenio">
-                                                <option value="SANIDAD">SANIDAD</option>
-                                                <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-12 col-xl-3">
-                                            <label class="label-control text-muted">Afiliado al sindicato</label>
-                                            <select class="form-select" name="sindicato">
-                                                <option value="SI">SI</option>
-                                                <option value="NO">NO</option>
-                                            </select>
-                                        </div>
+                                </div>
+                                <div class="row g-3 my-1 d-none" id="divDependencia">
+                                    <div class="col-12 col-xl-3">
+                                        <label class="label-control text-muted">Puesto de trabajo</label>
+                                        <select class="form-select" id="selectorPuestoTrabajoPersonal" name="puestoTrabajo"></select>
                                     </div>
-                                    <div class="row g-3 my-1 d-none" id="divExterno">
-                                        <div class="col-12 col-xl-3">
-                                            <label class="label-control text-muted">Tipo de contrato</label>
-                                            <select class="form-select" id="selectorTipoContratoExt" name="tipoContratoExt"></select>
-                                        </div>
-                                        <div class="col-12 col-xl-3">
-                                            <label class="label-control text-muted">Servicio</label>
-                                            <select class="form-select" id="selectorServicioExterno" name="servicioExterno"></select>
-                                        </div>
-                                        <div class="col-12 col-xl-6">
-                                            <label class="label-control text-muted">Razón social</label>
-                                            <input class="form-control" name="razonSocial" type="text">
-                                        </div>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="label-control text-muted">Categoría</label>
+                                        <select class="form-select" id="selectorCategoriaPersonal" name="categoria"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-1">
+                                        <label class="label-control text-muted">Régimen</label>
+                                        <select class="form-select" id="selectorRegimenPersonal" name="regimen"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-1">
+                                        <label class="label-control text-muted">Horas diarias</label>
+                                        <input class="form-control" id="inputHorasDiariasPersonal" name="horasDiarias" readonly>
+                                    </div>
+                                    <div class="col-12 col-xl-2">
+                                        <label class="label-control text-muted">Tipo de contrato</label>
+                                        <select class="form-select" id="selectorTipoContratoDep" name="tipoContratoDep"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-2">
+                                        <label class="label-control text-muted">Fin período de prueba</label>
+                                        <input class="form-control" type="date" name="fechaFinPrueba">
+                                    </div>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="label-control text-muted">Obra social</label>
+                                        <select class="form-select" id="selectorObrasSociales" name="obraSocial"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-1">
+                                        <label class="label-control text-muted">Código OS</label>
+                                        <input class="form-control" id="inputCodigoObraSocial" readonly>
+                                    </div>
+                                    <div class="col-12 col-xl-2">
+                                        <label class="label-control text-muted">Convenio</label>
+                                        <select class="form-select" name="convenio">
+                                            <option value="SANIDAD">SANIDAD</option>
+                                            <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-xl-2">
+                                        <label class="label-control text-muted">Afiliado al sindicato</label>
+                                        <select class="form-select" name="sindicato">
+                                            <option value="SI">SI</option>
+                                            <option value="NO">NO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row g-3 my-1 d-none" id="divExterno">
+                                    <div class="col-12 col-xl-3">
+                                        <label class="label-control text-muted">Tipo de contrato</label>
+                                        <select class="form-select" id="selectorTipoContratoExt" name="tipoContratoExt"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-3">
+                                        <label class="label-control text-muted">Servicio</label>
+                                        <select class="form-select" id="selectorServicioExterno" name="servicioExterno"></select>
+                                    </div>
+                                    <div class="col-12 col-xl-6">
+                                        <label class="label-control text-muted">Razón social</label>
+                                        <input class="form-control" name="razonSocial" type="text">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" id="btnCerraFormAltaPersonal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-            </form>
-        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" id="btnCerraFormAltaPersonal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
-<div class="modal fade" id="modalLegajoColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-    aria-hidden="true" data-bs-backdrop="static">
-
+<div class="modal fade" id="modalLegajoColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content p-2">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="tituloLegajo">
                     <i class="fa-solid fa-id-card me-2"></i> Legajo del colaborador
                 </h5>
                 <button type="button" class="btn-close" onclick="cerrarModalLegajo()"></button>
             </div>
-
             <div class="modal-body">
                 <form id="formEditColaborador">
                     @csrf
@@ -1224,12 +879,9 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalRegNovedadColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-    aria-hidden="true" data-bs-backdrop="static">
-
+<div class="modal fade" id="modalRegNovedadColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content p-2">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="tituloRegNovedad">
                     <i class="fa-solid fa-floppy-disk me-2"></i> Registrar novedad de sueldo
@@ -1392,8 +1044,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalNuevaOs" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"
-    data-bs-backdrop="static">
+<div class="modal fade" id="modalNuevaOs" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
 
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -1432,8 +1083,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalDarBajaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel"
-    aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modalDarBajaColaborador" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
 
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">

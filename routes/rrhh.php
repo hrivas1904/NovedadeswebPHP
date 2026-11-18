@@ -111,8 +111,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/obra-social/lista', [PersonalController::class, 'listarObraSocial'])
         ->name('obraSocial.lista');
 
-    Route::post('/personal/guardar', [PersonalController::class, 'store'])
-        ->name('personal.store');
+    // dentro del grupo /rrhh (rrhh.)
+    Route::post('/personal/alta', [PersonalController::class, 'guardarAltaPersonal'])->name('guardarAltaPersonal');
 
     Route::get('/personal/exportarListaColabDatatable', [PersonalController::class, 'exportarListaColabDatatable']);
 
