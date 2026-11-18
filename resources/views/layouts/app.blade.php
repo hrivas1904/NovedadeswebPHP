@@ -197,6 +197,7 @@
                                 <li><a class="submenu-link" href="{{ route('rrhh.zkteco') }}">Marcaciones</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.medicos') }}">Médicos</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.index') }}">Descriptivos</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.monotributistas') }}">Monotributistas</a></li>
                                 @endif
                                 @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))
                                 <li><a class="submenu-link" href="{{ route('rrhh.votaciones.verVotaciones') }}">Votaciones</a></li>

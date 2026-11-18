@@ -5,22 +5,14 @@ $(document).ready(function () {
     if ($("#tb_personal").length > 0) {
         tablaPersonal = $("#tb_personal").DataTable({
             ajax: {
-                url: "/rrhh/personal/listarColaboradoresDatatable",
+                url: "/rrhh/personal/obtenerPersonalDependencia",
                 type: "GET",
                 dataSrc: "data",
                 data: function (d) {
-                    if (
-                        USER_ROLE !== "Administrador/a" &&
-                        USER_ROLE !== "Coordinador/a L2"
-                    ) {
-                        d.area_id = USER_AREA_ID;
-                    } else {
-                        d.area_id = getAreasSeleccionadas().join(",") || null;
-                    }
-                    d.categ_id = getCategoriasSeleccionadas().join(",") || null;
-                    d.p_convenio =
-                        getConveniosSeleccionados().join(",") || null;
-                    d.p_estado = getEstadosSeleccionado();
+                    d.area_id = null;
+                    d.categ_id = null;
+                    d.p_convenio = null;
+                    d.p_estado = null;
                 },
             },
             autoWidth: false,
@@ -43,33 +35,53 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    data: "LEGAJO",
+                    data: "legajo",
                     width: "5%",
                     className: "text-start",
-                    render: function (data, type, row) {
-                        return data.toString().padStart(5, "0");
+                    render: function (data) {
+                        return data ? data.toString().padStart(5, "0") : "—";
                     },
                 },
-                { data: "COLABORADOR", width: "auto", className: "text-start" },
-                { data: "DNI", width: "5%", className: "text-start" },
-                { data: "AREA", width: "auto", className: "text-start" },
-                { data: "CATEGORIA", width: "auto", className: "text-start" },
+                { data: "colaborador", width: "auto", className: "text-start" },
+                { data: "dni", width: "5%", className: "text-start" },
                 {
-                    data: "CONVENIO",
+                    data: "area",
+                    width: "auto",
+                    className: "text-start",
+                    render: function (data) {
+                        return data
+                            ? data
+                            : '<span class="text-muted">Sin área</span>';
+                    },
+                },
+                {
+                    data: "categoria",
+                    width: "auto",
+                    className: "text-start",
+                    render: function (data) {
+                        return data
+                            ? data
+                            : '<span class="text-muted">—</span>';
+                    },
+                },
+                {
+                    data: "convenio",
                     width: "auto",
                     className: "text-start",
                     visible: false,
                 },
                 {
-                    data: "ESTADO",
+                    data: "estado",
                     width: "3%",
                     orderable: true,
                     className: "text-center",
                     render: function (data) {
-                        let clase =
-                            data === "ACTIVO" ? "bg-success" : "bg-danger";
-
-                        return `<span class="badge ${clase}">${data}</span>`;
+                        const clases = {
+                            ACTIVO: "bg-success",
+                            "PERIODO DE PRUEBA": "bg-warning text-dark",
+                            BAJA: "bg-danger",
+                        };
+                        return `<span class="badge ${clases[data] || "bg-secondary"}">${data}</span>`;
                     },
                 },
                 {
@@ -88,34 +100,32 @@ $(document).ready(function () {
                             "Coordinador/a L2",
                         ].includes(USER_ROLE);
 
-                        // SOLO COLABORADORES ACTIVOS
-                        if (data.ESTADO !== "ACTIVO") {
+                        // sin acciones para bajas
+                        if (data.estado === "BAJA") {
                             return `<span class="text-muted">—</span>`;
                         }
+
+                        // legajo (lo que usan préstamos/novedades) + ids del modelo nuevo
+                        const attrs = `
+                            data-id="${data.legajo}"
+                            data-id-personal="${data.id_personal}"
+                            data-id-vinculo="${data.id_vinculo}"
+                            data-nombre="${$("<div>").text(data.colaborador).html()}"`;
 
                         // SOLO ADMIN
                         if (esAdmin) {
                             opciones += `
                                 <li>
-                                    <button
-                                        type="button"
-                                        class="dropdown-item btn-Prestamo"
-                                        data-id="${data.LEGAJO}"
-                                        data-nombre="${data.COLABORADOR}">
+                                    <button type="button" class="dropdown-item btn-Prestamo" ${attrs}>
                                         <i class="fa-solid fa-file-invoice-dollar me-2"
-                                        style="color: var(--color-accent-green)"></i>
+                                           style="color: var(--color-accent-green)"></i>
                                         Registrar préstamo
                                     </button>
                                 </li>
-
                                 <li>
-                                    <button
-                                        type="button"
-                                        class="dropdown-item btn-DarBaja"
-                                        data-id="${data.LEGAJO}"
-                                        data-nombre="${data.COLABORADOR}">
+                                    <button type="button" class="dropdown-item btn-DarBaja" ${attrs}>
                                         <i class="fa-regular fa-trash-can me-2"
-                                        style="color: var(--color-accent-red)"></i>
+                                           style="color: var(--color-accent-red)"></i>
                                         Dar de baja
                                     </button>
                                 </li>
@@ -126,12 +136,9 @@ $(document).ready(function () {
                         if (esCoordinador) {
                             opciones += `
                                 <li>
-                                    <button
-                                        type="button"
-                                        class="dropdown-item btn-RegNovedad"
-                                        data-id="${data.LEGAJO}">
+                                    <button type="button" class="dropdown-item btn-RegNovedad" ${attrs}>
                                         <i class="fa-solid fa-floppy-disk me-2"
-                                        style="color: var(--color-default)"></i>
+                                           style="color: var(--color-default)"></i>
                                         Cargar novedad
                                     </button>
                                 </li>
@@ -144,23 +151,14 @@ $(document).ready(function () {
 
                         return `
                             <div class="dropdown d-inline-block">
-
-                                <button
-                                    type="button"
-                                    class="btn btn-acciones"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    title="Acciones"
-                                    aria-label="Mostrar acciones">
-
+                                <button type="button" class="btn btn-acciones"
+                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                        title="Acciones" aria-label="Mostrar acciones">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
-
                                 </button>
-
                                 <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                     ${opciones}
                                 </ul>
-
                             </div>
                         `;
                     },
@@ -192,15 +190,8 @@ $(document).ready(function () {
             tablaPersonal.ajax.reload();
         });
 
-        setTimeout(function () {
-            if ($("#area").val() !== "" && $("#area").val() !== null) {
-                tablaPersonal.ajax.reload();
-            }
-        }, 500);
-
         $("#searchPersonal").on("keyup", function () {
-            let valor = $(this).val();
-            tablaPersonal.search(valor).draw();
+            tablaPersonal.search($(this).val()).draw();
         });
 
         $("#btnClearSearch").on("click", function () {
@@ -214,48 +205,33 @@ $(document).ready(function () {
             }
             event.preventDefault();
             event.stopPropagation();
-            const tabla = $("#tb_personal").DataTable();
-            const data = tabla.row(this).data();
+            const data = tablaPersonal.row(this).data();
             if (!data) return;
-            const legajo = data.LEGAJO;
-            const nombre = data.COLABORADOR;
-            console.log("Legajo recibido: " + legajo);
-            verLegajo(legajo, nombre);
+            verLegajo(data.legajo, data.colaborador);
         });
 
         $(document).on("click", ".btn-DarBaja", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            const nombre = $(this).data("nombre");
-            console.log("Id recibido: " + legajoColaborador);
-            darDeBaja(legajoColaborador, nombre);
+            darDeBaja($(this).data("id"), $(this).data("nombre"));
         });
 
         $(document).on("click", ".btn-RegNovedad", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            console.log("Id recibido: " + legajoColaborador);
-            registrarNovedad(legajoColaborador);
+            registrarNovedad($(this).data("id"));
         });
 
         $(document).on("click", ".btn-Editar", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            const nombre = $(this).data("nombre");
-            console.log("Id recibido: " + legajoColaborador);
-            editEmpleados(legajoColaborador, nombre);
+            editEmpleados($(this).data("id"), $(this).data("nombre"));
         });
 
         $(document).on("click", ".btn-Prestamo", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const legajoColaborador = $(this).data("id");
-            const nombre = $(this).data("nombre");
-            console.log("Id recibido: " + legajoColaborador);
-            modalRegistrarPrestamo(legajoColaborador, nombre);
+            modalRegistrarPrestamo($(this).data("id"), $(this).data("nombre"));
         });
     }
 });

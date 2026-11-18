@@ -14,6 +14,8 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
+use function PHPUnit\TestFixture\func;
+
 class PersonalController extends Controller
 {
     public function nominaPersonal()
@@ -74,6 +76,11 @@ class PersonalController extends Controller
     public function flyerPublico()
     {
         return view('flyers.flyer');
+    }
+
+    public function monotributistasView()
+    {
+        return view('personal.monotributistas');
     }
 
     public function listarAreas()
@@ -181,19 +188,22 @@ class PersonalController extends Controller
         return response()->json($data);
     }
 
-    public function obtenerPuestoTrabajoActivos(){
-        $puestos=DB::select("SELECT id, nombre FROM puestos_trabajo WHERE activo=1");
-        return response()->json(["data"=>$puestos]);
+    public function obtenerPuestoTrabajoActivos()
+    {
+        $puestos = DB::select("CALL SP_PUESTOS_TRABAJO_SELECTOR()");
+        return response()->json(["data" => $puestos]);
     }
 
-    public function obtenerCategoriasActivas(){
-        $categorias=DB::select("SELECT id_categ, nombre FROM categ_empleados WHERE estado=1");
-        return response()->json(["data"=>$categorias]);
+    public function obtenerCategoriasActivas()
+    {
+        $categorias = DB::select("SELECT id_categ, nombre FROM categ_empleados WHERE estado=1");
+        return response()->json(["data" => $categorias]);
     }
 
-    public function obtenerRegimenesActivos(){
-        $regimenes=DB::select("SELECT id, regimen, horasDiarias FROM regimenes WHERE activo=1");
-        return response()->json(["data"=>$regimenes]);
+    public function obtenerRegimenesActivos()
+    {
+        $regimenes = DB::select("SELECT id, regimen, horasDiarias FROM regimenes WHERE activo=1");
+        return response()->json(["data" => $regimenes]);
     }
 
     public function guardarAltaPersonal(Request $request)
@@ -366,38 +376,62 @@ class PersonalController extends Controller
         return $valor;
     }
 
-    public function listar(Request $request)
+    public function obtenerPersonalDependencia(Request $request)
     {
         try {
-            $areaId   = $this->normalizarFiltro($request->area_id);
-            $categId  = $this->normalizarFiltro($request->categ_id);
-            $convenio = $this->normalizarFiltro($request->convenio);
-            $estado = $this->normalizarFiltro($request->estado);
+            $user = auth()->user();
+            $veTodo = in_array($user->rol, ['Administrador/a', 'Coordinador/a L2']);
 
-            $regimen  = $request->p_regimen !== null && $request->p_regimen !== ''
-                ? (int)$request->p_regimen
-                : null;
-
-            $uti = $request->p_uti !== null && $request->p_uti !== ''
-                ? (int)$request->p_uti
-                : null;
-
-            $noche = $request->p_noche !== null && $request->p_noche !== ''
-                ? (int)$request->p_noche
-                : null;
+            // coordinador: su área, sin importar lo que mande el navegador
+            $areaId = $veTodo
+                ? $this->normalizarFiltro($request->area_id)
+                : (string) $user->area_id;
 
             $empleados = DB::select(
-                "CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?, ?)",
-                [$areaId, $categId, $convenio, $regimen, $uti, $noche, $estado]
+                "CALL SP_LISTAR_PERSONAL_DEPENDENCIA(?, ?, ?, ?)",
+                [
+                    $areaId,
+                    $this->normalizarFiltro($request->categ_id),
+                    $this->normalizarFiltro($request->p_convenio),
+                    $this->normalizarFiltro($request->p_estado),
+                ]
             );
 
-            return response()->json([
-                'data' => $empleados
-            ]);
+            return response()->json(['data' => $empleados]);
         } catch (\Exception $e) {
+            Log::error('Listado personal dependencia', ['error' => $e->getMessage()]);
             return response()->json([
-                'error' => true,
-                'mensaje' => $e->getMessage()
+                'error'   => true,
+                'mensaje' => 'No se pudo cargar el listado de personal.',
+            ], 500);
+        }
+    }
+
+    public function obtenerPersonalMonotributista(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $veTodo = in_array($user->rol, ['Administrador/a', 'Coordinador/a L2']);
+
+            // coordinador: su área, sin importar lo que mande el navegador
+            $areaId = $veTodo
+                ? $this->normalizarFiltro($request->area_id)
+                : (string) $user->area_id;
+
+            $empleados = DB::select(
+                "CALL SP_LISTAR_PERSONAL_MONOTRIBUTISTA(?, ?)",
+                [
+                    $this->normalizarFiltro($request->p_servicio),
+                    $this->normalizarFiltro($request->p_estado),
+                ]
+            );
+
+            return response()->json(['data' => $empleados]);
+        } catch (\Exception $e) {
+            Log::error('Listado personal dependencia', ['error' => $e->getMessage()]);
+            return response()->json([
+                'error'   => true,
+                'mensaje' => 'No se pudo cargar el listado de personal.',
             ], 500);
         }
     }

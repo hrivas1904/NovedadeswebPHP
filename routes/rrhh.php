@@ -121,11 +121,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/personal/exportarListaColabBajaDatatable', [PersonalController::class, 'exportarListaColabBajaDatatable']);
 
-    Route::get('/personal/listar', [PersonalController::class, 'listar'])
-        ->name('personal.listar');
+    Route::get('/personal/listar', [PersonalController::class, 'listar']);
 
-    Route::get('/personal/listarColaboradoresDatatable', [PersonalController::class, 'listarColaboradoresDatatable'])
-        ->name('personal.listarColaboradoresDatatable');
+    Route::get('/personal/obtenerPersonalDependencia', [PersonalController::class, 'obtenerPersonalDependencia']);
+    Route::get('/personal/obtenerPersonalMonotributista', [PersonalController::class, 'obtenerPersonalMonotributista']);
+    Route::get("/personal/monotributistasView", [PersonalController::class, 'monotributistasView'])->name('monotributistas');
 
     Route::get('/personal/listarCargaMasiva', [PersonalController::class, 'listarCargaMasiva'])
         ->name('personal.listarCargaMasiva');
@@ -478,7 +478,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/obtenerDescriptivos', [DescriptivosController::class, 'obtenerDescriptivos']);
         Route::get('/verDetalleDescriptivo', [DescriptivosController::class, 'verDetalleDescriptivo']);
         Route::post('/altaDescriptivo', [DescriptivosController::class, 'altaDescriptivo']);
-        Route::post('/obtenerPuestosTrabajoSelector', [DescriptivosController::class, 'obtenerPuestosTrabajoSelector']);
     });
 
     // EVALUACIÓN DE DESEMPEÑO

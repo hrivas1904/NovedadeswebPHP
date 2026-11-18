@@ -260,7 +260,7 @@ function obtenerRegimenesActivos(idSelector, inputHoras) {
 
 function obtenerPuestosTrabajoSelector($selector) {
     $.ajax({
-        url: "/rrhh/descriptivos/obtenerPuestosTrabajoSelector",
+        url: "/rrhh/personal/obtenerPuestoTrabajoActivos",
         type: "GET",
         dataType: "json",
         success: function (res) {

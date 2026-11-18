@@ -44,12 +44,6 @@ class DescriptivosController extends Controller
         return response()->json(["data" => $descriptivo[0], "competencias" => $competencias,]);
     }
 
-    public function obtenerPuestosTrabajoSelector()
-    {
-        $puestos = DB::select("CALL SP_PUESTOS_TRABAJO_SELECTOR()");
-        return response()->json(["data" => $puestos]);
-    }
-
     public function altaDescriptivo(Request $request)
     {
         $request->validate([
