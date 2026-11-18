@@ -113,6 +113,9 @@ Route::middleware(['auth'])->group(function () {
 
     // dentro del grupo /rrhh (rrhh.)
     Route::post('/personal/alta', [PersonalController::class, 'guardarAltaPersonal'])->name('guardarAltaPersonal');
+    Route::get("/personal/obtenerPuestoTrabajoActivos", [PersonalController::class, "obtenerPuestoTrabajoActivos"]);
+    Route::get("/personal/obtenerCategoriasActivas", [PersonalController::class, "obtenerCategoriasActivas"]);
+    Route::get("/personal/obtenerRegimenesActivos", [PersonalController::class, "obtenerRegimenesActivos"]);
 
     Route::get('/personal/exportarListaColabDatatable', [PersonalController::class, 'exportarListaColabDatatable']);
 
@@ -470,7 +473,12 @@ Route::middleware(['auth'])->group(function () {
 
     //DESCRIPTIVOS
     Route::prefix('descriptivos')->name('descriptivos.')->group(function () {
+        Route::get('/index', [DescriptivosController::class, 'index'])->name('index');
         Route::get('/miDescriptivo', [DescriptivosController::class, 'miDescriptivo'])->name('miDescriptivo');
+        Route::get('/obtenerDescriptivos', [DescriptivosController::class, 'obtenerDescriptivos']);
+        Route::get('/verDetalleDescriptivo', [DescriptivosController::class, 'verDetalleDescriptivo']);
+        Route::post('/altaDescriptivo', [DescriptivosController::class, 'altaDescriptivo']);
+        Route::post('/obtenerPuestosTrabajoSelector', [DescriptivosController::class, 'obtenerPuestosTrabajoSelector']);
     });
 
     // EVALUACIÓN DE DESEMPEÑO

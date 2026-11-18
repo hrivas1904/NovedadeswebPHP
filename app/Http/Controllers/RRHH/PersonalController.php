@@ -181,6 +181,21 @@ class PersonalController extends Controller
         return response()->json($data);
     }
 
+    public function obtenerPuestoTrabajoActivos(){
+        $puestos=DB::select("SELECT id, nombre FROM puestos_trabajo WHERE activo=1");
+        return response()->json(["data"=>$puestos]);
+    }
+
+    public function obtenerCategoriasActivas(){
+        $categorias=DB::select("SELECT id_categ, nombre FROM categ_empleados WHERE estado=1");
+        return response()->json(["data"=>$categorias]);
+    }
+
+    public function obtenerRegimenesActivos(){
+        $regimenes=DB::select("SELECT id, regimen, horasDiarias FROM regimenes WHERE activo=1");
+        return response()->json(["data"=>$regimenes]);
+    }
+
     public function guardarAltaPersonal(Request $request)
     {
         $request->validate([

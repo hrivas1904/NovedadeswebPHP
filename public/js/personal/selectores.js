@@ -168,3 +168,117 @@ function obtenerObrasSociales(idSelector, modal, inputCodigo) {
         inputCodigo.val("");
     });
 }
+
+function obtenerPuestosTrabajoActivos(idSelector) {
+    $.ajax({
+        url: "/rrhh/personal/obtenerPuestoTrabajoActivos",
+        type: "GET",
+        dateType: "json",
+
+        success: function (res) {
+            selector = idSelector;
+            selector.empty();
+            selector.append(
+                '<option value="">Seleccione puesto de trabajo</option>',
+            );
+            $.each(res.data, function (index, item) {
+                selector.append(
+                    `
+                        <option value="${item.id}">${item.nombre}</option>
+                    `,
+                );
+            });
+        },
+
+        error: function (xhr, status, error) {
+            console.error("Error al obtener puestos de trabajo:", error);
+            console.error("Respuesta:", xhr.responseText);
+        },
+    });
+}
+
+function obtenerCategoriasActivas(idSelector) {
+    $.ajax({
+        url: "/rrhh/personal/obtenerCategoriasActivas",
+        type: "GET",
+        dateType: "json",
+
+        success: function (res) {
+            selector = idSelector;
+            selector.empty();
+            selector.append('<option value="">Seleccione categoría</option>');
+            $.each(res.data, function (index, item) {
+                selector.append(
+                    `
+                        <option value="${item.id_categ}">${item.nombre}</option>
+                    `,
+                );
+            });
+        },
+
+        error: function (xhr, status, error) {
+            console.error("Error al obtener categorias:", error);
+            console.error("Respuesta:", xhr.responseText);
+        },
+    });
+}
+
+function obtenerRegimenesActivos(idSelector, inputHoras) {
+    $.ajax({
+        url: "/rrhh/personal/obtenerRegimenesActivos",
+        type: "GET",
+        dataType: "json",
+
+        success: function (res) {
+            const selector = idSelector;
+
+            selector.empty();
+            selector.append('<option value="">Seleccione régimen</option>');
+
+            $.each(res.data, function (index, item) {
+                selector.append(
+                    $("<option>", {
+                        value: item.id,
+                        text: item.regimen,
+                    }).attr("data-horas", item.horasDiarias),
+                );
+            });
+        },
+
+        error: function (xhr, status, error) {
+            console.error("Error al obtener regímenes:", error);
+            console.error("Respuesta:", xhr.responseText);
+        },
+    });
+
+    idSelector.off("change.regimen").on("change.regimen", function () {
+        const horasDiarias = $(this).find("option:selected").attr("data-horas");
+
+        inputHoras.val(horasDiarias ?? "");
+    });
+}
+
+function obtenerPuestosTrabajoSelector($selector) {
+    $.ajax({
+        url: "/rrhh/descriptivos/obtenerPuestosTrabajoSelector",
+        type: "GET",
+        dataType: "json",
+        success: function (res) {
+            $selector
+                .empty()
+                .append('<option value="">Seleccione puesto</option>');
+            $.each(res.data, function (index, item) {
+                $selector.append(
+                    $("<option>", {
+                        value: item.codigo_slug,
+                        text: item.nombre,
+                    }),
+                );
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Error al obtener puestos:", error);
+            console.error("Respuesta:", xhr.responseText);
+        },
+    });
+}
