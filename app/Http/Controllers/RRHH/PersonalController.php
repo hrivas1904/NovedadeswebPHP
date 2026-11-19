@@ -1220,13 +1220,13 @@ class PersonalController extends Controller
             $tiene_prestamo = (int) $resultado->tiene_prestamo;
 
             // SI TIENE PRÉSTAMO ACTIVO, NO PERMITIR REGISTRO
-            if ($tiene_prestamo === 1) {
+            //if ($tiene_prestamo === 1) {
 
-                return response()->json([
-                    'ok' => false,
-                    'mensaje' => 'El colaborador ya tiene un préstamo activo.'
-                ], 409);
-            }
+            //  return response()->json([
+            //    'ok' => false,
+            //  'mensaje' => 'El colaborador ya tiene un préstamo activo.'
+            //], 409);
+            //}
 
             // REGISTRAR SOLICITUD
             DB::statement(
@@ -2082,5 +2082,205 @@ class PersonalController extends Controller
     {
         $contratos = DB::select("SELECT id_servicios, nombre FROM servicios WHERE estado = 1");
         return response()->json(["data" => $contratos]);
+    }
+
+    public function guardarEdicionLegajo(Request $request)
+    {
+        // editar legajos: solo administración/RRHH
+        if (auth()->user()->rol !== 'Administrador/a') {
+            return response()->json(['message' => 'No tenés permiso para editar legajos.'], 403);
+        }
+
+        $request->validate([
+            'idPersonal'        => 'required|integer',
+            'idVinculo'         => 'nullable|integer',
+            'idTramo'           => 'nullable|integer',
+            'tipoVinculo'       => 'nullable|in:DEPENDENCIA,MONOTRIBUTISTA,MEDICO,EXTERNO',
+            'nombre'            => 'required|string|max:255',
+            'apellido'          => 'required|string|max:255',
+            'dni'               => 'required|digits_between:7,8',
+            'cuil'              => 'nullable|digits:11',
+            'fechaNacimiento'   => 'nullable|date',
+            'telefono'          => 'nullable|string|max:20',
+            'correoElectronico' => 'nullable|email|max:255',
+            'domicilio'         => 'nullable|string|max:512',
+            'localidad'         => 'nullable|string|max:255',
+            'estadoCivil'       => 'nullable|string|max:128',
+            'genero'            => 'nullable|string|max:25',
+            'titulo'            => 'nullable|in:SI,NO',
+            'descripcionTitulo' => 'nullable|string|max:255',
+            'matricula'         => 'nullable|string|max:50',
+            'fechaIngreso'      => 'nullable|date',
+            'fechaFinPrueba'    => 'nullable|date',
+            'fechaEgreso'       => 'nullable|date',
+            'motivoBaja'        => 'nullable|string|max:50',
+            'observBaja'        => 'nullable|string|max:1000',
+            'puestoTrabajo'     => 'nullable|integer',
+            'idArea'            => 'nullable|integer',
+            'idServicio'        => 'nullable|integer',
+            'categoria'         => 'nullable|integer',
+            'regimen'           => 'nullable|integer',
+            'horasDiarias'      => 'nullable|numeric',
+            'tipoContratoDep'   => 'nullable|string|max:45',
+            'obraSocial'        => 'nullable|integer',
+            'convenio'          => 'nullable|in:SANIDAD,FUERA DE CONVENIO',
+            'sindicato'         => 'nullable|in:SI,NO',
+            'tipoContratoExt'   => 'nullable|string|max:45',
+            'servicioExterno'   => 'nullable|integer',
+            'razonSocial'       => 'nullable|string|max:255',
+            'idContacto.*'           => 'nullable|integer',
+            'nombreEmergencia.*'     => 'nullable|string|max:255',
+            'telefonoEmergencia.*'   => 'nullable|string|max:20',
+            'parentescoEmergencia.*' => 'nullable|string|max:45',
+            'contactoEliminado.*'    => 'integer',
+            'idFamiliar.*'                 => 'nullable|integer',
+            'familiarNombrePersonal.*'     => 'nullable|string|max:255',
+            'familiarDniPersonal.*'        => 'nullable|digits_between:7,8',
+            'familiarNacimientoPersonal.*' => 'nullable|date',
+            'familiarParentescoPersonal.*' => 'nullable|string|max:45',
+            'familiarEliminado.*'          => 'integer',
+        ]);
+
+        $idPersonal = (int) $request->idPersonal;
+        $audit = [auth()->id(), $request->ip(), substr((string) $request->userAgent(), 0, 512)];
+
+        try {
+            DB::transaction(function () use ($request, $idPersonal, $audit) {
+
+                // 1) Persona
+                DB::statement('CALL SP_EDITAR_PERSONAL(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
+                    $idPersonal,
+                    $request->nombre,
+                    $request->apellido,
+                    $request->dni,
+                    $request->cuil,
+                    $request->fechaNacimiento,
+                    $request->telefono,
+                    $request->correoElectronico,
+                    $request->domicilio,
+                    $request->localidad,
+                    $request->estadoCivil,
+                    $request->genero,
+                    $request->titulo,
+                    $request->descripcionTitulo,
+                    $request->matricula,
+                    ...$audit,
+                ]);
+
+                // 2) Vínculo
+                if ($request->idVinculo) {
+                    DB::statement('CALL SP_EDITAR_VINCULO(?,?,?,?,?,?,?,?,?,?)', [
+                        $request->idVinculo,
+                        $idPersonal,
+                        $request->fechaIngreso,
+                        $request->fechaFinPrueba,
+                        $request->fechaEgreso,
+                        $request->motivoBaja,
+                        $request->observBaja,
+                        ...$audit,
+                    ]);
+
+                    // 3) Tramo o contratación externa
+                    if ($request->tipoVinculo === 'DEPENDENCIA' && $request->idTramo) {
+                        DB::statement('CALL SP_EDITAR_TRAMO_DEPENDENCIA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
+                            $request->idTramo,
+                            $request->idVinculo,
+                            $request->puestoTrabajo,
+                            $request->idArea,
+                            $request->idServicio,
+                            $request->categoria,
+                            $request->regimen,
+                            $request->horasDiarias,
+                            $request->tipoContratoDep,
+                            $request->obraSocial,
+                            $request->convenio,
+                            $request->sindicato === 'SI' ? 1 : 0,
+                            ...$audit,
+                        ]);
+                    } elseif ($request->tipoVinculo && $request->tipoVinculo !== 'DEPENDENCIA') {
+                        DB::statement('CALL SP_EDITAR_VINCULO_MED_MONOTRIBUT(?,?,?,?,?,?,?)', [
+                            $request->idVinculo,
+                            $request->servicioExterno,
+                            $request->razonSocial,
+                            $request->tipoContratoExt,
+                            ...$audit,
+                        ]);
+                    }
+                }
+
+                // 4) Contactos: primero los quitados, después editados y nuevos
+                foreach ((array) $request->contactoEliminado as $idContacto) {
+                    DB::statement('CALL SP_BAJA_CONTACTO_PERSONAL(?,?)', [$idContacto, $idPersonal]);
+                }
+                foreach ((array) $request->nombreEmergencia as $i => $nombre) {
+                    if (trim((string) $nombre) === '') continue;
+                    $id = $request->idContacto[$i] ?? null;
+                    $tel = $request->telefonoEmergencia[$i] ?? null;
+                    $par = $request->parentescoEmergencia[$i] ?? null;
+
+                    if ($id) {
+                        DB::statement('CALL SP_EDITAR_CONTACTO_PERSONAL(?,?,?,?,?)', [$id, $idPersonal, $nombre, $tel, $par]);
+                    } else {
+                        DB::statement('CALL SP_ALTA_CONTACTO_PERSONAL(?,?,?,?,?,?,?)', [$idPersonal, $nombre, $tel, $par, ...$audit]);
+                    }
+                }
+
+                // 5) Familiares: primero los quitados (así no chocan por DNI), después editados y nuevos
+                foreach ((array) $request->familiarEliminado as $idFamiliar) {
+                    DB::statement('CALL SP_BAJA_FAMILIAR_PERSONAL(?,?)', [$idFamiliar, $idPersonal]);
+                }
+                foreach ((array) $request->familiarNombrePersonal as $i => $nombre) {
+                    if (trim((string) $nombre) === '') continue;
+                    $id  = $request->idFamiliar[$i] ?? null;
+                    $dni = $request->familiarDniPersonal[$i] ?? null;
+                    $nac = $request->familiarNacimientoPersonal[$i] ?? null;
+                    $par = $request->familiarParentescoPersonal[$i] ?? null;
+
+                    if ($id) {
+                        DB::statement('CALL SP_EDITAR_FAMILIAR_PERSONAL(?,?,?,?,?,?)', [$id, $idPersonal, $nombre, $dni, $nac, $par]);
+                    } else {
+                        DB::statement('CALL SP_ALTA_FAMILIAR_PERSONAL(?,?,?,?,?,?,?,?)', [$idPersonal, $nombre, $dni, $nac, $par, ...$audit]);
+                    }
+                }
+            });
+        } catch (QueryException $e) {
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['message' => $e->errorInfo[2]], 422);
+            }
+            Log::error('Edición de legajo', ['id_personal' => $idPersonal, 'error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se pudo guardar el legajo.'], 500);
+        }
+
+        return response()->json(['message' => 'Legajo actualizado.']);
+    }
+
+    public function asignarPuestoTramo(Request $request)
+    {
+        if (auth()->user()->rol !== 'Administrador/a') {
+            return response()->json(['message' => 'No tenés permiso para asignar puestos.'], 403);
+        }
+
+        $request->validate([
+            'idTramo'  => 'required|integer',
+            'idPuesto' => 'nullable|integer',
+        ]);
+
+        try {
+            DB::statement('CALL SP_ASIGNAR_PUESTO_TRAMO(?, ?, ?, ?, ?)', [
+                $request->idTramo,
+                $request->idPuesto,
+                auth()->id(),
+                $request->ip(),
+                substr((string) $request->userAgent(), 0, 512),
+            ]);
+        } catch (QueryException $e) {
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['message' => $e->errorInfo[2]], 422);
+            }
+            Log::error('Asignar puesto', ['id_tramo' => $request->idTramo, 'error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se pudo asignar el puesto.'], 500);
+        }
+
+        return response()->json(['message' => 'Puesto asignado.']);
     }
 }

@@ -133,7 +133,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/personal/listarPersonalBaja', [PersonalController::class, 'listarPersonalBaja'])
         ->name('personal.listarPersonalBaja');
 
+    Route::get('/personal/verLegajo', [PersonalController::class, 'verLegajo'])->name('verLegajo');
     Route::get('/personal/verNovedadesLegajo', [PersonalController::class, 'verNovedadesLegajo'])->name('verNovedadesLegajo');
+
+    Route::post('/personal/guardarEdicionLegajo', [PersonalController::class, 'guardarEdicionLegajo'])->name('guardarEdicionLegajo');
+    Route::post('/personal/asignarPuestoTramo', [PersonalController::class, 'asignarPuestoTramo'])->name('asignarPuestoTramo');
+
+    Route::post('/descriptivos/cambiarEstadoDescriptivo', [DescriptivosController::class, 'cambiarEstadoDescriptivo'])
+        ->name('cambiarEstadoDescriptivo');
 
     Route::get('/personal/listarFamiliares', [PersonalController::class, 'listarFamiliares']);
 
@@ -478,6 +485,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/obtenerDescriptivos', [DescriptivosController::class, 'obtenerDescriptivos']);
         Route::get('/verDetalleDescriptivo', [DescriptivosController::class, 'verDetalleDescriptivo']);
         Route::post('/altaDescriptivo', [DescriptivosController::class, 'altaDescriptivo']);
+        Route::get('/mi-descriptivo/datos',    [DescriptivosController::class, 'verMiDescriptivo'])->name('verMiDescriptivo');
+        Route::post('/mi-descriptivo/aceptar', [DescriptivosController::class, 'aceptarMiDescriptivo'])->name('aceptarMiDescriptivo');
     });
 
     // EVALUACIÓN DE DESEMPEÑO

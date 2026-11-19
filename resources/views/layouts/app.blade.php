@@ -188,6 +188,7 @@
                                 Auth::user()->rol === 'Administrador/a' ||
                                 Auth::user()->rol === 'Coordinador/a')
                                 <li><a class="submenu-link" href="{{ route('rrhh.nominaPersonal') }}">Colaboradores</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.index') }}">Descriptivos</a></li>
                                 @endif
                                 @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
                                 <li><a class="submenu-link" href="{{ route('rrhh.calendarioServicios') }}">Calendario recepción</a></li>
@@ -196,7 +197,6 @@
                                 <li><a class="submenu-link" href="{{ route('rrhh.cronogramaTrabajo') }}">Cronograma de trabajo</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.zkteco') }}">Marcaciones</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.medicos') }}">Médicos</a></li>
-                                <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.index') }}">Descriptivos</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.monotributistas') }}">Monotributistas</a></li>
                                 @endif
                                 @if (in_array(Auth::user()->rol, ['Administrador/a', 'Supervisor/a Calidad']))

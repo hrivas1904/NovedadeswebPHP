@@ -518,6 +518,62 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-12 solo-con-legajo">
+                                <div class="card p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="label-control text-muted fw-bold">CUENTAS BANCARIAS</label>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnMostraDivNuevaCuenta">Agregar cuenta</button>
+                                    </div>
+
+                                    <!-- legajo que usa administrarCuentas.js -->
+                                    <input type="hidden" id="inputLegajo">
+
+                                    <!-- alta de cuenta -->
+                                    <div class="row g-3 align-items-end mb-3 d-none" id="divCrearCuentaBancariaColab">
+                                        <div class="col-12 col-xl-3">
+                                            <label class="text-muted">Banco</label>
+                                            <select class="form-select" id="selectBanco">
+                                                <option value="">Seleccione banco</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-xl-3">
+                                            <label class="text-muted">N° de cuenta</label>
+                                            <input type="text" class="form-control" id="inputNumeroCuenta">
+                                        </div>
+                                        <div class="col-12 col-xl-4">
+                                            <label class="text-muted">CBU</label>
+                                            <input type="text" class="form-control" id="inputCbu" maxlength="22" inputmode="numeric">
+                                        </div>
+                                        <div class="col-12 col-xl-2 d-flex gap-2">
+                                            <button type="button" class="btn btn-primary w-100" id="btnGuardarCuenta">Guardar</button>
+                                            <button type="button" class="btn btn-outline-secondary" id="btnOcultarDivCuentaNueva" title="Cancelar">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- listado -->
+                                    <div class="row g-3" id="contenedorCuentasBancarias"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 solo-con-legajo">
+                                <div class="card p-3">
+                                    <label class="label-control text-muted fw-bold mb-2">REQUERIMIENTOS ALIMENTARIOS</label>
+
+                                    <!-- checkboxes que arma cargarRequerimientosAlimentarios() -->
+                                    <div class="row g-3" id="contenedorRequerimientos"></div>
+
+                                    <!-- se muestra al marcar "Otro" -->
+                                    <div class="row g-3 mt-1" id="rowObservacionReq" style="display: none;">
+                                        <div class="col-12">
+                                            <label class="text-muted">Especificar</label>
+                                            <input type="text" class="form-control" id="inputReqOtro" name="reqObservacion">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1120,6 +1176,8 @@
 <script src="{{ asset('js/personal/administrarContEmerg.js') }}"></script>
 <script src="{{ asset('js/personal/administrarFamiliares.js') }}"></script>
 <script src="{{ asset('js/personal/administrarCuentas.js') }}"></script>
+<script src="{{ asset('js/personal/administrarLegajo.js') }}"></script>
+<script src="{{ asset('js/personal/edicionLegajo.js') }}"></script>
 <script src="{{ asset('js/personal/scriptComun.js') }}"></script>
 <script src="{{ asset('js/personal/editColaborador.js') }}"></script>
 <script src="{{ asset('js/personal/prestamos.js') }}"></script>

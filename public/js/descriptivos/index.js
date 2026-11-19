@@ -140,6 +140,15 @@ function llenarModalDescriptivo(d, competencias) {
         );
     $("#lblAuditoriaDescriptivo").text(partes.join(" · "));
 
+    // botones del circuito según el estado
+    $modal.data("idDescriptivo", d.id);
+    $modal
+        .find('[data-accion="validar"]')
+        .toggleClass("d-none", d.estado !== "BORRADOR");
+    $modal
+        .find('[data-accion="devolver"], [data-accion="publicar"]')
+        .toggleClass("d-none", d.estado !== "VALIDADO");
+
     $modal.modal("show");
 }
 
@@ -162,3 +171,71 @@ function verDetalleDescriptivo(idDescriptivo) {
         },
     });
 }
+
+$(document).on("click", ".btn-estado-descriptivo", function () {
+    const accion = $(this).data("accion");
+    const idDescriptivo = $("#modalVerDescriptivo").data("idDescriptivo");
+
+    const textos = {
+        validar: {
+            titulo: "¿Validar el descriptivo?",
+            texto: "Queda listo para que RRHH lo publique.",
+        },
+        devolver: {
+            titulo: "¿Devolver a borrador?",
+            texto: "Indicá qué hay que corregir.",
+        },
+        publicar: {
+            titulo: "¿Publicar el descriptivo?",
+            texto: "Pasa a ser la versión vigente del puesto y reemplaza a la anterior.",
+        },
+    };
+
+    Swal.fire({
+        title: textos[accion].titulo,
+        text: textos[accion].texto,
+        icon: "question",
+        input: accion === "devolver" ? "textarea" : undefined,
+        inputPlaceholder: "Motivo de la devolución",
+        inputValidator:
+            accion === "devolver"
+                ? (v) =>
+                      !v || !v.trim() ? "El motivo es obligatorio" : undefined
+                : undefined,
+        showCancelButton: true,
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+    }).then(function (r) {
+        if (!r.isConfirmed) return;
+
+        $.ajax({
+            url: "/rrhh/descriptivos/cambiarEstadoDescriptivo",
+            type: "POST",
+            dataType: "json",
+            data: {
+                idDescriptivo: idDescriptivo,
+                accion: accion,
+                motivo: accion === "devolver" ? r.value : null,
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                Swal.fire({
+                    icon: "success",
+                    title: res.message,
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+                verDetalleDescriptivo(idDescriptivo); // recarga el modal con el estado nuevo
+                tablaDescriptivos.ajax.reload(null, false);
+            },
+            error: function (xhr) {
+                const res = xhr.responseJSON || {};
+                Swal.fire(
+                    "Error",
+                    res.message || "No se pudo cambiar el estado.",
+                    "error",
+                );
+            },
+        });
+    });
+});

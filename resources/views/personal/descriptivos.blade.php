@@ -447,6 +447,19 @@
             </div>
 
             <div class="modal-footer justify-content-between">
+                @if (Auth::user()->rol === 'Administrador/a')
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-warning btn-estado-descriptivo d-none" data-accion="devolver">
+                        <i class="fa-solid fa-rotate-left me-1"></i>Devolver a borrador
+                    </button>
+                    <button type="button" class="btn btn-info btn-estado-descriptivo d-none" data-accion="validar">
+                        <i class="fa-solid fa-check me-1"></i>Validar
+                    </button>
+                    <button type="button" class="btn btn-success btn-estado-descriptivo d-none" data-accion="publicar">
+                        <i class="fa-solid fa-paper-plane me-1"></i>Publicar
+                    </button>
+                </div>
+                @endif
                 <small class="text-muted" id="lblAuditoriaDescriptivo"></small>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
