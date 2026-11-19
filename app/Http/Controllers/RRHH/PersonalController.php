@@ -915,29 +915,58 @@ class PersonalController extends Controller
         }
     }
 
-    public function verLegajo($legajo)
+    public function verLegajo(Request $request)
     {
-        try {
-            $empleadoData = DB::select("CALL SP_VER_LEGAJO(?)", [$legajo]);
-            DB::statement("SET @dummy = 1");
+        $request->validate(['p_id_personal' => 'required|integer']);
+        $id = (int) $request->p_id_personal;
 
-            if (empty($empleadoData)) {
-                return response()->json([
-                    'success' => false,
-                    'mensaje' => 'No se encontró el legajo'
-                ]);
+        try {
+            $legajo = DB::select('CALL SP_VER_LEGAJO(?)', [$id]);
+
+            if (empty($legajo)) {
+                return response()->json(['message' => 'No se encontró el legajo.'], 404);
+            }
+
+            $user   = auth()->user();
+            $veTodo = in_array($user->rol, ['Administrador/a', 'Coordinador/a L2']);
+
+            // un coordinador solo puede ver legajos de su área
+            if (!$veTodo && (int) $legajo[0]->id_area !== (int) $user->area_id) {
+                return response()->json(['message' => 'No tenés acceso a este legajo.'], 403);
             }
 
             return response()->json([
-                'success' => true,
-                'data' => $empleadoData[0]
+                'data'       => $legajo[0],
+                'tramos'     => DB::select('CALL SP_VER_LEGAJO_TRAMOS(?)', [$id]),
+                'contactos'  => DB::select('CALL SP_VER_LEGAJO_CONTACTOS(?)', [$id]),
+                'familiares' => DB::select('CALL SP_VER_LEGAJO_FAMILIARES(?)', [$id]),
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'mensaje' => 'Error al obtener el legajo',
-                'error' => $e->getMessage()
-            ], 500);
+            Log::error('Ver legajo', ['id_personal' => $id, 'error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se pudo cargar el legajo.'], 500);
+        }
+    }
+
+    public function verNovedadesLegajo(Request $request)
+    {
+        $request->validate([
+            'p_legajo'      => 'required|integer',
+            'p_fecha_desde' => 'nullable|date',
+            'p_fecha_hasta' => 'nullable|date',
+            'p_liquidada'   => 'nullable|in:0,1',
+        ]);
+
+        try {
+            $data = DB::select('CALL SP_VER_LEGAJO_NOVEDADES(?, ?, ?, ?)', [
+                $request->p_legajo,
+                $request->p_liquidada,      // '' → null (ConvertEmptyStringsToNull)
+                $request->p_fecha_desde,
+                $request->p_fecha_hasta,
+            ]);
+            return response()->json(['data' => $data]);
+        } catch (\Exception $e) {
+            Log::error('Novedades legajo', ['legajo' => $request->p_legajo, 'error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se pudieron cargar las novedades.'], 500);
         }
     }
 

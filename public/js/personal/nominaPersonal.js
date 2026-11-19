@@ -207,7 +207,7 @@ $(document).ready(function () {
             event.stopPropagation();
             const data = tablaPersonal.row(this).data();
             if (!data) return;
-            verLegajo(data.legajo, data.colaborador);
+            verLegajo(data.id_personal, data.colaborador);
         });
 
         $(document).on("click", ".btn-DarBaja", function (event) {
@@ -237,101 +237,145 @@ $(document).ready(function () {
 });
 
 //VER LEGAJO
-function verLegajo(legajoColaborador, nombre) {
-    console.log("Mostrando legajo:", legajoColaborador);
-    legajoActivo = legajoColaborador;
+function formatoLegajo(valor, formato) {
+    if (valor === null || valor === undefined || String(valor).trim() === "")
+        return null;
+    if (formato === "fecha") {
+        const [a, m, d] = String(valor).substring(0, 10).split("-");
+        return `${d}/${m}/${a}`;
+    }
+    if (formato === "cuil" && String(valor).length === 11) {
+        const c = String(valor);
+        return `${c.slice(0, 2)}-${c.slice(2, 10)}-${c.slice(10)}`;
+    }
+    if (formato === "sino") return Number(valor) === 1 ? "SI" : "NO";
+    return String(valor);
+}
 
-    $("#tituloLegajo").html(`
-        <i class="fa-solid fa-id-card me-2"></i>
-        Legajo de <strong>${nombre}</strong>
-    `);
+function llenarModalLegajo(res) {
+    const d = res.data;
+    const $modal = $("#modalVerLegajo");
 
-    listarCuentasBancarias(legajoColaborador);
-    cargarRequerimientosAlimentarios();
-    cargarReqSeleccionados(legajoColaborador);
-    cargarHijoColab(legajoColaborador);
+    // campos simples
+    $modal.find("[data-campo]").each(function () {
+        const $el = $(this);
+        let texto = formatoLegajo(d[$el.data("campo")], $el.data("formato"));
+        if (texto !== null && $el.data("sufijo")) texto += $el.data("sufijo");
+        $el.text(texto === null ? "Sin datos" : texto).toggleClass(
+            "vacio",
+            texto === null,
+        );
+    });
 
+    // cabecera
+    $("#legajoNumero").text(
+        d.legajo
+            ? "Legajo " + String(d.legajo).padStart(5, "0")
+            : d.tipo_vinculo || "Sin vínculo",
+    );
+    const colores = {
+        ACTIVO: "bg-success",
+        "PERIODO DE PRUEBA": "bg-warning text-dark",
+        BAJA: "bg-danger",
+    };
+    $("#legajoEstado")
+        .attr("class", "badge " + (colores[d.estado] || "bg-secondary"))
+        .text(d.estado);
+    $("#legajoResumen").text(
+        [d.puesto, d.area, d.servicio].filter(Boolean).join(" · "),
+    );
+
+    // foto o iniciales
+    const $foto = $("#legajoFoto");
+    if (d.url_foto_legajo) {
+        $foto
+            .css("background-image", `url('/storage/${d.url_foto_legajo}')`)
+            .text("");
+    } else {
+        $foto
+            .css("background-image", "none")
+            .text((d.apellido || "?").charAt(0) + (d.nombre || "").charAt(0));
+    }
+
+    // bloques según tipo de vínculo y estado
+    const esDep = d.tipo_vinculo === "DEPENDENCIA";
+    $modal.find(".solo-dependencia").toggleClass("d-none", !esDep);
+    $modal
+        .find(".solo-externo")
+        .toggleClass("d-none", esDep || !d.tipo_vinculo);
+    $("#legajoBloqueBaja").toggleClass("d-none", d.estado !== "BAJA");
+
+    // tablas
+    const fila = (celdas) =>
+        $("<tr>").append(celdas.map((c) => $("<td>").text(c ?? "—")));
+    const vacia = (cols, texto) =>
+        $("<tr>").append(
+            $(`<td colspan="${cols}" class="text-muted fst-italic">`).text(
+                texto,
+            ),
+        );
+
+    const $cont = $("#legajoTbContactos").empty();
+    (res.contactos || []).forEach((c) =>
+        $cont.append(fila([c.nombre, c.parentesco, c.telefono])),
+    );
+    if (!(res.contactos || []).length)
+        $cont.append(vacia(3, "Sin contactos cargados"));
+
+    const $fam = $("#legajoTbFamiliares").empty();
+    (res.familiares || []).forEach((f) =>
+        $fam.append(
+            fila([
+                f.nombre,
+                f.parentesco,
+                f.dni,
+                formatoLegajo(f.fecha_nacimiento, "fecha"),
+                f.edad,
+            ]),
+        ),
+    );
+    if (!(res.familiares || []).length)
+        $fam.append(vacia(5, "Sin familiares cargados"));
+
+    const $his = $("#legajoTbHistorial").empty();
+    (res.tramos || []).forEach((t) =>
+        $his.append(
+            fila([
+                formatoLegajo(t.desde, "fecha"),
+                t.hasta ? formatoLegajo(t.hasta, "fecha") : "Vigente",
+                t.tipo_vinculo + (t.legajo ? " #" + t.legajo : ""),
+                t.puesto,
+                t.area,
+                t.servicio,
+                t.categoria,
+                t.regimen ? t.regimen + " hs" : null,
+            ]),
+        ),
+    );
+    if (!(res.tramos || []).length) $his.append(vacia(8, "Sin historial"));
+
+    // siempre abre en la primera pestaña
+    bootstrap.Tab.getOrCreateInstance(
+        $modal.find('[data-bs-target="#tabLegajoPersonales"]')[0],
+    ).show();
+    $modal.modal("show");
+}
+
+function verLegajo(idPersonal) {
     $.ajax({
-        url: `/rrhh/personal/ver-legajo/${legajoColaborador}`,
+        url: "/rrhh/personal/verLegajo",
         type: "GET",
-        success: function (response) {
-            if (response.success) {
-                const d = response.data;
-
-                $("#inputLegajo").val(d.LEGAJO);
-                $("#inputNombre").val(d.COLABORADOR);
-                $("#inputEstado").val(d.ESTADO);
-                $("#inputDni").val(d.DNI);
-                $("#inputCuil").val(d.CUIL);
-                ($("#inputFechaNacimiento").val(d.FECHA_NAC),
-                    $("#inputEdad").val(calcularEdad(d.FECHA_NAC)));
-                $("#inputEmail").val(d.CORREO);
-                $("#inputTelefono").val(d.TELEFONO);
-                $("#inputDomicilio").val(d.DOMICILIO);
-                if (d.LOCALIDAD) {
-                    let option = new Option(
-                        d.LOCALIDAD,
-                        d.LOCALIDAD,
-                        true,
-                        true,
-                    );
-                    $("#selectLocalidadEdit").append(option).trigger("change");
-                }
-                $("#inputEstadoCivil").val(d.ESTADO_CIVIL);
-                $("#inputGenero").val(d.GENERO);
-                $("#selectObraSocialEdit").val(d.ID_OS).trigger("change");
-
-                $("#inputCodigoOS").val(d.COD_OS);
-                $("#inputTitulo").val(d.TITULO);
-                $("#inputDescripTitulo").val(d.DESCRIP_TITULO);
-                $("#inputMatricula").val(d.MAT_PROF);
-
-                $("#inputTipoContrato").val(d.TIPO_CONTRATO);
-                $("#inputFechaIngreso").val(d.FECHA_INGRESO);
-                $("#inputFechaFinPrueba").val(
-                    formatearFechaArgentina(d.FECHA_FIN_PRUEBA),
-                );
-
-                $("#inputAntiguedad").val(calcularAntiguedad(d.FECHA_INGRESO));
-                $("#inputFechaEgreso").val(d.FECHA_EGRESO);
-                $("#inputArea").val(d.ID_AREA);
-                cargarServiciosSimple(d.ID_SERVICIOS);
-                $("#inputConvenio").val(d.CONVENIO);
-                $("#inputCategoria").val(d.ID_CATEG);
-                cargarRolesSimple(d.ID_ROL);
-                $("#inputRegimen").val(d.REGIMEN);
-                $("#inputHorasDiarias").val(d.HORAS_DIARIAS);
-                $("#inputCordinador").val(d.COORDINADOR);
-                $("#inputAfiliado").val(d.AFILIADO);
-
-                $("#personaEmergencia1Edit").val(d.PERSONA_EMERG1);
-                $("#contactoEmergencia1Edit").val(d.CONTACTO_EMERG1);
-                $("#parentescoEmergencia1Edit").val(d.PARENTESCO_EMERG1);
-                $("#personaEmergencia2Edit").val(d.PERSONA_EMERG2);
-                $("#contactoEmergencia2Edit").val(d.CONTACTO_EMERG2);
-                $("#parentescoEmergencia2Edit").val(d.PARENTESCO_EMERG2);
-                $("#padreColaboradorEdit").val(d.PADRE);
-                $("#madreColaboradorEdit").val(d.MADRE);
-
-                $("#inputNoche").val(d.NOCHE);
-                $("#inputUti").val(d.UTI);
-
-                $("#inputMotivoBaja").val(d.MOTIVO_BAJA);
-                $("#inputObservBaja").val(d.OBSERV_BAJA);
-
-                $("#modalLegajoColaborador").modal("show");
-
-                $("#modalLegajoColaborador")
-                    .off("shown.bs.modal")
-                    .on("shown.bs.modal", function () {
-                        inicializarORefrescarHistorial();
-                    });
-            } else {
-                Swal.fire("Error", response.mensaje, "error");
-            }
+        dataType: "json",
+        data: { p_id_personal: idPersonal },
+        success: function (res) {
+            llenarModalLegajo(res);
         },
-        error: function () {
-            Swal.fire("Error", "No se pudo cargar el legajo", "error");
+        error: function (xhr) {
+            const msg =
+                (xhr.responseJSON &&
+                    (xhr.responseJSON.message || xhr.responseJSON.mensaje)) ||
+                "No se pudo cargar el legajo.";
+            Swal.fire("Error", msg, "error");
         },
     });
 }

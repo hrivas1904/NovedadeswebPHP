@@ -133,7 +133,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/personal/listarPersonalBaja', [PersonalController::class, 'listarPersonalBaja'])
         ->name('personal.listarPersonalBaja');
 
-    Route::get('/personal/ver-legajo/{legajo}', [PersonalController::class, 'verLegajo']);
+    Route::get('/personal/verNovedadesLegajo', [PersonalController::class, 'verNovedadesLegajo'])->name('verNovedadesLegajo');
 
     Route::get('/personal/listarFamiliares', [PersonalController::class, 'listarFamiliares']);
 
