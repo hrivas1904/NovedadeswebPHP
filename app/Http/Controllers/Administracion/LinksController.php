@@ -56,4 +56,36 @@ class LinksController extends Controller
             ], 500);
         };
     }
+
+    public function eliminarLinkImportacion(Request $request)
+    {
+        $data = $request->validate([
+            'id' => 'required|integer|min:1',
+        ]);
+
+        try {
+
+            DB::statement(
+                "CALL SP_ELIMINAR_LINK_VISTA(?)",
+                [$data['id']]
+            );
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'El link de importación fue eliminado correctamente.'
+            ], 200);
+        } catch (\Throwable $e) {
+
+            Log::error('Error al eliminar link de importación', [
+                'id_link' => $data['id'],
+                'usuario_id' => Auth::id(),
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'mensaje' => 'Ocurrió un error al eliminar el link de importación.'
+            ], 500);
+        }
+    }
 }

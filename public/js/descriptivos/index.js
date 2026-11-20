@@ -192,20 +192,25 @@ function llenarModalDescriptivo(d, competencias) {
         );
     $("#lblAuditoriaDescriptivo").text(partes.join(" · "));
 
-    // botones del circuito según el estado
+    // botones del circuito según estado y rol (esAdmin / esCoordinador vienen del layout)
     $modal.data("idDescriptivo", d.id);
+
     $modal
         .find('[data-accion="validar"]')
-        .toggleClass("d-none", d.estado !== "BORRADOR");
+        .toggleClass(
+            "d-none",
+            !(d.estado === "BORRADOR" && (esAdmin || esCoordinador)),
+        );
+
     $modal
         .find('[data-accion="devolver"], [data-accion="publicar"]')
-        .toggleClass("d-none", d.estado !== "VALIDADO");
+        .toggleClass("d-none", !(d.estado === "VALIDADO" && esAdmin));
 
     // guardo lo cargado para poder pasarlo a edición
-    $modal.data("descriptivo", d).data("competencias", competencias || []);
+    $modal.data("descriptivo", d).data("competencias", competencias);
     $("#btnContinuarBorrador").toggleClass(
         "d-none",
-        d.estado !== "BORRADOR" || USER_ROLE !== "Administrador/a",
+        !(d.estado === "BORRADOR" && esAdmin),
     );
 
     $modal.modal("show");

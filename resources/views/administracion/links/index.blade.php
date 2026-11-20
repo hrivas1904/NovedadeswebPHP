@@ -21,7 +21,7 @@
 
 <div class="d-flex justify-content-between align-items-center">
     <h3 class="tituloVista mb-3">Links de importación</h3>
-    @if (Auth::user()->rol === 'Administrador/a')
+    @if (Auth::user()->rol === 'Administrador/a' || Auth::user()->id === 6)
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAltaLink">
         Nuevo link
     </button>
@@ -29,7 +29,7 @@
 </div>
 
 <div class="d-flex flex-column gap-3">
-    <select id="selectorEstado" class="form-select"></select>
+    <select id="selectorEstado" class="form-select d-none"></select>
 
     <div class="row g-3" id="contenedorLinks">
     </div>
@@ -93,7 +93,15 @@
 </div>
 @endpush
 
+@php
+$userId = Auth::id();
+$puedeEliminarLinks = Auth::user()->rol === 'Administrador/a' || $userId === 6;
+@endphp
+
 @push('scripts')
+<script>
+    const PUEDE_ELIMINAR_LINKS = @js($puedeEliminarLinks);
+</script>
 <script src="{{ asset('js/administracion/links/bmLinks.js') }}"></script>
 <script src="{{ asset('js/administracion/links/index.js') }}"></script>
 @endpush

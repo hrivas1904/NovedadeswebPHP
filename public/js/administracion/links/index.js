@@ -17,7 +17,7 @@ function cargarLinksImportacion() {
         url: "/administracion/links/obtenerLinksImportacion",
         type: "GET",
         dataType: "JSON",
-        data: { p_estado: $("#selectorEstado").val() },
+        data: { p_estado: null },
 
         success: function (res) {
             let html = "";
@@ -149,12 +149,21 @@ function cargarLinksImportacion() {
                                         <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir artefacto
                                     </button>
 
-                                    <div class="d-flex gap-2">
-                                        <button type="button" class="btn btn-outline-secondary btn-editar-link" data-id="${item.id}" title="Editar link">                                            <i class="fa-regular fa-pen-to-square"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-danger btn-eliminar-link" data-id="${item.id}" title="Eliminar link">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
+                                    <div class="d-flex gap-2">                                        
+                                        ${
+                                            PUEDE_ELIMINAR_LINKS
+                                                ? `
+                                            <button type="button" class="btn btn-outline-secondary btn-editar-link d-none" data-id="${item.id}" title="Editar link">                                            <i class="fa-regular fa-pen-to-square"></i>
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-outline-danger btn-eliminar-link"
+                                                    data-id="${item.id}"
+                                                    title="Eliminar link">
+                                                <i class="fa-regular fa-trash-can"></i>
+                                            </button>
+                                        `
+                                                : ""
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -174,6 +183,38 @@ function cargarLinksImportacion() {
         },
     });
 }
+
+$(document).on("click", ".btn-abrir-link", function () {
+    const url = $(this).attr("data-url");
+
+    if (!url) {
+        Swal.fire({
+            icon: "warning",
+            title: "Enlace no disponible",
+            text: "Este artefacto no tiene una URL configurada.",
+            confirmButtonText: "Aceptar",
+        });
+        return;
+    }
+
+    try {
+        const enlace = new URL(url);
+
+        if (!["http:", "https:"].includes(enlace.protocol)) {
+            throw new Error("Protocolo no permitido");
+        }
+
+        window.open(enlace.href, "_blank", "noopener,noreferrer");
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Enlace inválido",
+            text: "La URL configurada para este artefacto no es válida.",
+        });
+
+        console.error("Error al abrir artefacto:", error);
+    }
+});
 
 const iconosDisponibles = [
     { clase: "fa-solid fa-link", nombre: "Enlace" },
@@ -196,7 +237,7 @@ const iconosDisponibles = [
 
 function cargarIconosDisponibles() {
     let html = "";
-    iconosDisponibles.forEach(icono => {
+    iconosDisponibles.forEach((icono) => {
         html += `
             <div class="col-3">
                 <button type="button"
@@ -210,7 +251,6 @@ function cargarIconosDisponibles() {
     });
     $("#galeriaIconos").html(html);
 }
-
 
 $("#btnSeleccionarIcono").on("click", function () {
     $("#contenedorSelectorIconos").toggleClass("d-none");
@@ -260,14 +300,16 @@ $("#formAltaLink").on("submit", function (e) {
             Swal.fire({
                 icon: "error",
                 title: "Error!",
-                text: xhr.responseJSON?.mensaje || "Ocurrió un error al crear el link.",
+                text:
+                    xhr.responseJSON?.mensaje ||
+                    "Ocurrió un error al crear el link.",
                 showConfirmButton: true,
             });
             console.error(error);
         },
-        complete: function(){
+        complete: function () {
             $("#btnGuardar").text("Guardar").prop("disabled", false);
             $("#btnCancelar").prop("disabled", false);
-        }
+        },
     });
 });

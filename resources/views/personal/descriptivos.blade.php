@@ -448,7 +448,7 @@
             </div>
 
             <div class="modal-footer justify-content-between">
-                @if (Auth::user()->rol === 'Administrador/a')
+
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-outline-warning btn-estado-descriptivo d-none" data-accion="devolver">
                         <i class="fa-solid fa-rotate-left me-1"></i>Devolver a borrador
@@ -463,7 +463,7 @@
                         <i class="fa-solid fa-paper-plane me-1"></i>Publicar
                     </button>
                 </div>
-                @endif
+
                 <small class="text-muted" id="lblAuditoriaDescriptivo"></small>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
@@ -476,6 +476,8 @@
 <script>
     const USER_ROLE = "{{ Auth::user()->rol }}";
     const USER_AREA_ID = "{{ Auth::user()->area_id }}";
+    const esAdmin = USER_ROLE === "Administrador/a";
+    const esCoordinador = ["Coordinador/a", "Coordinador/a L2"].includes(USER_ROLE);
 </script>
 <script src="{{ asset('js/personal/selectores.js') }}"></script>
 <script src="{{ asset('js/descriptivos/competencias.js') }}"></script>
