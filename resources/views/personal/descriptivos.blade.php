@@ -103,10 +103,11 @@
     <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
         <form id="formAltaDescriptivo" class="modal-content p-2">
             @csrf
+            <input type="hidden" name="idDescriptivo" id="hiddenIdDescriptivoEdicion">
             <div class="modal-header">
                 <div class="d-flex flex-column">
-                    <h5 class="modal-title mb-0">Nuevo descriptivo de puesto</h5>
-                    <small class="text-muted">Se guarda como borrador (versión 1)</small>
+                    <h5 class="modal-title mb-0" id="tituloModalDescriptivo">Nuevo descriptivo de puesto</h5>
+                    <small class="text-muted" id="subtituloModalDescriptivo">Se guarda como borrador (versión 1)</small>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -452,6 +453,9 @@
                     <button type="button" class="btn btn-outline-warning btn-estado-descriptivo d-none" data-accion="devolver">
                         <i class="fa-solid fa-rotate-left me-1"></i>Devolver a borrador
                     </button>
+                    <button type="button" class="btn btn-outline-primary d-none" id="btnContinuarBorrador">
+                        <i class="fa-solid fa-pen-to-square me-1"></i>Continuar borrador
+                    </button>
                     <button type="button" class="btn btn-info btn-estado-descriptivo d-none" data-accion="validar">
                         <i class="fa-solid fa-check me-1"></i>Validar
                     </button>
@@ -469,6 +473,10 @@
 @endpush
 
 @push('scripts')
+<script>
+    const USER_ROLE = "{{ Auth::user()->rol }}";
+    const USER_AREA_ID = "{{ Auth::user()->area_id }}";
+</script>
 <script src="{{ asset('js/personal/selectores.js') }}"></script>
 <script src="{{ asset('js/descriptivos/competencias.js') }}"></script>
 <script src="{{ asset('js/descriptivos/altaDescriptivos.js') }}"></script>

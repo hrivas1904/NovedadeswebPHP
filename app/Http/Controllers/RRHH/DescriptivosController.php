@@ -147,19 +147,19 @@ class DescriptivosController extends Controller
             'motivo'        => 'nullable|string|max:500',
         ]);
 
-        $user    = auth()->user();
-        $esAdmin = $user->rol === 'Administrador/a';
+        $user = auth()->user();
 
-        $desc = DB::select('CALL SP_VER_DESCRIPTIVO(?)', [$request->idDescriptivo]);
+        // si el descriptivo no es de su área (y no es admin), el SP no devuelve filas
+        $desc = DB::select('CALL SP_VER_DESCRIPTIVO(?, ?)', [$request->idDescriptivo, $user->id]);
         if (empty($desc)) {
-            return response()->json(['message' => 'El descriptivo no existe.'], 404);
+            return response()->json(['message' => 'El descriptivo no existe o no tenés acceso.'], 404);
         }
 
-        // permisos: valida el coordinador de su área (o admin); devuelve y publica solo admin
-        $esCoordDelArea = in_array($user->rol, ['Coordinador/a', 'Coordinador/a L2'])
-            && (int) $user->area_id === (int) $desc[0]->id_area;
+        // validar: admin o coordinador · devolver y publicar: solo admin
+        $esAdmin       = $user->rol === 'Administrador/a';
+        $esCoordinador = in_array($user->rol, ['Coordinador/a', 'Coordinador/a L2']);
+        $puede = $request->accion === 'validar' ? ($esAdmin || $esCoordinador) : $esAdmin;
 
-        $puede = $request->accion === 'validar' ? ($esAdmin || $esCoordDelArea) : $esAdmin;
         if (!$puede) {
             return response()->json(['message' => 'No tenés permiso para esta acción.'], 403);
         }
@@ -188,7 +188,11 @@ class DescriptivosController extends Controller
             return response()->json(['message' => 'No se pudo cambiar el estado del descriptivo.'], 500);
         }
 
-        $textos = ['validar' => 'Descriptivo validado.', 'devolver' => 'Descriptivo devuelto a borrador.', 'publicar' => 'Descriptivo publicado.'];
+        $textos = [
+            'validar'  => 'Descriptivo validado.',
+            'devolver' => 'Descriptivo devuelto a borrador.',
+            'publicar' => 'Descriptivo publicado.',
+        ];
         return response()->json(['message' => $textos[$request->accion]]);
     }
 
@@ -237,5 +241,94 @@ class DescriptivosController extends Controller
         }
 
         return response()->json(['message' => 'Aceptaste tu descriptivo de puesto.']);
+    }
+
+    public function editarDescriptivo(Request $request)
+    {
+        if (auth()->user()->rol !== 'Administrador/a') {
+            return response()->json(['message' => 'No tenés permiso para editar descriptivos.'], 403);
+        }
+
+        $request->validate([
+            'idDescriptivo'             => 'required|integer',
+            'nombrePuesto'              => 'nullable|string|max:512',
+            'idArea'                    => 'required|integer',
+            'idServicio'                => 'required|integer',
+            'reportaA'                  => 'nullable|string|max:512',
+            'supervisorDirecto'         => 'nullable|string|max:512',
+            'supervisaA'                => 'nullable|string|max:512',
+            'propositoPuesto'           => 'nullable|string',
+            'tareas'                    => 'nullable|string',
+            'relacionesInternas'        => 'nullable|string',
+            'relacionesExternas'        => 'nullable|string',
+            'formacion'                 => 'nullable|string',
+            'experiencia'               => 'nullable|string',
+            'conocimientos'             => 'nullable|string',
+            'capacitacionContinua'      => 'nullable|string',
+            'normasCalidad'             => 'nullable|string',
+            'compromisoAmbiental'       => 'nullable|string',
+            'seguridadSaludOcupacional' => 'nullable|string',
+            'eticaConfidencialidad'     => 'nullable|string',
+            'contribucion'              => 'nullable|string',
+            'competenciaTipo.*'         => 'nullable|in:ORGANIZACIONAL,FUNCIONAL',
+            'competenciaNombre.*'       => 'nullable|string|max:512',
+            'competenciaDescripcion.*'  => 'nullable|string',
+        ]);
+
+        $id    = (int) $request->idDescriptivo;
+        $audit = [auth()->id(), $request->ip(), substr((string) $request->userAgent(), 0, 512)];
+
+        try {
+            DB::transaction(function () use ($request, $id, $audit) {
+
+                DB::statement('CALL SP_EDITAR_DESCRIPTIVO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [
+                    $id,
+                    $request->nombrePuesto,
+                    $request->idArea,
+                    $request->idServicio,
+                    $request->reportaA,
+                    $request->supervisorDirecto,
+                    $request->supervisaA,
+                    $request->propositoPuesto,
+                    $request->tareas,
+                    $request->relacionesInternas,
+                    $request->relacionesExternas,
+                    $request->formacion,
+                    $request->experiencia,
+                    $request->conocimientos,
+                    $request->capacitacionContinua,
+                    $request->normasCalidad,
+                    $request->compromisoAmbiental,
+                    $request->seguridadSaludOcupacional,
+                    $request->eticaConfidencialidad,
+                    $request->contribucion,
+                    ...$audit,
+                ]);
+
+                // competencias: se reemplazan por las del formulario
+                DB::statement('CALL SP_LIMPIAR_COMPETENCIAS_DESCRIPTIVO(?)', [$id]);
+
+                $orden = 1;
+                foreach ((array) $request->competenciaNombre as $i => $nombre) {
+                    if (trim((string) $nombre) === '') continue;
+
+                    DB::statement('CALL SP_ALTA_COMPETENCIA_DESCRIPTIVO(?,?,?,?,?)', [
+                        $id,
+                        $request->competenciaTipo[$i] ?? null,
+                        $nombre,
+                        $request->competenciaDescripcion[$i] ?? null,
+                        $orden++,
+                    ]);
+                }
+            });
+        } catch (QueryException $e) {
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['message' => $e->errorInfo[2]], 422);
+            }
+            Log::error('Edición de descriptivo', ['id' => $id, 'error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se pudo guardar el borrador.'], 500);
+        }
+
+        return response()->json(['message' => 'Borrador guardado.', 'data' => ['id_descriptivo' => $id]]);
     }
 }

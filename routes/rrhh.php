@@ -487,6 +487,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/altaDescriptivo', [DescriptivosController::class, 'altaDescriptivo']);
         Route::get('/mi-descriptivo/datos',    [DescriptivosController::class, 'verMiDescriptivo'])->name('verMiDescriptivo');
         Route::post('/mi-descriptivo/aceptar', [DescriptivosController::class, 'aceptarMiDescriptivo'])->name('aceptarMiDescriptivo');
+        Route::post('/editarDescriptivo', [DescriptivosController::class, 'editarDescriptivo'])->name('editarDescriptivo');
     });
 
     // EVALUACIÓN DE DESEMPEÑO

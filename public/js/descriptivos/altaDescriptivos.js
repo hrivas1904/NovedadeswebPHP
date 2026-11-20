@@ -15,11 +15,12 @@ $(document).on("submit", "#formAltaDescriptivo", function (e) {
     e.preventDefault();
     const $form = $(this);
     const $btn = $form.find('button[type="submit"]');
+    const esEdicion = !!$("#hiddenIdDescriptivoEdicion").val();
 
     $btn.prop("disabled", true);
 
     $.ajax({
-        url: "/rrhh/descriptivos/altaDescriptivo",
+        url: esEdicion ? "/rrhh/descriptivos/editarDescriptivo" : "/rrhh/descriptivos/altaDescriptivo",
         type: "POST",
         dataType: "json",
         data: $form.serialize(),
@@ -33,6 +34,7 @@ $(document).on("submit", "#formAltaDescriptivo", function (e) {
             $form[0].reset();
             $("#divCompetenciasGenericas, #divCompetenciasEspecificas").empty();
             tablaDescriptivos.ajax.reload(null, false);
+            if (esEdicion) verDetalleDescriptivo(res.data.id_descriptivo);
         },
         error: function (xhr) {
             const r = xhr.responseJSON;
