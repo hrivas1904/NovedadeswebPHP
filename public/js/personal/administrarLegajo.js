@@ -10,6 +10,7 @@
    ===================================================================== */
 
 let legajoActual = null; // { id_personal, legajo }
+var tablaPrestamos = null;
 
 /* ---------------------------------------------------------------------
    Utilidades
@@ -332,6 +333,11 @@ function llenarModalLegajo(res) {
     $(".filtro-novedades-legajo").val("");
     $("#legajoTbNovedades").data("cargado", false);
 
+    // préstamos en limpio; se cargan al abrir la pestaña
+    $("#filtroEstadoPrestamo").val("1");
+    $("#saldoTotalPrestamos").text(fmtMoneda(0));
+    if (tablaPrestamos) tablaPrestamos.clear().draw();
+
     bootstrap.Tab.getOrCreateInstance(
         $('[data-bs-target="#tabLegajoPersonales"]')[0],
     ).show();
@@ -596,4 +602,179 @@ $(document).on("change", "#selectorPuestoTrabajoLegajo", function () {
             $sel.prop("disabled", false);
         },
     });
+});
+
+function fmtMoneda(v) {
+    return Number(v || 0).toLocaleString("es-AR", {
+        style: "currency",
+        currency: "ARS",
+    });
+}
+function fmtFecha(f) {
+    // 'YYYY-MM-DD' -> 'DD/MM/YYYY'
+    if (!f) return "-";
+    var p = f.substring(0, 10).split("-");
+    return p[2] + "/" + p[1] + "/" + p[0];
+}
+function fmtPeriodo(f) {
+    // 'YYYY-MM-DD' -> 'MM/YYYY'
+    if (!f) return "-";
+    var p = f.substring(0, 10).split("-");
+    return p[1] + "/" + p[0];
+}
+function badgeEstadoPrestamo(txt) {
+    var clase =
+        {
+            VIGENTE: "bg-primary",
+            FINALIZADO: "bg-success",
+            ANULADO: "bg-secondary",
+            PENDIENTE: "bg-warning text-dark",
+            DESCONTADA: "bg-success",
+            ANULADA: "bg-secondary",
+        }[txt] || "bg-light text-dark";
+    return '<span class="badge ' + clase + '">' + txt + "</span>";
+}
+
+function initTablaPrestamos() {
+    tablaPrestamos = $("#tablaLegajoPrestamos").DataTable({
+        ajax: {
+            url: "/rrhh/legajo/prestamos",
+            data: function (d) {
+                d.legajo = legajoActual ? legajoActual.legajo : null;
+                d.estado = $("#filtroEstadoPrestamo").val();
+            },
+            dataSrc: "data",
+        },
+        columns: [
+            {
+                data: null,
+                className: "dt-control",
+                orderable: false,
+                defaultContent: "",
+            },
+            { data: "id" },
+            {
+                data: "fecha_inicio",
+                render: function (d, t) {
+                    return t === "display" ? fmtFecha(d) : d;
+                },
+            },
+            {
+                data: "monto_total",
+                className: "text-end",
+                render: function (d, t) {
+                    return t === "display" ? fmtMoneda(d) : d;
+                },
+            },
+            {
+                data: null,
+                orderable: false,
+                render: function (r) {
+                    return r.cuotas_descontadas + " / " + r.cantidad_cuotas;
+                },
+            },
+            {
+                data: "saldo",
+                className: "text-end",
+                render: function (d, t) {
+                    return t === "display" ? fmtMoneda(d) : d;
+                },
+            },
+            {
+                data: "proximo_periodo",
+                render: function (d, t) {
+                    return t === "display" ? fmtPeriodo(d) : d;
+                },
+            },
+            {
+                data: "estado_texto",
+                render: function (d) {
+                    return badgeEstadoPrestamo(d);
+                },
+            },
+        ],
+        order: [[2, "desc"]],
+        paging: false,
+        info: false,
+        searching: false,
+        language: { emptyTable: "Sin préstamos registrados" },
+    });
+
+    tablaPrestamos.on("xhr.dt", function (e, settings, json) {
+        var total = 0;
+        $.each((json && json.data) || [], function (i, r) {
+            if (r.estado_texto === "VIGENTE") total += Number(r.saldo);
+        });
+        $("#saldoTotalPrestamos").text(fmtMoneda(total));
+    });
+}
+
+function htmlCuotasPrestamo(prestamo, cuotas) {
+    var filas = "";
+    $.each(cuotas, function (i, c) {
+        filas +=
+            "<tr><td>" +
+            c.numero_cuota +
+            "</td><td>" +
+            fmtPeriodo(c.periodo) +
+            "</td>" +
+            '<td class="text-end">' +
+            fmtMoneda(c.importe) +
+            "</td><td>" +
+            badgeEstadoPrestamo(c.estado_texto) +
+            "</td></tr>";
+    });
+    if (!filas)
+        filas =
+            '<tr><td colspan="4" class="text-center text-muted">Sin cuotas generadas</td></tr>';
+
+    return (
+        '<div class="p-2">' +
+        '<div class="small mb-2"><strong>Registró:</strong> ' +
+        (prestamo.auditor || "-") +
+        " &nbsp;·&nbsp; <strong>Observaciones:</strong> " +
+        $("<div>")
+            .text(prestamo.observaciones || "-")
+            .html() +
+        "</div>" +
+        '<table class="table table-sm table-bordered mb-0 w-auto">' +
+        '<thead><tr><th>Cuota</th><th>Período</th><th class="text-end">Importe</th><th>Estado</th></tr></thead>' +
+        "<tbody>" +
+        filas +
+        "</tbody></table></div>"
+    );
+}
+
+// Fila hija con las cuotas
+$(document).on("click", "#tablaLegajoPrestamos td.dt-control", function () {
+    var tr = $(this).closest("tr");
+    var row = tablaPrestamos.row(tr);
+
+    if (row.child.isShown()) {
+        row.child.hide();
+        return;
+    }
+
+    var prestamo = row.data();
+    $.get("/rrhh/legajo/prestamos/cuotas", {
+        legajo: legajoActual.legajo,
+        id_prestamo: prestamo.id,
+    })
+        .done(function (resp) {
+            row.child(htmlCuotasPrestamo(prestamo, resp.data)).show();
+        })
+        .fail(function () {
+            Swal.fire("Error", "No se pudieron cargar las cuotas.", "error");
+        });
+});
+
+// Carga recién cuando se abre la pestaña (columns.adjust por estar oculta)
+$(document).on("shown.bs.tab", "#tab-prestamos-btn", function () {
+    if (!tablaPrestamos) initTablaPrestamos();
+    else tablaPrestamos.ajax.reload();
+    tablaPrestamos.columns.adjust();
+});
+
+$(document).on("change", "#filtroEstadoPrestamo", function () {
+    if (tablaPrestamos) tablaPrestamos.ajax.reload();
 });

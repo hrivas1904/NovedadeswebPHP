@@ -135,6 +135,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/personal/verLegajo', [PersonalController::class, 'verLegajo'])->name('verLegajo');
     Route::get('/personal/verNovedadesLegajo', [PersonalController::class, 'verNovedadesLegajo'])->name('verNovedadesLegajo');
+    Route::get('/legajo/prestamos', [PersonalController::class, 'listarPrestamosLegajo'])->name('legajo.prestamos');
+    Route::get('/legajo/prestamos/cuotas', [PersonalController::class, 'listarCuotasPrestamo'])->name('legajo.prestamos.cuotas');
 
     Route::post('/personal/guardarEdicionLegajo', [PersonalController::class, 'guardarEdicionLegajo'])->name('guardarEdicionLegajo');
     Route::post('/personal/asignarPuestoTramo', [PersonalController::class, 'asignarPuestoTramo'])->name('asignarPuestoTramo');

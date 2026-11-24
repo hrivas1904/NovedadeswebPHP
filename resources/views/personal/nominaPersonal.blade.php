@@ -402,6 +402,7 @@
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabLegajoLaborales" type="button">Datos laborales</button></li>
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabLegajoFamilia" type="button">Contactos y familia</button></li>
                     <li class="nav-item solo-con-legajo"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabLegajoNovedades" type="button" id="tabBtnNovedadesLegajo">Novedades</button></li>
+                    <li class="nav-item solo-con-legajo"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-prestamos" type="button" id="tab-prestamos-btn">Préstamos y embargos</button></li>
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabLegajoHistorial" type="button">Historial</button></li>
                 </ul>
 
@@ -772,6 +773,34 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab-prestamos" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-end mb-2">
+                            <div>
+                                <label class="form-label mb-0 small">Estado</label>
+                                <select id="filtroEstadoPrestamo" class="form-select form-select-sm">
+                                    <option value="">Todos</option>
+                                    <option value="1" selected>Vigentes</option>
+                                    <option value="0">Anulados</option>
+                                </select>
+                            </div>
+                            <div class="small">Saldo pendiente: <strong id="saldoTotalPrestamos">$ 0,00</strong></div>
+                        </div>
+                        <table id="tablaLegajoPrestamos" class="table table-sm table-hover w-100">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>N°</th>
+                                    <th>Inicio</th>
+                                    <th class="text-end">Monto</th>
+                                    <th>Cuotas</th>
+                                    <th class="text-end">Saldo</th>
+                                    <th>Próx. período</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
 
                     {{-- ============================================================

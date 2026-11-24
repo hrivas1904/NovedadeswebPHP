@@ -2283,4 +2283,40 @@ class PersonalController extends Controller
 
         return response()->json(['message' => 'Puesto asignado.']);
     }
+
+    public function listarPrestamosLegajo(Request $request)
+    {
+        $request->validate([
+            'legajo' => 'required|integer',
+            'estado' => 'nullable|in:0,1',
+        ]);
+
+        try {
+            $estado = $request->filled('estado') ? (int) $request->estado : null;
+            $rows = DB::select('CALL SP_VER_LEGAJO_PRESTAMOS(?, ?)', [(int) $request->legajo, $estado]);
+            return response()->json(['data' => $rows]);
+        } catch (\Throwable $e) {
+            Log::error('listarPrestamosLegajo: ' . $e->getMessage());
+            return response()->json(['message' => 'No se pudieron cargar los préstamos.'], 500);
+        }
+    }
+
+    public function listarCuotasPrestamo(Request $request)
+    {
+        $request->validate([
+            'legajo'      => 'required|integer',
+            'id_prestamo' => 'required|integer',
+        ]);
+
+        try {
+            $rows = DB::select('CALL SP_VER_LEGAJO_PRESTAMO_CUOTAS(?, ?)', [
+                (int) $request->legajo,
+                (int) $request->id_prestamo,
+            ]);
+            return response()->json(['data' => $rows]);
+        } catch (\Throwable $e) {
+            Log::error('listarCuotasPrestamo: ' . $e->getMessage());
+            return response()->json(['message' => 'No se pudieron cargar las cuotas.'], 500);
+        }
+    }
 }
