@@ -2319,4 +2319,38 @@ class PersonalController extends Controller
             return response()->json(['message' => 'No se pudieron cargar las cuotas.'], 500);
         }
     }
+
+    public function cambiarCondicionVinculo(Request $request)
+    {
+        if (auth()->user()->rol !== 'Administrador/a') {
+            return response()->json(['message' => 'No tenés permiso para modificar condiciones.'], 403);
+        }
+
+        $request->validate([
+            'idVinculo' => 'required|integer',
+            'condicion' => 'required|in:UTI,NOCHE',
+            'activo'    => 'required|in:0,1',
+        ]);
+
+        try {
+            DB::transaction(function () use ($request) {
+                DB::statement('CALL SP_CAMBIAR_CONDICION_VINCULO(?, ?, ?, ?, ?, ?)', [
+                    $request->idVinculo,
+                    $request->condicion,
+                    $request->activo,
+                    auth()->id(),
+                    $request->ip(),
+                    substr((string) $request->userAgent(), 0, 512),
+                ]);
+            });
+        } catch (QueryException $e) {
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['message' => $e->errorInfo[2]], 422);
+            }
+            Log::error('Cambiar condición', ['id_vinculo' => $request->idVinculo, 'error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se pudo guardar la condición.'], 500);
+        }
+
+        return response()->json(['message' => 'Condición actualizada.']);
+    }
 }

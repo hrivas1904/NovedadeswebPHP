@@ -772,3 +772,57 @@ $(document).on("shown.bs.tab", "#tab-prestamos-btn", function () {
 $(document).on("change", "#filtroEstadoPrestamo", function () {
     if (tablaPrestamos) tablaPrestamos.ajax.reload();
 });
+
+// UTI / NOCHE: se guardan apenas se cambian
+$(document).on(
+    "change",
+    '#formLegajo [name="selector-uti"], #formLegajo [name="selector-noche"]',
+    function () {
+        const $sel = $(this);
+        const condicion =
+            $sel.attr("name") === "selector-uti" ? "UTI" : "NOCHE";
+        const anterior = $sel.attr("data-valor") ?? "";
+        const nuevo = $sel.val();
+        const idVinculo = $("#hiddenIdVinculoLegajo").val();
+
+        if (!idVinculo || nuevo === anterior) return;
+
+        $sel.prop("disabled", true);
+
+        $.ajax({
+            url: "/rrhh/cambiarCondicionVinculo",
+            type: "POST",
+            dataType: "json",
+            data: {
+                idVinculo: idVinculo,
+                condicion: condicion,
+                activo: nuevo,
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function () {
+                $sel.attr("data-valor", nuevo);
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "success",
+                    title:
+                        condicion + (nuevo === "1" ? " activada" : " quitada"),
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            },
+            error: function (xhr) {
+                $sel.val(anterior); // vuelve al valor que tenía
+                Swal.fire(
+                    "Error",
+                    (xhr.responseJSON || {}).message ||
+                        "No se pudo guardar la condición.",
+                    "error",
+                );
+            },
+            complete: function () {
+                $sel.prop("disabled", false);
+            },
+        });
+    },
+);

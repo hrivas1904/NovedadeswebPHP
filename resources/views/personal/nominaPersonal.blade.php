@@ -645,6 +645,22 @@
                                             <select class="form-select" id="selectorCategoriaLegajo" name="categoria" data-campo="id_categoria"></select>
                                         </div>
                                         <div class="col-6 col-xl-1">
+                                            <label class="label-control text-muted">UTI</label>
+                                            <select class="form-select" name="selector-uti" data-campo="uti">
+                                                <option value="">Seleccione</option>
+                                                <option value="1">SI</option>
+                                                <option value="0">NO</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 col-xl-1">
+                                            <label class="label-control text-muted">Noche</label>
+                                            <select class="form-select" name="selector-noche" data-campo="noche">
+                                                <option value="">Seleccione</option>
+                                                <option value="1">SI</option>
+                                                <option value="0">NO</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 col-xl-1">
                                             <label class="label-control text-muted">Régimen</label>
                                             <select class="form-select" id="selectorRegimenLegajo" name="regimen" data-campo="regimen"></select>
                                         </div>
@@ -664,15 +680,15 @@
                                             <label class="label-control text-muted">Código OS</label>
                                             <input class="form-control" id="inputCodigoObraSocialLegajo" data-campo="codigo_obra_social" readonly>
                                         </div>
-                                        <div class="col-6 col-xl-2">
+                                        <div class="col-6 col-xl-1">
                                             <label class="label-control text-muted">Convenio</label>
                                             <select class="form-select" name="convenio" data-campo="convenio">
                                                 <option value="SANIDAD">SANIDAD</option>
                                                 <option value="FUERA DE CONVENIO">FUERA DE CONVENIO</option>
                                             </select>
                                         </div>
-                                        <div class="col-6 col-xl-2">
-                                            <label class="label-control text-muted">Afiliado al sindicato</label>
+                                        <div class="col-6 col-xl-1">
+                                            <label class="label-control text-muted">Afiliado</label>
                                             <select class="form-select" name="sindicato" data-campo="afiliado" data-formato="sino">
                                                 <option value="SI">SI</option>
                                                 <option value="NO">NO</option>
@@ -1198,9 +1214,9 @@
 @push('scripts')
 <script>
     window.RRHH_ROUTES = Object.assign(window.RRHH_ROUTES || {}, {
-        subirComprobante:    "{{ url('/rrhh/novedades/subir-comprobante') }}",
+        subirComprobante: "{{ url('/rrhh/novedades/subir-comprobante') }}",
         comprobantesNovedad: "{{ url('/rrhh/novedades/:id/comprobantes') }}",
-        verComprobante:      "{{ url('/rrhh/comprobantes/:id/ver') }}",
+        verComprobante: "{{ url('/rrhh/comprobantes/:id/ver') }}",
     });
 </script>
 
