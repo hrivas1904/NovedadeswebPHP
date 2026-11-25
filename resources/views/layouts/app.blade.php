@@ -183,12 +183,14 @@
                             </a>
                             <ul class="submenu">
                                 <li><a class="submenu-link" href="{{ route('rrhh.miLegajo') }}">Mi legajo</a></li>
-                                <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.miDescriptivo') }}">Mi Descriptivo</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.miDescriptivo') }}">Mi descriptivo</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.edd.index') }}">Mi evaluación</a></li>
                                 @if (Auth::user()->rol === 'Coordinador/a L2' ||
                                 Auth::user()->rol === 'Administrador/a' ||
                                 Auth::user()->rol === 'Coordinador/a')
                                 <li><a class="submenu-link" href="{{ route('rrhh.nominaPersonal') }}">Colaboradores</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.index') }}">Descriptivos</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.edd.index') }}">Evaluaciones desempeño</a></li>
                                 @endif
                                 @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
                                 <li><a class="submenu-link" href="{{ route('rrhh.calendarioServicios') }}">Calendario recepción</a></li>
@@ -376,15 +378,6 @@
                             <a class="nav-link {{ request()->routeIs('rrhh.organigrama.*') ? 'active' : '' }}" href="{{ route('rrhh.organigrama.index') }}" @if(request()->routeIs('rrhh.organigrama.*')) aria-current="page" @endif>
                                 <i class="fa-solid fa-sitemap" aria-hidden="true"></i>
                                 <span class="link-text">Organigrama</span>
-                            </a>
-                        </li>
-                        @endcan
-
-                        @can('edd.acceder')
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('rrhh.edd.*') ? 'active' : '' }}" href="{{ route('rrhh.edd.index') }}" @if(request()->routeIs('rrhh.edd.*')) aria-current="page" @endif>
-                                <i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>
-                                <span class="link-text">Evaluación de Desempeño</span>
                             </a>
                         </li>
                         @endcan
