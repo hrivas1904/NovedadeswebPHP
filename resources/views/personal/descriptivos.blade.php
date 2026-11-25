@@ -353,7 +353,7 @@
                     <div class="card p-3">
                         <div class="d-flex flex-column gap-3">
                             <h6 class="fw-bold text-muted mb-0">Principales tareas y responsabilidades</h6>
-                            <div class="form-control bg-light campo-desc" data-campo="tareas"></div>
+                            <textarea class="form-control" data-campo="tareas" rows="4" readonly></textarea>
                         </div>
                     </div>
 
@@ -412,28 +412,7 @@
                     <div class="card p-3">
                         <div class="d-flex flex-column gap-3">
                             <h6 class="fw-bold text-muted mb-0">Compromiso</h6>
-                            <div class="row g-3">
-                                <div class="col-12 col-md-6">
-                                    <label class="text-muted">Capacitación continua</label>
-                                    <div class="form-control bg-light campo-desc" data-campo="capacitacion_continua"></div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="text-muted">Normas de calidad (ISO 9001)</label>
-                                    <div class="form-control bg-light campo-desc" data-campo="normas_calidad"></div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="text-muted">Compromiso ambiental</label>
-                                    <div class="form-control bg-light campo-desc" data-campo="compromiso_ambiental"></div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="text-muted">Seguridad y salud ocupacional</label>
-                                    <div class="form-control bg-light campo-desc" data-campo="seguridad_salud_ocupacional"></div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="text-muted">Ética y confidencialidad</label>
-                                    <div class="form-control bg-light campo-desc" data-campo="etica_confidencialidad"></div>
-                                </div>
-                            </div>
+                            <div class="list-group" id="listaCompromisos"></div>
                         </div>
                     </div>
 

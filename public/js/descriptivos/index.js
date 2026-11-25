@@ -118,8 +118,17 @@ function llenarModalDescriptivo(d, competencias) {
     $modal.find("[data-campo]").each(function () {
         const $el = $(this);
         const valor = d[$el.data("campo")];
-        const texto =
-            valor === null || valor === undefined ? "" : String(valor);
+        let texto = valor === null || valor === undefined ? "" : String(valor);
+
+        // tareas: una viñeta por renglón (solo para mostrar)
+        if ($el.data("campo") === "tareas" && texto) {
+            texto = texto
+                .split("\n")
+                .map((t) => t.replace(/^[•\-\*]\s*/, "").trim())
+                .filter(Boolean)
+                .map((t) => "• " + t)
+                .join("\n");
+        }
 
         if ($el.is("input, textarea")) {
             $el.val(texto).attr("placeholder", "Sin completar");
@@ -153,21 +162,12 @@ function llenarModalDescriptivo(d, competencias) {
             return;
         }
         items.forEach(function (c) {
-            const $item = $(
-                '<div class="list-group-item d-flex justify-content-between align-items-start gap-2">',
-            );
-            const $texto = $("<div>")
+            const $item = $('<div class="list-group-item">')
                 .append($('<div class="fw-semibold">').text(c.nombre))
                 .append(
                     $('<small class="text-muted">').text(c.descripcion || ""),
                 );
-            const $btn = $(
-                '<button type="button" class="btn btn-sm btn-outline-secondary btn-editar-competencia" title="Editar">' +
-                    '<i class="fa-solid fa-pencil"></i>' +
-                    "</button>",
-            ).attr("data-id", c.id);
-
-            $lista.append($item.append($texto, $btn));
+            $lista.append($item);
         });
     };
     competencias = competencias || [];
@@ -212,6 +212,42 @@ function llenarModalDescriptivo(d, competencias) {
         "d-none",
         !(d.estado === "BORRADOR" && esAdmin),
     );
+
+    // compromiso: un ítem por campo, cada renglón como viñeta (solo lectura)
+    const compromisos = [
+        { campo: "capacitacion_continua", titulo: "Capacitación continua" },
+        { campo: "normas_calidad", titulo: "Normas de calidad (ISO 9001)" },
+        { campo: "compromiso_ambiental", titulo: "Compromiso ambiental" },
+        {
+            campo: "seguridad_salud_ocupacional",
+            titulo: "Seguridad y salud ocupacional",
+        },
+        { campo: "etica_confidencialidad", titulo: "Ética y confidencialidad" },
+    ];
+    const $comp = $("#listaCompromisos").empty();
+
+    compromisos.forEach(function (c) {
+        const lineas = String(d[c.campo] || "")
+            .split("\n")
+            .map((t) => t.trim())
+            .filter(Boolean);
+        const $item = $('<div class="list-group-item">').append(
+            $('<div class="fw-semibold">').text(c.titulo),
+        );
+
+        if (lineas.length) {
+            const $ul = $('<ul class="mb-0 ps-3 small text-muted">');
+            lineas.forEach((t) => $ul.append($("<li>").text(t)));
+            $item.append($ul);
+        } else {
+            $item.append(
+                $('<small class="text-muted fst-italic">').text(
+                    "Sin completar",
+                ),
+            );
+        }
+        $comp.append($item);
+    });
 
     $modal.modal("show");
 }
