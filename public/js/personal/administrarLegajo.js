@@ -826,3 +826,64 @@ $(document).on(
         });
     },
 );
+
+// copiar CUIL al portapapeles (sin guiones, como está en el campo oculto)
+$(document).on(
+    "click",
+    ".preCuilLegajo, .midCuilLegajo, .posCuilLegajo",
+    function () {
+        armarCuilLegajo(); // por si se editaron los extremos
+        const cuil = $(".inputCuilLegajo").val();
+
+        if (!cuil || cuil.length !== 11) {
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "warning",
+                title: "El CUIL está incompleto",
+                timer: 1500,
+                showConfirmButton: false,
+            });
+            return;
+        }
+
+        copiarAlPortapapeles(cuil).then(function () {
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "CUIL copiado: " + cuil,
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        });
+    },
+);
+
+function copiarAlPortapapeles(texto) {
+    // API moderna (requiere HTTPS o localhost)
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(texto);
+    }
+    // alternativa para HTTP (por ejemplo, Dev Tunnels o IP local)
+    return new Promise(function (resolve) {
+        const $tmp = $("<textarea>")
+            .val(texto)
+            .css({ position: "fixed", opacity: 0 })
+            .appendTo("body");
+        $tmp[0].select();
+        document.execCommand("copy");
+        $tmp.remove();
+        resolve();
+    });
+}
+
+$(document).on("click", "#btnExportExcelDep", function () {
+    const params = $.param({
+        area_id: getAreasSeleccionadas().join(","),
+        categ_id: getCategoriasSeleccionadas().join(","),
+        p_convenio: getConveniosSeleccionados().join(","),
+        p_estado: getEstadosSeleccionado() || "",
+    });
+    window.location.href = "/rrhh/personal/exportarListaColab?" + params;
+});

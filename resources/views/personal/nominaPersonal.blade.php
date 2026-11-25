@@ -26,7 +26,7 @@
 </nav>
 
 <div class="d-flex justify-content-between align-items-center">
-    <h3 class="tituloVista mb-3">Gestión de colaboradres</h3>
+    <h3 class="tituloVista mb-3">Gestión de colaboradores</h3>
     @if (Auth::user()->rol === 'Administrador/a')
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAltaColaborador">
         Nuevo Colaborador
@@ -114,7 +114,7 @@
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
-                    <button type="button" id="btnExportExcel" class="btn btn-outline-primary d-none d-md-inline-flex align-items-center">
+                    <button type="button" id="btnExportExcelDep" class="btn btn-outline-primary d-none d-md-inline-flex align-items-center">
                         Exportar
                     </button>
                 </div>
@@ -431,9 +431,9 @@
                                         </div>
                                         <div class="col-12 col-xl-6">
                                             <label class="text-muted">CUIL</label>
-                                            <div class="input-group">
+                                            <div class="input-group" title="Click en el DNI para copiar el CUIL">
                                                 <input type="text" class="form-control text-center preCuilLegajo" maxlength="2" inputmode="numeric" style="max-width: 65px;" required>
-                                                <input type="text" class="form-control text-center midCuilLegajo" maxlength="8" readonly required>
+                                                <input type="text" class="form-control text-center midCuilLegajo copiar-cuil-legajo" maxlength="8" readonly required style="cursor: pointer;">
                                                 <input type="text" class="form-control text-center posCuilLegajo" maxlength="1" inputmode="numeric" style="max-width: 55px;" required>
                                                 <input type="hidden" name="cuil" class="inputCuilLegajo">
                                             </div>

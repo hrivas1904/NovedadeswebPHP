@@ -474,133 +474,102 @@ class PersonalController extends Controller
 
     public function exportarListaColabDatatable(Request $request)
     {
-        $data = DB::select('CALL SP_LISTA_EMPLEADOS(?, ?, ?, ?, ?, ?, ?)', [
-            $request->area_id,
-            $request->categ_id,
-            $request->p_convenio,
-            $request->p_regimen,
-            $request->p_uti,
-            $request->p_noche,
-            $request->p_estado,
+        $user   = auth()->user();
+        $veTodo = in_array($user->rol, ['Administrador/a', 'Coordinador/a L2']);
+
+        // coordinador: su área, sin importar lo que mande el navegador
+        $areaId = $veTodo ? $this->normalizarFiltro($request->area_id) : (string) $user->area_id;
+
+        $data = DB::select('CALL SP_EXPORTAR_PERSONAL_DEPENDENCIA(?, ?, ?, ?)', [
+            $areaId,
+            $this->normalizarFiltro($request->categ_id),
+            $this->normalizarFiltro($request->p_convenio),
+            $this->normalizarFiltro($request->p_estado),
         ]);
+
+        $fecha = fn($f) => $f ? date('d/m/Y', strtotime($f)) : '';
+
+        // encabezado => cómo obtener el valor de cada fila
+        $columnas = [
+            'LEGAJO'             => fn($i) => $i->legajo ? str_pad($i->legajo, 5, '0', STR_PAD_LEFT) : '',
+            'COLABORADOR'        => fn($i) => $i->colaborador,
+            'ESTADO'             => fn($i) => $i->estado,
+            'DNI'                => fn($i) => $i->dni,
+            'CUIL'               => fn($i) => $i->cuil,
+            'FECHA NACIMIENTO'   => fn($i) => $fecha($i->fecha_nacimiento),
+            'EDAD'               => fn($i) => $i->edad,
+            'CORREO'             => fn($i) => $i->correo,
+            'TELEFONO'           => fn($i) => $i->telefono,
+            'DOMICILIO'          => fn($i) => $i->domicilio,
+            'LOCALIDAD'          => fn($i) => $i->localidad,
+            'ESTADO CIVIL'       => fn($i) => $i->estado_civil,
+            'GENERO'             => fn($i) => $i->genero,
+            'OBRA SOCIAL'        => fn($i) => $i->obra_social,
+            'CÓDIGO OS'          => fn($i) => $i->codigo_os,
+            'TITULO'             => fn($i) => $i->titulo,
+            'DESCRIPCIÓN TITULO' => fn($i) => $i->descripcion_titulo,
+            'MP'                 => fn($i) => $i->matricula,
+            'TIPO DE CONTRATO'   => fn($i) => $i->tipo_contrato,
+            'FECHA INGRESO'      => fn($i) => $fecha($i->fecha_ingreso),
+            'FECHA FIN PRUEBA'   => fn($i) => $fecha($i->fecha_fin_periodo_prueba),
+            'FECHA EGRESO'       => fn($i) => $fecha($i->fecha_egreso),
+            'MOTIVO BAJA'        => fn($i) => $i->motivo_baja,
+            'ANTIGÜEDAD'         => fn($i) => $i->antiguedad,
+            'AREA'               => fn($i) => $i->area,
+            'SERVICIO'           => fn($i) => $i->servicio,
+            'PUESTO'             => fn($i) => $i->puesto,
+            'CONVENIO'           => fn($i) => $i->convenio,
+            'CATEGORIA'          => fn($i) => $i->categoria,
+            'REGIMEN'            => fn($i) => $i->regimen,
+            'HORAS'              => fn($i) => $i->horas_diarias,
+            'COORDINADOR'        => fn($i) => $i->coordinador,
+            'SINDICATO'          => fn($i) => $i->afiliado,
+            'NOCHE'              => fn($i) => $i->noche,
+            'UTI'                => fn($i) => $i->uti,
+            'BANCO'              => fn($i) => $i->banco,
+            'CUENTA'             => fn($i) => $i->numero_cuenta,
+            'CBU'                => fn($i) => $i->cbu,
+        ];
+
+        // columnas de texto (para que Excel no las convierta a número ni les quite ceros)
+        $comoTexto = ['LEGAJO', 'DNI', 'CUIL', 'TELEFONO', 'CUENTA', 'CBU'];
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Nómina');
+        $sheet->fromArray(array_keys($columnas), null, 'A1');
 
-        // 🔹 Encabezados
-        $headers = [
-            'LEGAJO',
-            'COLABORADOR',
-            'ESTADO',
-            'DNI',
-            'CUIL',
-            'FECHA NACIMIENTO',
-            'EDAD',
-            'CORREO',
-            'TELEFONO',
-            'DOMICILIO',
-            'LOCALIDAD',
-            'ESTADO CIVIL',
-            'GENERO',
-            'OBRA SOCIAL',
-            'CÓDIGO OS',
-            'TITULO',
-            'DESCRIPCIÓN TITULO',
-            'MP',
-            'TIPO DE CONTRATO',
-            'FECHA INGRESO',
-            'FECHA FIN PRUEBA',
-            'FECHA EGRESO',
-            'ANTIGÜEDAD',
-            'AREA',
-            'SERVICIO',
-            'CONVENIO',
-            'CATEGORIA',
-            'REGIMEN',
-            'HORAS',
-            'COORDINADOR',
-            'SINDICATO',
-            'NOCHE',
-            'UTI',
-            'BANCO',
-            'CUENTA',
-            'CBU',
-            'MADRE',
-            'PADRE',
-            'PERSONA EMERG I',
-            'CONTACTO EMERG I',
-            'PARENTESCO EMERG I',
-            'PERSONA EMERG II',
-            'CONTACTO EMERG II',
-            'PARENTESCO EMERG II',
-        ];
-
-        $sheet->fromArray($headers, NULL, 'A1');
-
-        // 🔹 Datos
-        $row = 2;
+        $fila = 2;
         foreach ($data as $item) {
-            $sheet->setCellValue("A$row", str_pad($item->LEGAJO, 5, '0', STR_PAD_LEFT));
-            $sheet->setCellValue("B$row", $item->COLABORADOR);
-            $sheet->setCellValue("C$row", $item->ESTADO);
-            $sheet->setCellValue("D$row", $item->DNI);
-            $sheet->setCellValue("E$row", $item->CUIL);
-            $sheet->setCellValue("F$row", $item->FECHA_NAC ? date('d/m/Y', strtotime($item->FECHA_NAC)) : '');
-            $sheet->setCellValue("G$row", $item->EDAD);
-            $sheet->setCellValue("H$row", $item->CORREO);
-            $sheet->setCellValue("I$row", $item->TELEFONO);
-            $sheet->setCellValue("J$row", $item->DOMICILIO);
-            $sheet->setCellValue("K$row", $item->LOCALIDAD);
-            $sheet->setCellValue("L$row", $item->ESTADO_CIVIL);
-            $sheet->setCellValue("M$row", $item->GENERO);
-            $sheet->setCellValue("N$row", $item->OBRA_SOCIAL);
-            $sheet->setCellValue("O$row", $item->CODIGO);
-            $sheet->setCellValue("P$row", $item->TITULO);
-            $sheet->setCellValue("Q$row", $item->DESCRIP_TITULO);
-            $sheet->setCellValue("R$row", $item->MAT_PROF);
-            $sheet->setCellValue("S$row", $item->TIPO_CONTRATO);
-            $sheet->setCellValue("T$row", $item->FECHA_INGRESO ? date('d/m/Y', strtotime($item->FECHA_INGRESO)) : '');
-            $sheet->setCellValue("U$row", $item->FECHA_FIN_PRUEBA ? date('d/m/Y', strtotime($item->FECHA_FIN_PRUEBA)) : '');
-            $sheet->setCellValue("V$row", $item->FECHA_EGRESO ? date('d/m/Y', strtotime($item->FECHA_EGRESO)) : '');
-            $sheet->setCellValue("W$row", $item->ANTIGUEDAD);
-            $sheet->setCellValue("X$row", $item->AREA);
-            $sheet->setCellValue("Y$row", $item->SERVICIO);
-            $sheet->setCellValue("Z$row", $item->CONVENIO);
-            $sheet->setCellValue("AA$row", $item->CATEGORIA);
-            $sheet->setCellValue("AB$row", $item->REGIMEN);
-            $sheet->setCellValue("AC$row", $item->HORAS_DIARIAS);
-            $sheet->setCellValue("AD$row", $item->COORDINADOR);
-            $sheet->setCellValue("AE$row", $item->AFILIADO);
-            $sheet->setCellValue("AF$row", $item->NOCHE);
-            $sheet->setCellValue("AG$row", $item->UTI);
-            $sheet->setCellValue("AH$row", $item->banco);
-            $sheet->setCellValueExplicit("AI$row", $item->numero_cuenta, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValueExplicit("AJ$row", $item->cbu, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue("AK$row", $item->MADRE);
-            $sheet->setCellValue("AL$row", $item->PADRE);
-            $sheet->setCellValue("AM$row", $item->PERSONA_EMERG1);
-            $sheet->setCellValue("AN$row", $item->CONTACTO_EMERG1);
-            $sheet->setCellValue("AO$row", $item->PARENTESCO_EMERG1);
-            $sheet->setCellValue("AP$row", $item->PERSONA_EMERG2);
-            $sheet->setCellValue("AQ$row", $item->CONTACTO_EMERG2);
-            $sheet->setCellValue("AR$row", $item->PARENTESCO_EMERG2);
-            $row++;
+            $col = 1;
+            foreach ($columnas as $titulo => $valor) {
+                $celda = $sheet->getCell([$col, $fila]);
+                $v = $valor($item);
+                if (in_array($titulo, $comoTexto)) {
+                    $celda->setValueExplicit((string) ($v ?? ''), DataType::TYPE_STRING);
+                } else {
+                    $celda->setValue($v);
+                }
+                $col++;
+            }
+            $fila++;
         }
 
-        for ($col = 'A'; $col !== 'AS'; $col++) {
-            $sheet->getColumnDimension($col)->setAutoSize(true);
+        $ultimaCol = $sheet->getHighestColumn();
+        $sheet->getStyle("A1:{$ultimaCol}1")->getFont()->setBold(true);
+        $sheet->setAutoFilter("A1:{$ultimaCol}1");
+        $sheet->freezePane('C2');
+        foreach (range(1, count($columnas)) as $c) {
+            $sheet->getColumnDimensionByColumn($c)->setAutoSize(true);
         }
 
-        $fileName = 'NOMINA_COLABORADORES' . date('Ymd_His') . '.xlsx';
+        $fileName = 'NOMINA_COLABORADORES_' . date('Ymd_His') . '.xlsx';
 
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename=\"$fileName\"");
-        header('Cache-Control: max-age=0');
-
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('php://output');
-
-        exit;
+        return response()->streamDownload(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     public function exportarListaColabBajaDatatable(Request $request)
@@ -2080,7 +2049,7 @@ class PersonalController extends Controller
 
     public function obtenerServiciosPersonal()
     {
-        $contratos = DB::select("SELECT id_servicios, nombre FROM servicios WHERE estado = 1");
+        $contratos = DB::select("SELECT id_servicios, nombre FROM servicios WHERE estado = 1 ORDER BY nombre ASC");
         return response()->json(["data" => $contratos]);
     }
 

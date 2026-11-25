@@ -293,6 +293,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/registrarPrestamo', [NovedadesController::class, 'registrarPrestamo']);
 
+    Route::get('/personal/exportarListaColab', [PersonalController::class, 'exportarListaColabDatatable'])->name('exportarListaColab');
+
     //SELECTORES
     Route::get('/obtenerAreasSelector', [PersonalController::class, 'obtenerAreasSelector']);
     Route::get('/obtenerTiposContrato', [PersonalController::class, 'obtenerTiposContrato']);
