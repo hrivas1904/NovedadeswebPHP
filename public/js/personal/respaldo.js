@@ -85,49 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//SUBIR COMPROBANTE DE NOVEDAD
-$(document).on("click", ".btn-subir-archivo", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    registroSeleccionado = $(this).data("registro");
-    $("#inputComprobantes").click();
-});
-
-$("#inputComprobantes").on("change", function () {
-    const files = this.files;
-    if (!files || files.length === 0) return;
-
-    subirComprobantes(files);
-});
-
-function subirComprobantes(files) {
-    let formData = new FormData();
-    formData.append("id_nxe", registroSeleccionado);
-
-    for (let i = 0; i < files.length; i++) {
-        formData.append("comprobantes[]", files[i]);
-    }
-
-    $.ajax({
-        url: "/rrhh/novedades/subir-comprobante",
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        success: function (resp) {
-            alert("Comprobante subido exitosamente");
-        },
-        error: function (xhr) {
-            Swal.fire("Error", "No se pudo subir el comprobante", "error");
-            console.error(xhr.responseText);
-        },
-    });
-}
-
 //SELECTORES CATEGORÍAS Y ROLES
 function cargarCategorias() {
     $.ajax({

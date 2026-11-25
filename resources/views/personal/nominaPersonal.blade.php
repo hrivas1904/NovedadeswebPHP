@@ -767,6 +767,7 @@
                                             <th>Descripción</th>
                                             <th>Registró</th>
                                             <th class="text-center">Liquidada</th>
+                                            <th class="text-center">Comprobantes</th>
                                         </tr>
                                     </thead>
                                     <tbody id="legajoTbNovedades"></tbody>
@@ -1196,12 +1197,21 @@
 
 @push('scripts')
 <script>
+    window.RRHH_ROUTES = Object.assign(window.RRHH_ROUTES || {}, {
+        subirComprobante:    "{{ url('/rrhh/novedades/subir-comprobante') }}",
+        comprobantesNovedad: "{{ url('/rrhh/novedades/:id/comprobantes') }}",
+        verComprobante:      "{{ url('/rrhh/comprobantes/:id/ver') }}",
+    });
+</script>
+
+<script>
     const logoHp3c = "{{ asset('img/logo_2.png') }}";
     const firma = "{{ asset('img/ffernandez-firma.png') }}"
 </script>
 
 <script src="{{ asset('js/novedades/abmNovedades.js') }}"></script>
 <script src="{{ asset('js/personal/selectores.js') }}"></script>
+<script src="{{ asset('js/personal/administrarComprobantes.js') }}"></script>
 <script src="{{ asset('js/personal/administrarContEmerg.js') }}"></script>
 <script src="{{ asset('js/personal/administrarFamiliares.js') }}"></script>
 <script src="{{ asset('js/personal/administrarCuentas.js') }}"></script>

@@ -1,14 +1,3 @@
-/* =====================================================================
-   HP3C · RRHH · Ver / editar legajo
-   - verLegajo(idPersonal): trae los datos y abre el modal
-   - Los selectores se llenan con tus funciones de carga; el valor que
-     viene del legajo queda en data-valor y se aplica con
-     aplicarValorPendiente($select) cuando terminan de cargar las opciones.
-   - Contactos y familiares: filas dinámicas con id oculto; al quitar una
-     fila existente se registra su id en divEliminadosLegajo.
-   - El guardado (submit de #formLegajo) se implementa con la edición.
-   ===================================================================== */
-
 let legajoActual = null; // { id_personal, legajo }
 var tablaPrestamos = null;
 
@@ -434,7 +423,7 @@ function cargarNovedadesLegajo() {
     if (!legajoActual || !legajoActual.legajo) return;
 
     const $tb = $("#legajoTbNovedades");
-    $tb.html('<tr><td colspan="9" class="text-muted">Cargando...</td></tr>');
+    $tb.html('<tr><td colspan="10" class="text-muted">Cargando...</td></tr>');
 
     $.ajax({
         url: "/rrhh/personal/verNovedadesLegajo",
@@ -451,7 +440,7 @@ function cargarNovedadesLegajo() {
             const filas = res.data || [];
             if (!filas.length) {
                 $tb.append(
-                    '<tr><td colspan="9" class="text-muted fst-italic">Sin novedades</td></tr>',
+                    '<tr><td colspan="10" class="text-muted fst-italic">Sin novedades</td></tr>',
                 );
                 return;
             }
@@ -473,6 +462,11 @@ function cargarNovedadesLegajo() {
                     ].map((v) => $("<td>").text(v ?? "—")),
                 );
                 $tr.append($('<td class="text-center">').html(liquidada));
+                $tr.append(
+                    $('<td class="text-center text-nowrap">').html(
+                        botonesComprobantes(n.registro),
+                    ),
+                );
                 $tb.append($tr);
             });
         },
