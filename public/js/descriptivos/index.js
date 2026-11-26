@@ -46,10 +46,10 @@ $(document).ready(function () {
             url: "/rrhh/descriptivos/obtenerDescriptivos",
             type: "GET",
             dataType: "json",
-            data: {
-                p_id_area: getAreasSeleccionadas() || null,
-                p_estado: null,
-                p_solo_ultima: null,
+            data: function (d) {
+                d.p_id_area = getAreasSeleccionadas().join(",") || null;
+                d.p_estado = null;
+                d.p_solo_ultima = null;
             },
         },
         language: {
@@ -94,21 +94,31 @@ $(document).ready(function () {
         },
     });
 
-    $("#tb_descriptivos tbody").on("click", "tr", function () {
-        const fila = tablaDescriptivos.row(this).data();
-        if (!fila) return; // fila de "No hay datos" o fila hija
-        verDetalleDescriptivo(fila.id);
-    });
-
     $(document).on("change", ".check-area", function () {
         tablaDescriptivos.ajax.reload();
+    });
+
+    $("#tb_descriptivos tbody").on("click", "tr", function () {
+        const fila = tablaDescriptivos.row(this).data();
+        if (!fila) return;
+        verDetalleDescriptivo(fila.id);
     });
 
     $("#btn-limpiar-filtros").on("click", function () {
         $(".check-area").prop("checked", false);
         $("#toggleAreas span").text("Áreas");
-        tablaPersonal.search("").draw();
+        $("#searchPersonal").val("");
+        tablaDescriptivos.search("").draw();
         tablaDescriptivos.ajax.reload();
+    });
+
+    $("#searchPersonal").on("keyup", function () {
+        tablaDescriptivos.search($(this).val()).draw();
+    });
+
+    $("#btnClearSearch").on("click", function () {
+        $("#searchPersonal").val("");
+        tablaDescriptivos.search("").draw();
     });
 });
 
