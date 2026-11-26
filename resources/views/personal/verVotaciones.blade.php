@@ -31,7 +31,10 @@
             Ver asistencia
         </button>
         <button class="btn btn-secondary" id="btnVerResultados" onclick="verTop3xGrupo()">
-            Ver resultados
+            Mejores 3
+        </button>
+        <button class="btn btn-outline-secondary" id="btnVerResultados" onclick="verResultadosxGrupo()">
+            Resultados
         </button>
         <button class="btn btn-outline-primary" id="btnExportarResultados">
             <i class="fa-solid fa-download"></i> Exportar
@@ -85,6 +88,45 @@
                         <tbody></tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalResultadosxGrupo" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa-solid fa-ranking-star me-2"></i>
+                    Resultados completos por grupo
+                </h5>
+
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="d-flex justify-content-end mb-3">
+                    <button type="button"
+                        class="btn btn-outline-success"
+                        id="btnExportarResultadosxGrupo">
+
+                        <i class="fa-solid fa-file-excel me-2"></i>
+                        Exportar Excel
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="tbResultadosxGrupo"
+                        class="table table-striped table-hover table-sm w-100">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     </div>

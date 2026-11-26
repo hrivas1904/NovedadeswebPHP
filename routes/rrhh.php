@@ -508,6 +508,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/obtenerRespuestas', [VotacionesController::class, 'obtenerRespuestas'])->name('votaciones.obtenerRespuestas');
     Route::get('/mejores3xGrupo', [VotacionesController::class, 'mejores3xGrupo'])->name('votaciones.mejores3xGrupo');
     Route::get('/listarAsistencias', [VotacionesController::class, 'listarAsistencias'])->name('votaciones.listarAsistencias');
+    Route::get('/votaciones/resultadosxGrupo', [VotacionesController::class, 'obtenerResultadosxGrupo'])->name('rrhh.resultadosxGrupo');
 });
 
 Route::middleware(['dashboard.publico'])->group(function () {

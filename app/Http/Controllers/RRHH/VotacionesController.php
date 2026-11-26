@@ -432,4 +432,24 @@ class VotacionesController extends Controller
             ], 500);
         }
     }
+
+    public function obtenerResultadosxGrupo()
+    {
+        try {
+
+            $resultados = DB::select("CALL SP_OBTENER_RESULTADOS_XGRUPO()");
+
+            return response()->json([
+                "data" => $resultados
+            ]);
+        } catch (\Exception $e) {
+
+            Log::error('Error al obtener resultados de votaciones: ' . $e->getMessage());
+
+            return response()->json([
+                "data" => [],
+                "mensaje" => "Error al obtener los resultados."
+            ], 500);
+        }
+    }
 }
