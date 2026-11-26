@@ -331,6 +331,8 @@ function llenarModalLegajo(res) {
         $('[data-bs-target="#tabLegajoPersonales"]')[0],
     ).show();
     $("#modalVerLegajo").modal("show");
+
+    setSnapshotLegajo(d);
 }
 
 /* ---------------------------------------------------------------------

@@ -52,8 +52,9 @@ $(document).ready(function () {
                 d.p_solo_ultima = null;
             },
         },
+        order:[[1, 'asc']],
         language: {
-            url: "/js/ES-es.json",
+            url: "/js/es-ES.json",
         },
         scrollX: false,
         autoWidth: true,

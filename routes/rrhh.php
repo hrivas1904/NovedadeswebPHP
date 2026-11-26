@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get("/personal/obtenerPuestoTrabajoActivos", [PersonalController::class, "obtenerPuestoTrabajoActivos"]);
     Route::get("/personal/obtenerCategoriasActivas", [PersonalController::class, "obtenerCategoriasActivas"]);
     Route::get("/personal/obtenerRegimenesActivos", [PersonalController::class, "obtenerRegimenesActivos"]);
+    Route::post('/personal/actualizarCampoLegajo', [PersonalController::class, 'actualizarCampoLegajo'])->name('actualizarCampoLegajo');
 
     Route::get('/personal/exportarListaColabDatatable', [PersonalController::class, 'exportarListaColabDatatable']);
 

@@ -2322,4 +2322,108 @@ class PersonalController extends Controller
 
         return response()->json(['message' => 'Condición actualizada.']);
     }
+
+    public function actualizarCampoLegajo(Request $request)
+    {
+        $permitidos = ['Administrador/a', 'Coordinador/a', 'Coordinador/a L2'];
+
+        if (!in_array(auth()->user()->rol, $permitidos)) {
+            return response()->json(['message' => 'No tenés permiso para editar legajos.'], 403);
+        };
+
+        $camposPersonal = [
+            'nombre',
+            'apellido',
+            'dni',
+            'cuil',
+            'fecha_nacimiento',
+            'telefono',
+            'correo',
+            'domicilio',
+            'localidad',
+            'estado_civil',
+            'genero',
+            'titulo',
+            'descripcion_titulo',
+            'matricula'
+        ];
+        $camposTramo    = [
+            'id_area',
+            'id_servicio',
+            'id_categoria',
+            'regimen',
+            'tipo_contrato',
+            'id_obra_social',
+            'convenio',
+            'afiliado'
+        ];
+
+        $request->validate([
+            'tabla'      => 'required|in:personal,tramo',
+            'campo'      => 'required|string',
+            'valor'      => 'nullable|string|max:512',
+            'idPersonal' => 'required_if:tabla,personal|nullable|integer',
+            'idTramo'    => 'required_if:tabla,tramo|nullable|integer',
+            'horas'      => 'nullable|numeric',
+        ]);
+
+        $tabla = $request->tabla;
+        $campo = $request->campo;
+        $valor = $request->valor;
+
+        if (($tabla === 'personal' && !in_array($campo, $camposPersonal))
+            || ($tabla === 'tramo' && !in_array($campo, $camposTramo))
+        ) {
+            return response()->json(['message' => 'Campo no editable.'], 422);
+        }
+
+        // validaciones que conviene hacer antes de llegar a la base
+        if ($campo === 'correo' && $valor && !filter_var($valor, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['message' => 'El correo no tiene un formato válido.'], 422);
+        }
+        if (in_array($campo, ['nombre', 'apellido']) && $valor) {
+            $valor = mb_strtoupper(trim($valor));
+        }
+
+        $audit = [auth()->id(), $request->ip(), substr((string) $request->userAgent(), 0, 512)];
+        $servicioLimpiado = 0;
+
+        try {
+            DB::transaction(function () use ($request, $tabla, $campo, $valor, $audit, &$servicioLimpiado) {
+                if ($tabla === 'personal') {
+                    DB::statement('CALL SP_ACTUALIZAR_CAMPO_PERSONAL(?, ?, ?, ?, ?, ?)', [
+                        $request->idPersonal,
+                        $campo,
+                        $valor,
+                        ...$audit,
+                    ]);
+                } else {
+                    DB::statement('CALL SP_ACTUALIZAR_CAMPO_TRAMO(?, ?, ?, ?, ?, ?, ?, @servicio_limpiado)', [
+                        $request->idTramo,
+                        $campo,
+                        $valor,
+                        $request->horas,
+                        ...$audit,
+                    ]);
+                    $servicioLimpiado = (int) DB::selectOne('SELECT @servicio_limpiado AS v')->v;
+                }
+            });
+        } catch (QueryException $e) {
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['message' => $e->errorInfo[2]], 422);
+            }
+            Log::error('Actualizar campo de legajo', [
+                'tabla' => $tabla,
+                'campo' => $campo,
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json(['message' => 'No se pudo guardar el cambio.'], 500);
+        }
+
+        return response()->json([
+            'message'           => 'Guardado.',
+            'valor'             => in_array($campo, ['nombre', 'apellido']) ? $valor : null,
+            'servicio_limpiado' => $servicioLimpiado,
+        ]);
+    }
 }
