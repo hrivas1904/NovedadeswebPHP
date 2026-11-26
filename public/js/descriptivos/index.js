@@ -111,7 +111,7 @@ $(document).ready(function () {
         tablaDescriptivos.ajax.reload();
     });
 
-    $("#tb_descriptivos tbody").on("click", "tr", function () {
+    $("#tb_descriptivos tbody").on("click", "tr", function (e) {
         if ($(e.target).closest(".btn-eliminar-descriptivo").length) return;
         const fila = tablaDescriptivos.row(this).data();
         if (!fila) return;
