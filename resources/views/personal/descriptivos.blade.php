@@ -87,6 +87,7 @@
                                 <th>ÁREA/RESPONSABLE</th>
                                 <th>VERSIÓN</th>
                                 <th>ESTADO</th>
+                                <th></th>
                             </tr>
                         </thead>
                     </table>

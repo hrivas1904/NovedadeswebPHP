@@ -331,4 +331,30 @@ class DescriptivosController extends Controller
 
         return response()->json(['message' => 'Borrador guardado.', 'data' => ['id_descriptivo' => $id]]);
     }
+
+    public function eliminarDescriptivo(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|min:1',
+        ]);
+
+        try {
+            DB::transaction(function () use ($request) {
+                DB::statement('CALL SP_ELIMINAR_DESCRIPTIVO(?, ?, ?, ?)', [
+                    $request->id,
+                    auth()->id(),
+                    $request->ip(),
+                    substr((string) $request->userAgent(), 0, 512),
+                ]);
+            });
+
+            return response()->json(['message' => 'Descriptivo eliminado.']);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['message' => $e->errorInfo[2]], 422);
+            }
+            Log::error('eliminarDescriptivo: ' . $e->getMessage());
+            return response()->json(['message' => 'No se pudo eliminar el descriptivo.'], 500);
+        }
+    }
 }

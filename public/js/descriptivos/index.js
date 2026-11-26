@@ -52,7 +52,7 @@ $(document).ready(function () {
                 d.p_solo_ultima = null;
             },
         },
-        order:[[1, 'asc']],
+        order: [[1, "asc"]],
         language: {
             url: "/js/es-ES.json",
         },
@@ -89,6 +89,18 @@ $(document).ready(function () {
                     );
                 },
             },
+            {
+                data: "id",
+                orderable: false,
+                render: function (data, type, row) {
+                    if (row.estado !== "BORRADOR") return "";
+                    return `
+                        <button type="button" class="btn text-danger btn-eliminar-descriptivo" title="Eliminar descriptivo" data-id="${data}">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    `;
+                },
+            },
         ],
         createdRow: function (row) {
             $(row).addClass("fila-clickeable");
@@ -100,6 +112,7 @@ $(document).ready(function () {
     });
 
     $("#tb_descriptivos tbody").on("click", "tr", function () {
+        if ($(e.target).closest(".btn-eliminar-descriptivo").length) return;
         const fila = tablaDescriptivos.row(this).data();
         if (!fila) return;
         verDetalleDescriptivo(fila.id);
@@ -263,7 +276,7 @@ function llenarModalDescriptivo(d, competencias) {
     $modal.modal("show");
 }
 
-function verDetalleDescriptivo(idDescriptivo) {
+function verDetalleDescriptivo(idDescriptivo, e) {
     $.ajax({
         url: "/rrhh/descriptivos/verDetalleDescriptivo",
         type: "GET",
@@ -443,4 +456,52 @@ $(document).on("hidden.bs.modal", "#modalAltaDescriptivo", function () {
 
 $(document).ready(function () {
     cargarAreas();
+});
+
+$(document).on("click", ".btn-eliminar-descriptivo", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const id = $(this).data("id");
+    const fila = $(this).closest("tr");
+    const nombre =
+        tablaDescriptivos.row(fila).data()?.nombre_puesto || "este descriptivo";
+
+    Swal.fire({
+        title: "¿Eliminar descriptivo?",
+        text: `Se eliminará "${nombre}". Esta acción no se puede deshacer desde el sistema.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#d33",
+    }).then((r) => {
+        if (!r.isConfirmed) return;
+
+        $.ajax({
+            url: "/rrhh/descriptivos/eliminar",
+            type: "POST",
+            data: { id: id },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                Swal.fire({
+                    icon: "success",
+                    title: res.message,
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+                tablaDescriptivos.ajax.reload(null, false);
+            },
+            error: function (xhr) {
+                Swal.fire(
+                    "Error",
+                    xhr.responseJSON?.message ||
+                        "No se pudo eliminar el descriptivo.",
+                    "error",
+                );
+            },
+        });
+    });
 });
