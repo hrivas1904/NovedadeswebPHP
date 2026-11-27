@@ -61,22 +61,39 @@ function obtenerLocalidadesGeoRest(idSelector, modal) {
 }
 
 function obtenerAreasSelector(idSelector) {
-    $.ajax({
+    const selector = $(idSelector);
+
+    if (!selector.length) return;
+
+    return $.ajax({
         url: "/rrhh/obtenerAreasSelector",
         type: "GET",
-        dateType: "json",
+        dataType: "json",
 
         success: function (res) {
-            selector = idSelector;
-            selector.empty();
-            selector.append('<option value="">Seleccione área</option>');
+            const opciones = [new Option("Seleccione área", "")];
+
             $.each(res.data, function (index, item) {
-                selector.append(
-                    `
-                        <option value="${item.id_area}">${item.nombre}</option>
-                    `,
-                );
+                opciones.push(new Option(item.nombre, item.id_area));
             });
+
+            selector.each(function () {
+                const elemento = $(this);
+                const valor = elemento.attr("data-valor") ?? "";
+
+                elemento.empty();
+
+                opciones.forEach(function (opcion) {
+                    elemento.append(opcion.cloneNode(true));
+                });
+
+                elemento.val(valor);
+            });
+        },
+
+        error: function (xhr, status, error) {
+            console.error("Error al obtener áreas:", error);
+            console.error("Respuesta:", xhr.responseText);
         },
     });
 }
@@ -105,21 +122,33 @@ function obtenerTiposContratosSelector(idSelector) {
 }
 
 function obtenerServiciosSelector(idSelector) {
-    $.ajax({
+    const selector = $(idSelector);
+
+    if (!selector.length) return;
+
+    return $.ajax({
         url: "/rrhh/obtenerServiciosPersonal",
         type: "GET",
-        dateType: "json",
+        dataType: "json",
 
         success: function (res) {
-            selector = idSelector;
-            selector.empty();
-            selector.append('<option value="">Seleccione servicio</option>');
+            const opciones = [new Option("Seleccione servicio", "")];
+
             $.each(res.data, function (index, item) {
-                selector.append(
-                    `
-                        <option value="${item.id_servicios}">${item.nombre}</option>
-                    `,
-                );
+                opciones.push(new Option(item.nombre, item.id_servicios));
+            });
+
+            selector.each(function () {
+                const elemento = $(this);
+                const valor = elemento.attr("data-valor") ?? "";
+
+                elemento.empty();
+
+                opciones.forEach(function (opcion) {
+                    elemento.append(opcion.cloneNode(true));
+                });
+
+                elemento.val(valor);
             });
         },
 
@@ -258,24 +287,37 @@ function obtenerRegimenesActivos(idSelector, inputHoras) {
     });
 }
 
-function obtenerPuestosTrabajoSelector($selector) {
-    $.ajax({
+function obtenerPuestosTrabajoSelector(idSelector) {
+    const selector = $(idSelector);
+
+    if (!selector.length) return;
+
+    return $.ajax({
         url: "/rrhh/personal/obtenerPuestoTrabajoActivos",
         type: "GET",
         dataType: "json",
+
         success: function (res) {
-            $selector
-                .empty()
-                .append('<option value="">Seleccione puesto</option>');
+            const opciones = [new Option("Seleccione puesto", "")];
+
             $.each(res.data, function (index, item) {
-                $selector.append(
-                    $("<option>", {
-                        value: item.codigo_slug,
-                        text: item.nombre,
-                    }),
-                );
+                opciones.push(new Option(item.nombre, item.codigo_slug));
+            });
+
+            selector.each(function () {
+                const elemento = $(this);
+                const valor = elemento.attr("data-valor") ?? "";
+
+                elemento.empty();
+
+                opciones.forEach(function (opcion) {
+                    elemento.append(opcion.cloneNode(true));
+                });
+
+                elemento.val(valor);
             });
         },
+
         error: function (xhr, status, error) {
             console.error("Error al obtener puestos:", error);
             console.error("Respuesta:", xhr.responseText);

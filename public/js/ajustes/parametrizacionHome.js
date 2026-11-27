@@ -60,5 +60,12 @@ function inicializarSubvistaParametros(vista) {
         case "obrasSociales":
             cargarTablaOs();
             break;
+
+        case "puestosTrabajo":
+            obtenerAreasSelector($("#selectorArea"));
+            obtenerServiciosSelector($("#selectorServicio"));
+            obtenerPuestosTrabajoSelector($("#selectorSuperior"));
+            cargarTablaPuestos();
+            break;
     }
 }

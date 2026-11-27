@@ -25,6 +25,11 @@ class ParametrosController extends Controller
         return view('ajustes.configCategorias');
     }
 
+    public function configPuestosView()
+    {
+        return view('ajustes.configPuestos');
+    }
+
     public function listarServiciosColab()
     {
         try {
@@ -1088,6 +1093,130 @@ class ParametrosController extends Controller
                 'error' => 'Error al actualizar el estado',
                 'detalle' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    public function obtenerTodosPuestos()
+    {
+        $puestos = DB::select("call SP_OBTENER_PUESTOS_TRABAJO()", []);
+        return response()->json(["data" => $puestos]);
+    }
+
+    public function guardarPuesto(Request $request)
+    {
+        // mismo chequeo de rol que en actualizarCampoPuesto
+        if (auth()->user()->rol !== 'Administrador/a') {
+            return response()->json(['mensaje' => 'No tenés permiso para crear puestos.'], 403);
+        }
+
+        $request->validate([
+            'nombre'      => 'required|string|max:512',
+            'descripcion' => 'nullable|string|max:512',
+            'codigo'      => 'required|string|max:255',
+            'area'        => 'required|integer',
+            'servicio'    => 'nullable|integer',
+            'coordinador' => 'required|in:0,1',
+            'superior'    => 'required|string|max:255',
+        ]);
+
+        try {
+            $id = DB::transaction(function () use ($request) {
+                DB::statement(
+                    'CALL SP_ALTA_PUESTO_TRABAJO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @id_puesto)',
+                    [
+                        $request->input('nombre'),
+                        $request->input('descripcion'),
+                        $request->input('codigo'),
+                        (int) $request->input('area'),
+                        $request->filled('servicio') ? (int) $request->input('servicio') : null,
+                        (int) $request->input('coordinador'),
+                        $request->input('superior'),
+                        auth()->id(),
+                        $request->ip(),
+                        substr($request->userAgent() ?? '', 0, 512),
+                    ]
+                );
+
+                return (int) DB::selectOne('SELECT @id_puesto AS id')->id;
+            });
+
+            return response()->json(['ok' => true, 'id' => $id, 'mensaje' => 'Puesto creado.']);
+        } catch (QueryException $e) {
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['mensaje' => $e->errorInfo[2]], 422);
+            }
+
+            Log::error('guardarPuesto', ['error' => $e->getMessage()]);
+
+            return response()->json(['mensaje' => 'No se pudo crear el puesto.'], 500);
+        }
+    }
+
+    public function actualizarCampoPuesto(Request $request)
+    {
+        // Ajustalo al chequeo de rol que ya usás en la vista de puestos
+        if (auth()->user()->rol !== 'Administrador/a') {
+            return response()->json(['mensaje' => 'No tenés permiso para modificar puestos.'], 403);
+        }
+
+        $request->validate([
+            'id'    => 'required|integer',
+            'campo' => 'required|string',
+            'valor' => 'nullable|string|max:512',
+        ]);
+
+        // data-campo => [SP, columna]
+        $mapa = [
+            'nombre'      => ['SP_ACTUALIZAR_CAMPO_PUESTO', 'nombre'],
+            'descripcion' => ['SP_ACTUALIZAR_CAMPO_PUESTO', 'descripcion'],
+            'area'        => ['SP_ACTUALIZAR_CAMPO_PUESTO', 'id_area'],
+            'servicio'    => ['SP_ACTUALIZAR_CAMPO_PUESTO', 'id_servicio'],
+            'coordinador' => ['SP_ACTUALIZAR_CAMPO_PUESTO', 'es_coordinador'],
+            'activo'      => ['SP_ACTUALIZAR_CAMPO_PUESTO', 'activo'],
+            'codigo'      => ['SP_ACTUALIZAR_CODIGO_PUESTO', null],
+            'superior'    => ['SP_ACTUALIZAR_SUPERIOR_PUESTO', null],
+        ];
+
+        $campo = $request->input('campo');
+
+        if (!isset($mapa[$campo])) {
+            return response()->json(['mensaje' => 'Campo no editable.'], 422);
+        }
+
+        [$sp, $columna] = $mapa[$campo];
+
+        $id    = (int) $request->input('id');
+        $valor = $request->input('valor');
+        $user  = auth()->id();
+        $ip    = $request->ip();
+        $nav   = substr($request->userAgent() ?? '', 0, 512);
+
+        try {
+            $extra = DB::transaction(function () use ($sp, $columna, $id, $valor, $user, $ip, $nav) {
+                if ($sp === 'SP_ACTUALIZAR_CAMPO_PUESTO') {
+                    DB::statement(
+                        'CALL SP_ACTUALIZAR_CAMPO_PUESTO(?, ?, ?, ?, ?, ?, @servicio_limpiado)',
+                        [$id, $columna, $valor, $user, $ip, $nav]
+                    );
+                    $out = DB::selectOne('SELECT @servicio_limpiado AS servicio_limpiado');
+
+                    return ['servicio_limpiado' => (int) ($out->servicio_limpiado ?? 0)];
+                }
+
+                DB::statement("CALL {$sp}(?, ?, ?, ?, ?)", [$id, $valor, $user, $ip, $nav]);
+
+                return [];
+            });
+
+            return response()->json(['ok' => true, 'mensaje' => 'Cambio guardado.'] + $extra);
+        } catch (QueryException $e) {
+            if (($e->errorInfo[0] ?? null) === '45000') {
+                return response()->json(['mensaje' => $e->errorInfo[2]], 422);
+            }
+
+            Log::error('actualizarCampoPuesto', ['campo' => $campo, 'id' => $id, 'error' => $e->getMessage()]);
+
+            return response()->json(['mensaje' => 'No se pudo guardar el cambio.'], 500);
         }
     }
 }

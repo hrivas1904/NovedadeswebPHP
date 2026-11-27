@@ -416,6 +416,11 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/contratos/editarNombreTipoContrato', [ParametrosController::class, 'editarNombreTipoContrato']);
     Route::put('/contratos/editarEstadoTipoContrato', [ParametrosController::class, 'editarEstadoTipoContrato']);
 
+    Route::get('/puestos/configPuestosView', [ParametrosController::class, 'configPuestosView'])->name('configPuestosView');
+    Route::get('/puestos/obtenerTodosPuestos', [ParametrosController::class, 'obtenerTodosPuestos']);
+    Route::post('/puestos/guardarPuesto', [ParametrosController::class, 'guardarPuesto']);
+    Route::post('/puestos/actualizarCampoPuesto', [ParametrosController::class, 'actualizarCampoPuesto']);
+
     //CRONOGRAMAS DE TRABAJO
     Route::get('/cronogramaTrabajo', [CronogramaController::class, 'viewCronograma'])->name('cronogramaTrabajo');
     Route::get('/cronogramaAreas', [CronogramaController::class, 'viewCronogramaAreas'])->name('viewCronogramaAreas');
@@ -501,7 +506,7 @@ Route::middleware(['auth'])->group(function () {
 
     // EVALUACIÓN DE DESEMPEÑO
     Route::prefix('edd')->name('edd.')->controller(EvaluacionesController::class)->group(function () {
-        Route::get('/index','index')->name('index');
+        Route::get('/index', 'index')->name('index');
         Route::get('/misEvaluaciones', 'misEvaluaciones')->name('misEvaluaciones');
         Route::get('/formularioEvaluacion/{id}', 'formularioEvaluacion')->whereNumber('id')->name('formularioEvaluacion');
         Route::get('/misEvaluaciones/listar', 'listarMisEvaluaciones')->name('misEvaluaciones.listar');

@@ -11,6 +11,7 @@
         <button type="button" class="btn btn-sm btn-analisis btnParametro" style="color: var(--color-default);" data-url="{{ route('rrhh.configCategoriasView') }}" data-vista="categorias">Categorías, Regimenes y Contratos</button>
         <button type="button" class="btn btn-sm btn-analisis btnParametro" style="color: var(--color-default);" data-url="{{ route('rrhh.configNovedades') }}" data-vista="novedades">Catálogo novedades</button>
         <button type="button" class="btn btn-sm btn-analisis btnParametro" style="color: var(--color-default);" data-url="{{ route('rrhh.obraSocial.administrarObraSociales') }}" data-vista="obrasSociales">Obras Sociales</button>
+        <button type="button" class="btn btn-sm btn-analisis btnParametro" style="color: var(--color-default);" data-url="{{ route('rrhh.configPuestosView') }}" data-vista="puestosTrabajo">Puestos de Trabajo</button>
     </div>
     <hr style="color: var(--color-default); border: 1px solid;" />
     <div class="renderDivParametros">
@@ -19,6 +20,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('js/personal/selectores.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionAreas.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionServ.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionTurnos.js') }}"></script>
@@ -27,6 +29,7 @@
 <script src="{{ asset('js/ajustes/parametrizacionRegimenes.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionNovedades.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionContratos.js') }}"></script>
+<script src="{{ asset('js/ajustes/parametrizacionPuestos.js') }}"></script>
 <script src="{{ asset('js/ajustes/obraSociales.js') }}"></script>
 <script src="{{ asset('js/ajustes/parametrizacionHome.js') }}"></script>
 @endpush
