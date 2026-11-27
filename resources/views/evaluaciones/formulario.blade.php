@@ -1,5 +1,7 @@
 @extends("layouts.app")
 
+@section('title', 'Evaluación de desempeño')
+
 @section("content")
 <div class="d-flex flex-column gap-3" id="eddFormulario">
 
