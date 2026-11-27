@@ -184,13 +184,13 @@
                             <ul class="submenu">
                                 <li><a class="submenu-link" href="{{ route('rrhh.miLegajo') }}">Mi legajo</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.miDescriptivo') }}">Mi descriptivo</a></li>
-                                <li><a class="submenu-link" href="{{ route('rrhh.edd.index') }}">Mi evaluación</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.edd.misEvaluaciones') }}">Mis evaluaciones</a></li>
                                 @if (Auth::user()->rol === 'Coordinador/a L2' ||
                                 Auth::user()->rol === 'Administrador/a' ||
                                 Auth::user()->rol === 'Coordinador/a')
                                 <li><a class="submenu-link" href="{{ route('rrhh.nominaPersonal') }}">Colaboradores</a></li>
                                 <li><a class="submenu-link" href="{{ route('rrhh.descriptivos.index') }}">Descriptivos</a></li>
-                                <li><a class="submenu-link" href="{{ route('rrhh.edd.index') }}">Evaluaciones desempeño</a></li>
+                                <li><a class="submenu-link" href="{{ route('rrhh.edd.index') }}">Evaluaciones de desempeño</a></li>
                                 @endif
                                 @if (Auth::user()->rol === 'Coordinador/a L2' || Auth::user()->rol === 'Administrador/a')
                                 <li><a class="submenu-link" href="{{ route('rrhh.calendarioServicios') }}">Calendario recepción</a></li>

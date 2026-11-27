@@ -1,22 +1,19 @@
 <?php
 
 return [
-    // Referencia de diseño; no representa un período abierto en la base de datos.
-    'institucion' => 'Hospital Privado Tres Cerritos',
-    'periodo_referencia' => 'EDD 2026',
-
     'escala' => [
-        1 => ['nombre' => 'Por debajo de lo esperado', 'descripcion' => 'No cumple con los objetivos ni con los estándares de la posición.'],
-        2 => ['nombre' => 'En desarrollo', 'descripcion' => 'Cumple parcialmente con lo esperado y necesita acompañamiento.'],
-        3 => ['nombre' => 'Cumple con lo esperado', 'descripcion' => 'Alcanza los objetivos establecidos con un desempeño sólido y confiable.'],
-        4 => ['nombre' => 'Supera las expectativas', 'descripcion' => 'Va más allá de lo esperado de manera consistente y aporta valor al equipo.'],
+        4 => ['label' => 'Supera las expectativas',   'concepto' => 'Va más allá de lo esperado de manera consistente, aportando valor y generando impacto positivo en su equipo y en la organización.'],
+        3 => ['label' => 'Cumple con lo esperado',    'concepto' => 'Desempeño sólido y confiable. Alcanza los objetivos establecidos y aporta al equipo.'],
+        2 => ['label' => 'En desarrollo',             'concepto' => 'Cumple parcialmente con lo esperado. Tiene oportunidades de mejora y necesita seguimiento para potenciar su desempeño.'],
+        1 => ['label' => 'Por debajo de lo esperado', 'concepto' => 'No cumple con los objetivos ni con los estándares de la posición. Es necesario un plan de mejora y acompañamiento.'],
     ],
 
-    'bloques' => [
-        'generales' => ['nombre' => 'Competencias generales', 'descripcion' => 'Competencias organizacionales comunes a todos los colaboradores.'],
-        'especificas' => ['nombre' => 'Competencias específicas', 'descripcion' => 'Criterios vinculados al rol, servicio y descriptivo de puesto.'],
-        'desempeno' => ['nombre' => 'Desempeño', 'descripcion' => 'Cumplimiento de tareas, calidad y resultados del puesto.'],
-        'conductas' => ['nombre' => 'Conductas', 'descripcion' => 'Comportamientos observables y evidencias del período.'],
-        'objetivos' => ['nombre' => 'Objetivos', 'descripcion' => 'Metas acordadas, indicadores y criterios de cumplimiento.'],
+    'estados' => [
+        'PENDIENTE'         => ['label' => 'Pendiente',                'class' => 'bg-secondary'],
+        'AUTO_EN_CURSO'     => ['label' => 'Autoevaluación en curso',  'class' => 'bg-info text-dark'],
+        'AUTO_ENVIADA'      => ['label' => 'Autoevaluación enviada',   'class' => 'bg-primary'],
+        'SUPERIOR_EN_CURSO' => ['label' => 'Evaluación en curso',      'class' => 'bg-warning text-dark'],
+        'PENDIENTE_FIRMA'   => ['label' => 'Pendiente de firma',       'class' => 'bg-orange'],
+        'CERRADA'           => ['label' => 'Cerrada',                  'class' => 'bg-success'],
     ],
 ];

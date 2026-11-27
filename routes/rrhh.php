@@ -500,8 +500,19 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // EVALUACIÓN DE DESEMPEÑO
-    Route::prefix('edd')->name('edd.')->group(function () {
-        Route::get('/index', [EvaluacionesController::class, 'index'])->name('index');
+    Route::prefix('edd')->name('edd.')->controller(EvaluacionesController::class)->group(function () {
+        Route::get('/index','index')->name('index');
+        Route::get('/misEvaluaciones', 'misEvaluaciones')->name('misEvaluaciones');
+        Route::get('/formularioEvaluacion/{id}', 'formularioEvaluacion')->whereNumber('id')->name('formularioEvaluacion');
+        Route::get('/misEvaluaciones/listar', 'listarMisEvaluaciones')->name('misEvaluaciones.listar');
+        Route::get('/index/listar', 'listarPanel')->name('panel.listar');
+        Route::get('/formularioEvaluacion/{id}/respuestas', 'obtenerRespuestas')->whereNumber('id')->name('respuestas');
+        Route::post('/formularioEvaluacion/{id}/guardar', 'guardarBorrador')->whereNumber('id')->name('guardar');
+        Route::post('/formularioEvaluacion/{id}/enviar', 'enviarEvaluacion')->whereNumber('id')->name('enviar');
+        Route::post('/formularioEvaluacion/{id}/firmar', 'firmarEvaluacion')->whereNumber('id')->name('firmar');
+        Route::post('/generar', 'generarPeriodo')->name('generar');
+        Route::get('/{id}/candidatos', 'listarCandidatos')->whereNumber('id')->name('candidatos');
+        Route::post('/{id}/evaluador', 'asignarEvaluador')->whereNumber('id')->name('asignarEvaluador');
     });
 
     //VOTACIONES
