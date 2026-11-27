@@ -4,27 +4,27 @@
             <div class="card p-2 h-100">
                 <div class="d-flex flex-column gap-3">
                     <div class="section-divider">
-                        <span>CATEGORÍAS COLABORADORES</span>
+                        <span>Categorías según Convenio y fuera de Convenio</span>
                     </div>
                     <form id="formNuevaCategoria">
                         @csrf
                         <div class="row g-2 align-items-end">
                             <div class="col-12 col-lg-7">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="nombreCateg" id="nombreCateg" required placeholder="Nombre categoría">
-                                    <label for="nombreCateg">Nombre categoría</label>
+                                    <input type="text" class="form-control" name="nombreCateg" id="nombreCateg" required placeholder="Nombre">
+                                    <label for="nombreCateg">Nombre</label>
                                 </div>
                             </div>
 
                             <div class="col-12 col-lg-5">
                                 <button type="submit" class="btn btn-primary w-100" id="btnCrearCateg">
-                                    Crear nueva categoría
+                                    Guardar
                                 </button>
                             </div>
                         </div>
                     </form>
 
-                    <table id="tb_categ" class="table table-striped table-hover align-middle table-header-hp3c">
+                    <table id="tb_categ" class="table table-striped table-hover align-middle">
                         <thead>
                             <tr>
                                 <th class="text-start">ID</th>
@@ -42,7 +42,7 @@
             <div class="card p-2 h-100">
                 <div class="d-flex flex-column gap-3">
                     <div class="section-divider">
-                        <span>REGÍMENES</span>
+                        <span>Regímenes</span>
                     </div>
 
                     <form id="formNuevoRegimen">
@@ -63,13 +63,13 @@
 
                             <div class="col-12 col-lg-4">
                                 <button type="button" id="btnCrearRegimen" class="btn btn-primary w-100">
-                                    Crear nuevo régimen
+                                    Guardar
                                 </button>
                             </div>
                         </div>
                     </form>
 
-                    <table id="tbRegimenes" class="table table-hover align-middle table-header-hp3c">
+                    <table id="tbRegimenes" class="table table-hover align-middle">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -82,7 +82,7 @@
                     </table>
 
                     <div class="section-divider">
-                        <span>TIPOS DE CONTRATOS</span>
+                        <span>Tipos de contratos</span>
                     </div>
 
                     <form id="formNuevaTipoContrato">
@@ -90,20 +90,20 @@
                         <div class="row g-2 align-items-end">
                             <div class="col-12 col-lg-7">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="nombreTipoContrato" id="nombreTipoContrato" required placeholder="Nombre tipo contratación">
-                                    <label for="nombreTipoContrato">Nombre tipo contrato</label>
+                                    <input type="text" class="form-control" name="nombreTipoContrato" id="nombreTipoContrato" required placeholder="Nombre">
+                                    <label for="nombreTipoContrato">Nombre</label>
                                 </div>
                             </div>
 
                             <div class="col-12 col-lg-5">
                                 <button type="submit" class="btn btn-primary w-100" id="btnCrearTipoContrato">
-                                    Crear nuevo tipo contrato
+                                    Guardar
                                 </button>
                             </div>
                         </div>
                     </form>
 
-                    <table id="tbContratos" class="table table-hover align-middle table-header-hp3c">
+                    <table id="tbContratos" class="table table-hover align-middle">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -113,7 +113,6 @@
                         </thead>
                         <tbody></tbody>
                     </table>
-
                 </div>
             </div>
         </div>
